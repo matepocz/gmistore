@@ -65,7 +65,6 @@ public class ProductService {
      */
     public void addProduct(ProductDto productDto) {
         Product product = mapProductDtoToProduct(productDto);
-        LOGGER.debug("Product added to database! Name {}", productDto.getName());
         productRepository.save(product);
     }
 

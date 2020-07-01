@@ -1,0 +1,7 @@
+logging:
+  level:
+    hu.progmasters.gmistore: trace
+server:
+  port: 8080
+
+cors-policies: http://localhost:3000, http://127.0.0.1:3000

@@ -1,10 +1,16 @@
 package hu.progmasters.gmistore.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "customer")
 public class Customer {
 
@@ -23,56 +29,4 @@ public class Customer {
     private String password;
 
     private String email;
-
-    public Customer() {
-    }
-
-    public Customer(String username, Address address, String password, String email) {
-        this.username = username;
-        this.address = address;
-        this.password = password;
-        this.email = email;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    @NonNull
-    public String getUsername() {
-        return username;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    @NonNull
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setUsername(@NonNull String username) {
-        this.username = username;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void setPassword(@NonNull String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

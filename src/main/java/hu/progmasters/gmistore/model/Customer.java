@@ -28,5 +28,8 @@ public class Customer {
     @NonNull
     private String password;
 
+    @NonNull
     private String email;
+
+    private String phoneNumber;
 }

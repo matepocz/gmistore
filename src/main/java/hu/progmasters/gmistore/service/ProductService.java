@@ -58,6 +58,11 @@ public class ProductService {
         return productDto;
     }
 
+    /**
+     * Save a product to the database
+     *
+     * @param productDto A ProductDto
+     */
     public void addProduct(ProductDto productDto) {
         Product product = mapProductDtoToProduct(productDto);
         LOGGER.debug("Product added to database! Name {}", productDto.getName());
@@ -66,10 +71,10 @@ public class ProductService {
 
     private Product mapProductDtoToProduct(ProductDto productDto) {
         Product product = new Product();
-        product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
-        product.setCategory(productDto.getCategory());
+        product.setName(productDto.getName());
         product.setPictureUrl(productDto.getPictureUrl());
+        product.setCategory(productDto.getCategory());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());

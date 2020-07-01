@@ -16,8 +16,14 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @PostMapping("/add")
+    public ResponseEntity addProduct(@RequestBody ProductDto productDto) {
+        productService.addProduct(productDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> products() {
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
         List<ProductDto> products = productService.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }

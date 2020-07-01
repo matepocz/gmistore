@@ -1,6 +1,6 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.ProductNotFoundException;
+import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;

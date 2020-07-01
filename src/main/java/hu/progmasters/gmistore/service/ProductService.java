@@ -57,4 +57,24 @@ public class ProductService {
         productDto.setAverageRating(product.getAverageRating());
         return productDto;
     }
+
+    public void addProduct(ProductDto productDto) {
+        Product product = mapProductDtoToProduct(productDto);
+        LOGGER.debug("Product added to database! Name {}", productDto.getName());
+        productRepository.save(product);
+    }
+
+    private Product mapProductDtoToProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setCategory(productDto.getCategory());
+        product.setPictureUrl(productDto.getPictureUrl());
+        product.setPrice(productDto.getPrice());
+        product.setDiscount(productDto.getDiscount());
+        product.setWarrantyMonths(productDto.getWarrantyMonths());
+        product.setQuantityAvailable(productDto.getQuantityAvailable());
+        product.setAverageRating(productDto.getAverageRating());
+        return product;
+    }
 }

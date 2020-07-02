@@ -8,12 +8,14 @@ import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "product")
 public class Product {
 
     @Id
@@ -27,6 +29,7 @@ public class Product {
     private String description;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     private String pictureUrl;
@@ -40,6 +43,11 @@ public class Product {
 
     @NonNull
     private int quantityAvailable;
+
+    @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "ratings")
+    @Column(name = "product_ratings")
+    private List<Integer> ratings = new ArrayList<>();
 
     private double averageRating;
 }

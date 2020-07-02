@@ -13,8 +13,12 @@ import java.util.List;
 @RequestMapping("/api/products/")
 public class ProductController {
 
+    private final ProductService productService;
+
     @Autowired
-    private ProductService productService;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity addProduct(@RequestBody ProductDto productDto) {
@@ -45,6 +49,8 @@ public class ProductController {
     @PutMapping("/update/{id}")
     public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
         boolean isUpdated = productService.updateProduct(id, productDto);
-        return isUpdated ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+        return isUpdated ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

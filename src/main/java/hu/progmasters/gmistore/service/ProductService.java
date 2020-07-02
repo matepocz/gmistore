@@ -81,4 +81,8 @@ public class ProductService {
         product.setAverageRating(productDto.getAverageRating());
         return product;
     }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
 }

@@ -50,4 +50,6 @@ public class Product {
     private List<Integer> ratings = new ArrayList<>();
 
     private double averageRating;
+
+    private boolean active;
 }

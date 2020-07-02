@@ -23,7 +23,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -107,5 +107,39 @@ public class ProductService {
             isSetToInactive = true;
         }
         return isSetToInactive;
+    }
+
+    /**
+     * Updates a product in the database with the specified id
+     * and values
+     *
+     * @param id The product's unique id
+     * @param productDto A ProductDto containing the values to update
+     * @return A boolean, true if updated, false otherwise
+     */
+    public boolean updateProduct(Long id, ProductDto productDto) {
+        boolean isUpdated = false;
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            updateProductValues(productDto, product);
+            productRepository.save(product);
+            isUpdated = true;
+        }
+        return isUpdated;
+    }
+
+    private void updateProductValues(ProductDto productDto, Product product) {
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
+        product.setPictureUrl(productDto.getPictureUrl());
+        product.setPrice(productDto.getPrice());
+        product.setDiscount(productDto.getDiscount());
+        product.setWarrantyMonths(productDto.getWarrantyMonths());
+        product.setRatings(productDto.getRatings());
+        product.setQuantityAvailable(productDto.getQuantityAvailable());
+        product.setAverageRating(productDto.getAverageRating());
+        product.setActive(productDto.isActive());
     }
 }

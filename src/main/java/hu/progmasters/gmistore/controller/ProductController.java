@@ -41,4 +41,10 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        boolean isUpdated = productService.updateProduct(id, productDto);
+        return isUpdated ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
 }

@@ -26,9 +26,9 @@ public class Product {
     @Basic(optional = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NonNull
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -51,5 +51,6 @@ public class Product {
 
     private double averageRating;
 
+    @Column(columnDefinition = "boolean default true")
     private boolean active;
 }

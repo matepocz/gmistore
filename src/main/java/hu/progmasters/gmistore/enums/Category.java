@@ -1,15 +1,15 @@
 package hu.progmasters.gmistore.enums;
 
+import lombok.Getter;
+
 public enum Category {
-    TV("Tv"), PHONE("Phone"), FRIDGE("Fridge"), COMPUTER("Computer"), PRINTER("Printer");
+    TV("Tv"), PHONE("Phone"), FRIDGE("Fridge"),
+    COMPUTER("Computer"), PRINTER("Printer");
 
-    private String category;
+    @Getter
+    private String displayName;
 
-    Category(String category) {
-        this.category = category;
-    }
-
-    public String getCategory() {
-        return category;
+    Category(String displayName) {
+        this.displayName = displayName;
     }
 }

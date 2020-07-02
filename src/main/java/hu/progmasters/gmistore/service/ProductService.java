@@ -1,7 +1,8 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.enums.Category;
+import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,21 +20,26 @@ public class ProductService {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
+    private final ProductRepository productRepository;
+
     @Autowired
-    private ProductRepository productRepository;
+    public ProductService(ProductRepository productRepository){
+        this.productRepository = productRepository;
+    }
 
     /**
-     * Get all products from the database
+     * Get all products with active state from the database
      *
      * @return A ProductDto List
      */
     public List<ProductDto> getAllProducts() {
         List<Product> allProduct = productRepository.findAll();
-        return allProduct.stream().map(this::mapProductToProductDto).collect(Collectors.toList());
+        return allProduct.stream().map(this::mapProductToProductDto)
+                .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
     /**
-     * Get a product with the specified id
+     * Get a product with the specified id from the database
      *
      * @param id Product's unique id
      * @return A ProductDto, if not found throws ProductNotFoundException
@@ -48,18 +55,20 @@ public class ProductService {
         productDto.setId(product.getId());
         productDto.setName(product.getName());
         productDto.setDescription(product.getDescription());
-        productDto.setCategory(product.getCategory());
+        productDto.setCategory(product.getCategory().getDisplayName());
         productDto.setPictureUrl(product.getPictureUrl());
         productDto.setPrice(product.getPrice());
         productDto.setDiscount(product.getDiscount());
         productDto.setWarrantyMonths(product.getWarrantyMonths());
         productDto.setQuantityAvailable(product.getQuantityAvailable());
+        productDto.setRatings(product.getRatings());
         productDto.setAverageRating(product.getAverageRating());
+        productDto.setActive(product.isActive());
         return productDto;
     }
 
     /**
-     * Save a product to the database
+     * Saves a product to the database
      *
      * @param productDto A ProductDto
      */
@@ -70,19 +79,33 @@ public class ProductService {
 
     private Product mapProductDtoToProduct(ProductDto productDto) {
         Product product = new Product();
-        product.setDescription(productDto.getDescription());
         product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setCategory(Category.valueOf(productDto.getCategory()));
         product.setPictureUrl(productDto.getPictureUrl());
-        product.setCategory(productDto.getCategory());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
+        product.setRatings(productDto.getRatings());
         product.setQuantityAvailable(productDto.getQuantityAvailable());
         product.setAverageRating(productDto.getAverageRating());
+        product.setActive(productDto.isActive());
         return product;
     }
 
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+    /**
+     * If the product presents in the database sets it's state to inactive
+     *
+     * @param id The product's unique id
+     * @return A boolean, true if product set to inactive false otherwise.
+     */
+    public boolean deleteProduct(Long id) {
+        boolean isSetToInactive = false;
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            optionalProduct.get().setActive(false);
+            isSetToInactive = true;
+        }
+        return isSetToInactive;
     }
 }

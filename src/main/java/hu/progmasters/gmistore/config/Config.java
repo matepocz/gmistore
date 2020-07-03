@@ -28,6 +28,7 @@ public class Config {
         return cloudinaryApiKey;
     }
 
+    @Bean
     public String cloudinaryApiSecret() {
         return cloudinaryApiSecret;
     }

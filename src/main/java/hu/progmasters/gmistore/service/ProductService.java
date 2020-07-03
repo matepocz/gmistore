@@ -117,16 +117,16 @@ public class ProductService {
      * @param productDto A ProductDto containing the values to update
      * @return A boolean, true if updated, false otherwise
      */
-    public boolean updateProduct(Long id, ProductDto productDto) {
-        boolean isUpdated = false;
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
+        ProductDto updatedProductDto = null;
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             updateProductValues(productDto, product);
-            productRepository.save(product);
-            isUpdated = true;
+            Product updatedProduct = productRepository.save(product);
+            updatedProductDto = mapProductToProductDto(updatedProduct);
         }
-        return isUpdated;
+        return updatedProductDto;
     }
 
     private void updateProductValues(ProductDto productDto, Product product) {

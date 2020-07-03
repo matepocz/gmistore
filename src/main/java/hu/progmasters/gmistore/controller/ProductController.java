@@ -32,9 +32,9 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -58,10 +58,10 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        boolean isUpdated = productService.updateProduct(id, productDto);
-        return isUpdated ?
-                new ResponseEntity<>(HttpStatus.OK) :
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
+        return updatedProductDto != null ?
+                new ResponseEntity<>(updatedProductDto, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

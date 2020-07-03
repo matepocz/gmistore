@@ -81,7 +81,7 @@ public class ProductService {
         Product product = new Product();
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
-        product.setCategory(Category.valueOf(productDto.getCategory()));
+        product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());

@@ -1,13 +1,12 @@
 package hu.progmasters.gmistore.model;
 
-
 import hu.progmasters.gmistore.enums.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NonNull
+    @NotNull
     @Basic(optional = false)
     private String name;
 
@@ -34,14 +33,16 @@ public class Product {
 
     private String pictureUrl;
 
-    @NonNull
+    @NotNull
     private double price;
 
+    @Column(columnDefinition = "int default 0")
     private int discount;
 
+    @Column(columnDefinition = "int default 0")
     private int warrantyMonths;
 
-    @NonNull
+    @Column(columnDefinition = "int default 0")
     private int quantityAvailable;
 
     @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
@@ -49,6 +50,7 @@ public class Product {
     @Column(name = "product_ratings")
     private List<Integer> ratings = new ArrayList<>();
 
+    @Column(columnDefinition = "double default 0.0")
     private double averageRating;
 
     @Column(columnDefinition = "boolean default true")

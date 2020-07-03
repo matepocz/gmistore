@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "gmistore"
+    }
+  },
+  "defaultProject": "gmistore",
+  "cli": {
+    "analytics": "f113ce3c-2bf7-436c-b9e4-7e64a5c4d952"
+  }
 }

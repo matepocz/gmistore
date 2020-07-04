@@ -8,12 +8,11 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "customer")
@@ -53,9 +52,12 @@ public class Customer {
     @Column(name = "roles")
     private List<Role> roles = new ArrayList<>();
 
-    private Instant registered;
+    private LocalDateTime registered;
 
     @Column(columnDefinition = "boolean default false")
     private boolean active;
 
+    public Customer() {
+        roles.add(Role.ROLE_CUSTOMER);
+    }
 }

@@ -1,12 +1,24 @@
 package hu.progmasters.gmistore.validator;
 
 import hu.progmasters.gmistore.dto.CustomerDto;
+import hu.progmasters.gmistore.model.Customer;
+import hu.progmasters.gmistore.repository.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Optional;
+
 @Component
 public class CustomerDtoValidator implements Validator {
+
+    private final CustomerRepository customerRepository;
+
+    @Autowired
+    public CustomerDtoValidator(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -42,6 +54,10 @@ public class CustomerDtoValidator implements Validator {
         }
         if (customerDto.getPostcode() == null) {
             errors.rejectValue("postcode", "customer.postcode.empty");
+        }
+        Optional<Customer> customer = customerRepository.findCustomerByEmail(customerDto.getEmail());
+        if (customer.isPresent()){
+            errors.rejectValue("email", "customer.email.alreadyRegistered");
         }
     }
 }

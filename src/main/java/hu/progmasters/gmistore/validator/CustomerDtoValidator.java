@@ -55,9 +55,13 @@ public class CustomerDtoValidator implements Validator {
         if (customerDto.getPostcode() == null) {
             errors.rejectValue("postcode", "customer.postcode.empty");
         }
-        Optional<Customer> customer = customerRepository.findCustomerByEmail(customerDto.getEmail());
-        if (customer.isPresent()){
+        Optional<Customer> customerWithEmail = customerRepository.findCustomerByEmail(customerDto.getEmail());
+        if (customerWithEmail.isPresent()){
             errors.rejectValue("email", "customer.email.alreadyRegistered");
+        }
+        Optional<Customer> customerWithUsername = customerRepository.findCustomerByUsername(customerDto.getUsername());
+        if (customerWithUsername.isPresent()){
+            errors.rejectValue("username", "customer.username.alreadyTaken");
         }
     }
 }

@@ -15,7 +15,7 @@ public class CustomerDto {
     private String firstName;
     private String city;
     private String street;
-    private int number;
+    private Integer number;
     private String postcode;
     private String password;
     private String email;

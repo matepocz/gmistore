@@ -5,6 +5,7 @@ import hu.progmasters.gmistore.model.Address;
 import hu.progmasters.gmistore.model.Customer;
 import hu.progmasters.gmistore.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,12 @@ import java.time.LocalDateTime;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Customer registerCustomer(CustomerDto customerDto) {
@@ -33,7 +36,7 @@ public class CustomerService {
         customer.setLastName(customerDto.getLastName());
         customer.setFirstName(customerDto.getFirstName());
         customer.setAddress(address);
-        customer.setPassword(customerDto.getPassword());
+        customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
         customer.setEmail(customerDto.getEmail());
         customer.setPhoneNumber(customerDto.getPhoneNumber());
         customer.setRegistered(LocalDateTime.now());

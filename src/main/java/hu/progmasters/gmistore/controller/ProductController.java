@@ -2,28 +2,39 @@ package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.service.ProductService;
+import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/api/products/")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductDtoValidator productDtoValidator;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductDtoValidator productDtoValidator) {
         this.productService = productService;
+        this.productDtoValidator = productDtoValidator;
+    }
+
+    @InitBinder("productDto")
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(productDtoValidator);
     }
 
     @PostMapping("/add")
-    public ResponseEntity addProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
@@ -47,10 +58,10 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        boolean isUpdated = productService.updateProduct(id, productDto);
-        return isUpdated ?
-                new ResponseEntity<>(HttpStatus.OK) :
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
+        return updatedProductDto != null ?
+                new ResponseEntity<>(updatedProductDto, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

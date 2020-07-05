@@ -3,9 +3,9 @@ package hu.progmasters.gmistore.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor
@@ -15,21 +15,21 @@ import javax.persistence.*;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne(mappedBy = "address")
     private Customer customer;
 
-    @NonNull
+    @NotNull
     private String city;
 
-    @NonNull
+    @NotNull
     private String street;
 
-    @NonNull
+    @NotNull
     private int number;
 
-    @NonNull
+    @NotNull
     private String postcode;
 }

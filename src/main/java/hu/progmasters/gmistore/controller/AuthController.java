@@ -1,9 +1,10 @@
 package hu.progmasters.gmistore.controller;
 
-import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.dto.LoginRequest;
+import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AuthService;
+import hu.progmasters.gmistore.service.AuthenticationResponse;
 import hu.progmasters.gmistore.validator.RegisterRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,11 @@ public class AuthController {
     }
 
     @PutMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
+        AuthenticationResponse response = new AuthenticationResponse(
+                authService.login(loginRequest),
+                loginRequest.getUsername()
+        );
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

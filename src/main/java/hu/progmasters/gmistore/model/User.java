@@ -14,8 +14,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "customer")
-public class Customer {
+@Table(name = "user")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,7 +56,7 @@ public class Customer {
     @Column(columnDefinition = "boolean default false")
     private boolean active;
 
-    public Customer() {
-        roles.add(Role.ROLE_CUSTOMER);
+    public User() {
+        roles.add(Role.ROLE_USER);
     }
 }

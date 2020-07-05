@@ -19,7 +19,7 @@ public class Address {
     private long id;
 
     @OneToOne(mappedBy = "address")
-    private Customer customer;
+    private User user;
 
     @NotNull
     private String city;

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CustomerDto {
+public class RegisterRequest {
 
     private long id;
     private String username;

@@ -1,11 +1,17 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -19,8 +25,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        userRepository.findUserByUsername(username)
+        User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user found (" + username + ")"));
-        return null;
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(), true, true, true, true,
+                getAuthorities("ROLE_USER")
+        );
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(String role_user) {
+        return Collections.singletonList(new SimpleGrantedAuthority(role_user));
     }
 }

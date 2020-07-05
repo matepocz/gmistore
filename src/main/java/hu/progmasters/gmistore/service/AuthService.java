@@ -5,7 +5,12 @@ import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.model.Address;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
+import hu.progmasters.gmistore.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +23,16 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Autowired
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
     }
 
     public User registerUser(RegisterRequest registerRequest) {
@@ -54,7 +64,11 @@ public class AuthService {
         return address;
     }
 
-    public void login(LoginRequest loginRequest) {
-
+    public String login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        return jwtProvider.generateToken(authenticate);
     }
 }

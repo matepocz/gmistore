@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PutMapping("/login")
-    public void login(@RequestBody LoginRequest loginRequest) {
-        authService.login(loginRequest);
+    public String login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 }

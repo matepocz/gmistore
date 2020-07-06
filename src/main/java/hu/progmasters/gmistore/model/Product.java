@@ -8,7 +8,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,6 +34,11 @@ public class Product {
     private Category category;
 
     private String pictureUrl;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "pictures")
+    @Column(name = "product_pictures")
+    private Set<String> pictures = new HashSet<>();
 
     @NotNull
     private double price;

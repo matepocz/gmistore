@@ -57,6 +57,7 @@ public class ProductService {
         productDto.setDescription(product.getDescription());
         productDto.setCategory(product.getCategory().getDisplayName());
         productDto.setPictureUrl(product.getPictureUrl());
+        productDto.setPictures(product.getPictures());
         productDto.setPrice(product.getPrice());
         productDto.setDiscount(product.getDiscount());
         productDto.setWarrantyMonths(product.getWarrantyMonths());
@@ -83,6 +84,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
+        product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
@@ -134,6 +136,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
+        product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());

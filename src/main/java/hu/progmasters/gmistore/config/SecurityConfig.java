@@ -47,7 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-                .anyRequest().permitAll();
+                .antMatchers("/api/products/add").hasAnyRole("SELLER", "ADMIN")
+                .antMatchers("/**").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated()
+                .and().logout().deleteCookies("JSESSIONID")
+                .and().httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -67,7 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-
     }
 
     @Bean

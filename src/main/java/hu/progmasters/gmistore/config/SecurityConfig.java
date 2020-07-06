@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers("/api/products/add").hasAnyRole("SELLER", "ADMIN")
+                .antMatchers("/api/products/update/**").hasAnyRole("SELLER", "ADMIN")
                 .antMatchers("/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().logout().deleteCookies("JSESSIONID")

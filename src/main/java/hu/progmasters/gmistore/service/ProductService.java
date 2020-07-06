@@ -57,6 +57,7 @@ public class ProductService {
         productDto.setDescription(product.getDescription());
         productDto.setCategory(product.getCategory().getDisplayName());
         productDto.setPictureUrl(product.getPictureUrl());
+        productDto.setPictures(product.getPictures());
         productDto.setPrice(product.getPrice());
         productDto.setDiscount(product.getDiscount());
         productDto.setWarrantyMonths(product.getWarrantyMonths());
@@ -75,6 +76,7 @@ public class ProductService {
     public void addProduct(ProductDto productDto) {
         Product product = mapProductDtoToProduct(productDto);
         productRepository.save(product);
+        LOGGER.debug("Product has been added! name: {}", product.getName());
     }
 
     private Product mapProductDtoToProduct(ProductDto productDto) {
@@ -83,6 +85,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
+        product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
@@ -105,6 +108,7 @@ public class ProductService {
         if (optionalProduct.isPresent()) {
             optionalProduct.get().setActive(false);
             isSetToInactive = true;
+            LOGGER.debug("Product has been set to inactive Id : {}", id);
         }
         return isSetToInactive;
     }
@@ -125,6 +129,7 @@ public class ProductService {
             updateProductValues(productDto, product);
             Product updatedProduct = productRepository.save(product);
             updatedProductDto = mapProductToProductDto(updatedProduct);
+            LOGGER.debug("Product updated! Id :{}" , id);
         }
         return updatedProductDto;
     }
@@ -134,6 +139,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
+        product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());

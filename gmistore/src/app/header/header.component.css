@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@800&display=swap');
 
-
 .header {
   padding: 50px 20px;
   background: cornflowerblue;
@@ -19,5 +18,5 @@
   float: right;
   text-decoration: none;
   color: #e27019;
-  padding: 40px 40px 0;
+  padding: 0 20px;
 }

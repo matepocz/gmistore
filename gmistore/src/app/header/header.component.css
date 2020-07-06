@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@800&display=swap');
+
+
+.header {
+  padding: 50px 20px;
+  background: cornflowerblue;
+  font-family: 'Vollkorn', serif;
+  font-weight: 400;
+}
+
+.title {
+  text-align: center;
+  color: #40220b;
+  text-decoration: none;
+}
+
+.login,.register {
+  font-size: 30px;
+  float: right;
+  text-decoration: none;
+  color: #e27019;
+  padding: 40px 40px 0;
+}

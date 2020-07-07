@@ -62,4 +62,8 @@ public class Product {
 
     @Column(columnDefinition = "boolean default true")
     private boolean active;
+
+    @ManyToOne
+    @JoinColumn(name = "product_order_id", referencedColumnName = "id")
+    private Order productOrder;
 }

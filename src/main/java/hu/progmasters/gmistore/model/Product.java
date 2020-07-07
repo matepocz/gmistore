@@ -21,18 +21,21 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @NotNull
     @Basic(optional = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(name = "picture_url")
     private String pictureUrl;
 
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
@@ -41,15 +44,16 @@ public class Product {
     private Set<String> pictures = new HashSet<>();
 
     @NotNull
+    @Column(name = "price")
     private double price;
 
-    @Column(columnDefinition = "int default 0")
+    @Column(name = "discount", columnDefinition = "int default 0")
     private int discount;
 
-    @Column(columnDefinition = "int default 0")
+    @Column(name = "warranty_months", columnDefinition = "int default 0")
     private int warrantyMonths;
 
-    @Column(columnDefinition = "int default 0")
+    @Column(name = "quantity_available", columnDefinition = "int default 0")
     private int quantityAvailable;
 
     @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
@@ -57,9 +61,9 @@ public class Product {
     @Column(name = "product_ratings")
     private List<Integer> ratings = new ArrayList<>();
 
-    @Column(columnDefinition = "double default 0.0")
+    @Column(name = "average_rating", columnDefinition = "double default 0.0")
     private double averageRating;
 
-    @Column(columnDefinition = "boolean default true")
+    @Column(name = "active", columnDefinition = "boolean default true")
     private boolean active;
 }

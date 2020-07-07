@@ -19,16 +19,17 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @NotNull
-    @Column(columnDefinition = "varchar(100)", unique = true)
+    @Column(name = "username", columnDefinition = "varchar(100)", unique = true)
     private String username;
 
-    @Column(columnDefinition = "varchar(100)")
+    @Column(name = "last_name", columnDefinition = "varchar(100)")
     private String lastName;
 
-    @Column(columnDefinition = "varchar(100)")
+    @Column(name = "first_name", columnDefinition = "varchar(100)")
     private String firstName;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -36,13 +37,15 @@ public class User {
     private Address address;
 
     @NotNull
+    @Column(name = "password")
     private String password;
 
     @NotNull
     @Email
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "phone_number", columnDefinition = "varchar(20)")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -51,9 +54,10 @@ public class User {
     @Column(name = "roles")
     private List<Role> roles = new ArrayList<>();
 
+    @Column(name = "registered")
     private LocalDateTime registered;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(name = "active", columnDefinition = "boolean default false")
     private boolean active;
 
     public User() {

@@ -60,6 +60,9 @@ public class User {
     @Column(name = "active", columnDefinition = "boolean default false")
     private boolean active;
 
+    @OneToOne(mappedBy = "user")
+    private Order order;
+
     public User() {
         roles.add(Role.ROLE_USER);
     }

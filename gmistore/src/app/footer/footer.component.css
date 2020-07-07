@@ -1,50 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
 
-.footer {
-  position: fixed;
+footer{
+  position: relative;
   bottom: 0px;
   width: 100%;
   background: #111;
+  margin-top: 500px;
+  color: #d9d9d9;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
-
-.main-content {
+.main-content{
   display: flex;
 }
-
-.main-content .box {
+.main-content .box{
   flex-basis: 50%;
   padding: 10px 20px;
 }
-
-.box h2 {
+.box h2{
   font-size: 1.125rem;
   font-weight: 600;
   text-transform: uppercase;
 }
-
-.box .content {
+.box .content{
   margin: 20px 0 0 0;
+  position: relative;
+}
+.box .content:before{
+  position: absolute;
+  content: '';
+  top: -10px;
+  height: 2px;
+  width: 100%;
+  background: #1a1a1a;
+}
+.box .content:after{
+  position: absolute;
+  content: '';
+  height: 2px;
+  width: 40%;
+  background: #f12020;
+  top: -10px;
 }
 .left .content p{
   text-align: justify;
 }
-
-.left .content .socal-media {
+.left .content .social{
   margin: 20px 0 0 0;
 }
-
-.left .content .socia-media a {
-  padding: 0 2px;
+.left .content .social a{
+  padding: 0 5px;
 }
-
-.left .content .socia-media a span {
+.left .content .social a span{
   height: 40px;
   width: 40px;
   background: #1a1a1a;
@@ -54,10 +62,77 @@
   border-radius: 5px;
   transition: 0.3s;
 }
-
-
-.left .content .socia-media a span:hover {
+.left .content .social a span:hover{
   background: #f12020;
 }
 
+.center .content .fa{
+  font-size: 1.4375rem;
+  background: #1a1a1a;
+  height: 45px;
+  width: 45px;
+  line-height: 45px;
+  text-align: center;
+  border-radius: 50%;
+  transition: 0.3s;
+  cursor: pointer;
+}
 
+.center .content .fa:hover{
+  background: #f12020;
+}
+
+.center .content .text{
+  font-size: 1.0625rem;
+  font-weight: 500;
+  padding-left: 10px;
+}
+.center .content .phone{
+  margin: 15px 0;
+}
+.right form .text{
+  font-size: 1.0625rem;
+  margin-bottom: 2px;
+  color: #656565;
+}
+.right form .msg{
+  margin-top: 20px;
+}
+
+.right form input{
+  height: 35px;
+}
+
+.right form .btn{
+  margin-top: 10px;
+}
+
+.right .btn button{
+  height: 30px;
+  width: 150%;
+  border: none;
+  outline: none;
+  background: #f12020;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.right .btn button:hover{
+  background: #656565;
+}
+
+@media screen and (max-width: 900px) {
+  footer{
+    position: relative;
+    bottom: 0px;
+  }
+  .main-content{
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+  .main-content .box{
+    margin: 5px 0;
+  }
+}

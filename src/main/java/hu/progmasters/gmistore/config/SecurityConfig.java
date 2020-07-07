@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.config;
 
+import com.cloudinary.Cloudinary;
 import hu.progmasters.gmistore.security.JwtAuthenticationFilter;
 import hu.progmasters.gmistore.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -30,8 +33,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${cors-policies}")
     private String[] corsPolicies;
 
+    @Value("${cloudinary.cloud_name}")
+    private String cloudName;
+
+    @Value("${cloudinary.api_key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api_secret}")
+    private String apiSecret;
+
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Bean
+    public Cloudinary cloudinaryConfig() {
+        Map<String, String> config = new HashMap();
+        config.put("cloud_name", cloudName);
+        config.put("api_key", apiKey);
+        config.put("api_secret", apiSecret);
+        return new Cloudinary(config);
+    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {

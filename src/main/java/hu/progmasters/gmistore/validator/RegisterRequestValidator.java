@@ -43,18 +43,6 @@ public class RegisterRequestValidator implements Validator {
         if (!registerRequest.getPassword().matches("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")) {
             errors.rejectValue("password", "user.password.invalid");
         }
-        if (registerRequest.getCity() == null || registerRequest.getCity().length() <= 1) {
-            errors.rejectValue("city", "user.city.empty");
-        }
-        if (registerRequest.getStreet() == null || registerRequest.getStreet().length() <= 1) {
-            errors.rejectValue("street", "user.street.empty");
-        }
-        if (registerRequest.getNumber() == null || registerRequest.getNumber() <= 0) {
-            errors.rejectValue("houseNumber", "user.houseNumber.empty");
-        }
-        if (registerRequest.getPostcode() == null) {
-            errors.rejectValue("postcode", "user.postcode.empty");
-        }
         Optional<User> userWithEmail = userRepository.findUserByEmail(registerRequest.getEmail());
         if (userWithEmail.isPresent()){
             errors.rejectValue("email", "user.email.alreadyRegistered");

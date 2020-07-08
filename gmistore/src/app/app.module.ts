@@ -17,6 +17,9 @@ import { OrdersComponent } from './page/orders/orders.component';
 import { ProductsComponent } from './page/products/products.component';
 import { ProductEditComponent } from './page/product-edit/product-edit.component';
 import { OrderEditComponent } from './page/order-edit/order-edit.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -38,7 +41,13 @@ import { OrderEditComponent } from './page/order-edit/order-edit.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      {path: 'register', component: RegisterComponent}
+    ]),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

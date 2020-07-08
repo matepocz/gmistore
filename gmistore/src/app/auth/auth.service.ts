@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   login(loginPayload: LoginPayload): Observable<boolean> {
-    return this.httpClient.post<JwtAuthResponse>(this.url + 'login', loginPayload).pipe(map(data => {
+    return this.httpClient.put<JwtAuthResponse>(this.url + 'login', loginPayload).pipe(map(data => {
       this.localStorageService.store('authenticationToken', data.authenticationToken);
       this.localStorageService.store('username', data.username);
       return true;

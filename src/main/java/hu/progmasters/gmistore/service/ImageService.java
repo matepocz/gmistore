@@ -21,6 +21,14 @@ public class ImageService {
         this.cloudinaryConfig = cloudinaryConfig;
     }
 
+    /**
+     * Uploads an image to the cloud
+     *
+     * @param imageToUpload The actual image file.
+     * @return A String array, containing a public id and
+     * the actual url for the image uploaded to the cloud
+     * @throws IOException
+     */
     public String[] uploadImage(MultipartFile imageToUpload) throws IOException {
         Map uploadResult = cloudinaryConfig.uploader().upload(imageToUpload.getBytes(), ObjectUtils.emptyMap());
 

@@ -6,7 +6,12 @@
   box-sizing: border-box;
 }
 
+body {
+  padding-top: 5rem;
+}
+
 html {
+  height: 100%;
   background-color: #fff;
   color: #555;
   font-family: 'Times New Roman', sans-serif;

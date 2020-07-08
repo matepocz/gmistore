@@ -1,0 +1,9 @@
+.navbar{
+  background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+}
+.right-buttons {
+  list-style-type: none;
+}
+.right-buttons li {
+  display: inline;
+}

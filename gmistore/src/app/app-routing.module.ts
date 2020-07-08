@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {HomeComponent} from "./page/home/home.component";
-import {LoginComponent} from "./page/login/login.component";
+import {LoginComponent} from "./auth/login/login.component";
 import {UsersComponent} from "./page/users/users.component";
 import {UserEditComponent} from "./page/user-edit/user-edit.component";
 import {OrderEditComponent} from "./page/order-edit/order-edit.component";
 import {ProductsComponent} from "./page/products/products.component";
 import {ProductEditComponent} from "./page/product-edit/product-edit.component";
-import {RegisterComponent} from "./page/register/register.component";
+import {RegisterComponent} from "./auth/register/register.component";
 import {OrdersComponent} from "./page/orders/orders.component";
 import {ForbiddenComponent} from "./page/forbidden/forbidden.component";
 

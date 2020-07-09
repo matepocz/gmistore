@@ -1,22 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
-import { NavComponent } from './page/nav/nav.component';
-import { HomeComponent } from './page/home/home.component';
-import { LoginComponent } from './auth/login/login.component';
-import { RegisterComponent } from './auth/register/register.component';
-import { UserComponent } from './page/user/user.component';
-import { UserEditComponent } from './page/user-edit/user-edit.component';
-import { ForbiddenComponent } from './page/forbidden/forbidden.component';
-import { UsersComponent } from './page/users/users.component';
-import { OrdersComponent } from './page/orders/orders.component';
-import { ProductsComponent } from './page/products/products.component';
-import { ProductEditComponent } from './page/product-edit/product-edit.component';
-import { OrderEditComponent } from './page/order-edit/order-edit.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {HeaderComponent} from './header/header.component';
+import {FooterComponent} from './footer/footer.component';
+import {NavComponent} from './page/nav/nav.component';
+import {HomeComponent} from './page/home/home.component';
+import {LoginComponent} from './auth/login/login.component';
+import {RegisterComponent} from './auth/register/register.component';
+import {UserComponent} from './page/user/user.component';
+import {UserEditComponent} from './page/user-edit/user-edit.component';
+import {ForbiddenComponent} from './page/forbidden/forbidden.component';
+import {UsersComponent} from './page/users/users.component';
+import {OrdersComponent} from './page/orders/orders.component';
+import {ProductsComponent} from './page/products/products.component';
+import {ProductEditComponent} from './page/product-edit/product-edit.component';
+import {OrderEditComponent} from './page/order-edit/order-edit.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
@@ -47,11 +47,22 @@ import {Ng2Webstorage} from 'ngx-webstorage';
     ReactiveFormsModule,
     Ng2Webstorage.forRoot(),
     RouterModule.forRoot([
-      {path: 'register', component: RegisterComponent}
+      {path: '', component: HomeComponent},
+      {path: 'login',component: LoginComponent},
+      {path: 'register',component: RegisterComponent},
+      {path: 'users',component: UsersComponent},
+      {path: 'user/edit/:id',component: UserEditComponent},
+      {path: 'products',component: ProductsComponent},
+      {path: 'products/edit/:id',component: ProductEditComponent},
+      {path: 'orders',component: OrdersComponent},
+      {path: 'order/edit/:id',component: OrderEditComponent},
+      {path: 'forbidden',component: ForbiddenComponent},
+      {path: '**',redirectTo: '',}
     ]),
     HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

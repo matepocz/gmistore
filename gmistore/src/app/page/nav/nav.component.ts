@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ConfigService} from "../../service/config.service";
+import {AuthService} from "../../auth/auth.service";
 
 @Component({
   selector: 'app-nav',
@@ -9,9 +10,8 @@ import {ConfigService} from "../../service/config.service";
 export class NavComponent implements OnInit {
   navigation = this.config.navigation;
 
-  constructor(
-    private config: ConfigService,
-  ) {  }
+  constructor(private config: ConfigService) {
+  }
 
   ngOnInit(): void {
   }

@@ -17,7 +17,7 @@ public class OrderDto {
 
     private Long id;
     private String generatedUniqueId;
-    private OrderStatus status;
+    private String status;
     private Integer quantity;
     private LocalDateTime date;
     private LocalDateTime deliveryDate;

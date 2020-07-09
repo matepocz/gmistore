@@ -40,7 +40,7 @@ public class Order {
     @OneToMany(mappedBy = "productOrder")
     private List<Product> productList = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

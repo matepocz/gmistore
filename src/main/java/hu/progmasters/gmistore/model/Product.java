@@ -22,9 +22,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @NotNull
+    @NotNull(message = "Product must have a name.")
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
@@ -32,6 +32,7 @@ public class Product {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @NotNull(message = "Product must have a category.")
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -43,9 +44,9 @@ public class Product {
     @Column(name = "product_pictures")
     private Set<String> pictures = new HashSet<>();
 
-    @NotNull
+    @NotNull(message = "Product must have a price.")
     @Column(name = "price")
-    private double price;
+    private Double price;
 
     @Column(name = "discount", columnDefinition = "int default 0")
     private int discount;

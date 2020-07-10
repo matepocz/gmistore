@@ -28,11 +28,11 @@ public class ProductService {
     }
 
     /**
-     * Get all products with active state from the database
+     * Get all active products from the database
      *
      * @return A ProductDto List
      */
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDto> getAllActiveProducts() {
         List<Product> allProduct = productRepository.findAll();
         return allProduct.stream().map(this::mapProductToProductDto)
                 .filter(ProductDto::isActive).collect(Collectors.toList());

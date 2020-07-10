@@ -49,6 +49,12 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
+    @GetMapping("/get/all-added-by-user/{username}")
+    public ResponseEntity<List<ProductDto>> getProductsAddedByUser(@PathVariable String username) {
+        List<ProductDto> products = productService.getAllProductsAddedByUser(username);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @PutMapping("/delete/{id}")
     public ResponseEntity deleteProduct(@PathVariable Long id) {
         boolean isSetToInactive = productService.deleteProduct(id);

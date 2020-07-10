@@ -28,47 +28,6 @@ public class ProductService {
     }
 
     /**
-     * Get all active products from the database
-     *
-     * @return A ProductDto List
-     */
-    public List<ProductDto> getAllActiveProducts() {
-        List<Product> allProduct = productRepository.findAll();
-        return allProduct.stream().map(this::mapProductToProductDto)
-                .filter(ProductDto::isActive).collect(Collectors.toList());
-    }
-
-    /**
-     * Get a product with the specified id from the database
-     *
-     * @param id Product's unique id
-     * @return A ProductDto, if not found throws ProductNotFoundException
-     */
-    public ProductDto getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return mapProductToProductDto(product);
-    }
-
-    private ProductDto mapProductToProductDto(Product product) {
-        ProductDto productDto = new ProductDto();
-        productDto.setId(product.getId());
-        productDto.setName(product.getName());
-        productDto.setDescription(product.getDescription());
-        productDto.setCategory(product.getCategory().getDisplayName());
-        productDto.setPictureUrl(product.getPictureUrl());
-        productDto.setPictures(product.getPictures());
-        productDto.setPrice(product.getPrice());
-        productDto.setDiscount(product.getDiscount());
-        productDto.setWarrantyMonths(product.getWarrantyMonths());
-        productDto.setQuantityAvailable(product.getQuantityAvailable());
-        productDto.setRatings(product.getRatings());
-        productDto.setAverageRating(product.getAverageRating());
-        productDto.setActive(product.isActive());
-        return productDto;
-    }
-
-    /**
      * Saves a product to the database
      *
      * @param productDto A ProductDto
@@ -93,24 +52,56 @@ public class ProductService {
         product.setQuantityAvailable(productDto.getQuantityAvailable());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
+        product.setAddedBy(productDto.getAddedBy());
         return product;
     }
 
     /**
-     * If the product presents in the database sets it's state to inactive
+     * Get a product with the specified id from the database
      *
-     * @param id The product's unique id
-     * @return A boolean, true if product set to inactive false otherwise.
+     * @param id Product's unique id
+     * @return A ProductDto, if not found throws ProductNotFoundException
      */
-    public boolean deleteProduct(Long id) {
-        boolean isSetToInactive = false;
-        Optional<Product> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
-            optionalProduct.get().setActive(false);
-            isSetToInactive = true;
-            LOGGER.debug("Product has been set to inactive Id : {}", id);
-        }
-        return isSetToInactive;
+    public ProductDto getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return mapProductToProductDto(product);
+    }
+
+    /**
+     * Get all active products from the database
+     *
+     * @return A ProductDto List
+     */
+    public List<ProductDto> getAllActiveProducts() {
+        List<Product> allProduct = productRepository.findAll();
+        return allProduct.stream().map(this::mapProductToProductDto)
+                .filter(ProductDto::isActive).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getAllProductsAddedByUser(String username) {
+        List<Product> productsAddedByUser = productRepository.findProductsByAddedBy(username);
+        return productsAddedByUser.stream().map(this::mapProductToProductDto)
+                .collect(Collectors.toList());
+    }
+
+    private ProductDto mapProductToProductDto(Product product) {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setName(product.getName());
+        productDto.setDescription(product.getDescription());
+        productDto.setCategory(product.getCategory().getDisplayName());
+        productDto.setPictureUrl(product.getPictureUrl());
+        productDto.setPictures(product.getPictures());
+        productDto.setPrice(product.getPrice());
+        productDto.setDiscount(product.getDiscount());
+        productDto.setWarrantyMonths(product.getWarrantyMonths());
+        productDto.setQuantityAvailable(product.getQuantityAvailable());
+        productDto.setRatings(product.getRatings());
+        productDto.setAverageRating(product.getAverageRating());
+        productDto.setActive(product.isActive());
+        productDto.setAddedBy(product.getAddedBy());
+        return productDto;
     }
 
     /**
@@ -147,5 +138,22 @@ public class ProductService {
         product.setQuantityAvailable(productDto.getQuantityAvailable());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
+    }
+
+    /**
+     * If the product presents in the database sets it's state to inactive
+     *
+     * @param id The product's unique id
+     * @return A boolean, true if product set to inactive false otherwise.
+     */
+    public boolean deleteProduct(Long id) {
+        boolean isSetToInactive = false;
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            optionalProduct.get().setActive(false);
+            isSetToInactive = true;
+            LOGGER.debug("Product has been set to inactive Id : {}", id);
+        }
+        return isSetToInactive;
     }
 }

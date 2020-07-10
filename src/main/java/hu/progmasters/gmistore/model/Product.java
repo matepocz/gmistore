@@ -71,4 +71,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "product_order_id", referencedColumnName = "id")
     private Order productOrder;
+
+    @NotNull(message = "Username must not be empty.")
+    @Column(name = "added_by", columnDefinition = "varchar(50)")
+    private String addedBy;
 }

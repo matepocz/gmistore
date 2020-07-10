@@ -25,4 +25,5 @@ public class ProductDto {
     private List<Integer> ratings;
     private double averageRating;
     private boolean active;
+    private String addedBy;
 }

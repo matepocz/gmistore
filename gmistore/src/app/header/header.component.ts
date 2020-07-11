@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    // @ts-ignore
     this.authService.logout();
   }
 }

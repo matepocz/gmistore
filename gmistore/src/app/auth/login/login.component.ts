@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginPayload).subscribe(data=>{
       if(data){
         console.log('sikeres bejelentkezés')
-        this.router.navigateByUrl('/products')
+        this.router.navigateByUrl('/product-list')
       }else{
         console.log('gond a bejelentkezésnél')
       }

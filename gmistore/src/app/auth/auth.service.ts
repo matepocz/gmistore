@@ -6,6 +6,7 @@ import {LoginPayload} from "./login-payload";
 import {JwtAuthResponse} from "./jwt-auth-response";
 import {map} from "rxjs/operators";
 import {LocalStorageService} from "ngx-webstorage";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
 
   private url = 'http://localhost:8080/api/auth/'
 
-  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService) {
+  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router) {
   }
 
   register(registerPayload: RegisterPayload): Observable<any> {
@@ -30,12 +31,13 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.localStorageService.retrieve('username') !=null;
+    return this.localStorageService.retrieve('username') != null;
   }
 
 
-  logout() {
+  logout(loginPayload: LoginPayload) {
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
+    this._router.navigate(['/home'])
   }
 }

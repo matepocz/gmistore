@@ -71,7 +71,7 @@ public class ProductService {
     /**
      * Get all active products from the database
      *
-     * @return A ProductDto List
+     * @return A List of ProductDto
      */
     public List<ProductDto> getAllActiveProducts() {
         List<Product> allProduct = productRepository.findAll();
@@ -79,6 +79,23 @@ public class ProductService {
                 .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
+    /**
+     * Get all inactive products from the database
+     *
+     * @return A List of ProductDto
+     */
+    public List<ProductDto> getAllInActiveProducts() {
+        List<Product> allProduct = productRepository.findAll();
+        return allProduct.stream().map(this::mapProductToProductDto)
+                .filter(productDto -> !productDto.isActive()).collect(Collectors.toList());
+    }
+
+    /**
+     * Get all products added by the user
+     *
+     * @param username The user's username
+     * @return A List of ProductDto
+     */
     public List<ProductDto> getAllProductsAddedByUser(String username) {
         List<Product> productsAddedByUser = productRepository.findProductsByAddedBy(username);
         return productsAddedByUser.stream().map(this::mapProductToProductDto)

@@ -44,6 +44,12 @@ public class AuthService {
         this.emailSenderService = emailSenderService;
     }
 
+    /**
+     * Registers a user to the database, send a confirmation email to the user
+     *
+     * @param registerRequest A DTO containing the details
+     * @return A registered User
+     */
     public User registerUser(RegisterRequest registerRequest) {
         User user = new User();
         mapUserDetailsToUser(registerRequest, user);
@@ -80,6 +86,11 @@ public class AuthService {
         emailSenderService.sendEmail(mailMessage);
     }
 
+    /**
+     * Set the user's account to active
+     * @param confirmationToken The token that has been sent out in the confirmation email
+     * @return A ConfirmAccountResponse containing the results
+     */
     public ConfirmAccountResponse confirmAccount(String confirmationToken) {
         ConfirmationToken token = confirmationTokenRepository.findByToken(confirmationToken);
         ConfirmAccountResponse response = new ConfirmAccountResponse();
@@ -98,6 +109,12 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * Attempts to log in the user
+     *
+     * @param loginRequest A DTO containing username and password
+     * @return A JWT token
+     */
     public String login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(),

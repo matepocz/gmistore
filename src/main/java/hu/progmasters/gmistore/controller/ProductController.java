@@ -6,6 +6,7 @@ import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,28 +44,36 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    @GetMapping("/all-inactive")
+    public ResponseEntity<List<ProductDto>> getAllInactiveProducts() {
+        List<ProductDto> products = productService.getAllInActiveProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         ProductDto product = productService.getProductById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @GetMapping("/get/all-added-by-user/{username}")
+    @GetMapping("/added-by-user/{username}")
     public ResponseEntity<List<ProductDto>> getProductsAddedByUser(@PathVariable String username) {
-        List<ProductDto> products = productService.getAllProductsAddedByUser(username);
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (authenticatedUsername.equalsIgnoreCase(username)) {
+            List<ProductDto> products = productService.getAllProductsAddedByUser(username);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity deleteProduct(@PathVariable Long id) {
-        boolean isSetToInactive = productService.deleteProduct(id);
-        return isSetToInactive ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) {
+        HttpStatus result = productService.deleteProduct(id);
+        return new ResponseEntity<>(result);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
         ProductDto updatedProductDto = productService.updateProduct(id, productDto);
         return updatedProductDto != null ?
                 new ResponseEntity<>(updatedProductDto, HttpStatus.OK) :

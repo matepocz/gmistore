@@ -43,6 +43,12 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    @GetMapping("/all-inactive")
+    public ResponseEntity<List<ProductDto>> getAllInactiveProducts() {
+        List<ProductDto> products = productService.getAllInActiveProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         ProductDto product = productService.getProductById(id);

@@ -4,14 +4,14 @@ import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HeaderComponent} from './header/header.component';
-import {FooterComponent} from './footer/footer.component';
-import {NavComponent} from './page/nav/nav.component';
+import {FooterComponent} from './core/footer/footer.component';
+import {NavComponent} from './core/nav/nav.component';
 import {HomeComponent} from './page/home/home.component';
 import {LoginComponent} from './auth/login/login.component';
 import {RegisterComponent} from './auth/register/register.component';
-import {UserComponent} from './page/user/user.component';
-import {UserEditComponent} from './page/user-edit/user-edit.component';
-import {ForbiddenComponent} from './page/forbidden/forbidden.component';
+import {UserComponent} from './user/user/user.component';
+import {UserEditComponent} from './user/user-edit/user-edit.component';
+import {ForbiddenComponent} from './core/forbidden/forbidden.component';
 import {UsersComponent} from './page/users/users.component';
 import {OrdersComponent} from './page/orders/orders.component';
 import {OrderEditComponent} from './page/order-edit/order-edit.component';
@@ -23,6 +23,7 @@ import {ProductEditComponent} from './product/product-edit/product-edit.componen
 import {ProductCardComponent} from './product/product-card/product-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {CollapseModule} from "ngx-bootstrap/collapse";
+import { JumbotronComponent } from './core/jumbotron/jumbotron.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {CollapseModule} from "ngx-bootstrap/collapse";
     OrderEditComponent,
     ProductListComponent,
     ProductEditComponent,
-    ProductCardComponent
+    ProductCardComponent,
+    JumbotronComponent
   ],
   imports: [
     BrowserModule,

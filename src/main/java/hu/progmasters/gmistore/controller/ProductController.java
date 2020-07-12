@@ -63,15 +63,13 @@ public class ProductController {
             List<ProductDto> products = productService.getAllProductsAddedByUser(username);
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity deleteProduct(@PathVariable Long id) {
-        boolean isSetToInactive = productService.deleteProduct(id);
-        return isSetToInactive ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) {
+        HttpStatus result = productService.deleteProduct(id);
+        return new ResponseEntity<>(result);
     }
 
     @PutMapping("/update/{id}")

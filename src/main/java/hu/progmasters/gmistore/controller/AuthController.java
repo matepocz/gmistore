@@ -2,13 +2,11 @@ package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.dto.RegisterRequest;
-import hu.progmasters.gmistore.model.ConfirmationToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AuthService;
-import hu.progmasters.gmistore.service.AuthenticationResponse;
-import hu.progmasters.gmistore.service.ConfirmAccountResponse;
+import hu.progmasters.gmistore.response.AuthenticationResponse;
+import hu.progmasters.gmistore.response.ConfirmAccountResponse;
 import hu.progmasters.gmistore.validator.RegisterRequestValidator;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

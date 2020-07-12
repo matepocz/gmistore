@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.service;
+package hu.progmasters.gmistore.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

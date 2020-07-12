@@ -2,11 +2,11 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.dto.LoginRequest;
-import hu.progmasters.gmistore.model.Address;
 import hu.progmasters.gmistore.model.ConfirmationToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ConfirmationTokenRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
+import hu.progmasters.gmistore.response.ConfirmAccountResponse;
 import hu.progmasters.gmistore.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

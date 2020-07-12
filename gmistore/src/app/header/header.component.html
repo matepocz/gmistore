@@ -1,4 +1,3 @@
-
 <div class="header">
   <div class="container">
     <div class="row">
@@ -6,7 +5,8 @@
         <h1><a href="" class="title">GMI STORE</a></h1>
       </div> <!-- Title -->
       <div class="col-md-3" *ngIf="authService.isAuthenticated()">
-        <button class="logout btn btn-default" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</button>
+        <button class="logout btn btn-default" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout
+        </button>
       </div>
       <div class="links col-md-3" *ngIf="!authService.isAuthenticated()">
         <a href="/login" class="login btn btn-default">Login</a>

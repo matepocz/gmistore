@@ -16,12 +16,12 @@ import {UsersComponent} from './page/users/users.component';
 import {OrdersComponent} from './page/orders/orders.component';
 import {OrderEditComponent} from './page/order-edit/order-edit.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {Ng2Webstorage} from 'ngx-webstorage';
-import { ProductListComponent } from './product/product-list/product-list.component';
-import { ProductEditComponent } from './product/product-edit/product-edit.component';
-import { ProductCardComponent } from './product/product-card/product-card.component';
+import {ProductListComponent} from './product/product-list/product-list.component';
+import {ProductEditComponent} from './product/product-edit/product-edit.component';
+import {ProductCardComponent} from './product/product-card/product-card.component';
+import {CollapseModule} from "ngx-bootstrap/collapse";
 
 @NgModule({
   declarations: [
@@ -47,21 +47,11 @@ import { ProductCardComponent } from './product/product-card/product-card.compon
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    CollapseModule.forRoot(),
     Ng2Webstorage.forRoot(),
-    RouterModule.forRoot([
-      {path: '', component: HomeComponent},
-      {path: 'login',component: LoginComponent},
-      {path: 'register',component: RegisterComponent},
-      {path: 'users',component: UsersComponent},
-      {path: 'user/edit/:id',component: UserEditComponent},
-      {path: 'orders',component: OrdersComponent},
-      {path: 'product-list',component: ProductListComponent},
-      {path: 'product/edit/:id',component: ProductEditComponent},
-      {path: 'order/edit/:id',component: OrderEditComponent},
-      {path: 'forbidden',component: ForbiddenComponent},
-      {path: '**',redirectTo: '',}
-    ]),
-    HttpClientModule
+
+    HttpClientModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

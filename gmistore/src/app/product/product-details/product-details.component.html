@@ -1,1 +1,56 @@
-<p>product-details works!</p>
+<div class="container">
+
+  <!--Form with header-->
+  <div class="card mb-4 col-11 col-sm-8 mx-auto p-0">
+
+    <div class="card-header">
+      <div class="bg-light text-center">
+        <h3>Új termék létrehozása</h3>
+      </div>
+    </div>
+    <!--card-body-->
+    <div class="card-body">
+
+      <div class="form-group">
+        <label for="termek-nev">Termék neve:</label>
+        <input type="text" class="form-control mb-3" id="termek-nev" placeholder="Termék neve">
+      </div>
+
+      <div class="form-group">
+        <label for="termek-leiras">A termék leírása</label>
+        <textarea class="form-control" placeholder="Termék leírása" id="termek-leiras"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="termek-ar">Termék ára:</label>
+        <input type="number" class="form-control mb-3" id="termek-ar" placeholder="Termék ára">
+      </div>
+
+      <div class="form-group">
+        <label for="termek-jotallas">Jótállási idő:</label>
+        <input type="text" class="form-control mb-3" id="termek-jotallas" placeholder="Jótállási idő">
+      </div>
+
+      <div class="form-group">
+        <label for="termek-nev">Termék neve:</label>
+        <input type="text" class="form-control mb-3" id="termek-nev" placeholder="Termék neve">
+      </div>
+
+      <div class="form-group row">
+        <img class="img-fluid mx-auto" src="assets/newevent.png" alt="">
+        <div class="form-group mx-auto mt-3">
+          <label for="kep">Válassz képet az termékhez</label>
+          <input type="file" class="form-control-file" id="kep" accept="image/*">
+        </div>
+      </div>
+
+
+      <div class="text-center mb-3">
+        <input class="btn btn-primary btn-lg" type="submit"
+               routerLink="../list"
+               value="létrehozás">
+      </div>
+    </div>
+  </div>
+
+</div>

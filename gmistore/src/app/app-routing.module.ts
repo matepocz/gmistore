@@ -23,6 +23,7 @@ const routes: Routes = [
   {path: 'create-product', component: ProductDetailsComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/edit/:id', component: ProductEditComponent},
+  {path: 'product-details', component: ProductDetailsComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', redirectTo: 'home',}
 ];

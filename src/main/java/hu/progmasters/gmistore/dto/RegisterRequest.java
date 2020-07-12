@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 public class RegisterRequest {
 
-    private long id;
     private String username;
     private String lastName;
     private String firstName;

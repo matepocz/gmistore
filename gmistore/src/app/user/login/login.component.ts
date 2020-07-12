@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {LoginPayload} from "../login-payload";
-import {AuthService} from "../auth.service";
+import {LoginPayload} from "../auth/login-payload";
+import {AuthService} from "../auth/auth.service";
 import {Router} from "@angular/router";
 
 @Component({

@@ -7,9 +7,8 @@ import {HeaderComponent} from './header/header.component';
 import {FooterComponent} from './core/footer/footer.component';
 import {NavComponent} from './core/nav/nav.component';
 import {HomeComponent} from './page/home/home.component';
-import {LoginComponent} from './auth/login/login.component';
-import {RegisterComponent} from './auth/register/register.component';
-import {UserComponent} from './user/user/user.component';
+import {LoginComponent} from './user/login/login.component';
+import {RegisterComponent} from './user/register/register.component';
 import {UserEditComponent} from './user/user-edit/user-edit.component';
 import {ForbiddenComponent} from './core/forbidden/forbidden.component';
 import {UsersComponent} from './page/users/users.component';
@@ -21,9 +20,11 @@ import {Ng2Webstorage} from 'ngx-webstorage';
 import {ProductListComponent} from './product/product-list/product-list.component';
 import {ProductEditComponent} from './product/product-edit/product-edit.component';
 import {ProductCardComponent} from './product/product-card/product-card.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CollapseModule} from "ngx-bootstrap/collapse";
-import { JumbotronComponent } from './core/jumbotron/jumbotron.component';
+import {JumbotronComponent} from './core/jumbotron/jumbotron.component';
+import {ProductDetailsComponent} from './product/product-details/product-details.component';
+import {UserProfileComponent} from './user/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,6 @@ import { JumbotronComponent } from './core/jumbotron/jumbotron.component';
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    UserComponent,
     UserEditComponent,
     ForbiddenComponent,
     UsersComponent,
@@ -43,7 +43,9 @@ import { JumbotronComponent } from './core/jumbotron/jumbotron.component';
     ProductListComponent,
     ProductEditComponent,
     ProductCardComponent,
-    JumbotronComponent
+    JumbotronComponent,
+    ProductDetailsComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

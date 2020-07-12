@@ -70,6 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers("/api/products/add").hasAnyRole("SELLER", "ADMIN")
                 .antMatchers("/api/products/update/**").hasAnyRole("SELLER", "ADMIN")
+                .antMatchers("/api/products/delete/**").authenticated()
+                .antMatchers("/api/products/added-by-user/**").authenticated()
                 .antMatchers("/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().logout().deleteCookies("JSESSIONID")

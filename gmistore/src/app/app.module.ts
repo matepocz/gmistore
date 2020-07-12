@@ -21,6 +21,7 @@ import {Ng2Webstorage} from 'ngx-webstorage';
 import {ProductListComponent} from './product/product-list/product-list.component';
 import {ProductEditComponent} from './product/product-edit/product-edit.component';
 import {ProductCardComponent} from './product/product-card/product-card.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {CollapseModule} from "ngx-bootstrap/collapse";
 
 @NgModule({
@@ -47,6 +48,7 @@ import {CollapseModule} from "ngx-bootstrap/collapse";
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     CollapseModule.forRoot(),
     Ng2Webstorage.forRoot(),
 

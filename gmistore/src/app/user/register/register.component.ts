@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {RegisterPayload} from "../register-payload";
-import {AuthService} from "../auth.service";
+import {RegisterPayload} from "../auth/register-payload";
+import {AuthService} from "../auth/auth.service";
 
 @Component({
   selector: 'app-register',

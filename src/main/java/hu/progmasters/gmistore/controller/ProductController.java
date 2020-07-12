@@ -6,6 +6,7 @@ import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,8 +58,12 @@ public class ProductController {
 
     @GetMapping("/added-by-user/{username}")
     public ResponseEntity<List<ProductDto>> getProductsAddedByUser(@PathVariable String username) {
-        List<ProductDto> products = productService.getAllProductsAddedByUser(username);
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (authenticatedUsername.equalsIgnoreCase(username)) {
+            List<ProductDto> products = productService.getAllProductsAddedByUser(username);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PutMapping("/delete/{id}")

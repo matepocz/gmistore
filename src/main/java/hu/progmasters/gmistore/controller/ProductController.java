@@ -6,6 +6,7 @@ import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +40,13 @@ public class ProductController {
 
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = productService.getAllProducts();
+        List<ProductDto> products = productService.getAllActiveProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-inactive")
+    public ResponseEntity<List<ProductDto>> getAllInactiveProducts() {
+        List<ProductDto> products = productService.getAllInActiveProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -49,19 +56,29 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
+    @GetMapping("/added-by-user/{username}")
+    public ResponseEntity<List<ProductDto>> getProductsAddedByUser(@PathVariable String username) {
+        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (authenticatedUsername.equalsIgnoreCase(username)) {
+            List<ProductDto> products = productService.getAllProductsAddedByUser(username);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
     @PutMapping("/delete/{id}")
     public ResponseEntity deleteProduct(@PathVariable Long id) {
-        boolean isSetToInactive = productService.deleteProduct(id);
-        return isSetToInactive ?
+        boolean result = productService.deleteProduct(id);
+        return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
-        return updatedProductDto != null ?
-                new ResponseEntity<>(updatedProductDto, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+        boolean result = productService.updateProduct(id, productDto);
+        return result ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

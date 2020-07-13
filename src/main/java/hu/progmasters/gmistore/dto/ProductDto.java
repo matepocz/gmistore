@@ -22,7 +22,9 @@ public class ProductDto {
     private int discount;
     private int warrantyMonths;
     private int quantityAvailable;
+    private int quantitySold;
     private List<Integer> ratings;
     private double averageRating;
     private boolean active;
+    private String addedBy;
 }

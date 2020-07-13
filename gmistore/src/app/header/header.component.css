@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@800&display=swap');
 
 .header {
-  padding: 50px 20px;
-  background: cornflowerblue;
+  margin-bottom: 20px;
+  background: -webkit-linear-gradient(left, #0072ff, #8811c5);
   font-family: 'Vollkorn', serif;
   font-weight: 400;
 }
@@ -13,10 +13,16 @@
   text-decoration: none;
 }
 
-.login,.register {
+.login,.register{
   font-size: 30px;
   float: right;
   text-decoration: none;
   color: #e27019;
   padding: 0 20px;
+}
+
+.logout{
+  float: right;
+  color: aliceblue;
+  padding-top: 10px;
 }

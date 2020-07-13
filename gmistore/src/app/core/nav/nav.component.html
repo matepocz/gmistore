@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">GMI STORE</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li class="col-md-3" *ngIf="authService.isAuthenticated()">
+        <a class="logout btn btn-default" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout
+        </a>
+      </li>
+
+      <li *ngIf="!authService.isAuthenticated()">
+        <span><a href="/login" class="login btn btn-default">Login</a></span>
+      </li>
+      <li *ngIf="!authService.isAuthenticated()">
+        <a href="/register" class="register btn btn-default">Register</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--  <a class="navbar-brand" href="#">GMI STORE</a>-->
+<!--  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--    <span class="navbar-toggler-icon"></span>-->
+<!--  </button>-->
+
+<!--  <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
+<!--    <ul class="navbar-nav ml-auto">-->
+
+<!--        <li class="col-md-3" *ngIf="authService.isAuthenticated()">-->
+<!--          <a class="logout btn btn-default" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout-->
+<!--          </a>-->
+<!--        </li>-->
+
+<!--      <div class="links col-md-3" *ngIf="!authService.isAuthenticated()">-->
+<!--        <li>-->
+<!--          <span><a href="/login" class="login btn btn-default">Login</a></span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <a href="/register" class="register btn btn-default">Register</a>-->
+<!--        </li>-->
+<!--      </div>-->
+
+<!--    </ul>-->
+
+<!--  </div>-->
+<!--</nav>-->
+
+
+
+

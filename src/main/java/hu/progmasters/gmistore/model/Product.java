@@ -22,9 +22,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @NotNull
+    @NotNull(message = "Product must have a name.")
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
@@ -32,6 +32,7 @@ public class Product {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @NotNull(message = "Product must have a category.")
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -43,9 +44,9 @@ public class Product {
     @Column(name = "product_pictures")
     private Set<String> pictures = new HashSet<>();
 
-    @NotNull
+    @NotNull(message = "Product must have a price.")
     @Column(name = "price")
-    private double price;
+    private Double price;
 
     @Column(name = "discount", columnDefinition = "int default 0")
     private int discount;
@@ -53,8 +54,8 @@ public class Product {
     @Column(name = "warranty_months", columnDefinition = "int default 0")
     private int warrantyMonths;
 
-    @Column(name = "quantity_available", columnDefinition = "int default 0")
-    private int quantityAvailable;
+    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)
+    private Inventory inventory;
 
     @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "ratings")
@@ -70,4 +71,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "product_order_id", referencedColumnName = "id")
     private Order productOrder;
+
+    @NotNull(message = "Username must not be empty.")
+    @Column(name = "added_by", columnDefinition = "varchar(50)")
+    private String addedBy;
 }

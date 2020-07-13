@@ -1,0 +1,34 @@
+
+<!--<app-jumbotron>-->
+<!--  <h1 class="display-4">Bejelentkezés</h1>-->
+<!--  <p class="lead">-->
+<!--    Abraka dabra bejelentkezés-->
+<!--  </p>-->
+<!--</app-jumbotron>-->
+
+
+<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div class="note">
+    <p>Login to GMI</p>
+  </div>
+
+  <div class="form-content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control"
+                 placeholder="Username *" value="" required=""/>
+        </div>
+        <div class="form-group">
+          <input type="password" id="inputPassword" [formControlName]="'password'" class="form-control"
+                 placeholder="Password *" value="" required=""/>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btnSubmit">Log in</button>
+  </div>
+</form>
+
+
+
+

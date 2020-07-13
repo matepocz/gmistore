@@ -4,7 +4,8 @@ import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AuthService;
-import hu.progmasters.gmistore.service.AuthenticationResponse;
+import hu.progmasters.gmistore.response.AuthenticationResponse;
+import hu.progmasters.gmistore.response.ConfirmAccountResponse;
 import hu.progmasters.gmistore.validator.RegisterRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,12 @@ public class AuthController {
         return user != null ?
                 new ResponseEntity<>(HttpStatus.CREATED) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/confirm-account")
+    public ResponseEntity<ConfirmAccountResponse> confirmAccount(@RequestParam("token") String confirmationToken) {
+        ConfirmAccountResponse response = authService.confirmAccount(confirmationToken);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/login")

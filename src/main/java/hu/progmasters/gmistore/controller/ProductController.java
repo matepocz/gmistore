@@ -67,16 +67,18 @@ public class ProductController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) {
-        HttpStatus result = productService.deleteProduct(id);
-        return new ResponseEntity<>(result);
+    public ResponseEntity deleteProduct(@PathVariable Long id) {
+        boolean result = productService.deleteProduct(id);
+        return result ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
-        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
-        return updatedProductDto != null ?
-                new ResponseEntity<>(updatedProductDto, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+        boolean result = productService.updateProduct(id, productDto);
+        return result ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

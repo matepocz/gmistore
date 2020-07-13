@@ -132,17 +132,17 @@ public class ProductService {
      * @param productDto A ProductDto containing the values to update
      * @return A boolean, true if updated, false otherwise
      */
-    public ProductDto updateProduct(Long id, ProductDto productDto) {
-        ProductDto updatedProductDto = null;
+    public boolean updateProduct(Long id, ProductDto productDto) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            updateProductValues(productDto, product);
-            Product updatedProduct = productRepository.save(product);
-            updatedProductDto = mapProductToProductDto(updatedProduct);
-            LOGGER.debug("Product updated! Id :{}", id);
+            if (isAuthorized(product.getAddedBy())) {
+                updateProductValues(productDto, product);
+                LOGGER.debug("Product updated! Id :{}", id);
+                return true;
+            }
         }
-        return updatedProductDto;
+        return false;
     }
 
     private void updateProductValues(ProductDto productDto, Product product) {
@@ -161,27 +161,28 @@ public class ProductService {
     }
 
     /**
-     * If the product presents in the database sets it's state to inactive
+     * Set a product to inactive if the product presents in the database
      *
      * @param id The product's unique id
-     * @return A HttpStatus, Ok if successful, Not found if the product does not exist,
-     * Unauthorized if the user does not have the authority.
+     * @return True if successful, false otherwise.
      */
-    public HttpStatus deleteProduct(Long id) {
-        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Role.ROLE_ADMIN);
+    public boolean deleteProduct(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            if (authenticatedUsername.equalsIgnoreCase(product.getAddedBy()) || isAdmin) {
+            if (isAuthorized(product.getAddedBy())) {
                 product.setActive(false);
                 LOGGER.debug("Product has been set to inactive Id : {}", id);
-                return HttpStatus.OK;
-            } else {
-                LOGGER.debug("Unauthorized delete request!");
-                return HttpStatus.UNAUTHORIZED;
+                return true;
             }
         }
-        return HttpStatus.NOT_FOUND;
+        return false;
+    }
+
+    private boolean isAuthorized(String productAddedBy) {
+        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isAdmin =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Role.ROLE_ADMIN);
+        return isAdmin && productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 }

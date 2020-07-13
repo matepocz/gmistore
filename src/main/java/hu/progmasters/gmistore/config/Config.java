@@ -22,7 +22,7 @@ public class Config {
 
     @Bean
     public Cloudinary cloudinaryConfig() {
-        Map<String, String> config = new HashMap();
+        Map<String, String> config = new HashMap<>();
         config.put("cloud_name", cloudName);
         config.put("api_key", apiKey);
         config.put("api_secret", apiSecret);

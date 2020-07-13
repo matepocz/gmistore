@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
-    private static Set<String> uniqueOrderIds = new HashSet<>();
 
     @Autowired
     public OrderService(OrderRepository orderRepository) {
@@ -36,8 +35,8 @@ public class OrderService {
         }
         generatedId.append("-");
         generatedId.append(generateFiveDigitNumber());
-        if (!uniqueOrderIds.contains(generatedId.toString())) {
-            uniqueOrderIds.add(generatedId.toString());
+        Optional<Order> order = orderRepository.findOrdersByGeneratedUniqueId(generatedId.toString());
+        if (order.isPresent()) {
             return generatedId.toString();
         } else {
             return generateOrderUniqueId();

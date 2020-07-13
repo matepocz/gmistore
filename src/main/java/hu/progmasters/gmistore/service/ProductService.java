@@ -4,11 +4,12 @@ import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
+import hu.progmasters.gmistore.model.Inventory;
 import hu.progmasters.gmistore.model.Product;
+import hu.progmasters.gmistore.repository.InventoryRepository;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +25,12 @@ public class ProductService {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
+    private final InventoryService inventoryService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, InventoryService inventoryService) {
         this.productRepository = productRepository;
+        this.inventoryService = inventoryService;
     }
 
     /**
@@ -38,6 +41,7 @@ public class ProductService {
     public void addProduct(ProductDto productDto) {
         Product product = mapProductDtoToProduct(productDto);
         productRepository.save(product);
+        inventoryService.saveInventory(product, productDto.getQuantityAvailable());
         LOGGER.debug("Product has been added! name: {}", product.getName());
     }
 
@@ -52,7 +56,6 @@ public class ProductService {
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
         product.setRatings(productDto.getRatings());
-        product.setQuantityAvailable(productDto.getQuantityAvailable());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
         product.setAddedBy(productDto.getAddedBy());
@@ -116,7 +119,8 @@ public class ProductService {
         productDto.setPrice(product.getPrice());
         productDto.setDiscount(product.getDiscount());
         productDto.setWarrantyMonths(product.getWarrantyMonths());
-        productDto.setQuantityAvailable(product.getQuantityAvailable());
+        productDto.setQuantityAvailable(product.getInventory().getQuantityAvailable());
+        productDto.setQuantitySold(product.getInventory().getQuantitySold());
         productDto.setRatings(product.getRatings());
         productDto.setAverageRating(product.getAverageRating());
         productDto.setActive(product.isActive());
@@ -138,6 +142,7 @@ public class ProductService {
             Product product = optionalProduct.get();
             if (isAuthorized(product.getAddedBy())) {
                 updateProductValues(productDto, product);
+                product.getInventory().setQuantityAvailable(productDto.getQuantityAvailable());
                 LOGGER.debug("Product updated! Id :{}", id);
                 return true;
             }
@@ -155,7 +160,6 @@ public class ProductService {
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
         product.setRatings(productDto.getRatings());
-        product.setQuantityAvailable(productDto.getQuantityAvailable());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
     }

@@ -54,8 +54,8 @@ public class Product {
     @Column(name = "warranty_months", columnDefinition = "int default 0")
     private int warrantyMonths;
 
-    @Column(name = "quantity_available", columnDefinition = "int default 0")
-    private int quantityAvailable;
+    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)
+    private Inventory inventory;
 
     @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "ratings")

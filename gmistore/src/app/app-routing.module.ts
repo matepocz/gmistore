@@ -11,6 +11,7 @@ import {ProductEditComponent} from "./product/product-edit/product-edit.componen
 import {OrderEditComponent} from "./page/order-edit/order-edit.component";
 import {ForbiddenComponent} from "./core/forbidden/forbidden.component";
 import {ProductDetailsComponent} from "./product/product-details/product-details.component";
+import {AddProductComponent} from "./product/add-product/add-product.component";
 
 const routes: Routes = [
   {path: 'home', component:HomeComponent},
@@ -20,10 +21,10 @@ const routes: Routes = [
   {path: 'user/edit/:id', component: UserEditComponent},
   {path: 'orders', component: OrdersComponent},
   {path: 'order/edit/:id', component: OrderEditComponent},
-  {path: 'create-product', component: ProductDetailsComponent},
+  {path: 'add-product', component: AddProductComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/edit/:id', component: ProductEditComponent},
-  {path: 'product-details', component: ProductDetailsComponent},
+  {path: 'product-details/:id', component: ProductDetailsComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', redirectTo: 'home',}
 ];

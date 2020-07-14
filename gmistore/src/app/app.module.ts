@@ -25,6 +25,7 @@ import {CollapseModule} from "ngx-bootstrap/collapse";
 import {JumbotronComponent} from './core/jumbotron/jumbotron.component';
 import {ProductDetailsComponent} from './product/product-details/product-details.component';
 import {UserProfileComponent} from './user/user-profile/user-profile.component';
+import { AddProductComponent } from './product/add-product/add-product.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {UserProfileComponent} from './user/user-profile/user-profile.component';
     ProductCardComponent,
     JumbotronComponent,
     ProductDetailsComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    AddProductComponent
   ],
   imports: [
     BrowserModule,

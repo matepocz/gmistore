@@ -36,7 +36,7 @@ public class OrderService {
         generatedId.append("-");
         generatedId.append(generateFiveDigitNumber());
         Optional<Order> order = orderRepository.findOrdersByGeneratedUniqueId(generatedId.toString());
-        if (order.isPresent()) {
+        if (order.isEmpty()) {
             return generatedId.toString();
         } else {
             return generateOrderUniqueId();

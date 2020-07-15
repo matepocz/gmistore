@@ -7,23 +7,24 @@ import {JwtAuthResponse} from "./jwt-auth-response";
 import {map} from "rxjs/operators";
 import {LocalStorageService} from "ngx-webstorage";
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = 'http://localhost:8080/api/auth/'
+  private authUrl = environment.apiUrl + 'auth/'
 
   constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router) {
   }
 
   register(registerPayload: RegisterPayload): Observable<any> {
-    return this.httpClient.post(this.url + "register", registerPayload)
+    return this.httpClient.post(this.authUrl + "register", registerPayload)
   }
 
   login(loginPayload: LoginPayload): Observable<boolean> {
-    return this.httpClient.put<JwtAuthResponse>(this.url + 'login', loginPayload).pipe(map(data => {
+    return this.httpClient.put<JwtAuthResponse>(this.authUrl + 'login', loginPayload).pipe(map(data => {
       this.localStorageService.store('authenticationToken', data.authenticationToken);
       this.localStorageService.store('username', data.username);
       return true;

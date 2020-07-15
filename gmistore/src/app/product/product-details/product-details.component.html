@@ -1,50 +1,49 @@
 <div class="container">
-  <div class="card shadow" *ngIf="product">
-
-    <div class="wrapper row">
-      <div class="col-md-6">
-        <div class="preview-pic tab-content">
-          <div class="tab-pane active" id="pic-1">
-            <img [src]="defaultPicture" alt="main-image"/>
-          </div>
+  <div class="row mt-4" *ngIf="product">
+    <div class="col-md-6">
+      <div class="preview-pic tab-content">
+        <div class="tab-pane active" id="pic-1">
+          <img [src]="defaultPicture" alt="main-image"/>
         </div>
-        <ul class="preview-thumbnail nav nav-tabs">
-          <li class="active" *ngFor="let picture of product.pictures" (click)="changeDefaultImg(picture)">
-            <a data-target="#pic-1" data-toggle="tab"><img src="{{picture}}" alt=""/></a>
-          </li>
-        </ul>
       </div>
-      <div class="details col-md-6">
-        <h3 class="product-title">{{product.name}}</h3>
+      <ul class="preview-thumbnail nav nav-tabs">
+        <li class="active" *ngFor="let picture of product.pictures" (click)="changeDefaultImg(picture)">
+          <a data-target="#pic-1" data-toggle="tab"><img src="{{picture}}" alt=""/></a>
+        </li>
+      </ul>
+    </div>
+    <div class="details col-md-6 col-sm-12">
+      <h4 class="product-title">{{product.name}}</h4>
+      <h6 class="text-secondary"><small>Vásárlói vélemények: {{product.ratings.length}}</small></h6>
 
-        <div class="rating">
-          <div class="stars">
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star"></span>
-            <span class="fa fa-star"></span>
-          </div>
-          <span class="review-no"><small>{{product.ratings.length}} értékelés alapján</small></span>
+      <div class="rating">
+        <div class="star-ratings-css">
+          <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
         </div>
+      </div>
 
 
-        <p><small>Kategória: {{product.category}}</small></p>
-        <h6>{{product.warrantyMonths}} hónap garancia</h6>
-        <p>{{product.quantitySold}} eladott darab</p>
-        <p>{{product.quantityAvailable}} raktáron</p>
-        <h5><span>{{product.price}} Ft</span></h5>
-        <div class="action">
-          <button class="add-to-cart btn btn-default mr-1" type="button">Kosárba</button>
-          <button class="like btn btn-default" type="button"><span class="fa fa-heart"></span></button>
-        </div>
+      <p><small>Kategória: {{product.category}}</small></p>
+      <p><small>{{product.warrantyMonths}} hónap garancia</small></p>
+      <p><small>{{product.quantitySold}} eladott darab</small></p>
+      <p class="text-success">{{product.quantityAvailable}} raktáron</p>
+      <h6 class="text-danger">{{product.price}} Ft</h6>
+      <div class="action">
+        <button class="add-to-cart btn btn-default mr-1" type="button">
+          <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosárba
+        </button>
+        <button class="like btn btn-default" type="button">
+          <span class="fa fa-heart"></span>
+        </button>
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-12">
-        <hr>
-        <p class="product-description justify">{{product.description}}</p>
-      </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <hr>
+      <h6>Leírás:</h6>
+      <p class="product-description text-justify">{{product.description}}</p>
     </div>
   </div>
 </div>

@@ -13,13 +13,14 @@ export class ProductDetailsComponent implements OnInit {
   id: number;
   product: Product;
   defaultPicture: string;
+  averageRatingPercentage: number;
 
   constructor(private route: ActivatedRoute, private router: Router,
               private productService: ProductService) {
   }
 
   ngOnInit(): void {
-    this.product = new Product() ;
+    this.product = new Product();
     this.id = this.route.snapshot.params['id'];
 
     this.productService.getProduct(this.id).subscribe(
@@ -27,6 +28,7 @@ export class ProductDetailsComponent implements OnInit {
         console.log(data)
         this.product = data;
         this.defaultPicture = data.pictureUrl;
+        this.averageRatingPercentage = (100 / 5) * this.product.averageRating;
       }, error => console.log(error)
     );
   }

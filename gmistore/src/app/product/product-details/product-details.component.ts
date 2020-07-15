@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../utils/product-service";
 import {Product} from "../product";
-import {Router, ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-product-details',
@@ -12,6 +12,7 @@ export class ProductDetailsComponent implements OnInit {
 
   id: number;
   product: Product;
+  defaultPicture: string;
 
   constructor(private route: ActivatedRoute, private router: Router,
               private productService: ProductService) {
@@ -25,8 +26,12 @@ export class ProductDetailsComponent implements OnInit {
       data => {
         console.log(data)
         this.product = data;
+        this.defaultPicture = data.pictureUrl;
       }, error => console.log(error)
     );
   }
 
+  changeDefaultImg(picture: string): void {
+    this.defaultPicture = this.product.pictures.find(x => x === picture);
+  }
 }

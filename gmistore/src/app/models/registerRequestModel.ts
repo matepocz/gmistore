@@ -1,4 +1,4 @@
-export interface RegisterRequest {
+export interface RegisterRequestModel {
   id:number;
   username:string;
   lastname:string;

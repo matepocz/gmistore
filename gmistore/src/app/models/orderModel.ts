@@ -1,4 +1,4 @@
-export interface Order {
+export interface OrderModel {
   id: number;
   generatedUniqueId: number;
   status: string;

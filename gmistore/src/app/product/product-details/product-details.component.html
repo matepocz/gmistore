@@ -30,7 +30,7 @@
       <p class="text-success">{{product.quantityAvailable}} raktáron</p>
       <h6 class="text-danger">{{product.price}} Ft</h6>
       <div class="action">
-        <button class="add-to-cart btn btn-default mr-1" type="button">
+        <button class="add-to-cart btn btn-default mr-1"  *ngIf="product.quantityAvailable > 0" type="button">
           <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosárba
         </button>
         <button class="like btn btn-default" type="button">

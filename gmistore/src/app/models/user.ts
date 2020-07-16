@@ -1,3 +1,4 @@
+import {OrderModel} from "./orderModel";
 
 export interface User {
   id: number;
@@ -10,7 +11,7 @@ export interface User {
   roles:Array<string>;
   registered: any;
   active: boolean;
-  orderList:Array<object>;
+  orderList:Array<OrderModel>;
 
 }
 

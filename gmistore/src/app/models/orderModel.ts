@@ -1,3 +1,5 @@
+import {Product} from "../product/product";
+
 export interface OrderModel {
   id: number;
   generatedUniqueId: number;
@@ -5,6 +7,6 @@ export interface OrderModel {
   quantity: string;
   date: any;
   deliveryDate:any;
-  productList:Array<object>;
+  productList:Array<Product>;
   user:object;
 }

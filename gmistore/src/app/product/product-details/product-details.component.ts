@@ -25,7 +25,6 @@ export class ProductDetailsComponent implements OnInit {
 
     this.productService.getProduct(this.id).subscribe(
       data => {
-        console.log(data)
         this.product = data;
         this.defaultPicture = data.pictureUrl;
         this.averageRatingPercentage = (100 / 5) * this.product.averageRating;
@@ -35,5 +34,9 @@ export class ProductDetailsComponent implements OnInit {
 
   changeDefaultImg(picture: string): void {
     this.defaultPicture = this.product.pictures.find(x => x === picture);
+  }
+
+  calculateDiscountedPrice(): number {
+    return (this.product.price / 100) * (100 - this.product.discount);
   }
 }

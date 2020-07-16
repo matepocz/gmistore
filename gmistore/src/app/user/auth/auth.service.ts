@@ -14,7 +14,7 @@ import {environment} from "../../../environments/environment";
 })
 export class AuthService {
 
-  private authUrl = environment.apiUrl + 'auth/'
+  private authUrl = environment.apiUrl + 'api/auth/'
 
   constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router) {
   }
@@ -39,6 +39,7 @@ export class AuthService {
   logout(loginPayload: LoginPayload) {
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
+    this.httpClient.post(environment.apiUrl+ 'logout', {});
     this._router.navigate(['/home'])
   }
 }

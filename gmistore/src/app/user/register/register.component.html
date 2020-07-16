@@ -4,42 +4,36 @@
       <p>Regisztráció</p>
     </div>
 
-    <div class="form-content">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputFirstName" [formControlName]="'firstName'" class="form-control"
-                   placeholder="First name *" value="" required=""/>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputLastName" [formControlName]="'lastName'" class="form-control"
-                   placeholder="Last name *" value="" required=""/>
-          </div>
+  <div class="form-content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" id="inputFirstName" [formControlName]="'firstName'" class="form-control" placeholder="First name *" value="" required=""/>
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control"
-                   placeholder="Username *" value="" required=""/>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputEmail" [formControlName]="'email'" class="form-control"
-                   placeholder="Email address *" value="" required=""/>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="password" id="inputPassword" [formControlName]="'password'" class="form-control"
-                   placeholder="Password *" value="" required=""/>
-          </div>
-          <div class="form-group">
-            <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'"
-                   class="form-control" placeholder="Confirm Password *" value="" required=""/>
-          </div>
+        <div class="form-group">
+          <input type="text" id="inputLastName" [formControlName]="'lastName'" class="form-control" placeholder="Last name *" value="" required=""/>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Regisztráció</button>
-      <hr>
-      <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control" placeholder="Username *" value="" required=""/>
+        </div>
+        <div class="form-group">
+          <input type="text" id="inputEmail" [formControlName]="'email'" class="form-control" placeholder="Email address *" value="" required=""/>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="password" id="inputPassword" [formControlName]="'password'" class="form-control" placeholder="Password *" value="" required=""/>
+        </div>
+        <div class="form-group">
+          <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'" class="form-control" placeholder="Confirm Password *" value="" required=""/>
+        </div>
+      </div>
     </div>
-  </form>
+    <button type="submit" class="btnSubmit">Register</button>
+    <hr>
+    <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
+  </div>
+</form>
 </div>

@@ -35,8 +35,7 @@ export class AuthService {
     return this.localStorageService.retrieve('username') != null;
   }
 
-
-  logout(loginPayload: LoginPayload) {
+  logout() {
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
     this.httpClient.post(environment.apiUrl+ 'logout', {});

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegisterPayload} from "../auth/register-payload";
 import {AuthService} from "../auth/auth.service";
+import {ComparePassword} from "../auth/passwordValidator";
+// import {ComparePassword} from "../auth/passwordValidator"
+
 
 @Component({
   selector: 'app-register',
@@ -9,25 +12,19 @@ import {AuthService} from "../auth/auth.service";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  registerForm = new FormGroup({
-    firstName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(30),Validators.nullValidator]),  //todo folytatni a regex betűzéssel
-    lastName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(15),Validators.nullValidator]),
-    userName: new FormControl('',[Validators.required,Validators.min(5),Validators.max(15),Validators.nullValidator]),
-    email: new FormControl('',[Validators.required,Validators.email]),
-    password: new FormControl('',[Validators.required,Validators.nullValidator,Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")])
-  })
-
+  registerForm:FormGroup;
   registerPayload: RegisterPayload
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService) {
     this.registerForm = this.formBuilder.group({
-      firstName:'',
-      lastName:'',
-      userName: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    });
+      firstName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(30),Validators.nullValidator]),  //todo folytatni a regex betűzéssel
+      lastName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(15),Validators.nullValidator]),
+      username: new FormControl('',[Validators.required,Validators.min(5),Validators.max(15),Validators.nullValidator]),
+      email: new FormControl('',[Validators.required,Validators.email]),
+      password: new FormControl('',[Validators.required,Validators.nullValidator,Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]),
+      confirmPassword: new FormControl('',[Validators.required])
+    },{validator: ComparePassword});
+
     this.registerPayload = {
       firstName: '',
       lastName: '',
@@ -57,11 +54,5 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  checkPasswords(group: FormGroup) {
-    let pass = group.get('password').value;
-    let confirmPass = group.get('confirmPassword').value;
-
-    return pass === confirmPass ? null : { notSame: true }
-  }
 
 }

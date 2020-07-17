@@ -81,4 +81,9 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/get-product-categories")
+    public ResponseEntity<List<String>> getProductCategories() {
+        return new ResponseEntity(productService.getProductCategories(), HttpStatus.OK);
+    }
 }

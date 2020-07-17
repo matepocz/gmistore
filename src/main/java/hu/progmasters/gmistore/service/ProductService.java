@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -186,5 +187,9 @@ public class ProductService {
         boolean isAdmin =
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Role.ROLE_ADMIN);
         return isAdmin && productAddedBy.equalsIgnoreCase(authenticatedUsername);
+    }
+
+    public List<String> getProductCategories() {
+        return Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
     }
 }

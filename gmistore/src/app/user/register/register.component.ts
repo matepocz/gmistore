@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegisterPayload} from "../auth/register-payload";
 import {AuthService} from "../auth/auth.service";
 import {ComparePassword} from "../auth/passwordValidator";
-// import {ComparePassword} from "../auth/passwordValidator"
 
 
 @Component({

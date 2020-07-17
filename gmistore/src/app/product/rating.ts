@@ -1,6 +1,6 @@
 export class Rating {
   id: number;
-  rating: number;
+  actualRating: number;
   comment: string;
   timeStamp: Date;
   username: string;

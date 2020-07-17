@@ -71,6 +71,16 @@
   </div>
   <div class="row">
     <div class="col-12" *ngFor="let rating of ratings">
+      <div class="rating">
+        <div class="star-ratings-css">
+          <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': calculatePercentageForRating(rating.actualRating)}">
+            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+          </div>
+          <div class="star-ratings-css-bottom">
+            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+          </div>
+        </div>
+      </div>
       <p class="text-justify">{{ rating.comment }}</p>
       <p class="text-secondary">
         <small><i class="fa fa-user"></i> {{rating.username}}

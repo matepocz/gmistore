@@ -42,4 +42,8 @@ export class ProductDetailsComponent implements OnInit {
   calculateDiscountedPrice(): number {
     return (this.product.price / 100) * (100 - this.product.discount);
   }
+
+  calculatePercentageForRating(rating: number): number {
+    return (100 / 5) * rating;
+  }
 }

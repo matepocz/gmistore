@@ -1,66 +1,70 @@
 <div class="container mt-4">
-  <form name="form" class="form shadow" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="note">
-      <p>Regisztráció</p>
-    </div>
-
-    <div class="form-content">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputFirstName" [formControlName]="'firstName'"
-                   [ngClass]="{'is-invalid': registerForm.get('firstName').touched && registerForm.get('firstName').invalid}"
-                   class="form-control" placeholder="First name *" value="" required/>
-            <div class="invalid-feedback">
-              <div>Vezetéknév: minimum 3 maximum 30 karakter!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputLastName" [formControlName]="'lastName'"
-                   [ngClass]="{'is-invalid': registerForm.get('lastName').touched && registerForm.get('lastName').invalid}"
-                   class="form-control" placeholder="Last name *" value="" required/>
-            <div class="invalid-feedback">
-              <div>Keresztnév: minimum 3 maximum 15 karakter</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputUsername" [formControlName]="'userName'"
-                   [ngClass]="{'is-invalid': registerForm.get('userName').touched && registerForm.get('userName').invalid}"
-                   class="form-control" placeholder="Username *" value="" required/>
-            <div class="invalid-feedback">
-              <div>Felhasználói név: minimum 5 és 15 karakter!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputEmail" [formControlName]="'email'"
-                   [ngClass]="{'is-invalid': registerForm.get('email').touched && registerForm.get('email').invalid}"
-                   class="form-control" placeholder="Email address *" value="" required/>
-            <div *ngIf="registerForm.get('email').touched && registerForm.get('email').invalid"
-                 class="invalid-feedback">
-              <div>Érvénytelen email cím!</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="password" id="inputPassword" [formControlName]="'password'"
-                   [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.get('password').invalid}"
-                   class="form-control" placeholder="Password *" value="" required/>
-            <div class="invalid-feedback">
-              <div>Jelszó: kis és nagy betűket egy számot és minimum egy speciális karaktert kell tartalmaznia!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'" class="form-control"
-                   placeholder="Confirm Password *" value="" required/>
-          </div>
-        </div>
+    <form name="form" class="form shadow" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="note">
+        <p>Regisztráció</p>
       </div>
-      <button type="submit" class="btn btn-primary">Regisztráció</button>
-      <hr>
-      <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
-    </div>
-  </form>
+
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" id="inputFirstName" [formControlName]="'firstName'"
+                     [ngClass]="{'is-invalid': registerForm.get('firstName').touched && registerForm.get('firstName').invalid}"
+                     class="form-control" placeholder="First name *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Vezetéknév: minimum 3 maximum 30 karakter!</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" id="inputLastName" [formControlName]="'lastName'"
+                     [ngClass]="{'is-invalid': registerForm.get('lastName').touched && registerForm.get('lastName').invalid}"
+                     class="form-control" placeholder="Last name *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Keresztnév: minimum 3 maximum 15 karakter</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" id="inputUsername" [formControlName]="'username'"
+                     [ngClass]="{'is-invalid': registerForm.get('username').touched && registerForm.get('username').invalid}"
+                     class="form-control" placeholder="Username *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Felhasználói név: minimum 5 és 15 karakter!</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" id="inputEmail" [formControlName]="'email'"
+                     [ngClass]="{'is-invalid': registerForm.get('email').touched && registerForm.get('email').invalid}"
+                     class="form-control" placeholder="Email address *" value="" required=""/>
+              <div *ngIf="registerForm.get('email').touched && registerForm.get('email').invalid"
+                   class="invalid-feedback">
+                <div>Érvénytelen email cím!</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="password" id="inputPassword" [formControlName]="'password'"
+                     [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.get('password').invalid}"
+                     class="form-control" placeholder="Password *" value="" required="" />
+
+              <div class="invalid-feedback">
+                <div>Jelszó: kis és nagy betűket egy számot és minimum egy speciális karaktert kell tartalmaznia!</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'" class="form-control"
+                     placeholder="Confirm Password *" value="" required="" />
+
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Regisztráció</button>
+        <hr>
+        <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
+      </div>
+    </form>
+
+
 </div>

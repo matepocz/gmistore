@@ -1,3 +1,5 @@
+import {Rating} from "./rating";
+
 export class Product{
   id: number;
   name: string;
@@ -10,7 +12,7 @@ export class Product{
   warrantyMonths: number;
   quantityAvailable: number;
   quantitySold: number;
-  ratings: Array<number>;
+  ratings: Array<Rating>;
   averageRating: number;
   active: boolean;
   addedBy: string;

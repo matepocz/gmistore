@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../utils/product-service";
 import {Product} from "../product";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Rating} from "../rating";
 
 @Component({
   selector: 'app-product-details',
@@ -14,6 +15,7 @@ export class ProductDetailsComponent implements OnInit {
   product: Product;
   defaultPicture: string;
   averageRatingPercentage: number;
+  ratings: Array<Rating>;
 
   constructor(private route: ActivatedRoute, private router: Router,
               private productService: ProductService) {
@@ -28,6 +30,7 @@ export class ProductDetailsComponent implements OnInit {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
         this.averageRatingPercentage = (100 / 5) * this.product.averageRating;
+        this.ratings = this.product.ratings;
       }, error => console.log(error)
     );
   }

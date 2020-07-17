@@ -63,4 +63,21 @@
       <p class="product-description text-justify">{{product.description}}</p>
     </div>
   </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <h6>Vélemények:</h6>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12" *ngFor="let rating of ratings">
+      <p class="text-justify">{{ rating.comment }}</p>
+      <p class="text-secondary">
+        <small><i class="fa fa-user"></i> {{rating.username}}
+          <i class="fa fa-clock-o"></i> {{ rating.timeStamp | date: "yyyy-MM-dd HH:mm" }}
+        </small>
+      </p>
+      <hr>
+    </div>
+  </div>
 </div>

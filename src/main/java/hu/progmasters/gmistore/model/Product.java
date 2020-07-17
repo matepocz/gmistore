@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "product")
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,10 +57,13 @@ public class Product {
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)
     private Inventory inventory;
 
-    @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "ratings")
-    @Column(name = "product_ratings")
-    private List<Integer> ratings = new ArrayList<>();
+//    @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
+//    @CollectionTable(name = "ratings")
+//    @Column(name = "product_ratings")
+//    private List<Integer> ratings = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Rating> ratings;
 
     @Column(name = "average_rating", columnDefinition = "double default 0.0")
     private double averageRating;

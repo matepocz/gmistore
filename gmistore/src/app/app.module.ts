@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormControl} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -15,8 +15,7 @@ import {ForbiddenComponent} from './core/forbidden/forbidden.component';
 import {UsersComponent} from './page/users/users.component';
 import {OrdersComponent} from './page/orders/orders.component';
 import {OrderEditComponent} from './page/order-edit/order-edit.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {Ng2Webstorage} from 'ngx-webstorage';
 import {ProductListComponent} from './product/product-list/product-list.component';
 import {ProductEditComponent} from './product/product-edit/product-edit.component';
@@ -27,6 +26,7 @@ import {JumbotronComponent} from './core/jumbotron/jumbotron.component';
 import {ProductDetailsComponent} from './product/product-details/product-details.component';
 import {UserProfileComponent} from './user/user-profile/user-profile.component';
 import {AddProductComponent} from './product/add-product/add-product.component';
+import {AuthInterceptor} from "./interceptors/auth-interceptor";
 
 @NgModule({
   declarations: [
@@ -62,7 +62,9 @@ import {AddProductComponent} from './product/add-product/add-product.component';
     HttpClientModule,
 
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

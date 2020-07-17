@@ -24,4 +24,8 @@ export class ProductListComponent implements OnInit {
     );
   }
 
+  calculateDiscountedPrice(product: Product): number {
+    let actualProduct = this.products.find(prod => prod === product);
+    return (actualProduct.price / 100) * (100 - actualProduct.discount);
+  }
 }

@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
       email: new FormControl('',[Validators.required,Validators.email]),
       password: new FormControl('',[Validators.required,Validators.nullValidator,Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]),
       confirmPassword: new FormControl('',[Validators.required])
-    },{validator: ComparePassword});
+    },{validator: ComparePassword('password','confirmPassword')});
 
     this.registerPayload = {
       firstName: '',
@@ -49,9 +49,14 @@ export class RegisterComponent implements OnInit {
     this.authService.register(this.registerPayload).subscribe(data => {
       console.log('register success');
     }, error => {
+
       console.log('register failed');
     });
   }
 
 
+
+  get condition(){
+    return this.registerForm.controls;
+  }
 }

@@ -10,7 +10,7 @@
             <div class="form-group">
               <input type="text" id="inputFirstName" [formControlName]="'firstName'"
                      [ngClass]="{'is-invalid': registerForm.get('firstName').touched && registerForm.get('firstName').invalid}"
-                     class="form-control" placeholder="First name *" value="" required=""/>
+                     class="form-control" placeholder="Vezetéknév *" value="" required=""/>
               <div class="invalid-feedback">
                 <div>Vezetéknév: minimum 3 maximum 30 karakter!</div>
               </div>
@@ -18,7 +18,7 @@
             <div class="form-group">
               <input type="text" id="inputLastName" [formControlName]="'lastName'"
                      [ngClass]="{'is-invalid': registerForm.get('lastName').touched && registerForm.get('lastName').invalid}"
-                     class="form-control" placeholder="Last name *" value="" required=""/>
+                     class="form-control" placeholder="Keresztnév *" value="" required=""/>
               <div class="invalid-feedback">
                 <div>Keresztnév: minimum 3 maximum 15 karakter</div>
               </div>
@@ -28,7 +28,7 @@
             <div class="form-group">
               <input type="text" id="inputUsername" [formControlName]="'username'"
                      [ngClass]="{'is-invalid': registerForm.get('username').touched && registerForm.get('username').invalid}"
-                     class="form-control" placeholder="Username *" value="" required=""/>
+                     class="form-control" placeholder="Felhasználónév *" value="" required=""/>
               <div class="invalid-feedback">
                 <div>Felhasználói név: minimum 5 és 15 karakter!</div>
               </div>
@@ -36,7 +36,7 @@
             <div class="form-group">
               <input type="text" id="inputEmail" [formControlName]="'email'"
                      [ngClass]="{'is-invalid': registerForm.get('email').touched && registerForm.get('email').invalid}"
-                     class="form-control" placeholder="Email address *" value="" required=""/>
+                     class="form-control" placeholder="Email cím *" value="" required=""/>
               <div *ngIf="registerForm.get('email').touched && registerForm.get('email').invalid"
                    class="invalid-feedback">
                 <div>Érvénytelen email cím!</div>
@@ -47,16 +47,20 @@
             <div class="form-group">
               <input type="password" id="inputPassword" [formControlName]="'password'"
                      [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.get('password').invalid}"
-                     class="form-control" placeholder="Password *" value="" required="" />
+                     class="form-control" placeholder="Jelszó *" value="" required="" />
 
               <div class="invalid-feedback">
                 <div>Jelszó: kis és nagy betűket egy számot és minimum egy speciális karaktert kell tartalmaznia!</div>
               </div>
             </div>
             <div class="form-group">
-              <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'" class="form-control"
-                     placeholder="Confirm Password *" value="" required="" />
-
+              <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'"
+                     class="form-control"
+                     placeholder="Jelszó ismét *" value="" required="" />
+              <div *ngIf="condition.confirmPassword.touched && condition.confirmPassword.invalid" class="alert alert-danger">
+                <div *ngIf="condition.confirmPassword.errors.required">A mező ki kell tölteni</div>
+                <div *ngIf="condition.confirmPassword.errors">A két jelszó nem egyezik</div>
+              </div>
             </div>
           </div>
         </div>

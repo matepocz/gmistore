@@ -6,7 +6,6 @@ import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;
-import hu.progmasters.gmistore.repository.RatingRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,14 +23,11 @@ public class ProductService {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
-    private final RatingRepository ratingRepository;
     private final InventoryService inventoryService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, InventoryService inventoryService,
-                          RatingRepository ratingRepository) {
+    public ProductService(ProductRepository productRepository, InventoryService inventoryService) {
         this.productRepository = productRepository;
-        this.ratingRepository = ratingRepository;
         this.inventoryService = inventoryService;
     }
 
@@ -123,7 +119,7 @@ public class ProductService {
         productDto.setWarrantyMonths(product.getWarrantyMonths());
         productDto.setQuantityAvailable(product.getInventory().getQuantityAvailable());
         productDto.setQuantitySold(product.getInventory().getQuantitySold());
-        productDto.setRatings(ratingRepository.findAllByProduct(product));
+        productDto.setRatings(product.getRatings());
         productDto.setAverageRating(product.getAverageRating());
         productDto.setActive(product.isActive());
         productDto.setAddedBy(product.getAddedBy());

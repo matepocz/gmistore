@@ -34,6 +34,4 @@ public class Rating implements Serializable {
     @NotNull
     private LocalDateTime timeStamp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
 }

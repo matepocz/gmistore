@@ -2,7 +2,6 @@ package hu.progmasters.gmistore.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(targetEntity = Product.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", unique = true, nullable = false)
     private Product product;
 

@@ -54,13 +54,8 @@ public class Product implements Serializable {
     @Column(name = "warranty_months", columnDefinition = "int default 0")
     private int warrantyMonths;
 
-    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private Inventory inventory;
-
-//    @ElementCollection(targetClass = Integer.class, fetch = FetchType.EAGER)
-//    @CollectionTable(name = "ratings")
-//    @Column(name = "product_ratings")
-//    private List<Integer> ratings = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Rating> ratings;

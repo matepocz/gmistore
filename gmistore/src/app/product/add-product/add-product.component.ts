@@ -11,11 +11,10 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 export class AddProductComponent implements OnInit {
 
   pictureUrl: string;
-  categories: Array<String>;
+  categories: Map<String, String>;
 
   productForm: FormGroup;
   product: Product;
-  selectedValue: string;
 
   constructor(private formBuilder: FormBuilder, private productService: ProductService) {
     this.productForm = new FormGroup({
@@ -55,10 +54,13 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categories = new Array<String>();
+    this.categories = new Map<String, String>();
     this.productService.getProductCategories().subscribe(
       data => {
-        this.categories = data;
+        for (let value in data) {
+          this.categories.set(value, data[value]);
+        }
+        console.log(this.categories);
       }, error => console.log(error)
     );
 
@@ -74,6 +76,7 @@ export class AddProductComponent implements OnInit {
     this.product.discount = this.productForm.get('discount').value;
     this.product.warrantyMonths = this.productForm.get('warrantyMonths').value;
     this.product.quantityAvailable = this.productForm.get('quantityAvailable').value;
+    this.product.active = this.productForm.get('active').value;
 
     this.productService.addProduct(this.product).subscribe(data => {
       console.log('success')

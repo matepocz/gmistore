@@ -19,7 +19,7 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Bejelentkezés</button>
+          <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Bejelentkezés</button>
           <hr>
           <p class="text-secondary"><small>Nem regisztrált?</small><a href="/register"><small> Regisztráció</small></a></p>
         </div>

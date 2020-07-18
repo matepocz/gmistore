@@ -12,7 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +47,7 @@ public class ProductService {
     }
 
     private Product mapProductDtoToProduct(ProductDto productDto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Product product = new Product();
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
@@ -57,7 +60,7 @@ public class ProductService {
         product.setRatings(productDto.getRatings());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
-        product.setAddedBy(productDto.getAddedBy());
+        product.setAddedBy(username);
         return product;
     }
 
@@ -189,7 +192,13 @@ public class ProductService {
         return isAdmin && productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 
-    public List<String> getProductCategories() {
-        return Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
+    public Map<Category, String> getProductCategories() {
+        Map<Category, String> categoriesWithDisplayNames = new EnumMap<>(Category.class);
+        Category[] categories = Category.values();
+        List<String> displayNames = Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
+        for (int i = 0; i < categories.length; i++) {
+            categoriesWithDisplayNames.put(categories[i], displayNames.get(i));
+        }
+        return categoriesWithDisplayNames;
     }
 }

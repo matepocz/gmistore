@@ -10,11 +10,17 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 })
 export class AddProductComponent implements OnInit {
 
-  pictureUrl: string;
   categories: Map<String, String>;
-
   productForm: FormGroup;
   product: Product;
+  error: string;
+
+  pictureUrl: any;
+
+  selectedFiles: FileList;
+  fileInfos: FileList;
+
+  uploadedPictures: string[];
 
   constructor(private formBuilder: FormBuilder, private productService: ProductService) {
     this.productForm = new FormGroup({
@@ -22,7 +28,7 @@ export class AddProductComponent implements OnInit {
       name: new FormControl(''),
       description: new FormControl(''),
       category: new FormControl(''),
-      pictureUrl: new FormControl(''),
+      pictureUrl: new FormControl(null),
       pictures: new FormControl(null),
       price: new FormControl(0),
       discount: new FormControl(0),
@@ -34,13 +40,14 @@ export class AddProductComponent implements OnInit {
       active: new FormControl(false),
       addedBy: new FormControl('')
     });
+
     this.product = {
       id: 0,
       name: '',
       description: '',
       category: '',
       pictureUrl: '',
-      pictures: null,
+      pictures: new Array<string>(),
       price: 0,
       discount: 0,
       warrantyMonths: 0,
@@ -55,16 +62,14 @@ export class AddProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.categories = new Map<String, String>();
+    this.uploadedPictures = new Array<string>();
     this.productService.getProductCategories().subscribe(
       data => {
         for (let value in data) {
           this.categories.set(value, data[value]);
         }
-        console.log(this.categories);
       }, error => console.log(error)
     );
-
-
   }
 
   onSubmit() {
@@ -77,6 +82,10 @@ export class AddProductComponent implements OnInit {
     this.product.warrantyMonths = this.productForm.get('warrantyMonths').value;
     this.product.quantityAvailable = this.productForm.get('quantityAvailable').value;
     this.product.active = this.productForm.get('active').value;
+    if (this.uploadedPictures.length > 0) {
+      this.product.pictureUrl = this.uploadedPictures[0];
+    }
+    this.product.pictures = this.uploadedPictures;
 
     this.productService.addProduct(this.product).subscribe(data => {
       console.log('success')
@@ -86,7 +95,25 @@ export class AddProductComponent implements OnInit {
     });
   }
 
-  processFile($event: Event) {
+  onFileChange(event) {
+    if (event.target.files.length > 0) {
+      this.selectedFiles = event.target.files;
+      this.uploadFiles();
+    }
+  }
 
+  uploadFiles() {
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      this.upload(this.selectedFiles[i]);
+    }
+  }
+
+  async upload(file) {
+    return await this.productService.uploadImage(file).then((data) => {
+      this.uploadedPictures.push(data[1]);
+      console.log(this.uploadedPictures);
+    }, (error) => {
+      console.log(error);
+    });
   }
 }

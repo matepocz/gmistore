@@ -78,7 +78,7 @@ public class AuthService {
         mailMessage.setFrom("gmistarter@gmail.com");
         mailMessage.setText("Kedves " + user.getFirstName() + ", \n" +
                 " a regisztrációd megerősítéséhez kérjük kattints ide : "
-                +"http://localhost:4200/confirm-account?token="+confirmationToken.getToken() +
+                + "http://localhost:4200/confirm-account?token=" + confirmationToken.getToken() +
                 "\n" +
                 "Amennyiben nem te regisztráltál, kérjük hagyd figyelmen kívűl ezt az emailt!" +
                 "\n" +
@@ -88,13 +88,14 @@ public class AuthService {
 
     /**
      * Set the user's account to active
+     *
      * @param confirmationToken The token that has been sent out in the confirmation email
      * @return A ConfirmAccountResponse containing the results
      */
     public ConfirmAccountResponse confirmAccount(String confirmationToken) {
         ConfirmationToken token = confirmationTokenRepository.findByToken(confirmationToken);
         ConfirmAccountResponse response = new ConfirmAccountResponse();
-        if(token != null) {
+        if (token != null) {
             Optional<User> userByEmail = userRepository.findUserByEmail(token.getUser().getEmail());
             if (userByEmail.isPresent() && !userByEmail.get().isActive()) {
                 User user = userByEmail.get();
@@ -102,10 +103,10 @@ public class AuthService {
                 userRepository.save(user);
                 response.setResult("Success");
                 response.setEmail(user.getEmail());
+                return response;
             }
-        } else {
-            response.setResult("Failed");
         }
+        response.setResult("Failed");
         return response;
     }
 

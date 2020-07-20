@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.dto.LoginRequest;
+import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.model.ConfirmationToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ConfirmationTokenRepository;
@@ -96,7 +96,7 @@ public class AuthService {
         ConfirmAccountResponse response = new ConfirmAccountResponse();
         if(token != null) {
             Optional<User> userByEmail = userRepository.findUserByEmail(token.getUser().getEmail());
-            if (userByEmail.isPresent()) {
+            if (userByEmail.isPresent() && !userByEmail.get().isActive()) {
                 User user = userByEmail.get();
                 user.setActive(true);
                 userRepository.save(user);

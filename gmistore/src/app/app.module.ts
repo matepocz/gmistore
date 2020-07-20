@@ -27,6 +27,8 @@ import {ProductDetailsComponent} from './product/product-details/product-details
 import {UserProfileComponent} from './user/user-profile/user-profile.component';
 import {AddProductComponent} from './product/add-product/add-product.component';
 import {AuthInterceptor} from "./interceptors/auth-interceptor";
+import { RegisterSuccessComponent } from './user/register-success/register-success.component';
+import { ConfirmAccountComponent } from './user/confirm-account/confirm-account.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import {AuthInterceptor} from "./interceptors/auth-interceptor";
     JumbotronComponent,
     ProductDetailsComponent,
     UserProfileComponent,
-    AddProductComponent
+    AddProductComponent,
+    RegisterSuccessComponent,
+    ConfirmAccountComponent
   ],
   imports: [
     FormsModule,

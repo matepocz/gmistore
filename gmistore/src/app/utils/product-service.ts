@@ -35,14 +35,5 @@ export class ProductService {
     uploadData.append('picture', image);
 
     return await this.httpClient.post(this.imageUploadUrl, uploadData).toPromise();
-    // const formData: FormData = new FormData();
-    //
-    // formData.append('picture', image);
-    //
-    // const req = new HttpRequest('POST', `${this.imageUploadUrl}`, formData, {
-    //   reportProgress: true,
-    //   responseType: 'json'
-    // });
-    // return this.httpClient.request(req);
   }
 }

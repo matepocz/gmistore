@@ -6,7 +6,7 @@ import {LoginPayload} from "./login-payload";
 import {JwtAuthResponse} from "./jwt-auth-response";
 import {map} from "rxjs/operators";
 import {LocalStorageService} from "ngx-webstorage";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../environments/environment";
 
 @Injectable({
@@ -15,12 +15,20 @@ import {environment} from "../../../environments/environment";
 export class AuthService {
 
   private authUrl = environment.apiUrl + 'api/auth/'
+  private token: string;
 
-  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router) {
+  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router,private activatedRoute:ActivatedRoute) {
+    this.activatedRoute.queryParams.subscribe(params=>{
+      this.token = params['token'];
+    })
   }
 
   register(registerPayload: RegisterPayload): Observable<any> {
     return this.httpClient.post(this.authUrl + "register", registerPayload)
+  }
+
+  confirmAccount(){
+    return this.httpClient.get(this.authUrl+"confirm-account/"+ this.token)
   }
 
   login(loginPayload: LoginPayload): Observable<boolean> {

@@ -12,11 +12,16 @@ import {OrderEditComponent} from "./page/order-edit/order-edit.component";
 import {ForbiddenComponent} from "./core/forbidden/forbidden.component";
 import {ProductDetailsComponent} from "./product/product-details/product-details.component";
 import {AddProductComponent} from "./product/add-product/add-product.component";
+import {RegisterSuccessComponent} from "./user/register-success/register-success.component";
+import {ConfirmAccountComponent} from "./user/confirm-account/confirm-account.component";
+
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
+  {path: 'register-success', component: RegisterSuccessComponent},
+  {path: 'confirm-account', component: ConfirmAccountComponent},
   {path: 'users', component: UsersComponent},
   {path: 'user/edit/:id', component: UserEditComponent},
   {path: 'orders', component: OrdersComponent},

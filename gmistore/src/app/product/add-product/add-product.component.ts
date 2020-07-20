@@ -16,10 +16,7 @@ export class AddProductComponent implements OnInit {
   error: string;
 
   pictureUrl: any;
-
   selectedFiles: FileList;
-  fileInfos: FileList;
-
   uploadedPictures: string[];
 
   constructor(private formBuilder: FormBuilder, private productService: ProductService) {

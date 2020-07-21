@@ -15,6 +15,8 @@ public class ProductDto {
 
     private long id;
     private String name;
+    private String productCode;
+    private String slug;
     private String description;
     private String category;
     private String pictureUrl;

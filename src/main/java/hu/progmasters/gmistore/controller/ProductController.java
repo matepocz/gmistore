@@ -52,10 +52,12 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
-        ProductDto product = productService.getProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    @GetMapping("/get-by-slug/{slug}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable String slug) {
+        ProductDto product = productService.getProductBySlug(slug);
+        return product == null ?
+                new ResponseEntity<>(product, HttpStatus.OK):
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/added-by-user/{username}")
@@ -65,7 +67,7 @@ public class ProductController {
             List<ProductDto> products = productService.getAllProductsAddedByUser(username);
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PutMapping("/delete/{id}")
@@ -86,6 +88,6 @@ public class ProductController {
 
     @GetMapping("/get-product-categories")
     public ResponseEntity<Map<Category, String>> getProductCategories() {
-        return new ResponseEntity(productService.getProductCategories(), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getProductCategories(), HttpStatus.OK);
     }
 }

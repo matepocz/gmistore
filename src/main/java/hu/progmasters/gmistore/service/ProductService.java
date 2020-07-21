@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import com.github.slugify.Slugify;
 import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.enums.Role;
@@ -50,6 +51,8 @@ public class ProductService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Product product = new Product();
         product.setName(productDto.getName());
+        product.setProductCode(productDto.getProductCode());
+        product.setSlug(generateSlug(productDto.getName(), productDto.getProductCode()));
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());
@@ -64,6 +67,11 @@ public class ProductService {
         return product;
     }
 
+    private String generateSlug(String name, String productCode) {
+        Slugify slugify = new Slugify();
+        return slugify.slugify(name + "-" + productCode);
+    }
+
     /**
      * Get a product with the specified id from the database
      *
@@ -72,6 +80,12 @@ public class ProductService {
      */
     public ProductDto getProductById(Long id) {
         Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return mapProductToProductDto(product);
+    }
+
+    public ProductDto getProductBySlug(String slug) {
+        Product product = productRepository.findProductBySlug(slug)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return mapProductToProductDto(product);
     }
@@ -114,6 +128,8 @@ public class ProductService {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
         productDto.setName(product.getName());
+        productDto.setProductCode(product.getProductCode());
+        productDto.setSlug(product.getSlug());
         productDto.setDescription(product.getDescription());
         productDto.setCategory(product.getCategory().getDisplayName());
         productDto.setPictureUrl(product.getPictureUrl());
@@ -153,7 +169,9 @@ public class ProductService {
     }
 
     private void updateProductValues(ProductDto productDto, Product product) {
+        product.setId(productDto.getId());
         product.setName(productDto.getName());
+        product.setProductCode(productDto.getProductCode());
         product.setDescription(productDto.getDescription());
         product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
         product.setPictureUrl(productDto.getPictureUrl());

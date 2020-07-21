@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegisterPayload} from "../auth/register-payload";
 import {AuthService} from "../auth/auth.service";
@@ -11,18 +11,22 @@ import {ComparePassword} from "../auth/passwordValidator";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  registerForm:FormGroup;
+  @ViewChild('form') formValues;
+  registerForm: FormGroup;
   registerPayload: RegisterPayload
+  registerFail: string = 'Hiba a regisztráció során!'
+
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService) {
     this.registerForm = this.formBuilder.group({
-      firstName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(30),Validators.nullValidator]),  //todo folytatni a regex betűzéssel
-      lastName: new FormControl('',[Validators.required,Validators.min(3),Validators.max(15),Validators.nullValidator]),
-      username: new FormControl('',[Validators.required,Validators.min(5),Validators.max(15),Validators.nullValidator]),
-      email: new FormControl('',[Validators.required,Validators.email]),
-      password: new FormControl('',[Validators.required,Validators.nullValidator,Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]),
-      confirmPassword: new FormControl('',[Validators.required])
-    },{validator: ComparePassword('password','confirmPassword')});
+      firstName: new FormControl('', [Validators.required, Validators.min(3), Validators.max(30), Validators.nullValidator]),  //todo folytatni a regex betűzéssel
+      lastName: new FormControl('', [Validators.required, Validators.min(3), Validators.max(15), Validators.nullValidator]),
+      username: new FormControl('', [Validators.required, Validators.min(5), Validators.max(15), Validators.nullValidator]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.nullValidator, Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]),
+      confirmPassword: new FormControl('', [Validators.required]),
+      seller: new FormControl(false)
+    }, {validator: ComparePassword('password', 'confirmPassword')});
 
     this.registerPayload = {
       firstName: '',
@@ -30,7 +34,8 @@ export class RegisterComponent implements OnInit {
       username: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      seller: false
     };
 
   }
@@ -45,18 +50,21 @@ export class RegisterComponent implements OnInit {
     this.registerPayload.email = this.registerForm.get('email').value;
     this.registerPayload.password = this.registerForm.get('password').value;
     this.registerPayload.confirmPassword = this.registerForm.get('confirmPassword').value;
+    this.registerPayload.seller = this.registerForm.get('seller').value;
 
     this.authService.register(this.registerPayload).subscribe(data => {
+      // console.log('Seller status? ' + this.registerPayload.seller)
+      // console.log(this.registerPayload)
       console.log('register success');
     }, error => {
 
       console.log('register failed');
     });
+    this.formValues.resetForm('form');
   }
 
 
-
-  get condition(){
+  get condition() {
     return this.registerForm.controls;
   }
 }

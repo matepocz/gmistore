@@ -1,8 +1,10 @@
-import {Rating} from "./rating";
+import {Rating} from "../product/rating";
 
-export class Product{
+export interface Product {
   id: number;
   name: string;
+  productCode: string;
+  slug: string;
   description: string;
   category: string;
   pictureUrl: string;

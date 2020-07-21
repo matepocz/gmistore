@@ -1,4 +1,4 @@
-import {Product} from "../product/product";
+import {Product} from "./product";
 
 export interface OrderModel {
   id: number;
@@ -6,7 +6,7 @@ export interface OrderModel {
   status: string;
   quantity: string;
   date: any;
-  deliveryDate:any;
-  productList:Array<Product>;
-  user:object;
+  deliveryDate: any;
+  productList: Array<Product>;
+  user: object;
 }

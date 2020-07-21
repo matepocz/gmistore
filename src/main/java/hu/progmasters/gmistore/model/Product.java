@@ -29,6 +29,12 @@ public class Product implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "product_code")
+    private String productCode;
+
+    @Column(name = "slug")
+    private String slug;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

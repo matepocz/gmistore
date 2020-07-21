@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {ConfigService} from "../../service/config.service";
 import {AuthService} from "../../user/auth/auth.service";
 
 
@@ -13,7 +12,7 @@ export class NavComponent implements OnInit {
   // title = 'gmistore';
   public isCollapsed=true;
 
-  constructor(private config: ConfigService,public authService: AuthService) {
+  constructor(public authService: AuthService) {
   }
 
   ngOnInit(): void {

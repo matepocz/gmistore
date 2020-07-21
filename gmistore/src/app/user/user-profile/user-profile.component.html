@@ -1,1 +1,45 @@
-<p>user-profile works!</p>
+<div class="container">
+  <div class="row justify-content-center mt-4">
+    <div class="card shadow m-1" style="width: 36rem;">
+      <div class="card-body">
+        <h6 class="card-title">Felhasználói adatok</h6>
+        <hr>
+        <h6 class="text-muted">Név: {{ user.lastName}} {{user.firstName}}</h6>
+        <h6 class="text-muted">Felhasználónév: {{user.username}}</h6>
+        <h6 class="text-muted">Email: {{user.email}}</h6>
+        <h6 class="text-muted">Telefon: +{{user.phoneNumber}}</h6>
+        <h6 class="text-muted">Regisztrált: {{user.registered | date: "yyyy/MM/dd"}} </h6>
+        <hr>
+        <a href="#" class="card-link"><h6 class="text-center"><small>Adatok szerkesztése</small></h6></a>
+      </div>
+    </div>
+
+    <div class="card shadow m-1" style="width: 18rem;">
+      <div class="card-body">
+        <h6 class="card-title">Szállítási adatok</h6>
+        <hr>
+        <h6 class="text-muted">{{ user.lastName }} {{user.firstName}}</h6>
+        <h6 class="text-muted" *ngIf="user.phoneNumber"> +{{ user.phoneNumber }}</h6>
+        <h6 class="text-muted">{{ deliveryAddress.city }}</h6>
+        <h6 class="text-muted">{{ deliveryAddress.street }} út/utca {{deliveryAddress.number}}</h6>
+        <h6 class="text-muted" *ngIf="deliveryAddress.floor">{{ deliveryAddress.floor }} em. {{deliveryAddress.door}} ajtó</h6>
+        <h6 class="text-muted">{{ deliveryAddress.postcode }}</h6>
+        <h6 class="text-muted">{{ deliveryAddress.country }}</h6>
+        <hr>
+        <a href="#" class="card-link"><h6 class="text-center"><small>Adatok szerkesztése</small></h6></a>
+      </div>
+    </div>
+
+    <div class="card shadow m-1" style="width: 18rem;">
+      <div class="card-body">
+        <h6 class="card-title">Számlázási adatok</h6>
+        <hr>
+        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+          content.</p>
+        <hr>
+        <a href="#" class="card-link"><h6 class="text-center"><small>Adatok szerkesztése</small></h6></a>
+      </div>
+    </div>
+  </div>
+</div>

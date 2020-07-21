@@ -14,6 +14,7 @@ import {ProductDetailsComponent} from "./product/product-details/product-details
 import {AddProductComponent} from "./product/add-product/add-product.component";
 import {RegisterSuccessComponent} from "./user/register-success/register-success.component";
 import {ConfirmAccountComponent} from "./user/confirm-account/confirm-account.component";
+import {UserProfileComponent} from "./user/user-profile/user-profile.component";
 
 
 const routes: Routes = [
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path: 'register-success', component: RegisterSuccessComponent},
   {path: 'confirm-account', component: ConfirmAccountComponent},
   {path: 'users', component: UsersComponent},
+  {path: 'user/my-account', component: UserProfileComponent},
   {path: 'user/edit/:id', component: UserEditComponent},
   {path: 'orders', component: OrdersComponent},
   {path: 'order/edit/:id', component: OrderEditComponent},

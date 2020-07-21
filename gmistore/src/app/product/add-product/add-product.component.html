@@ -16,6 +16,12 @@
           </div>
 
           <div class="form-label-group">
+            <input type="text" id="productCode" name="productCode" class="form-control" placeholder="Termék azonosító"
+                   required [formControlName]="'productCode'">
+            <label for="productCode">Termék azonosító</label>
+          </div>
+
+          <div class="form-label-group">
             <select id="category" name="category" class="form-control" formControlName="category" required>
               <option *ngFor="let category of categories | keyvalue"
                       [value]="category.key">{{ category.value }}</option>

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
-import {Product} from "../product";
+import {Product} from "../../models/product";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 
 @Component({
@@ -13,9 +13,7 @@ export class AddProductComponent implements OnInit {
   categories: Map<String, String>;
   productForm: FormGroup;
   product: Product;
-  error: string;
 
-  pictureUrl: any;
   selectedFiles: FileList;
   uploadedPictures: string[];
 
@@ -23,72 +21,46 @@ export class AddProductComponent implements OnInit {
     this.productForm = new FormGroup({
       id: new FormControl(''),
       name: new FormControl(''),
+      productCode: new FormControl(''),
       description: new FormControl(''),
       category: new FormControl(''),
       pictureUrl: new FormControl(null),
       pictures: new FormControl(null),
-      price: new FormControl(0),
-      discount: new FormControl(0),
-      warrantyMonths: new FormControl(0),
-      quantityAvailable: new FormControl(0),
-      quantitySold: new FormControl(0),
+      price: new FormControl(),
+      discount: new FormControl(),
+      warrantyMonths: new FormControl(),
+      quantityAvailable: new FormControl(),
+      quantitySold: new FormControl(),
       ratings: new FormControl(null),
-      averageRating: new FormControl(0),
+      averageRating: new FormControl(),
       active: new FormControl(false),
       addedBy: new FormControl('')
     });
-
-    this.product = {
-      id: 0,
-      name: '',
-      description: '',
-      category: '',
-      pictureUrl: '',
-      pictures: new Array<string>(),
-      price: 0,
-      discount: 0,
-      warrantyMonths: 0,
-      quantityAvailable: 0,
-      quantitySold: 0,
-      ratings: null,
-      averageRating: 0,
-      active: false,
-      addedBy: ''
-    }
   }
 
   ngOnInit(): void {
     this.categories = new Map<String, String>();
     this.uploadedPictures = new Array<string>();
     this.productService.getProductCategories().subscribe(
-      data => {
+      (data) => {
         for (let value in data) {
           this.categories.set(value, data[value]);
         }
-      }, error => console.log(error)
+      }, (error) => console.log(error)
     );
   }
 
   onSubmit() {
-    this.product.name = this.productForm.get('name').value;
-    this.product.description = this.productForm.get('description').value;
-    this.product.category = this.productForm.get('category').value;
-    this.product.pictureUrl = this.productForm.get('pictureUrl').value;
-    this.product.price = this.productForm.get('price').value;
-    this.product.discount = this.productForm.get('discount').value;
-    this.product.warrantyMonths = this.productForm.get('warrantyMonths').value;
-    this.product.quantityAvailable = this.productForm.get('quantityAvailable').value;
-    this.product.active = this.productForm.get('active').value;
+    this.product = this.productForm.value;
     if (this.uploadedPictures.length > 0) {
       this.product.pictureUrl = this.uploadedPictures[0];
     }
     this.product.pictures = this.uploadedPictures;
 
-    this.productService.addProduct(this.product).subscribe(data => {
-      console.log('success')
-    }, error => {
-      console.log('failed')
-      console.log(this.product)
+    this.productService.addProduct(this.product).subscribe((data) => {
+      console.log(data);
+    }, (error) => {
+      console.log(error)
     });
   }
 

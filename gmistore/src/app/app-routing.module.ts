@@ -31,7 +31,7 @@ const routes: Routes = [
   {path: 'add-product', component: AddProductComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/edit/:id', component: ProductEditComponent},
-  {path: 'product-details/:id', component: ProductDetailsComponent},
+  {path: 'product-details/:slug', component: ProductDetailsComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', redirectTo: 'home',}
 ];

@@ -25,9 +25,10 @@
           </div>
         </div>
       </div>
-      <p><small>Kategória: {{product.category}}</small></p>
-      <p><small>{{product.warrantyMonths}} hónap garancia</small></p>
-      <p><small>{{product.quantitySold}} eladott darab</small></p>
+      <h6><small>Termék azonosító: {{product.productCode}}</small></h6>
+      <h6><small>Kategória: {{product.category}}</small></h6>
+      <h6><small>{{product.warrantyMonths}} hónap garancia</small></h6>
+      <h6><small>{{product.quantitySold}} eladott darab</small></h6>
 
       <div class="action" *ngIf="product.quantityAvailable > 0">
         <p class="text-success">{{product.quantityAvailable}} raktáron</p>

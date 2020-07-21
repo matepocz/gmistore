@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Product} from "../product/product";
+import {Product} from "../models/product";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -20,6 +20,10 @@ export class ProductService {
 
   getProduct(id: number): Observable<Product> {
     return this.httpClient.get<Product>(this.productsUrl + 'get/' + id);
+  }
+
+  getProductBySlug(slug: string): Observable<Product> {
+    return this.httpClient.get<Product>(this.productsUrl + 'get-by-slug/' + slug);
   }
 
   getActiveProducts(): Observable<Product[]> {

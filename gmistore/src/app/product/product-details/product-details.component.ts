@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
-import {Product} from "../product";
+import {Product} from "../../models/product";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Rating} from "../rating";
 
@@ -11,7 +11,7 @@ import {Rating} from "../rating";
 })
 export class ProductDetailsComponent implements OnInit {
 
-  id: number;
+  slug: string;
   product: Product;
   defaultPicture: string;
   averageRatingPercentage: number;
@@ -22,10 +22,9 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.product = new Product();
-    this.id = this.route.snapshot.params['id'];
+    this.slug = this.route.snapshot.params['slug'];
 
-    this.productService.getProduct(this.id).subscribe(
+    this.productService.getProductBySlug(this.slug).subscribe(
       data => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;

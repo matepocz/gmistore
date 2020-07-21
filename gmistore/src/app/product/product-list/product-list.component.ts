@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Product} from "../product";
+import {Product} from "../../models/product";
 import {ProductService} from "../../service/product-service";
 
 @Component({
@@ -15,12 +15,10 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     this.products = new Array<Product>();
-
     this.productService.getActiveProducts().subscribe(
-      data => {
+      (data) => {
         this.products = data;
-        console.log(data);
-      }, error => console.log(error)
+      }, (error) => console.log(error)
     );
   }
 

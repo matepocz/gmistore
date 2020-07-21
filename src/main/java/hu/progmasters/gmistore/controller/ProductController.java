@@ -55,7 +55,7 @@ public class ProductController {
     @GetMapping("/get-by-slug/{slug}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable String slug) {
         ProductDto product = productService.getProductBySlug(slug);
-        return product == null ?
+        return product != null ?
                 new ResponseEntity<>(product, HttpStatus.OK):
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -19,9 +19,6 @@ public class Address {
     @Column(name = "id")
     private long id;
 
-    @OneToOne(mappedBy = "address")
-    private User user;
-
     @NotNull
     @Column(name = "city")
     private String city;
@@ -33,6 +30,15 @@ public class Address {
     @NotNull
     @Column(name = "number")
     private int number;
+
+    @Column(name = "floor")
+    private int floor;
+
+    @Column(name = "door")
+    private int door;
+
+    @Column(name = "country")
+    private String country;
 
     @NotNull
     @Column(name = "postcode")

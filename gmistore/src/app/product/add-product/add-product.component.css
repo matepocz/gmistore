@@ -1,3 +1,6 @@
+.product-text-area{
+  resize: none;
+}
 .add-product-header{
   background: -webkit-linear-gradient(left, #0072ff, #8811c5);
 }

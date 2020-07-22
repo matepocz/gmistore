@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {Product} from "../../models/product";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-add-product',
@@ -11,31 +11,30 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 export class AddProductComponent implements OnInit {
 
   categories: Map<String, String>;
-  productForm: FormGroup;
   product: Product;
-
   selectedFiles: FileList;
   uploadedPictures: string[];
 
+  productForm = this.formBuilder.group({
+    'name': ['', Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(200)])],
+    'productCode': ['', Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+    'description': ['', Validators.compose(
+      [Validators.required, Validators.minLength(10)])],
+    'category': ['', Validators.required],
+    'pictureUrl': [null],
+    'pictures': [null],
+    'price': ['', Validators.compose([Validators.required, Validators.min(1)])],
+    'discount': ['', Validators.compose(
+      [Validators.required, Validators.min(0), Validators.max(100)])],
+    'warrantyMonths': ['', Validators.compose(
+      [Validators.required, Validators.min(0), Validators.max(360)])],
+    'quantityAvailable': ['', Validators.compose([Validators.required, Validators.min(0)])],
+    'active': [''],
+  });
+
   constructor(private formBuilder: FormBuilder, private productService: ProductService) {
-    this.productForm = new FormGroup({
-      id: new FormControl(''),
-      name: new FormControl(''),
-      productCode: new FormControl(''),
-      description: new FormControl(''),
-      category: new FormControl(''),
-      pictureUrl: new FormControl(null),
-      pictures: new FormControl(null),
-      price: new FormControl(),
-      discount: new FormControl(),
-      warrantyMonths: new FormControl(),
-      quantityAvailable: new FormControl(),
-      quantitySold: new FormControl(),
-      ratings: new FormControl(null),
-      averageRating: new FormControl(),
-      active: new FormControl(false),
-      addedBy: new FormControl('')
-    });
   }
 
   ngOnInit(): void {

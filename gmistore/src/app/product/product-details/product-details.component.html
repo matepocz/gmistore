@@ -7,7 +7,7 @@
       </div>
       <ul class="preview-thumbnail nav nav-tabs">
         <li class="active" *ngFor="let picture of product.pictures" (click)="changeDefaultImg(picture)">
-          <a data-target="#pic-1" data-toggle="tab"><img src="{{picture}}" alt=""/></a>
+          <a class="preview-image"><img src="{{picture}}" alt=""/></a>
         </li>
       </ul>
     </div>
@@ -69,8 +69,8 @@
       <h6>Vélemények:</h6>
     </div>
     <div class="row">
-      <div class="col-12 ml-2" *ngFor="let rating of ratings">
-        <div class="rating mt-1">
+      <div class="col-12" *ngFor="let rating of ratings">
+        <div class="rating pl-2 mt-1">
           <div class="star-ratings-css">
             <div class="star-ratings-css-top"
                  [ngStyle]="{'max-width.px': calculatePercentageForRating(rating.actualRating)}">
@@ -81,8 +81,8 @@
             </div>
           </div>
         </div>
-        <p class="text-justify">{{ rating.comment }}</p>
-        <h6 class="text-secondary">
+        <p class="text-justify pl-2">{{ rating.comment }}</p>
+        <h6 class="text-secondary pl-2">
           <small><i class="fa fa-user"></i> {{rating.username}}
             <i class="fa fa-clock-o"></i> {{ rating.timeStamp | date: "yyyy-MM-dd HH:mm" }}
           </small>

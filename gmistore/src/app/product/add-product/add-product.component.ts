@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {Product} from "../../models/product";
 import {FormBuilder, Validators} from "@angular/forms";
+import {errorHandler} from "../../utils/errorHandler";
 
 @Component({
   selector: 'app-add-product',
@@ -25,7 +26,7 @@ export class AddProductComponent implements OnInit {
     'category': ['', Validators.required],
     'pictureUrl': [null],
     'pictures': [null],
-    'price': ['', Validators.compose([Validators.required, Validators.min(1)])],
+    'price': ['', Validators.compose([Validators.required, Validators.min(0)])],
     'discount': ['', Validators.compose(
       [Validators.required, Validators.min(0), Validators.max(100)])],
     'warrantyMonths': ['', Validators.compose(
@@ -45,7 +46,9 @@ export class AddProductComponent implements OnInit {
         for (let value in data) {
           this.categories.set(value, data[value]);
         }
-      }, (error) => console.log(error)
+      }, (error) => {
+        console.warn(error);
+      }
     );
   }
 
@@ -56,11 +59,12 @@ export class AddProductComponent implements OnInit {
     }
     this.product.pictures = this.uploadedPictures;
 
-    this.productService.addProduct(this.product).subscribe((data) => {
-      console.log(data);
-    }, (error) => {
-      console.log(error)
-    });
+    this.productService.addProduct(this.product).subscribe(
+      () => {
+      }, (error) => {
+        errorHandler(error, this.productForm);
+      }
+    )
   }
 
   onFileChange(event) {

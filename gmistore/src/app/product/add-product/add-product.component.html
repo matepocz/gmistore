@@ -15,7 +15,7 @@
           <label for="name">Megnevezés</label>
           <small *ngIf="productForm.get('name').touched && productForm.get('name').invalid
               && !productForm.get('name').errors?.serverError" class="text-danger">
-            Név szükséges.
+            Nem megfelelő megnevezés.
           </small>
         </div>
 
@@ -26,18 +26,26 @@
           <label for="productCode">Termék azonosító</label>
           <small *ngIf="productForm.get('productCode').invalid && productForm.get('productCode').touched
             && !productForm.get('productCode').errors?.serverError" class="text-danger">
-            Termék azonosító szükséges.
+            Nem megfelelő termék azonosító.
+          </small>
+          <small class="text-danger" *ngIf="productForm.get('productCode').errors?.serverError">
+            {{ productForm.get('productCode').errors?.serverError }}
           </small>
         </div>
 
         <div class="form-label-group">
-          <select id="category" name="category" class="form-control" [formControlName]="'category'" required>
-            <option selected disabled>Kategória</option>
+          <select id="category" name="category" class="form-control" [formControlName]="'category'" required
+                  [ngClass]="{'is-invalid': productForm.get('category').touched && productForm.get('category').invalid}">
+            <option value="" hidden>Kategória</option>
             <option *ngFor="let category of categories | keyvalue"
                     [value]="category.key">{{ category.value }}</option>
           </select>
-          <small id="categoryHelper" class="form-text text-muted">
-            Kategória kiválasztása szükséges
+          <small *ngIf="productForm.get('category').invalid && productForm.get('category').touched
+            && !productForm.get('category').errors?.serverError" class="text-danger">
+            Kategória szükséges.
+          </small>
+          <small class="text-danger" *ngIf="productForm.get('category').errors?.serverError">
+            {{ productForm.get('category').errors?.serverError }}
           </small>
         </div>
 
@@ -124,8 +132,7 @@
         </div>
 
         <div class="text-center mb-3 mt3">
-          <input class="btn btn-outline-primary btn-lg" [disabled]="!selectedFiles" type="submit" routerLink="../list"
-                 value="Létrehoz">
+          <input class="btn btn-outline-primary btn-lg" [disabled]="!selectedFiles" type="submit" value="Létrehoz">
         </div>
       </div>
     </form>

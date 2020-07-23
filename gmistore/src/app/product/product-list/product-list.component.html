@@ -1,51 +1,33 @@
-<div class="container my-5">
-  <div class="row  justify-content-around px-5 ">
-    <div class="col-auto text-center">
-      <label>Keresés az termékek között</label>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Termék neve">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Keresés</button>
-      </form>
+<div class="row">
+  <div class="card product-card col-xl-3 col-lg-3 col-md-4 col-sm-12 my-1" *ngFor="let product of products">
+    <a [routerLink]="['/product/', product.slug]">
+      <img class="mt-1" [src]="product.pictureUrl" alt="{{ product.name }}" style="width:100%"/>
+    </a>
+    <h5 class="text-secondary mt-2 text-center">{{ product.name | slice:0:18 }}</h5>
+
+    <div *ngIf="product.quantityAvailable == 0">
+      <p class="text-danger text-center"> 0 raktáron</p>
     </div>
 
-    <div class="my-2 my-lg-0 text-center">
-      <div>
-        <label>Terméket szeretnék létrehozni</label>
+    <div *ngIf="product.quantityAvailable > 0">
+      <h6 class="text-success">{{product.quantityAvailable}} raktáron</h6>
+      <div *ngIf="product.discount == 0">
+        <p class="price">{{ product.price }} HUF</p>
       </div>
-      <div class="w-100"></div>
-      <div><a href="/add-product" target="_blank" class="btn btn-primary" role="button">Új termék létrehozása</a></div>
+
+      <div *ngIf="product.discount > 0">
+        <p class="text text-danger">
+          <small>
+            <del>{{product.price}} HUF</del>
+            ({{ product.discount }} %)
+          </small>
+        </p>
+        <p class="price" [innerText]="calculateDiscountedPrice(product) + ' HUF' "></p>
+      </div>
     </div>
-  </div>
-
-  <div class="row my-5">
-    <div class="card col-lg-4 col-md-6 col-sm-12 mt-1 m-1 shadow" *ngFor="let product of products">
-      <a [routerLink]="['/product/', product.slug]">
-        <img class="mt-1" [src]="product.pictureUrl" alt="{{ product.name }}" style="width:100%"/>
-      </a>
-      <h5 class="text-secondary mt-2 text-center">{{ product.name | slice:0:18 }}</h5>
-
-      <div *ngIf="product.quantityAvailable == 0">
-        <p class="text-danger text-center"> 0 raktáron</p>
-      </div>
-
-      <div *ngIf="product.quantityAvailable > 0">
-        <h6 class="text-success">{{product.quantityAvailable}} raktáron</h6>
-        <div *ngIf="product.discount == 0">
-          <p class="price">{{ product.price }} HUF</p>
-        </div>
-
-        <div *ngIf="product.discount > 0">
-          <p class="text text-danger">
-            <small>
-              <del>{{product.price}} HUF</del> ({{ product.discount }} %)
-            </small>
-          </p>
-          <p class="price" [innerText]="calculateDiscountedPrice(product) + ' HUF' "></p>
-        </div>
-      </div>
-      <p>
-        <button class="btn btn-block btn-outline-primary">Kosárba</button>
-      </p>
-    </div>
+    <p>
+      <button class="btn btn-block btn-outline-primary">Kosárba</button>
+    </p>
   </div>
 </div>
+

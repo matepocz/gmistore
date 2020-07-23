@@ -1,116 +1,107 @@
-<div class="container mt-4">
-  <form #form="ngForm" name="form" class="form shadow" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="note">
-      <p>Regisztráció</p>
-    </div>
-
-    <div class="form-content">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputFirstName" [formControlName]="'firstName'"
-                   [ngClass]="{'is-invalid': registerForm.get('firstName').touched && registerForm.get('firstName').invalid}"
-                   class="form-control" placeholder="Vezetéknév *" value="" required=""/>
-            <div class="invalid-feedback">
-              <div>Vezetéknév: minimum 3 maximum 30 karakter!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputLastName" [formControlName]="'lastName'"
-                   [ngClass]="{'is-invalid': registerForm.get('lastName').touched && registerForm.get('lastName').invalid}"
-                   class="form-control" placeholder="Keresztnév *" value="" required=""/>
-            <div class="invalid-feedback">
-              <div>Keresztnév: minimum 3 maximum 15 karakter</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="inputUsername" [formControlName]="'username'"
-                   [ngClass]="{'is-invalid': registerForm.get('username').touched && registerForm.get('username').invalid}"
-                   class="form-control" placeholder="Felhasználónév *" value="" required=""/>
-            <div class="invalid-feedback">
-              <div>Felhasználói név: minimum 5 és 15 karakter!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="text" id="inputEmail" [formControlName]="'email'"
-                   [ngClass]="{'is-invalid': registerForm.get('email').touched && registerForm.get('email').invalid}"
-                   class="form-control" placeholder="Email cím *" value="" required=""/>
-            <div *ngIf="registerForm.get('email').touched && registerForm.get('email').invalid"
-                 class="invalid-feedback">
-              <div>Érvénytelen email cím!</div>
-            </div>
-          </div>
-
-
-
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="password" id="inputPassword" [formControlName]="'password'"
-                   [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.get('password').invalid}"
-                   class="form-control" placeholder="Jelszó *" value="" required=""/>
-
-            <div class="invalid-feedback">
-              <div>Jelszó: kis és nagy betűket egy számot és minimum egy speciális karaktert kell tartalmaznia!</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'"
-                   [ngClass]="{'is-invalid': condition.confirmPassword.touched && condition.confirmPassword.invalid}"
-                   class="form-control"
-                   placeholder="Jelszó ismét *" value="" required=""/>
-            <div *ngIf="condition.confirmPassword.touched && condition.confirmPassword.invalid"
-                 class="invalid-feedback">
-              <!--<div *ngIf="condition.confirmPassword.errors.required">A mezőt ki kell tölteni</div>-->
-              <div *ngIf="condition.confirmPassword.errors">A két jelszó nem egyezik</div>
-            </div>
-            <br>
-
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" [formControlName]="'seller'" class="custom-control-input" id="seller">
-              <label class="custom-control-label" for="seller">Eladóként regisztrál?</label>
-            </div>
-<!--            <div class="form-group">-->
-<!--              <label for="inputState"></label>-->
-<!--              <select id="inputState" class="form-control">-->
-<!--                <option selected disabled>Válassz...</option>-->
-<!--                <option>Vásárló</option>-->
-<!--                <option value="">Eladó</option>-->
-<!--              </select>-->
-<!--            </div>-->
-          </div>
-        </div>
+<div class="row">
+  <div class="col-12">
+    <form #form="ngForm" name="form" class="form shadow background-white" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="note">
+        <p>Regisztráció</p>
       </div>
-      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-              [disabled]="registerForm.invalid">Regisztráció
-      </button>
-      <!--        Modal-->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-           aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel" [innerText]="registerFail">Sikeres regisztráció</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" id="inputFirstName" [formControlName]="'firstName'"
+                     [ngClass]="{'is-invalid': registerForm.get('firstName').touched && registerForm.get('firstName').invalid}"
+                     class="form-control" placeholder="Vezetéknév *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Vezetéknév: minimum 3 maximum 30 karakter!</div>
+              </div>
             </div>
-            <div class="modal-body">
-              ...
+            <div class="form-group">
+              <input type="text" id="inputLastName" [formControlName]="'lastName'"
+                     [ngClass]="{'is-invalid': registerForm.get('lastName').touched && registerForm.get('lastName').invalid}"
+                     class="form-control" placeholder="Keresztnév *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Keresztnév: minimum 3 maximum 15 karakter</div>
+              </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" id="inputUsername" [formControlName]="'username'"
+                     [ngClass]="{'is-invalid': registerForm.get('username').touched && registerForm.get('username').invalid}"
+                     class="form-control" placeholder="Felhasználónév *" value="" required=""/>
+              <div class="invalid-feedback">
+                <div>Felhasználói név: minimum 5 és 15 karakter!</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" id="inputEmail" [formControlName]="'email'"
+                     [ngClass]="{'is-invalid': registerForm.get('email').touched && registerForm.get('email').invalid}"
+                     class="form-control" placeholder="Email cím *" value="" required=""/>
+              <div *ngIf="registerForm.get('email').touched && registerForm.get('email').invalid"
+                   class="invalid-feedback">
+                <div>Érvénytelen email cím!</div>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="password" id="inputPassword" [formControlName]="'password'"
+                     [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.get('password').invalid}"
+                     class="form-control" placeholder="Jelszó *" value="" required=""/>
+
+              <div class="invalid-feedback">
+                <div>Jelszó: kis és nagy betűket egy számot és minimum egy speciális karaktert kell tartalmaznia!</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="password" id="inputConfirmPassword" [formControlName]="'confirmPassword'"
+                     [ngClass]="{'is-invalid': condition.confirmPassword.touched && condition.confirmPassword.invalid}"
+                     class="form-control"
+                     placeholder="Jelszó ismét *" value="" required=""/>
+              <div *ngIf="condition.confirmPassword.touched && condition.confirmPassword.invalid"
+                   class="invalid-feedback">
+                <!--<div *ngIf="condition.confirmPassword.errors.required">A mezőt ki kell tölteni</div>-->
+                <div *ngIf="condition.confirmPassword.errors">A két jelszó nem egyezik</div>
+              </div>
+              <br>
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" [formControlName]="'seller'" class="custom-control-input" id="seller">
+                <label class="custom-control-label" for="seller">Eladóként regisztrál?</label>
+              </div>
             </div>
           </div>
         </div>
+        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                [disabled]="registerForm.invalid">Regisztráció
+        </button>
+        <!--        Modal-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" [innerText]="registerFail">Sikeres regisztráció</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
       </div>
-      <hr>
-      <p class="text-secondary"><small>Regisztrált?</small><a href="/login"><small> Bejelentkezés</small></a></p>
-    </div>
-  </form>
-
-
+    </form>
+  </div>
 </div>

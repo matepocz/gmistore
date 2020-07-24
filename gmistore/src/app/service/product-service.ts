@@ -18,10 +18,6 @@ export class ProductService {
     return this.httpClient.post(this.productsUrl + 'add', product);
   }
 
-  getProduct(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.productsUrl + 'get/' + id);
-  }
-
   getProductBySlug(slug: string): Observable<Product> {
     return this.httpClient.get<Product>(this.productsUrl + 'get-by-slug/' + slug);
   }

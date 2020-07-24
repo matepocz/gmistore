@@ -73,17 +73,10 @@ public class ProductService {
     }
 
     /**
-     * Get a product with the specified id from the database
-     *
-     * @param id Product's unique id
+     * Attempt to retrieve a product by the specified slug field.
+     * @param slug the product's unique identifier
      * @return A ProductDto, if not found throws ProductNotFoundException
      */
-    public ProductDto getProductById(Long id) {
-        Product product = productRepository.findProductById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return mapProductToProductDto(product);
-    }
-
     public ProductDto getProductBySlug(String slug) {
         Product product = productRepository.findProductBySlug(slug)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));

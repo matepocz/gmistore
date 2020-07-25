@@ -78,9 +78,9 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
-        boolean result = productService.updateProduct(id, productDto);
+    @PutMapping("/update/{slug}")
+    public ResponseEntity updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
+        boolean result = productService.updateProduct(slug, productDto);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

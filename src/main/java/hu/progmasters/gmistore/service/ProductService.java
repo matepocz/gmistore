@@ -143,18 +143,19 @@ public class ProductService {
      * Updates a product in the database with the specified id
      * and values
      *
-     * @param id         The product's unique id
+     * @param slug         The product's unique slug ID.
      * @param productDto A ProductDto containing the values to update
      * @return A boolean, true if updated, false otherwise
      */
-    public boolean updateProduct(Long id, ProductDto productDto) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+    public boolean updateProduct(String slug, ProductDto productDto) {
+        Optional<Product> optionalProduct = productRepository.findProductBySlug(slug);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             if (isAuthorized(product.getAddedBy())) {
                 updateProductValues(productDto, product);
                 product.getInventory().setQuantityAvailable(productDto.getQuantityAvailable());
-                LOGGER.debug("Product updated! Id :{}", id);
+                productRepository.save(product);
+                LOGGER.debug("Product updated! Id :{}", product.getId());
                 return true;
             }
         }
@@ -172,8 +173,6 @@ public class ProductService {
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
-        product.setRatings(productDto.getRatings());
-        product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
     }
 
@@ -200,7 +199,7 @@ public class ProductService {
         String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean isAdmin =
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Role.ROLE_ADMIN);
-        return isAdmin && productAddedBy.equalsIgnoreCase(authenticatedUsername);
+        return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 
     public Map<Category, String> getProductCategories() {

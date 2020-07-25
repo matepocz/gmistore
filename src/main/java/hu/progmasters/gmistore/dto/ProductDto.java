@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class ProductDto {
 
-    private long id;
+    private Long id;
     private String name;
     private String productCode;
     private String slug;

@@ -15,6 +15,7 @@ export class AddProductComponent implements OnInit {
   product: Product;
   selectedFiles: FileList;
   uploadedPictures: string[];
+  loading = false;
 
   productForm = this.formBuilder.group({
     'name': ['', Validators.compose(
@@ -39,6 +40,7 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.categories = new Map<String, String>();
     this.uploadedPictures = new Array<string>();
     this.productService.getProductCategories().subscribe(
@@ -46,6 +48,7 @@ export class AddProductComponent implements OnInit {
         for (let value in data) {
           this.categories.set(value, data[value]);
         }
+        this.loading = false;
       }, (error) => {
         console.warn(error);
       }
@@ -53,6 +56,7 @@ export class AddProductComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     this.product = this.productForm.value;
     if (this.uploadedPictures.length > 0) {
       this.product.pictureUrl = this.uploadedPictures[0];
@@ -65,6 +69,7 @@ export class AddProductComponent implements OnInit {
         errorHandler(error, this.productForm);
       }
     )
+    this.loading = false;
   }
 
   onFileChange(event) {
@@ -81,9 +86,11 @@ export class AddProductComponent implements OnInit {
   }
 
   async upload(file) {
+    this.loading = true;
     return await this.productService.uploadImage(file).then((data) => {
       this.uploadedPictures.push(data[1]);
       console.log(this.uploadedPictures);
+      this.loading = false;
     }, (error) => {
       console.log(error);
     });

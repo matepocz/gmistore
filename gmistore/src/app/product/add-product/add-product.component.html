@@ -132,7 +132,10 @@
         </div>
 
         <div class="text-center mb-3 mt3">
-          <input class="btn btn-outline-primary btn-lg" [disabled]="!selectedFiles" type="submit" value="Létrehoz">
+          <button class="btn btn-outline-primary btn-lg" [disabled]="loading" type="submit">
+          <span *ngIf="loading" class="spinner-border mr-1"></span>
+            Létrehoz
+          </button>
         </div>
       </div>
     </form>

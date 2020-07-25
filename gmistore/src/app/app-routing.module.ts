@@ -30,8 +30,8 @@ const routes: Routes = [
   {path: 'order/edit/:id', component: OrderEditComponent},
   {path: 'add-product', component: AddProductComponent},
   {path: 'product-list', component: ProductListComponent},
-  {path: 'product/edit/:id', component: ProductEditComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
+  {path: 'edit-product/:slug', component: ProductEditComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', redirectTo: 'home',}
 ];

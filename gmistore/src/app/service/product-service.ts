@@ -30,6 +30,10 @@ export class ProductService {
     return this.httpClient.get<String[]>(this.productsUrl + 'get-product-categories');
   }
 
+  updateProduct(product: Product, slug: string): Observable<any> {
+    return this.httpClient.put(this.productsUrl + 'update/' + slug, product);
+  }
+
   public async uploadImage(image: File) {
     const uploadData = new FormData();
     uploadData.append('picture', image);

@@ -95,4 +95,9 @@ export class AddProductComponent implements OnInit {
       console.log(error);
     });
   }
+
+  removeImage(picture: string) {
+    let indexOfImage = this.uploadedPictures.indexOf(picture);
+    this.uploadedPictures.splice(indexOfImage, 1);
+  }
 }

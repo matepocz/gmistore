@@ -125,15 +125,25 @@
           <small id="pictureUrlHelper" class="form-text text-muted">
             Kép feltöltése szükséges. Max. 1MB / kép</small>
         </div>
+        <div class="row">
+          <div class="col-12">
+            <ul class="preview-thumbnail nav nav-tabs">
+              <li class="active" *ngFor="let picture of uploadedPictures">
+                <a class="preview-image"><img src="{{picture}}" alt="pic" width="100" height="100"
+                (click)="removeImage(picture)"/></a>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-        <div class="custom-control custom-checkbox my-1 mr-sm-2">
+        <div class="custom-control custom-checkbox my-2 mr-sm-2">
           <input type="checkbox" [formControlName]="'active'" class="custom-control-input" id="active">
           <label class="custom-control-label" for="active">Termék azonnal rendelhető?</label>
         </div>
 
         <div class="text-center mb-3 mt3">
           <button class="btn btn-outline-primary btn-lg" [disabled]="loading" type="submit">
-          <span *ngIf="loading" class="spinner-border mr-1"></span>
+            <span *ngIf="loading" class="spinner-border mr-1"></span>
             Létrehoz
           </button>
         </div>

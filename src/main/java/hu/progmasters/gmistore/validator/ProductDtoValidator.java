@@ -39,14 +39,13 @@ public class ProductDtoValidator implements Validator {
             errors.rejectValue("price", "product.price.negative");
         }
 
-        Optional<Product> productByProductCode =
-                productRepository.findProductByProductCode(productDto.getProductCode());
-        if (productDto.getProductCode() == null ||
-                (productByProductCode.isPresent() &&
-                        productDto.getId() != null &&
-                        !productDto.getId().equals(productByProductCode.get().getId()))) {
-            System.out.println(productDto.getId() + " : " + productByProductCode.get().getId());
-            errors.rejectValue("productCode", "product.productCode.alreadyExists");
+        if (productDto.getId() == null) {
+            Optional<Product> productByProductCode =
+                    productRepository.findProductByProductCode(productDto.getProductCode());
+            if (productDto.getProductCode() == null ||
+                    (productByProductCode.isPresent() && !productDto.getId().equals(productByProductCode.get().getId()))) {
+                errors.rejectValue("productCode", "product.productCode.alreadyExists");
+            }
         }
     }
 }

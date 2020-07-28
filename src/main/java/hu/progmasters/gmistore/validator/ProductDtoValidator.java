@@ -45,6 +45,7 @@ public class ProductDtoValidator implements Validator {
                 (productByProductCode.isPresent() &&
                         productDto.getId() != null &&
                         !productDto.getId().equals(productByProductCode.get().getId()))) {
+            System.out.println(productDto.getId() + " : " + productByProductCode.get().getId());
             errors.rejectValue("productCode", "product.productCode.alreadyExists");
         }
     }

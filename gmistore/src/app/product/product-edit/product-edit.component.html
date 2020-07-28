@@ -9,9 +9,9 @@
 
       <div class="col-12 mt-3">
         <div class="form-label-group">
-          <input type="text" [formControlName]="'name'" id="name" name="name" class="form-control"
+          <input type="text" formControlName="name" id="name" name="name" class="form-control"
                  [ngClass]="{'is-invalid': productForm.get('name').touched
-                   && productForm.get('name').invalid}" placeholder="Megnevezés" disabled>
+                   && productForm.get('name').invalid}" placeholder="Megnevezés">
           <label for="name">Megnevezés</label>
           <small *ngIf="productForm.get('name').touched && productForm.get('name').invalid
               && !productForm.get('name').errors?.serverError" class="text-danger">
@@ -20,9 +20,9 @@
         </div>
 
         <div class="form-label-group">
-          <input type="text" [formControlName]="'productCode'" id="productCode" name="productCode"
+          <input type="text" formControlName="productCode" id="productCode" name="productCode"
                  [ngClass]="{'is-invalid': productForm.get('productCode').touched && productForm.get('productCode').invalid}"
-                 class="form-control" placeholder="Termék azonosító" disabled>
+                 class="form-control" placeholder="Termék azonosító">
           <label for="productCode">Termék azonosító</label>
           <small *ngIf="productForm.get('productCode').invalid && productForm.get('productCode').touched
             && !productForm.get('productCode').errors?.serverError" class="text-danger">
@@ -34,11 +34,9 @@
         </div>
 
         <div class="form-label-group">
-          <select id="category" name="category" class="form-control" [formControlName]="'category'" required
+          <select id="category" name="category" [(ngModel)]="currentCategory" class="form-control" formControlName="category" required
                   [ngClass]="{'is-invalid': productForm.get('category').touched && productForm.get('category').invalid}">
-            <option value="" hidden>Kategória</option>
-            <option *ngFor="let category of categories | keyvalue"
-                    [value]="category.key">{{ category.value }}</option>
+            <option *ngFor="let category of categories | keyvalue" [ngValue]="category.key">{{ category.value }}</option>
           </select>
           <small *ngIf="productForm.get('category').invalid && productForm.get('category').touched
             && !productForm.get('category').errors?.serverError" class="text-danger">
@@ -50,7 +48,7 @@
         </div>
 
         <div class="form-label-group">
-          <textarea rows="5" [formControlName]="'description'" id="description" name="description"
+          <textarea rows="5" formControlName="description" id="description" name="description"
                     [ngClass]="{'is-invalid': productForm.get('description').touched
                     && productForm.get('description').invalid}" class="form-control product-text-area"
                     placeholder="Leírás"></textarea>
@@ -64,7 +62,7 @@
           <div class="col-md-6 col-sm-12 mb-3">
             <div class="form-label-group">
               <input type="number" id="price" name="price" class="form-control" placeholder="Ár" required
-                     [formControlName]="'price'" [ngClass]="{'is-invalid': productForm.get('price').touched
+                     formControlName="price" [ngClass]="{'is-invalid': productForm.get('price').touched
                     && productForm.get('price').invalid}">
               <small *ngIf="productForm.get('price').invalid && productForm.get('price').touched
               && !productForm.get('price').errors?.serverError" class="text-danger">
@@ -76,7 +74,7 @@
           <div class="col-md-6 col-sm-12 mb-3">
             <div class="form-label-group">
               <input type="number" id="discount" name="discount" class="form-control" placeholder="Kedvezmény" min="0"
-                     max="100" [formControlName]="'discount'" [ngClass]="{'is-invalid':
+                     max="100" formControlName="discount" [ngClass]="{'is-invalid':
                      productForm.get('discount').touched && productForm.get('discount').invalid}">
               <label for="discount">Kedvezmény (%)</label>
               <small *ngIf="productForm.get('discount').invalid && productForm.get('discount').touched
@@ -91,7 +89,7 @@
           <div class="col-md-6 col-sm-12 mb-3">
             <div class="form-label-group">
               <input type="number" id="warrantyMonths" name="warrantyMonths" class="form-control"
-                     placeholder="Garancia (hónap)" min="0" [formControlName]="'warrantyMonths'"
+                     placeholder="Garancia (hónap)" min="0" formControlName="warrantyMonths"
                      [ngClass]="{'is-invalid': productForm.get('warrantyMonths').touched
                      && productForm.get('warrantyMonths').invalid}">
               <label for="warrantyMonths">Garancia (hónap)</label>
@@ -104,7 +102,7 @@
           <div class="col-md-6 col-sm-12 mb-3">
             <div class="form-label-group">
               <input type="number" id="quantityAvailable" name="quantityAvailable" class="form-control"
-                     placeholder="Mennyiség" required [formControlName]="'quantityAvailable'"
+                     placeholder="Mennyiség" required formControlName="quantityAvailable"
                      [ngClass]="{'is-invalid': productForm.get('quantityAvailable').touched
                      && productForm.get('quantityAvailable').invalid}">
               <label for="quantityAvailable">Mennyiség</label>
@@ -138,7 +136,7 @@
         </div>
 
         <div class="custom-control custom-checkbox my-2 mr-sm-2">
-          <input type="checkbox" [formControlName]="'active'" class="custom-control-input" id="active">
+          <input type="checkbox" formControlName="active" class="custom-control-input" id="active">
           <label class="custom-control-label" for="active">Termék rendelhető?</label>
         </div>
 

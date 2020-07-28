@@ -18,6 +18,7 @@ export class AddProductComponent implements OnInit {
   loading = false;
 
   productForm = this.formBuilder.group({
+    'id': [null],
     'name': ['', Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(200)])],
     'productCode': ['', Validators.compose(

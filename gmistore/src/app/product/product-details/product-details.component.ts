@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {Product} from "../../models/product";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Rating} from "../rating";
+import {Rating} from "../../models/rating";
 
 @Component({
   selector: 'app-product-details',

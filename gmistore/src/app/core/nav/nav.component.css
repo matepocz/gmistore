@@ -1,10 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@700&display=swap');
-
 .navbar{
   background: -webkit-linear-gradient(left, #0072ff, #8811c5);
-  font-family: 'Crimson Text', serif;
   margin-bottom: 20px;
-
 }
 .navbar-brand{
   color: aliceblue;
@@ -18,4 +14,12 @@
 
 .btn{
   color: aliceblue;
+}
+
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+.dropdown>.dropdown-toggle:active {
+  pointer-events: none;
 }

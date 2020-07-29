@@ -71,7 +71,7 @@ public class ProductController {
     }
 
     @PutMapping("/delete/{id}")
-    public ResponseEntity deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         boolean result = productService.deleteProduct(id);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
@@ -79,7 +79,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{slug}")
-    public ResponseEntity updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<Void> updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
         boolean result = productService.updateProduct(slug, productDto);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :

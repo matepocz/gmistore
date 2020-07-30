@@ -32,13 +32,14 @@
 
     <div class="action" *ngIf="product.quantityAvailable > 0">
       <p class="text-success">{{product.quantityAvailable}} raktáron</p>
-      <h6 class="text-danger" *ngIf="product.discount == 0">{{product.price}} Ft</h6>
+      <h6 class="text-danger" *ngIf="product.discount == 0">
+        {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</h6>
       <h6 class="text-danger" *ngIf="product.discount > 0">
         <small>
-          <del>{{product.price}} HUF</del>
+          <del>{{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</del>
         </small>
         Akciós ár:
-        <span [innerText]="calculateDiscountedPrice()"></span> HUF
+        <span [innerText]="calculateDiscountedPrice()  | currency : 'HUF' : 'symbol-narrow' : '3.0' "></span> HUF
       </h6>
       <button class="add-to-cart btn btn-default mr-1" type="button">
         <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosárba
@@ -84,8 +85,8 @@
       <div class="col-12">
         <p class="text-justify pl-2">{{ rating.comment }}</p>
         <h6 class="text-secondary pl-2">
-          <small><i class="fa fa-user"></i> {{rating.username}}
-            <i class="fa fa-clock-o"></i> {{ rating.timeStamp | date: "yyyy-MM-dd HH:mm" }}
+          <small><i class="fa fa-user" aria-hidden="true"></i> {{rating.username}}
+            <i class="fa fa-clock-o" aria-hidden="true"></i> {{ rating.timeStamp | date: "yyyy-MM-dd HH:mm" }}
           </small>
         </h6>
       </div>

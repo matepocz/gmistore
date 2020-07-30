@@ -1,40 +1,46 @@
-<div class="row">
+<div class="row justify-content-between">
 
   <div class="col-12 background-white rounded my-2 shadow">
     <p class="pt-2">{{ products.length }} termék</p>
     <hr>
   </div>
 
-  <div class="product-card col-xl-3 col-lg-3 col-md-4 col-sm-5 rounded my-1 background-white"
+  <div class="card product-card rounded my-1 background-white"
        *ngFor="let product of products">
     <a [routerLink]="['/product/', product.slug]">
       <img class="product-card-img pt-2" [src]="product.pictureUrl" alt="{{ product.name }}"/>
     </a>
-    <h5 class="text-secondary mt-2 text-center">{{ product.name | slice:0:18 }}</h5>
-
-    <div *ngIf="product.quantityAvailable == 0">
-      <p class="text-danger text-center"> 0 raktáron</p>
-    </div>
+    <h6 class="text-secondary mt-auto text-center text-justify">{{ product.name | slice: 0 : 45 }}</h6>
 
     <div *ngIf="product.quantityAvailable > 0">
-      <h6 class="text-success">{{product.quantityAvailable}} raktáron</h6>
+      <p class="card-paragraph text-success text-center">{{product.quantityAvailable}} raktáron</p>
       <div *ngIf="product.discount == 0">
-        <p class="price">{{ product.price }} HUF</p>
+        <p class="card-paragraph text-center">
+          {{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}
+        </p>
       </div>
 
       <div *ngIf="product.discount > 0">
-        <p class="text"><small><del>{{product.price}} HUF</del>
-            ({{ product.discount }} %)
+        <p class="text text-center card-paragraph"><small>
+          <del>{{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }} HUF</del>
+          <span class="text-secondary"> ({{ product.discount }} %)</span>
           </small>
         </p>
-        <p class="price text-danger" [innerText]="calculateDiscountedPrice(product) + ' HUF' "></p>
+        <p class="price text-danger text-center card-paragraph"
+           [innerText]="calculateDiscountedPrice(product) | currency : 'HUF' : 'symbol-narrow' : '3.0' ">
+        </p>
       </div>
     </div>
 
-    <div class="mt-auto">
+    <div *ngIf="product.quantityAvailable == 0">
+      <p class="text-danger text-center card-paragraph"> 0 raktáron</p>
+    </div>
+
+    <div class="mt-auto" *ngIf="product.quantityAvailable > 0">
     <p class="text-center">
       <button class="btn btn-primary">
-        <i class="fa fa-cart-plus" aria-hidden="true"></i> Kosárba</button>
+        <i class="fa fa-cart-plus" aria-hidden="true"></i> Kosárba
+      </button>
     </p>
     </div>
   </div>

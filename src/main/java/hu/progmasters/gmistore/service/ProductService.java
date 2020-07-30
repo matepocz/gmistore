@@ -6,7 +6,9 @@ import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.Product;
+import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ProductRepository;
+import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +30,14 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, InventoryService inventoryService) {
+    public ProductService(ProductRepository productRepository, InventoryService inventoryService,
+                          UserRepository userRepository) {
         this.productRepository = productRepository;
         this.inventoryService = inventoryService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -48,7 +53,6 @@ public class ProductService {
     }
 
     private Product mapProductDtoToProduct(ProductDto productDto) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Product product = new Product();
         product.setName(productDto.getName());
         product.setProductCode(productDto.getProductCode());
@@ -63,7 +67,7 @@ public class ProductService {
         product.setRatings(productDto.getRatings());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
-        product.setAddedBy(username);
+        product.setAddedBy(productDto.getAddedBy());
         return product;
     }
 
@@ -74,6 +78,7 @@ public class ProductService {
 
     /**
      * Attempt to retrieve a product by the specified slug field.
+     *
      * @param slug the product's unique identifier
      * @return A ProductDto, if not found throws ProductNotFoundException
      */
@@ -143,7 +148,7 @@ public class ProductService {
      * Updates a product in the database with the specified id
      * and values
      *
-     * @param slug         The product's unique slug ID.
+     * @param slug       The product's unique slug ID.
      * @param productDto A ProductDto containing the values to update
      * @return A boolean, true if updated, false otherwise
      */
@@ -196,16 +201,23 @@ public class ProductService {
     }
 
     private boolean isAuthorized(String productAddedBy) {
-        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean isAdmin =
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(Role.ROLE_ADMIN);
+        String authenticatedUsername = productAddedBy;
+        boolean isAdmin = false;
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        }
+        Optional<User> userByUsername = userRepository.findUserByUsername(productAddedBy);
+        if (userByUsername.isPresent()) {
+            isAdmin = userByUsername.get().getRoles().contains(Role.ROLE_ADMIN);
+        }
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 
     public Map<Category, String> getProductCategories() {
         Map<Category, String> categoriesWithDisplayNames = new EnumMap<>(Category.class);
         Category[] categories = Category.values();
-        List<String> displayNames = Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
+        List<String> displayNames =
+                Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
         for (int i = 0; i < categories.length; i++) {
             categoriesWithDisplayNames.put(categories[i], displayNames.get(i));
         }

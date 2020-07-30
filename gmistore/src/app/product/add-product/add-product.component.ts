@@ -3,6 +3,7 @@ import {ProductService} from "../../service/product-service";
 import {Product} from "../../models/product";
 import {FormBuilder, Validators} from "@angular/forms";
 import {errorHandler} from "../../utils/errorHandler";
+import {LocalStorageService} from "ngx-webstorage";
 
 @Component({
   selector: 'app-add-product',
@@ -37,7 +38,8 @@ export class AddProductComponent implements OnInit {
     'active': [''],
   });
 
-  constructor(private formBuilder: FormBuilder, private productService: ProductService) {
+  constructor(private formBuilder: FormBuilder, private productService: ProductService,
+              private localStorageService: LocalStorageService) {
   }
 
   ngOnInit(): void {
@@ -63,6 +65,7 @@ export class AddProductComponent implements OnInit {
       this.product.pictureUrl = this.uploadedPictures[0];
     }
     this.product.pictures = this.uploadedPictures;
+    this.product.addedBy = this.localStorageService.retrieve("username");
 
     this.productService.addProduct(this.product).subscribe(
       () => {

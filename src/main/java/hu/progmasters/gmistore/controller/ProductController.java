@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/products/")
 public class ProductController {
 
     private final ProductService productService;
@@ -34,25 +34,25 @@ public class ProductController {
         binder.addValidators(productDtoValidator);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto) {
         productService.addProduct(productDto);
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getActiveProducts() {
         List<ProductDto> products = productService.getAllActiveProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/all-inactive")
+    @GetMapping("inactive")
     public ResponseEntity<List<ProductDto>> getAllInactiveProducts() {
         List<ProductDto> products = productService.getAllInActiveProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/get-by-slug/{slug}")
+    @GetMapping("{slug}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable String slug) {
         ProductDto product = productService.getProductBySlug(slug);
         return product != null ?
@@ -70,7 +70,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         boolean result = productService.deleteProduct(id);
         return result ?
@@ -78,7 +78,7 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/update/{slug}")
+    @PutMapping("{slug}")
     public ResponseEntity<Void> updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
         boolean result = productService.updateProduct(slug, productDto);
         return result ?
@@ -86,7 +86,7 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/get-product-categories")
+    @GetMapping("categories")
     public ResponseEntity<Map<Category, String>> getProductCategories() {
         return new ResponseEntity<>(productService.getProductCategories(), HttpStatus.OK);
     }

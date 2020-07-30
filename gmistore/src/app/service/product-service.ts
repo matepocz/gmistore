@@ -15,23 +15,23 @@ export class ProductService {
   }
 
   addProduct(product: Product): Observable<any> {
-    return this.httpClient.post(this.productsUrl + 'add', product);
+    return this.httpClient.post(this.productsUrl, product);
   }
 
   getProductBySlug(slug: string): Observable<Product> {
-    return this.httpClient.get<Product>(this.productsUrl + 'get-by-slug/' + slug);
+    return this.httpClient.get<Product>(this.productsUrl + slug);
   }
 
   getActiveProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.productsUrl + 'all');
+    return this.httpClient.get<Product[]>(this.productsUrl);
   }
 
   getProductCategories(): Observable<String[]> {
-    return this.httpClient.get<String[]>(this.productsUrl + 'get-product-categories');
+    return this.httpClient.get<String[]>(this.productsUrl + 'categories');
   }
 
   updateProduct(product: Product, slug: string): Observable<any> {
-    return this.httpClient.put(this.productsUrl + 'update/' + slug, product);
+    return this.httpClient.put(this.productsUrl + slug, product);
   }
 
   public async uploadImage(image: File) {

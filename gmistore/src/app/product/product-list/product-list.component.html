@@ -1,7 +1,14 @@
 <div class="row">
-  <div class="card product-card col-xl-3 col-lg-3 col-md-4 col-sm-12 my-1" *ngFor="let product of products">
+
+  <div class="col-12 background-white rounded my-2 shadow">
+    <p class="pt-2">{{ products.length }} termék</p>
+    <hr>
+  </div>
+
+  <div class="product-card col-xl-3 col-lg-3 col-md-4 col-sm-5 rounded my-1 background-white"
+       *ngFor="let product of products">
     <a [routerLink]="['/product/', product.slug]">
-      <img class="mt-1" [src]="product.pictureUrl" alt="{{ product.name }}" style="width:100%"/>
+      <img class="product-card-img pt-2" [src]="product.pictureUrl" alt="{{ product.name }}"/>
     </a>
     <h5 class="text-secondary mt-2 text-center">{{ product.name | slice:0:18 }}</h5>
 
@@ -16,18 +23,20 @@
       </div>
 
       <div *ngIf="product.discount > 0">
-        <p class="text text-danger">
-          <small>
-            <del>{{product.price}} HUF</del>
+        <p class="text"><small><del>{{product.price}} HUF</del>
             ({{ product.discount }} %)
           </small>
         </p>
-        <p class="price" [innerText]="calculateDiscountedPrice(product) + ' HUF' "></p>
+        <p class="price text-danger" [innerText]="calculateDiscountedPrice(product) + ' HUF' "></p>
       </div>
     </div>
-    <p>
-      <button class="btn btn-block btn-outline-primary">Kosárba</button>
+
+    <div class="mt-auto">
+    <p class="text-center">
+      <button class="btn btn-primary">
+        <i class="fa fa-cart-plus" aria-hidden="true"></i> Kosárba</button>
     </p>
+    </div>
   </div>
 </div>
 

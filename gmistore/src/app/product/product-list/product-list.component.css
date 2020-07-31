@@ -1,6 +1,7 @@
 .product-card {
   transition: box-shadow .3s;
   width: 14rem;
+  max-width: 49%;
 }
 .product-card:hover {
   box-shadow: 0 0 17px rgba(33,33,33,.2);

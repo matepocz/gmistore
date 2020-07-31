@@ -42,10 +42,10 @@
     </div>
 
     <div class="dropdown">
-      <button type="button" class="btn btn-link text-decoration-none btn-sm dropdown-toggle"
-              id="cartDropdownButton" aria-haspopup="true" aria-expanded="false">
+      <a [routerLink]="['/cart']"><button type="button" class="btn btn-link text-decoration-none btn-sm
+      dropdown-toggle" id="cartDropdownButton" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosár
-      </button>
+      </button></a>
       <div class="dropdown-menu" aria-labelledby="cartDropdownButton">
         <a class="dropdown-item" id="cartContent">Kosár üres</a>
       </div>

@@ -5,10 +5,10 @@
     <hr>
   </div>
 
-  <div class="card product-card rounded my-1 background-white"
+  <div class="card product-card rounded my-1 bg-white"
        *ngFor="let product of products">
     <a [routerLink]="['/product/', product.slug]">
-      <img class="product-card-img pt-2" [src]="product.pictureUrl" alt="{{ product.name }}"/>
+      <img class="product-card-img card-img-top pt-2" [src]="product.pictureUrl" alt="{{ product.name }}"/>
     </a>
     <h6 class="text-secondary mt-auto text-center text-justify">{{ product.name | slice: 0 : 45 }}</h6>
 

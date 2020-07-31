@@ -28,27 +28,34 @@
         </div>
       </form>
     </div>
-    <div *ngIf="authService.isAuthenticated()">
+    <div class="ml-auto" *ngIf="authService.isAuthenticated()">
       <div class="dropdown">
-        <button type="button" class="btn btn-link btn-sm text-decoration-none dropdown-toggle"
+        <button class="btn btn-link btn-sm text-decoration-none dropdown-toggle"
                 id="accountDropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-user-circle" aria-hidden="true"></i> <span class=""> Fiók</span>
+          <i class="fa fa-user-circle" aria-hidden="true"></i>
+          <span class="d-none d-md-inline-block ml-1"> Fiók</span>
         </button>
         <div class="dropdown-menu" aria-labelledby="accountDropdown">
           <a class="dropdown-item" [routerLink]="['/user/my-account']">Adataim</a>
+          <a class="dropdown-item">Rendelések</a>
+          <hr>
           <a class="dropdown-item" (click)="logout()">Kijelentkezés</a>
         </div>
       </div>
     </div>
 
-    <div class="dropdown">
-      <a [routerLink]="['/cart']"><button type="button" class="btn btn-link text-decoration-none btn-sm
+    <div class="dropdown mr-n2">
+      <a [routerLink]="['/cart']"><button class="btn btn-link text-decoration-none btn-sm
       dropdown-toggle" id="cartDropdownButton" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosár
-      </button></a>
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        <span class="d-none d-md-inline-block ml-1">Kosár</span>
+        <span class="badge badge-light ml-1">0</span>
+      </button>
+      </a>
       <div class="dropdown-menu" aria-labelledby="cartDropdownButton">
         <a class="dropdown-item" id="cartContent">Kosár üres</a>
       </div>
     </div>
+
   </div>
 </nav>

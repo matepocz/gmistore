@@ -15,6 +15,7 @@ import {AddProductComponent} from "./product/add-product/add-product.component";
 import {RegisterSuccessComponent} from "./user/register-success/register-success.component";
 import {ConfirmAccountComponent} from "./user/confirm-account/confirm-account.component";
 import {UserProfileComponent} from "./user/user-profile/user-profile.component";
+import {CartComponent} from "./cart/cart.component";
 
 
 const routes: Routes = [
@@ -33,6 +34,7 @@ const routes: Routes = [
   {path: 'product/:slug', component: ProductDetailsComponent},
   {path: 'edit-product/:slug', component: ProductEditComponent},
   {path: 'forbidden', component: ForbiddenComponent},
+  {path: 'cart', component: CartComponent},
   {path: '**', redirectTo: 'home',}
 ];
 

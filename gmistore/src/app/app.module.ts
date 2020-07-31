@@ -29,6 +29,7 @@ import {AddProductComponent} from './product/add-product/add-product.component';
 import {AuthInterceptor} from "./utils/auth-interceptor";
 import {RegisterSuccessComponent} from './user/register-success/register-success.component';
 import {ConfirmAccountComponent} from './user/confirm-account/confirm-account.component';
+import {CartComponent} from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {ConfirmAccountComponent} from './user/confirm-account/confirm-account.co
     UserProfileComponent,
     AddProductComponent,
     RegisterSuccessComponent,
-    ConfirmAccountComponent
+    ConfirmAccountComponent,
+    CartComponent
   ],
   imports: [
     FormsModule,
@@ -67,7 +69,7 @@ import {ConfirmAccountComponent} from './user/confirm-account/confirm-account.co
 
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })

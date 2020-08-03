@@ -17,8 +17,9 @@ export class AuthService {
   private authUrl = environment.apiUrl + 'api/auth/'
   private token: string;
 
-  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService, private _router: Router,private activatedRoute:ActivatedRoute) {
-    this.activatedRoute.queryParams.subscribe(params=>{
+  constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService,
+              private _router: Router, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.queryParams.subscribe(params => {
       this.token = params['token'];
     })
   }
@@ -27,8 +28,8 @@ export class AuthService {
     return this.httpClient.post(this.authUrl + "register", registerPayload)
   }
 
-  confirmAccount(){
-    return this.httpClient.get(this.authUrl+"confirm-account/"+ this.token)
+  confirmAccount() {
+    return this.httpClient.get(this.authUrl + "confirm-account/" + this.token)
   }
 
   login(loginPayload: LoginPayload): Observable<boolean> {
@@ -47,7 +48,7 @@ export class AuthService {
   logout() {
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
-    this.httpClient.post(environment.apiUrl+ 'logout', {});
+    this.httpClient.post(environment.apiUrl + 'logout', {});
     this._router.navigate(['/home'])
   }
 }

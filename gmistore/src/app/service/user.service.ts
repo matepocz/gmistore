@@ -17,5 +17,9 @@ export class UserService {
   getUser(): Observable<User> {
     return this.httpClient.get<User>(this.apiUrl + 'user/my-account');
   }
+
+  storeLocalCart() {
+    
+  }
 }
 

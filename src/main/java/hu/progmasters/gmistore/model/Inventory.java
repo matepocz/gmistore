@@ -1,10 +1,12 @@
 package hu.progmasters.gmistore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "inventory")
-public class Inventory {
+public class Inventory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +22,7 @@ public class Inventory {
 
     @OneToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", unique = true, nullable = false)
+    @JsonIgnore
     private Product product;
 
     @Column(name = "quantity_available", nullable = false)

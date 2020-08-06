@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "product_order")
-public class Order {
+public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -37,7 +38,7 @@ public class Order {
     @Column(name = "delivery_date")
     private LocalDateTime deliveryDate;
 
-    @OneToMany(mappedBy = "productOrder")
+    @OneToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
 
     @ManyToOne

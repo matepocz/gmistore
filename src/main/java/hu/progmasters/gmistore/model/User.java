@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hu.progmasters.gmistore.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,10 +61,18 @@ public class User {
     @Column(name = "active", columnDefinition = "boolean default false")
     private boolean active;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Cart cart;
+
     @OneToMany(mappedBy = "user")
     private List<Order> orderList;
 
     public User() {
         roles.add(Role.ROLE_USER);
+    }
+
+    public void addSellerRole() {
+        this.roles.add(Role.ROLE_SELLER);
     }
 }

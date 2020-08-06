@@ -28,11 +28,18 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_SELLER = "SELLER";
+
     @Value("${cors-policies}")
     private String[] corsPolicies;
 
+    private final UserDetailsServiceImpl userDetailsService;
+
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -48,9 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/api/products/").hasAnyRole("SELLER", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/products/").hasAnyRole("SELLER", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/products/").hasAnyRole("SELLER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/products/inactive").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.POST,"/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
+                .antMatchers(HttpMethod.DELETE, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers("/api/products/added-by-user/**").authenticated()
                 .antMatchers("/api/user/my-account").authenticated()
                 .antMatchers("/**").permitAll()

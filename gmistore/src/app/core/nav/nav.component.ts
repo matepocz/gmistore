@@ -1,5 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../user/auth/auth.service";
+import {CartService} from "../../service/cart-service";
+import {CartModel} from "../../models/cart-model";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -7,19 +10,33 @@ import {AuthService} from "../../user/auth/auth.service";
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, OnDestroy {
 
-  // title = 'gmistore';
-  public isCollapsed=true;
+  public isCollapsed = true;
+  cart: CartModel;
+  cartSubscription: Subscription;
+  cartItems = 0;
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private cartService: CartService) {
   }
 
   ngOnInit(): void {
+    this.cartSubscription = this.cartService.getCart().subscribe(
+      (data) => {
+        this.cart = data;
+      }, (error) => {
+        console.log(error)
+      }, () => {
+        this.cartItems = this.cart.cartItems.length;
+      }
+    );
   }
 
   logout() {
-    // @ts-ignore
     this.authService.logout();
+  }
+
+  ngOnDestroy() {
+    this.cartSubscription.unsubscribe();
   }
 }

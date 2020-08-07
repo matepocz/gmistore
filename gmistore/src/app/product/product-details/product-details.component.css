@@ -72,27 +72,17 @@ img {
   -ms-flex-positive: 1;
   flex-grow: 1; }
 
-.product-title, .price, .sizes, .colors {
+.product-title, .price {
   text-transform: UPPERCASE;
   font-weight: bold; }
 
 .checked{color: #ff9f1a; }
 
-.product-title, .rating, .product-description, .price, .vote, .sizes {
+.product-title, .rating, .product-description, .price, .vote {
   margin-bottom: 15px; }
 
 .product-title {margin-top: 0; }
 
-.add-to-cart, .like {
-  background: #0062cc;
-  padding: 1.2em 1.5em;
-  border: none;
-  text-transform: UPPERCASE;
-  font-weight: bold;
-  color: #fff;
-  -webkit-transition: background .3s ease;
-  transition: background .3s ease;
-}
 .add-to-cart:hover, .like:hover {
   background: #8811c5;
   color: #fff; }

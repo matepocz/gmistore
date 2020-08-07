@@ -30,22 +30,23 @@
     <h6><small>{{product.warrantyMonths}} hónap garancia</small></h6>
     <h6><small>{{product.quantitySold}} eladott darab</small></h6>
 
-    <div class="action" *ngIf="product.quantityAvailable > 0">
+    <div class="action mt-auto mb-auto" *ngIf="product.quantityAvailable > 0">
+      <h6><small>Kiszállítás: 2 munkanapon belül</small></h6>
       <p class="text-success">{{product.quantityAvailable}} raktáron</p>
       <h6 class="text-danger" *ngIf="product.discount == 0">
         {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</h6>
-      <h6 class="text-danger" *ngIf="product.discount > 0">
+      <h6 class="text-danger mb-auto" *ngIf="product.discount > 0">
         <small>
           <del>{{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</del>
-        </small>
-        Akciós ár:
-        <span [innerText]="calculateDiscountedPrice()  | currency : 'HUF' : 'symbol-narrow' : '3.0' "></span> HUF
+        </small>Akciós ár:
+        <span [innerText]="calculateDiscountedPrice() | currency :
+        'HUF' : 'symbol-narrow' : '3.0' "></span>
       </h6>
-      <button class="add-to-cart btn btn-default mr-1" type="button">
+      <button class="add-to-cart btn btn-primary mr-1 mt-auto" type="button" (click)="addToCart(product.id)">
         <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosárba
       </button>
-      <button class="like btn btn-default" type="button">
-        <span class="fa fa-heart"></span>
+      <button class="like btn btn-primary" type="button">
+        <i class="fa fa-heart" aria-hidden="true"></i> Kedvencekhez
       </button>
     </div>
 

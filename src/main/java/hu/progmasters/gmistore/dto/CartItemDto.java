@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.dto;
 
-import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.CartItem;
+import hu.progmasters.gmistore.model.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,12 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CartItemDto {
     private Long id;
-    private ProductDto productDto;
+    private ProductDto product;
     private Integer count;
 
     public CartItemDto(CartItem cartItem) {
         this.id = cartItem.getId();
-        this.productDto = mapProductToProductDto(cartItem.getProduct());
+        this.product = mapProductToProductDto(cartItem.getProduct());
         this.count = cartItem.getCount();
     }
 

@@ -3,6 +3,7 @@ import {ProductService} from "../../service/product-service";
 import {Product} from "../../models/product";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Rating} from "../../models/rating";
+import {CartService} from "../../service/cart-service";
 
 @Component({
   selector: 'app-product-details',
@@ -18,7 +19,7 @@ export class ProductDetailsComponent implements OnInit {
   ratings: Array<Rating>;
 
   constructor(private route: ActivatedRoute, private router: Router,
-              private productService: ProductService) {
+              private productService: ProductService, private cartService: CartService) {
   }
 
   ngOnInit(): void {
@@ -44,5 +45,13 @@ export class ProductDetailsComponent implements OnInit {
 
   calculatePercentageForRating(rating: number): number {
     return (100 / 5) * rating;
+  }
+
+  addToCart(id: number) {
+    this.cartService.addProduct(id).subscribe(
+      (response) => {
+        console.log(response);
+      }, (error) => console.log(error)
+    )
   }
 }

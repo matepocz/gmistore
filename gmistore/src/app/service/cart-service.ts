@@ -1,42 +1,48 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {UserService} from "./user.service";
-import {LocalStorageService} from "ngx-webstorage";
-import {Product} from "../models/product";
+import {Observable} from "rxjs";
+import {CartModel} from "../models/cart-model";
 
-
-@Injectable({providedIn: 'root'})
+@Injectable({
+  providedIn: 'root'
+})
 export class CartService {
 
-  private cartUrl = environment.apiUrl + '/api/cart';
+  private cartUrl = environment.apiUrl + 'api/carts';
 
-  localMap: Map<Product, number>;
-
-  constructor(private httpClient: HttpClient, private userService: UserService,
-              private localStorageService: LocalStorageService) {
+  constructor(private httpClient: HttpClient, private userService: UserService) {
   }
 
-  storeLocalCart() {
-    this.localStorageService.store('localCart', this.localMap);
+  getCart(): Observable<CartModel> {
+    return this.httpClient.get<CartModel>(this.cartUrl, {withCredentials: true});
   }
 
-  addItem (product: Product, amount: number) {
-    if (this.localMap.has(product)) {
-      this.localMap.set(product, this.localMap.get(product) + amount);
-    } else {
-      this.localMap.set(product, amount);
-    }
-    this.localStorageService.clear('localCart');
-    this.localStorageService.store('localCart', this.localMap);
+  addProduct(id: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('id', String(id));
+    params = params.append('count', String(1));
+    return this.httpClient.put(
+      this.cartUrl + '/add-item',
+      {},
+      {withCredentials: true, params},
+      );
   }
 
-  removeItem(product: Product) {
-    this.localMap.delete(product);
+  refreshProductCount(id: number, count: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('id', String(id));
+    params = params.append('count', String(count));
+    return this.httpClient.put(
+      this.cartUrl + '/refresh-product-count',
+      {},
+      {withCredentials: true, params});
   }
 
-  clearLocalCart () {
-    this.localStorageService.clear('localCart');
-    this.localMap.clear();
+  removeProduct(id: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('id', String(id));
+    return this.httpClient.delete(this.cartUrl + '/remove-product', {withCredentials: true, params})
   }
 }

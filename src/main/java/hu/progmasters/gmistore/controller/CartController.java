@@ -27,11 +27,25 @@ public class CartController {
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PostMapping("/add-item")
+    @PutMapping("/add-item")
     public ResponseEntity<Void> addItem(
             @RequestParam Long id, @RequestParam int count, HttpServletRequest request) {
         boolean result = cartService.addProduct(id, count, request);
-        return result ? new ResponseEntity<>(HttpStatus.OK) :
+        return result ?
+                new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/refresh-product-count")
+    public ResponseEntity<Void> refreshProductCount(
+            @RequestParam Long id, @RequestParam int count, HttpServletRequest request) {
+        cartService.refreshProductCount(id, count, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove-product")
+    public ResponseEntity<Void> removeProduct(@RequestParam Long id, HttpServletRequest request) {
+        cartService.removeCartItem(id, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

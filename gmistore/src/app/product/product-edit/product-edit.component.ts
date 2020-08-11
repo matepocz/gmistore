@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Product} from "../../models/product";
 import {ActivatedRoute, Router} from "@angular/router";
 import {errorHandler} from "../../utils/errorHandler";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-product-edit',
   templateUrl: './product-edit.component.html',
   styleUrls: ['./product-edit.component.css']
 })
-export class ProductEditComponent implements OnInit {
+export class ProductEditComponent implements OnInit, OnDestroy {
 
   product: Product;
   loading = false;
@@ -18,8 +19,11 @@ export class ProductEditComponent implements OnInit {
   productPictures: string[];
   categories: Map<string, string>;
   productForm: FormGroup;
-
   currentCategory: string;
+
+  categorySubscription: Subscription;
+  productSubscription: Subscription;
+  updateProductSubscription: Subscription;
 
   constructor(private productService: ProductService, private formBuilder: FormBuilder,
               private route: ActivatedRoute, private router: Router) {
@@ -28,7 +32,28 @@ export class ProductEditComponent implements OnInit {
   ngOnInit(): void {
     this.loading = true;
     this.categories = new Map<string, string>();
-    this.productService.getProductCategories().subscribe(
+    let slug = this.route.snapshot.params['slug'];
+
+    this.productForm = this.formBuilder.group({
+      id: [''],
+      name: [''],
+      slug: [''],
+      productCode: [''],
+      description: ['', Validators.compose([Validators.required, Validators.minLength(10)])],
+      category: ['', Validators.required],
+      pictureUrl: [''],
+      pictures: [''],
+      price: ['', Validators.compose([Validators.required, Validators.min(0)])],
+      discount: ['', Validators.compose(
+        [Validators.required, Validators.min(0), Validators.max(100)])],
+      warrantyMonths: ['', Validators.compose(
+        [Validators.required, Validators.min(0), Validators.max(360)])],
+      quantityAvailable: ['', Validators.compose([Validators.required, Validators.min(0)])],
+      active: [''],
+      addedBy: ['']
+    });
+
+    this.categorySubscription = this.productService.getProductCategories().subscribe(
       (data) => {
         for (let value in data) {
           this.categories.set(value, data[value].toString());
@@ -37,56 +62,38 @@ export class ProductEditComponent implements OnInit {
         console.warn(error)
       });
 
-    let slug = this.route.snapshot.params['slug'];
-    this.productService.getProductBySlug(slug).subscribe(
+    this.productSubscription = this.productService.getProductBySlug(slug).subscribe(
       (data) => {
         this.product = data;
       }, (error) => {
         console.log(error);
       }, () => {
-        for (let [key, value] of this.categories) {
+
+        this.productPictures = this.product.pictures;
+        this.categories.forEach((value, key) => {
           if (value === this.product.category) {
             this.currentCategory = key;
           }
-        }
+        })
+        this.productForm.patchValue({
 
-        this.productPictures = this.product.pictures;
-
-        this.productForm = this.formBuilder.group({
-          id: [this.product.id],
-          name: [this.product.name],
-          slug: [this.product.slug],
-          productCode: [this.product.productCode],
-          description: [this.product.description, Validators.compose(
-            [Validators.required, Validators.minLength(10)])],
-          category: [this.product.category, Validators.required],
-          pictureUrl: [this.product.pictureUrl],
-          pictures: [this.product.pictures],
-          price: [this.product.price, Validators.compose([Validators.required, Validators.min(0)])],
-          discount: [this.product.discount, Validators.compose(
-            [Validators.required, Validators.min(0), Validators.max(100)])],
-          warrantyMonths: [this.product.warrantyMonths, Validators.compose(
-            [Validators.required, Validators.min(0), Validators.max(360)])],
-          quantityAvailable: [this.product.quantityAvailable, Validators.compose([Validators.required, Validators.min(0)])],
-          active: [this.product.active],
-          addedBy: [this.product.addedBy]
+          id: this.product.id,
+          name: this.product.name,
+          slug: this.product.slug,
+          productCode: this.product.productCode,
+          description: this.product.description,
+          category: this.currentCategory,
+          pictureUrl: '',
+          pictures: this.product.pictures,
+          price: this.product.price,
+          discount: this.product.discount,
+          warrantyMonths: this.product.warrantyMonths,
+          quantityAvailable: this.product.quantityAvailable,
+          active: this.product.active,
+          addedBy: this.product.addedBy
         });
-        this.loading = false;
-      });
-  }
-
-  onSubmit() {
-    this.loading = true;
-    debugger
-    this.product = this.productForm.value;
-
-    this.productService.updateProduct(this.product, this.product.slug).subscribe(
-      (data) => {
-      },
-      (error) => {
-        errorHandler(error, this.productForm);
-      }, () => {
-        this.router.navigate(['/product', this.product.slug]);
+        console.log(this.productForm.get('pictureUrl'));
+        console.log(this.product.pictureUrl);
       });
     this.loading = false;
   }
@@ -118,5 +125,30 @@ export class ProductEditComponent implements OnInit {
   removeImage(picture: string) {
     let indexOfImage = this.productPictures.indexOf(picture);
     this.productPictures.splice(indexOfImage, 1);
+  }
+
+  onSubmit() {
+    this.loading = true;
+    this.product = {...this.productForm.value};
+
+    this.updateProductSubscription =
+      this.productService.updateProduct(this.product, this.product.slug).subscribe(
+        (data) => {
+        },
+        (error) => {
+          errorHandler(error, this.productForm)
+        },
+        () => {
+          this.router.navigate(['/product', this.product.slug]);
+        });
+    this.loading = false;
+  }
+
+  ngOnDestroy() {
+    this.categorySubscription.unsubscribe();
+    this.productSubscription.unsubscribe();
+    if (this.updateProductSubscription) {
+      this.updateProductSubscription.unsubscribe();
+    }
   }
 }

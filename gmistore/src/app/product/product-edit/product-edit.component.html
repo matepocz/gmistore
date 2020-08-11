@@ -34,9 +34,10 @@
         </div>
 
         <div class="form-label-group">
-          <select id="category" name="category" [(ngModel)]="currentCategory" class="form-control" formControlName="category" required
+          <select id="category" name="category" class="form-control" formControlName="category" required
                   [ngClass]="{'is-invalid': productForm.get('category').touched && productForm.get('category').invalid}">
-            <option *ngFor="let category of categories | keyvalue" [ngValue]="category.key">{{ category.value }}</option>
+            <option *ngFor="let category of categories | keyvalue; let i = index"
+                    [ngValue]="category.key">{{ category.value }}</option>
           </select>
           <small *ngIf="productForm.get('category').invalid && productForm.get('category').touched
             && !productForm.get('category').errors?.serverError" class="text-danger">

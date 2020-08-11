@@ -1,6 +1,13 @@
 logging:
   level:
-    hu.progmasters.gmistore: trace
+    org.apache: warn
+    org.springframework: info
+    hu.progmasters: debug
+    org.springframework.web: warn
+    org.hibernate: error
+  pattern:
+    console: "%cyan(%d{yyyy-MM-dd HH:mm:ss}) [%green(%thread)] %highlight(%-5level) %yellow(%logger{36}) - %msg%n"
+
 server:
   port: 8080
 

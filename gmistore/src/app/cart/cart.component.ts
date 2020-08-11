@@ -10,9 +10,11 @@ import {Subscription} from "rxjs";
 })
 export class CartComponent implements OnInit, OnDestroy {
 
+  loading = false;
   cart: CartModel;
   cartSubscription: Subscription;
-  loading = false;
+  refreshSubscription: Subscription;
+  removeProductSubscription: Subscription;
 
   constructor(private cartService: CartService) {}
 
@@ -29,7 +31,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   refreshProductCount(id: number, count: string) {
     this.loading = true;
-    this.cartService.refreshProductCount(id, +count).subscribe(
+    this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response) => {
         this.ngOnInit();
       }, (error)=> {
@@ -40,7 +42,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   removeProduct(id: number) {
     this.loading = true;
-    this.cartService.removeProduct(id).subscribe(
+    this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
       (response) => {
         this.ngOnInit();
       }, (error) => {
@@ -51,5 +53,11 @@ export class CartComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.cartSubscription.unsubscribe();
+    if (this.refreshSubscription){
+      this.refreshSubscription.unsubscribe();
+    }
+    if (this.removeProductSubscription) {
+      this.removeProductSubscription.unsubscribe();
+    }
   }
 }

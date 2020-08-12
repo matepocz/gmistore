@@ -22,16 +22,19 @@ public class MyHttpSessionEventPublisher extends HttpSessionEventPublisher {
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
+        LOGGER.debug("Session created id: {}", event.getSession().getId());
         super.sessionCreated(event);
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         Long cartId = (Long) event.getSession().getAttribute("cart");
-        Optional<Cart> cartById = cartRepository.findById(cartId);
-        if (cartById.isPresent() && cartById.get().getUser() == null) {
-            LOGGER.info("Cart deleted! id: {}", cartId);
-            cartRepository.deleteById(cartId);
+        if (cartId != null) {
+            Optional<Cart> cartById = cartRepository.findById(cartId);
+            if (cartById.isPresent() && cartById.get().getUser() == null) {
+                LOGGER.debug("Cart deleted! id: {} , Session id: {}", cartId, event.getSession().getId());
+                cartRepository.deleteById(cartId);
+            }
         }
         super.sessionDestroyed(event);
     }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -24,42 +25,20 @@ public class Cart implements Serializable {
     @JsonIgnore
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cart_items", referencedColumnName = "id")
     private Set<CartItem> items;
 
-    @Column(name = "total_price")
+    @ManyToOne(targetEntity = ShippingMethod.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_method", referencedColumnName = "id")
+    private ShippingMethod shippingMethod;
+
+    @Column(name = "items_total_price", columnDefinition = "double default 0.0")
+    private Double itemsTotalPrice;
+
+    @Column(name = "total_price", columnDefinition = "double default 0.0")
     private Double totalPrice;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Set<CartItem> getItems() {
-        return items;
-    }
-
-    public void setItems(Set<CartItem> items) {
-        this.items = items;
-    }
-
-    public Double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+    @Column(name = "expected_delivery")
+    private LocalDateTime expectedDeliveryDate;
 }

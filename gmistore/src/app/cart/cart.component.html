@@ -4,14 +4,15 @@
     <div class="mb-2 background-white shadow rounded p-2">
       <div class="pt-4 wish-list">
 
-        <h6 class="mb-4">Kosár (<span>{{ cart.cartItems.length }}</span> termék)</h6>
+        <h6 class="mb-4">Kosár (<span>{{ cart?.cartItems.length }}</span> termék)</h6>
 
-        <div class="row mb-4" *ngFor="let item of cart.cartItems">
+        <div class="row mb-4" *ngFor="let item of cart?.cartItems">
           <div class="col-md-5 col-lg-3 col-xl-3">
             <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
               <img class="img-fluid w-100" [src]="item.product.pictureUrl" alt="product-picture">
             </div>
           </div>
+
           <div class="col-md-7 col-lg-9 col-xl-9">
             <div>
               <div class="d-flex justify-content-between">
@@ -30,53 +31,65 @@
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <a [routerLink]="" (click)="removeProduct(item.id)" class="card-link-secondary small text-uppercase mr-3">
+                  <a [routerLink]="" (click)="removeProduct(item.id)"
+                     class="card-link-secondary small text-uppercase mr-3">
                     <i class="fa fa-trash mr-1" aria-hidden="true"></i> Törlés </a>
                   <a href="" type="button" class="card-link-secondary small text-uppercase">
                     <i class="fa fa-heart mr-1" aria-hidden="true"></i> Kedvencekhez</a>
                 </div>
-                <p class="mb-0">
-                  <span>{{ item.product.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
-                  </span></p>
+                <p class="mb-0" *ngIf="item.product.discount">
+                  <span><small>
+                    <del>
+                    {{ item.product.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
+                  </del>
+                    ({{ item.product.discount }} %)
+                  </small></span>
+                  <span class="text-danger">
+                  {{ (item.product.price / 100) * (100 - item.product.discount) |
+                    currency: 'HUF': 'symbol-narrow': '2.0' }}
+                </span>
+                </p>
+                <p class="mb-0" *ngIf="!item.product.discount">
+                  <span>
+                    {{ item.product.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
+                  </span>
+                </p>
               </div>
             </div>
             <hr class="mb-4">
           </div>
+
         </div>
-
       </div>
     </div>
 
-    <div class="mb-2 shadow background-white p-2 rounded">
+    <div class="mb-2 shadow background-white p-2 pb-4 rounded">
       <div class="pt-4">
-        <h6 class="mb-3">Várható szállítás: </h6>
-        <p class="mb-0"> Kedd 12.03</p>
-      </div>
-    </div>
+        <h6 class="pl-1 pb-2"><i class="fa fa-truck" aria-hidden="true"></i> Szállítási módok: </h6>
+        <div class="form-check mb-2" *ngFor="let shipping of shippingData">
+          <label class="form-check-label shipping-label">
+            <input class="form-check-input" type="radio" [(ngModel)]="currentShipping.method"
+                   (change)="refreshSippingPrice(shipping.days)" name="shippingMethod" id="shippingMethod"
+                   [value]="shipping.method">
 
-    <div class="mb-3 shadow background-white rounded p-2">
-      <div class="pt-4">
-
-        <h6 class="mb-4">Elfogadunk: </h6>
-
-        <img class="mr-2" width="45px"
-             src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
-             alt="Visa">
-        <img class="mr-2" width="45px"
-             src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
-             alt="American Express">
-        <img class="mr-2" width="45px"
-             src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
-             alt="Mastercard">
-        <img class="mr-2" width="45px"
-             src="https://mdbootstrap.com/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png"
-             alt="PayPal acceptance mark">
+            {{ shipping.method | titlecase }}
+            ({{ shipping.days }} munkanap)
+          </label>
+          <span class="float-right">
+              {{ shipping.cost | currency: 'HUF': 'symbol-narrow': '1.0'}}
+            </span>
+        </div>
+        <hr>
+        <h6 class="mb-3">Várható szállítás*: </h6>
+        <p class="mb-2 shipping-label">{{cart?.expectedDeliveryDate| date: 'MMMM d EEEE'}}</p>
+        <p class="text-muted">
+          <small>* 14:00 után leadott rendelések a következő munkanapon kerülnek feldolgozásra.</small>
+        </p>
       </div>
     </div>
   </div>
 
   <div class="col-lg-4">
-
     <div class="mb-2 shadow background-white rounded p-2">
       <div class="pt-4">
 
@@ -102,21 +115,21 @@
     <div class="mb-3 shadow background-white p-2 rounded">
       <div class="pt-4">
 
-        <h5 class="mb-3">Összesítés:</h5>
+        <h6 class="mb-3">Összesítés:</h6>
 
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
             Kosár összege:
-            <span>{{ cart.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</span>
+            <span>{{ cart?.itemsTotalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center px-0">
             Szállítás:
-            <span>Ft 0</span>
+            <span>{{ cart?.shippingMethod.cost | currency: 'HUF': 'symbol-narrow' : '1.0'}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
             <div>Végösszeg:<strong><p class="mb-0">(ÁFA-val)</p></strong>
             </div>
-            <span><strong>{{ cart.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</strong></span>
+            <span><strong>{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</strong></span>
           </li>
         </ul>
         <button type="button" class="btn btn-primary btn-block" [disabled]="loading">

@@ -2,10 +2,8 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.CartDto;
 import hu.progmasters.gmistore.dto.CartItemDto;
-import hu.progmasters.gmistore.model.Cart;
-import hu.progmasters.gmistore.model.CartItem;
-import hu.progmasters.gmistore.model.Product;
-import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.dto.ShippingMethodItem;
+import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.CartRepository;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
@@ -15,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.HashSet;
@@ -31,28 +28,33 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ShippingService shippingService;
 
     @Autowired
     public CartService(CartRepository cartRepository, ProductRepository productRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository, ShippingService shippingService) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.shippingService = shippingService;
     }
 
-    public CartDto getCart(HttpServletRequest request) {
-        Cart actualCart = getActualCart(request);
+    public CartDto getCart(HttpSession session) {
+        Cart actualCart = getActualCart(session);
         CartDto cartDto = new CartDto();
         cartDto.setId(actualCart.getId());
         cartDto.setCartItems(actualCart.getItems().stream()
                 .map(CartItemDto::new)
                 .collect(java.util.stream.Collectors.toSet()));
+        cartDto.setShippingMethod(new ShippingMethodItem(actualCart.getShippingMethod()));
+        cartDto.setItemsTotalPrice(actualCart.getItemsTotalPrice());
         cartDto.setTotalPrice(actualCart.getTotalPrice());
+        cartDto.setExpectedDeliveryDate(actualCart.getExpectedDeliveryDate());
         return cartDto;
     }
 
-    public boolean addProduct(Long id, int count, HttpServletRequest request) {
-        Cart actualCart = getActualCart(request);
+    public boolean addProduct(Long id, int count, HttpSession session) {
+        Cart actualCart = getActualCart(session);
         Optional<Product> productById = productRepository.findProductById(id);
         if (productById.isPresent()) {
             Set<CartItem> items = actualCart.getItems();
@@ -61,7 +63,7 @@ public class CartService {
                 if (item.getProduct().equals(actualProduct) &&
                         actualProduct.getInventory().getQuantityAvailable() >= count) {
                     item.setCount(item.getCount() + count);
-                    actualCart.setTotalPrice(calculateCartTotalPrice(actualCart));
+                    actualCart.setTotalPrice(calculateItemsTotalPrice(actualCart));
                     LOGGER.debug("Product count incremented!");
                     return true;
                 }
@@ -71,24 +73,29 @@ public class CartService {
                 cartItem.setProduct(actualProduct);
                 cartItem.setCount(count);
                 items.add(cartItem);
-                actualCart.setTotalPrice(calculateCartTotalPrice(actualCart));
+                setInitialShippingMethod(actualCart);
+                actualCart.setItemsTotalPrice(calculateItemsTotalPrice(actualCart));
+                actualCart.setTotalPrice(
+                        calculateItemsTotalPrice(actualCart) + actualCart.getShippingMethod().getCost()
+                );
                 cartRepository.save(actualCart);
                 LOGGER.debug("Product added to cart!");
                 return true;
             }
         }
-        LOGGER.debug("Product not found!");
+        LOGGER.debug("Product not found! id: {}", id);
         return false;
     }
 
-    private double calculateCartTotalPrice(Cart cart) {
-        return cart.getItems().stream()
-                .mapToDouble(item -> (item.getProduct().getPrice() * item.getCount()))
+    private double calculateItemsTotalPrice(Cart cart) {
+        return cart.getItems().stream().mapToDouble(
+                item -> ((item.getProduct().getPrice() / 100)
+                        * (100 - item.getProduct().getDiscount()))
+                        * item.getCount())
                 .sum();
     }
 
-    private Cart getActualCart(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+    private Cart getActualCart(HttpSession session) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Optional<User> userByUsername = userRepository.findUserByUsername(authentication.getName());
@@ -121,14 +128,21 @@ public class CartService {
         Cart cart = new Cart();
         cart.setItems(new HashSet<>());
         cart.setUser(user);
+        setInitialShippingMethod(cart);
+        cart.setItemsTotalPrice(0.0);
         cart.setTotalPrice(0.0);
         cart = cartRepository.save(cart);
-        LOGGER.info("Cart created!");
+        LOGGER.debug("Cart created!");
         return cart;
     }
 
-    public Cart refreshProductCount(Long id, int count, HttpServletRequest request) {
-        Cart actualCart = getActualCart(request);
+    private void setInitialShippingMethod(Cart actualCart) {
+        ShippingMethod shippingMethod = shippingService.getInitialShippingMethod();
+        actualCart.setShippingMethod(shippingMethod);
+    }
+
+    public Cart updateProductCount(Long id, int count, HttpSession session) {
+        Cart actualCart = getActualCart(session);
         Set<CartItem> items = actualCart.getItems();
         if (count == 0) {
             actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
@@ -137,20 +151,34 @@ public class CartService {
         items.stream().filter(cartItem -> cartItem.getProduct().getId().equals(id) &&
                 cartItem.getProduct().getInventory().getQuantityAvailable() >= count)
                 .forEach(cartItem -> cartItem.setCount(count));
-        actualCart.setTotalPrice(calculateCartTotalPrice(actualCart));
+        double itemsTotalPrice = calculateItemsTotalPrice(actualCart);
+        actualCart.setItemsTotalPrice(itemsTotalPrice);
+        actualCart.setTotalPrice(itemsTotalPrice + actualCart.getShippingMethod().getCost());
         cartRepository.save(actualCart);
-        LOGGER.info("Product refreshed in cart: {}", actualCart.getId());
+        LOGGER.debug("Product refreshed in cart, id: {}", actualCart.getId());
         return actualCart;
     }
 
-    public void removeCartItem(Long id, HttpServletRequest request) {
-        Cart actualCart = getActualCart(request);
+    public void removeCartItem(Long id, HttpSession session) {
+        Cart actualCart = getActualCart(session);
         actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
-        actualCart.setTotalPrice(calculateCartTotalPrice(actualCart));
-        LOGGER.info("Cart item removed from cart: {}", actualCart.getId());
+        double itemsTotalPrice = calculateItemsTotalPrice(actualCart);
+        actualCart.setItemsTotalPrice(itemsTotalPrice);
+        actualCart.setTotalPrice(itemsTotalPrice);
+        LOGGER.debug("Cart item removed from cart, id: {}", actualCart.getId());
     }
 
     public void deleteCart(Long id) {
         cartRepository.findById(id).ifPresent(cartRepository::delete);
+    }
+
+    public void updateShippingMethod(String method, HttpSession session) {
+        Cart actualCart = getActualCart(session);
+        ShippingMethod shippingMethod = shippingService.fetchShippingMethod(method);
+        if (shippingMethod != null) {
+            actualCart.setShippingMethod(shippingMethod);
+            actualCart.setTotalPrice(actualCart.getItemsTotalPrice() + shippingMethod.getCost());
+            actualCart.setExpectedDeliveryDate(shippingService.calculateExpectedShippingDate(shippingMethod));
+        }
     }
 }

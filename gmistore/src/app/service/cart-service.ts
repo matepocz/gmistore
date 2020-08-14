@@ -4,6 +4,7 @@ import {environment} from "../../environments/environment";
 import {UserService} from "./user.service";
 import {Observable} from "rxjs";
 import {CartModel} from "../models/cart-model";
+import {ShippingMethodModel} from "../models/shipping-method-model";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class CartService {
       this.cartUrl + '/add-item',
       {},
       {withCredentials: true, params},
-      );
+    );
   }
 
   refreshProductCount(id: number, count: number): Observable<any> {
@@ -44,5 +45,18 @@ export class CartService {
     let params = new HttpParams();
     params = params.append('id', String(id));
     return this.httpClient.delete(this.cartUrl + '/remove-product', {withCredentials: true, params})
+  }
+
+  getShippingData(): Observable<Array<ShippingMethodModel>> {
+    return this.httpClient.get<Array<ShippingMethodModel>>(this.cartUrl + '/shipping-data');
+  }
+
+  updateShippingMethod(value: string) {
+    let params = new HttpParams();
+    params = params.append('method', String(value));
+    return this.httpClient.put(this.cartUrl + '/update-shipping-method',
+      {},
+      {withCredentials: true, params}
+    );
   }
 }

@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CartService} from "../service/cart-service";
 import {CartModel} from "../models/cart-model";
 import {Subscription} from "rxjs";
+import {ShippingMethodModel} from "../models/shipping-method-model";
 
 @Component({
   selector: 'app-cart',
@@ -12,20 +13,36 @@ export class CartComponent implements OnInit, OnDestroy {
 
   loading = false;
   cart: CartModel;
+  shippingData: ShippingMethodModel[];
+
   cartSubscription: Subscription;
+  shippingDataSubscription: Subscription;
   refreshSubscription: Subscription;
   removeProductSubscription: Subscription;
+  refreshShippingSubscription: Subscription;
+  currentShipping: ShippingMethodModel;
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService) {
+  }
 
   ngOnInit(): void {
     this.loading = true;
     this.cartSubscription = this.cartService.getCart().subscribe(
       (data) => {
         this.cart = data;
+        this.currentShipping = data.shippingMethod;
+        console.log(data);
       }, (error) => {
         console.log(error);
-      }, () => this.loading = false
+      }, () => {
+        this.loading = false;
+      }
+    );
+
+    this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
+      (data) => {
+        this.shippingData = data;
+      }, (error) => console.log(error)
     )
   }
 
@@ -34,7 +51,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response) => {
         this.ngOnInit();
-      }, (error)=> {
+      }, (error) => {
         console.log(error);
       }, () => this.loading = false
     )
@@ -51,13 +68,28 @@ export class CartComponent implements OnInit, OnDestroy {
     )
   }
 
+  refreshSippingPrice(days: number) {
+    this.loading = true;
+    this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
+      (response) => {
+      }, error => console.log(error),
+      () => {
+        this.ngOnInit();
+      }
+    )
+  }
+
   ngOnDestroy() {
     this.cartSubscription.unsubscribe();
-    if (this.refreshSubscription){
+    this.shippingDataSubscription.unsubscribe();
+    if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
     if (this.removeProductSubscription) {
       this.removeProductSubscription.unsubscribe();
+    }
+    if (this.refreshShippingSubscription) {
+      this.refreshShippingSubscription.unsubscribe();
     }
   }
 }

@@ -15,9 +15,11 @@ public class ShippingMethodItem {
     private int days;
 
     public ShippingMethodItem(ShippingMethod shippingMethod) {
-        this.id = shippingMethod.getId();
-        this.method = shippingMethod.getMethod();
-        this.cost = shippingMethod.getCost();
-        this.days = shippingMethod.getDays();
+        if (shippingMethod != null) {
+            this.id = shippingMethod.getId();
+            this.method = shippingMethod.getMethod();
+            this.cost = shippingMethod.getCost();
+            this.days = shippingMethod.getDays();
+        }
     }
 }

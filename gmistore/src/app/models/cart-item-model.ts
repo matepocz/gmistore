@@ -1,8 +1,8 @@
-import {Product} from "./product";
+import {ProductInCartModel} from "./product-in-cart-model";
 
 export interface CartItemModel {
 
   id: number;
-  product: Product;
+  product: ProductInCartModel;
   count: number;
 }

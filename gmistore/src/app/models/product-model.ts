@@ -1,6 +1,6 @@
-import {Rating} from "./rating";
+import {RatingModel} from "./rating-model";
 
-export interface Product {
+export interface ProductModel {
   id: number;
   name: string;
   productCode: string;
@@ -14,7 +14,7 @@ export interface Product {
   warrantyMonths: number;
   quantityAvailable: number;
   quantitySold: number;
-  ratings: Array<Rating>;
+  ratings: Array<RatingModel>;
   averageRating: number;
   active: boolean;
   addedBy: string;

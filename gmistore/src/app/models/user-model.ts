@@ -1,7 +1,7 @@
-import {OrderModel} from "./orderModel";
-import {AddressModel} from "./addressModel";
+import {OrderModel} from "./order-model";
+import {AddressModel} from "./address-model";
 
-export interface User {
+export interface UserModel {
   id: number;
   username: string;
   lastName: string;

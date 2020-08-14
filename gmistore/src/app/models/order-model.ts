@@ -1,4 +1,4 @@
-import {Product} from "./product";
+import {ProductModel} from "./product-model";
 
 export interface OrderModel {
   id: number;
@@ -7,6 +7,6 @@ export interface OrderModel {
   quantity: string;
   date: any;
   deliveryDate: any;
-  productList: Array<Product>;
+  productList: Array<ProductModel>;
   user: object;
 }

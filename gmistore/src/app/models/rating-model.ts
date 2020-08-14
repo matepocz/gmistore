@@ -1,4 +1,4 @@
-export class Rating {
+export class RatingModel {
   id: number;
   actualRating: number;
   comment: string;

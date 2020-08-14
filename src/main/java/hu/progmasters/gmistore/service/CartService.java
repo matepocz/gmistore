@@ -70,9 +70,7 @@ public class CartService {
                 }
             }
             if (actualProduct.getInventory().getQuantityAvailable() >= count) {
-                CartItem cartItem = new CartItem();
-                cartItem.setProduct(actualProduct);
-                cartItem.setCount(count);
+                CartItem cartItem = createNewCartItem(count, actualProduct);
                 items.add(cartItem);
                 setInitialShippingMethod(actualCart);
                 calculateAndSetItemsTotalPrice(actualCart);
@@ -82,15 +80,21 @@ public class CartService {
                 return true;
             }
         }
-        LOGGER.debug("Product not found! id: {}", id);
+        LOGGER.info("Product not found! id: {}", id);
         return false;
     }
 
+    private CartItem createNewCartItem(int count, Product actualProduct) {
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(actualProduct);
+        cartItem.setCount(count);
+        return cartItem;
+    }
+
     private void calculateAndSetItemsTotalPrice(Cart cart) {
-        cart.setItemsTotalPrice(cart.getItems().stream().mapToDouble(
-                item -> ((item.getProduct().getPrice() / 100)
-                        * (100 - item.getProduct().getDiscount()))
-                        * item.getCount())
+        cart.setItemsTotalPrice(cart.getItems().stream().mapToDouble(item -> (
+                (item.getProduct().getPrice() / 100) * (100 - item.getProduct().getDiscount()))
+                * item.getCount())
                 .sum());
     }
 
@@ -106,16 +110,18 @@ public class CartService {
                 User user = userByUsername.get();
                 Optional<Cart> cartByUser = cartRepository.findByUser(user);
                 if (cartByUser.isPresent()) {
+                    Long cartId = (Long) session.getAttribute("cart");
+                    if (cartId != null) {
+                        mergeCarts(cartId, cartByUser.get());
+                        session.removeAttribute("cart");
+                    }
                     Cart actualCart = cartByUser.get();
                     calculateAndSetItemsTotalPrice(actualCart);
                     setCartsTotalPrice(actualCart);
-                    session.setAttribute("cart", actualCart.getId());
-                    LOGGER.debug("Cart set session id: {} cart id: {}", session.getId(), actualCart.getId());
+                    LOGGER.debug("Cart found, session id: {} cart id: {}", session.getId(), actualCart.getId());
                     return actualCart;
                 }
-                Cart cart = createCart(user);
-                session.setAttribute("cart", cart.getId());
-                return cart;
+                return createCart(user);
             }
         }
         if (session.getAttribute("cart") != null) {
@@ -131,6 +137,28 @@ public class CartService {
         Cart actualCart = createCart(null);
         session.setAttribute("cart", actualCart.getId());
         return actualCart;
+    }
+
+    private void mergeCarts(Long cartIdFromSession, Cart usersCart) {
+        Optional<Cart> cartById = cartRepository.findById(cartIdFromSession);
+        if (cartById.isPresent()) {
+            Set<CartItem> itemsFromTempCart = cartById.get().getItems();
+            Set<CartItem> itemsToMerge = new HashSet<>();
+            Set<CartItem> items = usersCart.getItems();
+            itemsFromTempCart.forEach(cartItem -> {
+                Product product = cartItem.getProduct();
+                items.forEach(item -> {
+                    if (item.getProduct().equals(product)) {
+                        item.setCount(item.getCount() + cartItem.getCount());
+                    } else {
+                        itemsToMerge.add(cartItem);
+                    }
+                });
+            });
+            items.addAll(itemsToMerge);
+            cartRepository.deleteById(cartIdFromSession);
+            LOGGER.debug("Carts merged!");
+        }
     }
 
     private Cart createCart(User user) {
@@ -164,7 +192,7 @@ public class CartService {
         calculateAndSetItemsTotalPrice(actualCart);
         setCartsTotalPrice(actualCart);
         cartRepository.save(actualCart);
-        LOGGER.debug("Product refreshed in cart, id: {}", actualCart.getId());
+        LOGGER.debug("Product count updated in cart, id: {}", actualCart.getId());
         return actualCart;
     }
 

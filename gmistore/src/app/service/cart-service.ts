@@ -17,7 +17,7 @@ export class CartService {
   }
 
   getCart(): Observable<CartModel> {
-    return this.httpClient.get<CartModel>(this.cartUrl, {withCredentials: true});
+    return this.httpClient.get<CartModel>(this.cartUrl);
   }
 
   addProduct(id: number): Observable<any> {
@@ -27,7 +27,7 @@ export class CartService {
     return this.httpClient.put(
       this.cartUrl + '/add-item',
       {},
-      {withCredentials: true, params},
+      {params},
     );
   }
 
@@ -38,13 +38,13 @@ export class CartService {
     return this.httpClient.put(
       this.cartUrl + '/refresh-product-count',
       {},
-      {withCredentials: true, params});
+      {params});
   }
 
   removeProduct(id: number): Observable<any> {
     let params = new HttpParams();
     params = params.append('id', String(id));
-    return this.httpClient.delete(this.cartUrl + '/remove-product', {withCredentials: true, params})
+    return this.httpClient.delete(this.cartUrl + '/remove-product', {params})
   }
 
   getShippingData(): Observable<Array<ShippingMethodModel>> {
@@ -56,7 +56,7 @@ export class CartService {
     params = params.append('method', String(value));
     return this.httpClient.put(this.cartUrl + '/update-shipping-method',
       {},
-      {withCredentials: true, params}
+      {params}
     );
   }
 }

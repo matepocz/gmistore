@@ -63,7 +63,8 @@ public class CartService {
                 if (item.getProduct().equals(actualProduct) &&
                         actualProduct.getInventory().getQuantityAvailable() >= count) {
                     item.setCount(item.getCount() + count);
-                    actualCart.setTotalPrice(calculateItemsTotalPrice(actualCart));
+                    calculateAndSetItemsTotalPrice(actualCart);
+                    setCartsTotalPrice(actualCart);
                     LOGGER.debug("Product count incremented!");
                     return true;
                 }
@@ -74,10 +75,8 @@ public class CartService {
                 cartItem.setCount(count);
                 items.add(cartItem);
                 setInitialShippingMethod(actualCart);
-                actualCart.setItemsTotalPrice(calculateItemsTotalPrice(actualCart));
-                actualCart.setTotalPrice(
-                        calculateItemsTotalPrice(actualCart) + actualCart.getShippingMethod().getCost()
-                );
+                calculateAndSetItemsTotalPrice(actualCart);
+                setCartsTotalPrice(actualCart);
                 cartRepository.save(actualCart);
                 LOGGER.debug("Product added to cart!");
                 return true;
@@ -87,12 +86,16 @@ public class CartService {
         return false;
     }
 
-    private double calculateItemsTotalPrice(Cart cart) {
-        return cart.getItems().stream().mapToDouble(
+    private void calculateAndSetItemsTotalPrice(Cart cart) {
+        cart.setItemsTotalPrice(cart.getItems().stream().mapToDouble(
                 item -> ((item.getProduct().getPrice() / 100)
                         * (100 - item.getProduct().getDiscount()))
                         * item.getCount())
-                .sum();
+                .sum());
+    }
+
+    private void setCartsTotalPrice(Cart cart) {
+        cart.setTotalPrice(cart.getItemsTotalPrice() + cart.getShippingMethod().getCost());
     }
 
     private Cart getActualCart(HttpSession session) {
@@ -104,6 +107,8 @@ public class CartService {
                 Optional<Cart> cartByUser = cartRepository.findByUser(user);
                 if (cartByUser.isPresent()) {
                     Cart actualCart = cartByUser.get();
+                    calculateAndSetItemsTotalPrice(actualCart);
+                    setCartsTotalPrice(actualCart);
                     session.setAttribute("cart", actualCart.getId());
                     return actualCart;
                 }
@@ -116,7 +121,10 @@ public class CartService {
             long cartId = (Long) session.getAttribute("cart");
             Optional<Cart> cartById = cartRepository.findById(cartId);
             if (cartById.isPresent()) {
-                return cartById.get();
+                Cart cart = cartById.get();
+                calculateAndSetItemsTotalPrice(cart);
+                setCartsTotalPrice(cart);
+                return cart;
             }
         }
         Cart actualCart = createCart(null);
@@ -151,9 +159,9 @@ public class CartService {
         items.stream().filter(cartItem -> cartItem.getProduct().getId().equals(id) &&
                 cartItem.getProduct().getInventory().getQuantityAvailable() >= count)
                 .forEach(cartItem -> cartItem.setCount(count));
-        double itemsTotalPrice = calculateItemsTotalPrice(actualCart);
-        actualCart.setItemsTotalPrice(itemsTotalPrice);
-        actualCart.setTotalPrice(itemsTotalPrice + actualCart.getShippingMethod().getCost());
+
+        calculateAndSetItemsTotalPrice(actualCart);
+        setCartsTotalPrice(actualCart);
         cartRepository.save(actualCart);
         LOGGER.debug("Product refreshed in cart, id: {}", actualCart.getId());
         return actualCart;
@@ -162,9 +170,8 @@ public class CartService {
     public void removeCartItem(Long id, HttpSession session) {
         Cart actualCart = getActualCart(session);
         actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
-        double itemsTotalPrice = calculateItemsTotalPrice(actualCart);
-        actualCart.setItemsTotalPrice(itemsTotalPrice);
-        actualCart.setTotalPrice(itemsTotalPrice);
+        calculateAndSetItemsTotalPrice(actualCart);
+        setCartsTotalPrice(actualCart);
         LOGGER.debug("Cart item removed from cart, id: {}", actualCart.getId());
     }
 
@@ -177,7 +184,7 @@ public class CartService {
         ShippingMethod shippingMethod = shippingService.fetchShippingMethod(method);
         if (shippingMethod != null) {
             actualCart.setShippingMethod(shippingMethod);
-            actualCart.setTotalPrice(actualCart.getItemsTotalPrice() + shippingMethod.getCost());
+            setCartsTotalPrice(actualCart);
             actualCart.setExpectedDeliveryDate(shippingService.calculateExpectedShippingDate(shippingMethod));
         }
     }

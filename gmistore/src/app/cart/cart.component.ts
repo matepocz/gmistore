@@ -68,7 +68,7 @@ export class CartComponent implements OnInit, OnDestroy {
     )
   }
 
-  refreshSippingPrice(days: number) {
+  refreshSippingPrice() {
     this.loading = true;
     this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
       (response) => {

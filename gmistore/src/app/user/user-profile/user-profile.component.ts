@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../service/user.service";
-import {User} from "../../models/user";
-import {AddressModel} from "../../models/addressModel";
+import {UserModel} from "../../models/user-model";
+import {AddressModel} from "../../models/address-model";
 
 @Component({
   selector: 'app-user-profile',
@@ -10,7 +10,7 @@ import {AddressModel} from "../../models/addressModel";
 })
 export class UserProfileComponent implements OnInit {
 
-  user: User;
+  user: UserModel;
   deliveryAddress: AddressModel;
 
   constructor(private userService: UserService) {

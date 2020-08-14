@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Product} from "../../models/product";
+import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {errorHandler} from "../../utils/errorHandler";
 import {Subscription} from "rxjs";
@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
 })
 export class ProductEditComponent implements OnInit, OnDestroy {
 
-  product: Product;
+  product: ProductModel;
   loading = false;
   selectedFiles: FileList;
   productPictures: string[];

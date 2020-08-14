@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
-import {Product} from "../../models/product";
+import {ProductModel} from "../../models/product-model";
 import {FormBuilder, Validators} from "@angular/forms";
 import {errorHandler} from "../../utils/errorHandler";
 import {LocalStorageService} from "ngx-webstorage";
@@ -13,7 +13,7 @@ import {LocalStorageService} from "ngx-webstorage";
 export class AddProductComponent implements OnInit {
 
   categories: Map<String, String>;
-  product: Product;
+  product: ProductModel;
   selectedFiles: FileList;
   uploadedPictures: string[];
   loading = false;

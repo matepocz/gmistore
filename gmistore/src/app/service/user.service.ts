@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
-import {User} from "../models/user";
+import {UserModel} from "../models/user-model";
 
 
 @Injectable({
@@ -14,12 +14,12 @@ export class UserService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getUser(): Observable<User> {
-    return this.httpClient.get<User>(this.apiUrl + 'user/my-account');
+  getUser(): Observable<UserModel> {
+    return this.httpClient.get<UserModel>(this.apiUrl + 'user/my-account');
   }
 
   storeLocalCart() {
-    
+
   }
 }
 

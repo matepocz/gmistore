@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Product} from "../../models/product";
+import {ProductModel} from "../../models/product-model";
 import {ProductService} from "../../service/product-service";
 
 @Component({
@@ -9,12 +9,12 @@ import {ProductService} from "../../service/product-service";
 })
 export class ProductListComponent implements OnInit {
 
-  products: Array<Product>;
+  products: Array<ProductModel>;
 
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.products = new Array<Product>();
+    this.products = new Array<ProductModel>();
     this.productService.getActiveProducts().subscribe(
       (data) => {
         this.products = data;
@@ -22,7 +22,7 @@ export class ProductListComponent implements OnInit {
     );
   }
 
-  calculateDiscountedPrice(product: Product): number {
+  calculateDiscountedPrice(product: ProductModel): number {
     let actualProduct = this.products.find(prod => prod === product);
     return (actualProduct.price / 100) * (100 - actualProduct.discount);
   }

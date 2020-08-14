@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
-import {Product} from "../../models/product";
+import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Rating} from "../../models/rating";
+import {RatingModel} from "../../models/rating-model";
 import {CartService} from "../../service/cart-service";
 
 @Component({
@@ -13,10 +13,10 @@ import {CartService} from "../../service/cart-service";
 export class ProductDetailsComponent implements OnInit {
 
   slug: string;
-  product: Product;
+  product: ProductModel;
   defaultPicture: string;
   averageRatingPercentage: number;
-  ratings: Array<Rating>;
+  ratings: Array<RatingModel>;
 
   constructor(private route: ActivatedRoute, private router: Router,
               private productService: ProductService, private cartService: CartService) {

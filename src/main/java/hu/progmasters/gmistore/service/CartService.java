@@ -110,6 +110,7 @@ public class CartService {
                     calculateAndSetItemsTotalPrice(actualCart);
                     setCartsTotalPrice(actualCart);
                     session.setAttribute("cart", actualCart.getId());
+                    LOGGER.debug("Cart set session id: {} cart id: {}", session.getId(), actualCart.getId());
                     return actualCart;
                 }
                 Cart cart = createCart(user);

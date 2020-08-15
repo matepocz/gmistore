@@ -22,6 +22,7 @@
                   <p class="mb-3 text-muted small">Garancia: {{ item.product.warrantyMonths }} hónap</p>
                 </div>
                 <div>
+                  <label for="productCountSelector"><small>Mennyiség:</small></label>
                   <select class="form-control" #t (change)="refreshProductCount(item.product.id, t.value)"
                           id="productCountSelector">
                     <option *ngFor="let count of [].constructor(item.product.quantityAvailable); let idx = index"

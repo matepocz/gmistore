@@ -63,17 +63,16 @@ public class CartService {
                 if (item.getProduct().equals(actualProduct) &&
                         actualProduct.getInventory().getQuantityAvailable() >= count) {
                     item.setCount(item.getCount() + count);
-                    calculateAndSetItemsTotalPrice(actualCart);
+                    setItemsTotalPrice(actualCart);
                     setCartsTotalPrice(actualCart);
                     LOGGER.debug("Product count incremented!");
                     return true;
                 }
             }
             if (actualProduct.getInventory().getQuantityAvailable() >= count) {
-                CartItem cartItem = createNewCartItem(count, actualProduct);
-                items.add(cartItem);
+                items.add(createNewCartItem(count, actualProduct));
                 setInitialShippingMethod(actualCart);
-                calculateAndSetItemsTotalPrice(actualCart);
+                setItemsTotalPrice(actualCart);
                 setCartsTotalPrice(actualCart);
                 cartRepository.save(actualCart);
                 LOGGER.debug("Product added to cart!");
@@ -91,7 +90,7 @@ public class CartService {
         return cartItem;
     }
 
-    private void calculateAndSetItemsTotalPrice(Cart cart) {
+    private void setItemsTotalPrice(Cart cart) {
         cart.setItemsTotalPrice(cart.getItems().stream().mapToDouble(item -> (
                 (item.getProduct().getPrice() / 100) * (100 - item.getProduct().getDiscount()))
                 * item.getCount())
@@ -116,7 +115,7 @@ public class CartService {
                         session.removeAttribute("cart");
                     }
                     Cart actualCart = cartByUser.get();
-                    calculateAndSetItemsTotalPrice(actualCart);
+                    setItemsTotalPrice(actualCart);
                     setCartsTotalPrice(actualCart);
                     LOGGER.debug("Cart found, session id: {} cart id: {}", session.getId(), actualCart.getId());
                     return actualCart;
@@ -129,7 +128,7 @@ public class CartService {
             Optional<Cart> cartById = cartRepository.findById(cartId);
             if (cartById.isPresent()) {
                 Cart cart = cartById.get();
-                calculateAndSetItemsTotalPrice(cart);
+                setItemsTotalPrice(cart);
                 setCartsTotalPrice(cart);
                 return cart;
             }
@@ -189,7 +188,7 @@ public class CartService {
                 cartItem.getProduct().getInventory().getQuantityAvailable() >= count)
                 .forEach(cartItem -> cartItem.setCount(count));
 
-        calculateAndSetItemsTotalPrice(actualCart);
+        setItemsTotalPrice(actualCart);
         setCartsTotalPrice(actualCart);
         cartRepository.save(actualCart);
         LOGGER.debug("Product count updated in cart, id: {}", actualCart.getId());
@@ -199,7 +198,7 @@ public class CartService {
     public void removeCartItem(Long id, HttpSession session) {
         Cart actualCart = getActualCart(session);
         actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
-        calculateAndSetItemsTotalPrice(actualCart);
+        setItemsTotalPrice(actualCart);
         setCartsTotalPrice(actualCart);
         LOGGER.debug("Cart item removed from cart, id: {}", actualCart.getId());
     }

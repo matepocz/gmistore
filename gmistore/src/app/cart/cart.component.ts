@@ -14,13 +14,13 @@ export class CartComponent implements OnInit, OnDestroy {
   loading = false;
   cart: CartModel;
   shippingData: ShippingMethodModel[];
+  currentShipping: ShippingMethodModel;
 
   cartSubscription: Subscription;
   shippingDataSubscription: Subscription;
   refreshSubscription: Subscription;
   removeProductSubscription: Subscription;
   refreshShippingSubscription: Subscription;
-  currentShipping: ShippingMethodModel;
 
   constructor(private cartService: CartService) {
   }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,15 +19,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class ShippingService {
 
+    public static final int ORDER_DEADLINE = 14;
+
     private final ShippingMethodRepository shippingMethodRepository;
 
     @Autowired
     public ShippingService(ShippingMethodRepository shippingMethodRepository) {
         this.shippingMethodRepository = shippingMethodRepository;
-    }
-
-    public List<ShippingMethod> getShippingMethods() {
-        return shippingMethodRepository.findAll();
     }
 
     public List<ShippingMethodItem> getShippingData() {
@@ -44,10 +44,7 @@ public class ShippingService {
     }
 
     public LocalDateTime calculateExpectedShippingDate(ShippingMethod shippingMethod) {
-        LocalDateTime expectedDate = LocalDateTime.now();
-        if (expectedDate.getHour() > 14) {
-            expectedDate = expectedDate.plusDays(1);
-        }
+        LocalDateTime expectedDate = checkOrderDeadline();
         int addedDays = 0;
         while (addedDays < shippingMethod.getDays()) {
             expectedDate = expectedDate.plusDays(1);
@@ -57,5 +54,14 @@ public class ShippingService {
             }
         }
         return expectedDate;
+    }
+
+    private LocalDateTime checkOrderDeadline() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        ZoneId zoneId = ZoneId.of("Europe/Budapest");
+        if (ZonedDateTime.of(currentDateTime, zoneId).getHour() >= ORDER_DEADLINE) {
+            currentDateTime = currentDateTime.plusDays(1);
+        }
+        return currentDateTime;
     }
 }

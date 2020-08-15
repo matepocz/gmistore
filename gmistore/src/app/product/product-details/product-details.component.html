@@ -67,8 +67,56 @@
 </div>
 
 <div class="row shadow rounded background-white mt-3">
+
+  <div class="col-12 my-3 pl-2" *ngIf="authenticatedUser">
+    <p>Kérjük értékelje a terméket: </p>
+    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"
+            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>
+    <div class="form-group mt-2">
+      <label for="ratingComment">Komment: </label>
+      <textarea class="form-control" id="ratingComment" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary">Küldés</button>
+  </div>
+
+  <div class="col-12 my-3 pl-2" *ngIf="!authenticatedUser">
+    <p class="text-center">Termék értékeléséhez kérjük jelentkezzen be!</p>
+  </div>
+
+  <div class="col-12">
+    <hr>
+    <p class="">{{ product?.averageRating }}  {{ ratings.length }} felhasználó értékelése alapján</p>
+  </div>
+
+  <div class="col-12 mb-3">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-sm-12 mb-2">
+        <progressbar value="50" type="success">5 *</progressbar>
+        <small><em>1 vélemény</em></small>
+      </div>
+      <div class="col-12 col-md-8 col-sm-12 mb-2">
+        <progressbar value="50" type="info">4 *</progressbar>
+        <small><em>1 vélemény</em></small>
+      </div>
+      <div class="col-12 col-md-8 col-sm-12 mb-2">
+        <progressbar value="50" type="warning">3 *</progressbar>
+        <small><em>1 vélemény</em></small>
+      </div>
+      <div class="col-12 col-md-8 col-sm-12 mb-2">
+        <progressbar value="50" type="danger">2 *</progressbar>
+        <small><em>1 vélemény</em></small>
+      </div>
+      <div class="col-12 col-md-8 col-sm-12 mb-2">
+        <progressbar value="50" type="danger">1 *</progressbar>
+        <small><em>1 vélemény</em></small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row shadow rounded background-white mt-3">
   <div class="col-12 my-3">
-    <h6>Vélemények:</h6>
+    <h6>Vélemények: </h6>
   </div>
   <div class="row">
     <div class="col-12" *ngFor="let rating of ratings">

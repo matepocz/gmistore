@@ -132,3 +132,7 @@ img {
    display: block;
    z-index: 0;
  }
+
+#ratingComment{
+  resize: none;
+}

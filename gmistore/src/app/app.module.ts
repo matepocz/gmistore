@@ -30,6 +30,8 @@ import {AuthInterceptor} from "./utils/auth-interceptor";
 import {RegisterSuccessComponent} from './user/register-success/register-success.component';
 import {ConfirmAccountComponent} from './user/confirm-account/confirm-account.component';
 import {CartComponent} from './cart/cart.component';
+import {RatingModule} from "ngx-bootstrap/rating";
+import {ProgressbarModule} from "ngx-bootstrap/progressbar";
 
 @NgModule({
   declarations: [
@@ -66,7 +68,8 @@ import {CartComponent} from './cart/cart.component';
     CollapseModule.forRoot(),
     Ng2Webstorage.forRoot(),
     HttpClientModule,
-
+    RatingModule.forRoot(),
+    ProgressbarModule.forRoot(),
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

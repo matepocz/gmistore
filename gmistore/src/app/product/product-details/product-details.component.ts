@@ -4,6 +4,7 @@ import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RatingModel} from "../../models/rating-model";
 import {CartService} from "../../service/cart-service";
+import {AuthService} from "../../user/auth/auth.service";
 
 @Component({
   selector: 'app-product-details',
@@ -17,9 +18,13 @@ export class ProductDetailsComponent implements OnInit {
   defaultPicture: string;
   averageRatingPercentage: number;
   ratings: Array<RatingModel>;
+  currentRating: 0;
+  maxRating: 5;
+  reviewedAlready = false;
+  authenticatedUser = this.authService.isAuthenticated();
 
-  constructor(private route: ActivatedRoute, private router: Router,
-              private productService: ProductService, private cartService: CartService) {
+  constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
+              private cartService: CartService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -53,5 +58,15 @@ export class ProductDetailsComponent implements OnInit {
         console.log(response);
       }, (error) => console.log(error)
     )
+  }
+
+  confirmSelection(event: KeyboardEvent) {
+    if (event.keyCode === 13 || event.key === 'Enter') {
+      this.reviewedAlready = true;
+    }
+  }
+
+  clickedSelection(event: MouseEvent) {
+    this.reviewedAlready = true;
   }
 }

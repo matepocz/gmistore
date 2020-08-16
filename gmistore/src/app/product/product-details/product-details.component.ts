@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {RatingModel} from "../../models/rating-model";
 import {CartService} from "../../service/cart-service";
 import {AuthService} from "../../user/auth/auth.service";
+import {LocalStorageService} from "ngx-webstorage";
 
 @Component({
   selector: 'app-product-details',
@@ -18,13 +19,26 @@ export class ProductDetailsComponent implements OnInit {
   defaultPicture: string;
   averageRatingPercentage: number;
   ratings: Array<RatingModel>;
-  currentRating: 0;
+  currentRating = 0;
   maxRating: 5;
   reviewedAlready = false;
   authenticatedUser = this.authService.isAuthenticated();
 
+  fiveStars = 0;
+  fourStars = 0;
+  threeStars = 0;
+  twoStars = 0;
+  oneStar = 0;
+
+  fiveStarPercentage = 0;
+  fourStarPercentage = 0;
+  threeStarPercentage= 0;
+  twoStarPercentage = 0;
+  oneStarPercentage = 0;
+
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
-              private cartService: CartService, private authService: AuthService) {
+              private cartService: CartService, private authService: AuthService,
+              private localStorageService: LocalStorageService) {
   }
 
   ngOnInit(): void {
@@ -36,7 +50,16 @@ export class ProductDetailsComponent implements OnInit {
         this.defaultPicture = data.pictureUrl;
         this.averageRatingPercentage = (100 / 5) * this.product.averageRating;
         this.ratings = this.product.ratings;
-      }, error => console.log(error)
+      }, error => console.log(error),
+      () => {
+        this.isReviewedByUserAlready();
+        this.countRatings();
+        this.fiveStarPercentage = this.calculateRatingPercentage(this.fiveStars);
+        this.fourStarPercentage = this.calculateRatingPercentage(this.fourStars);
+        this.threeStarPercentage = this.calculateRatingPercentage(this.threeStars);
+        this.twoStarPercentage = this.calculateRatingPercentage(this.twoStars);
+        this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
+      }
     );
   }
 
@@ -68,5 +91,43 @@ export class ProductDetailsComponent implements OnInit {
 
   clickedSelection(event: MouseEvent) {
     this.reviewedAlready = true;
+  }
+
+  isReviewedByUserAlready() {
+    this.ratings.forEach((rating) => {
+      if (rating.username === this.localStorageService.retrieve('username')) {
+        this.currentRating = rating.actualRating;
+        this.reviewedAlready = true;
+      }
+    })
+  }
+
+  countRatings() {
+    this.ratings.forEach(
+      (rating) => {
+        switch (rating.actualRating) {
+          case 5:
+            this.fiveStars++;
+            break;
+          case 4:
+            this.fourStars++;
+            break;
+          case 3:
+            this.threeStars++;
+            break;
+          case 2:
+            this.twoStars++;
+            break;
+          case 1:
+            this.oneStar++;
+            break;
+        }
+      }
+    )
+  }
+
+  calculateRatingPercentage(stars: number): number {
+    let width = stars / this.ratings?.length;
+    return width * 100;
   }
 }

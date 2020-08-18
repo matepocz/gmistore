@@ -1,144 +1,167 @@
-<div class="row">
-  <div class="col-lg-8">
+<div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
+  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.lg="80"
+       fxLayoutAlign="space-evenly start">
+    <div fxFlex.lt-md="100" fxFlex.gt-lg="60" fxFlex.lg="60">
+      <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
+        <mat-card-header>
+          <mat-card-title class="cart-header-text">
+            <mat-icon>shopping_cart</mat-icon>
+            Kosár (<span>{{ cart?.cartItems.length }}</span> termék)
+          </mat-card-title>
+        </mat-card-header>
 
-    <div class="mb-2 background-white shadow rounded p-2">
-      <div class="pt-4 wish-list">
+        <div class="cart-product-card" *ngFor="let item of cart?.cartItems" fxLayout="row wrap"
+             fxLayoutAlign="space-between center" fxLayoutGap="10px">
 
-        <h6 class="mb-4">Kosár (<span>{{ cart?.cartItems.length }}</span> termék)</h6>
-
-        <div class="row mb-4" *ngFor="let item of cart?.cartItems">
-          <div class="col-md-5 col-lg-3 col-xl-3">
-            <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
-              <img class="img-fluid w-100" [src]="item.product.pictureUrl" alt="product-picture">
-            </div>
+          <div class="" fxFlex.gt-sm="30" fxFlex.sm="100" fxLayout="row">
+            <img mat-card-image class="cart-product-preview-img" fxFlex="100" [src]="item.product.pictureUrl"
+                 alt="product-picture">
           </div>
 
-          <div class="col-md-7 col-lg-9 col-xl-9">
-            <div>
-              <div class="d-flex justify-content-between">
-                <div>
-                  <h5>{{ item.product.name }}</h5>
-                  <p class="mb-3 text-muted small">Termék kód: {{ item.product.productCode }}</p>
-                  <p class="mb-3 text-muted small">Garancia: {{ item.product.warrantyMonths }} hónap</p>
-                </div>
-                <div>
-                  <label for="productCountSelector"><small>Mennyiség:</small></label>
-                  <select class="form-control" #t (change)="refreshProductCount(item.product.id, t.value)"
-                          id="productCountSelector">
-                    <option *ngFor="let count of [].constructor(item.product.quantityAvailable); let idx = index"
-                            [value]="idx + 1" [selected]="item.count === idx + 1">{{ idx + 1 }}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <a [routerLink]="" (click)="removeProduct(item.id)"
-                     class="card-link-secondary small text-uppercase mr-3">
-                    <i class="fa fa-trash mr-1" aria-hidden="true"></i> Törlés </a>
-                  <a href="" type="button" class="card-link-secondary small text-uppercase">
-                    <i class="fa fa-heart mr-1" aria-hidden="true"></i> Kedvencekhez</a>
-                </div>
-                <p class="mb-0" *ngIf="item.product.discount">
-                  <span><small>
-                    <del>
+          <div fxLayout="column" fxFlex.gt-md="60" fxFlex.sm="100">
+
+            <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
+              <mat-card-header fxLayout="column" fxFlex="75">
+                <mat-card-title>{{ item.product.name }}</mat-card-title>
+                <mat-card-subtitle class="cart-product-text">Termék
+                  kód: {{ item.product.productCode }}</mat-card-subtitle>
+                <mat-card-subtitle class="cart-product-text">Garancia: {{ item.product.warrantyMonths }}hónap
+                </mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-form-field appearance="outline" fxFlex="20">
+                <mat-label>Mennyiség</mat-label>
+                <mat-select [(ngModel)]="item.count" #t
+                            (selectionChange)="refreshProductCount(item.product.id, t.value)" name="count">
+                  <mat-option *ngFor="let count of [].constructor(item.product.quantityAvailable); let idx = index"
+                              [value]="idx + 1">{{idx + 1}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="" fxFlex="100" fxLayout="row">
+
+              <mat-card-header *ngIf="item.product.discount">
+                <mat-card-title class="discounted-price">
+                  {{ (item.product.price / 100) * (100 - item.product.discount) |
+                  currency: 'HUF': 'symbol-narrow': '2.0' }}
+                </mat-card-title>
+                <mat-card-subtitle>
+                  <del>
                     {{ item.product.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
                   </del>
-                    ({{ item.product.discount }} %)
-                  </small></span>
-                  <span class="text-danger">
-                  {{ (item.product.price / 100) * (100 - item.product.discount) |
-                    currency: 'HUF': 'symbol-narrow': '2.0' }}
-                </span>
-                </p>
-                <p class="mb-0" *ngIf="!item.product.discount">
-                  <span>
-                    {{ item.product.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
-                  </span>
-                </p>
+                  ({{ item.product.discount }} %)
+                </mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-card-header *ngIf="!item.product.discount">
+                <mat-card-subtitle>
+                  {{ item.product.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
+                </mat-card-subtitle>
+              </mat-card-header>
+            </div>
+
+            <mat-card-actions fxLayout="row" fxFlex="100">
+              <div>
+                <button mat-button [color]="'primary'" (click)="removeProduct(item.id)">
+                  <mat-icon>delete</mat-icon>
+                  Törlés
+                </button>
               </div>
-            </div>
-            <hr class="mb-4">
+              <div>
+                <button mat-button [color]="'primary'">
+                  <mat-icon>favorite</mat-icon>
+                  Kedvencekhez
+                </button>
+              </div>
+            </mat-card-actions>
           </div>
-
+          <mat-divider class="cart-divider" inset="true"
+                       *ngIf="cart.cartItems.indexOf(item) != cart.cartItems.length - 1"></mat-divider>
         </div>
-      </div>
+      </mat-card>
     </div>
 
-    <div class="mb-2 shadow background-white p-2 pb-4 rounded">
-      <div class="pt-4">
-        <h6 class="pl-1 pb-2"><i class="fa fa-truck" aria-hidden="true"></i> Szállítási módok: </h6>
-        <div class="form-check mb-2" *ngFor="let shipping of shippingData">
-          <label class="form-check-label shipping-label">
-            <input class="form-check-input" type="radio" [(ngModel)]="currentShipping.method"
-                   (change)="refreshSippingPrice()" name="shippingMethod" id="shippingMethod"
-                   [value]="shipping.method">
+    <div fxFlex.md="100" fxFlex.lg="35" fxFlex.gt-lg="35" fxLayout="column" fxLayoutGap="10px">
+      <mat-card fxFlex="100" class="mat-elevation-z8">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>local_shipping</mat-icon>
+          <mat-card-title>Szállítási módok:</mat-card-title>
+        </mat-card-header>
+        <mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="currentShipping"
+                         fxLayout="column" fxLayoutGap="10px" [(ngModel)]="currentShipping.method"
+                         (ngModelChange)="refreshSippingPrice()">
+          <mat-radio-button [color]="'accent'" *ngFor="let shipping of shippingData" [value]="shipping?.method"
+                            class="delivery-radio-button" fxFlex="100">
+            {{ shipping.method | titlecase }} ({{ shipping.days }} munkanap)
+            {{ shipping.cost | currency: 'HUF': 'symbol-narrow': '1.0'}}
+          </mat-radio-button>
 
-            {{ shipping.method | titlecase }}
-            ({{ shipping.days }} munkanap)
-          </label>
-          <span class="float-right">
-              {{ shipping.cost | currency: 'HUF': 'symbol-narrow': '1.0'}}
-            </span>
-        </div>
-        <hr>
-        <h6 class="mb-3">Várható szállítás*: </h6>
-        <p class="mb-2 shipping-label">{{cart?.expectedDeliveryDate | date: 'MMMM d EEEE'}}</p>
-        <p class="text-muted">
-          <small>* 14:00 után leadott rendelések a következő munkanapon kerülnek feldolgozásra.</small>
-        </p>
-      </div>
-    </div>
-  </div>
+        </mat-radio-group>
 
-  <div class="col-lg-4">
-    <div class="mb-2 shadow background-white rounded p-2">
-      <div class="pt-4">
+        <mat-divider class="cart-divider" inset="true"></mat-divider>
+        <mat-card-subtitle [style.margin-top]="'10px'">Várható szállítás*:</mat-card-subtitle>
+        <mat-card-content>{{cart?.expectedDeliveryDate | date: 'MMMM d EEEE'}}</mat-card-content>
+        <mat-card-subtitle [style.margin-top]="'10px'">
+          * 14:00 után leadott rendelések a következő munkanapon kerülnek feldolgozásra.
+        </mat-card-subtitle>
+      </mat-card>
 
-        <p><a class="text-secondary text-decoration-none d-flex justify-content-between" data-toggle="collapse"
-              href="#collapseExample"
-              aria-expanded="false" aria-controls="collapseExample">
-          Utalvány kód
-          <span><i class="fa fa-chevron-down pt-1" aria-hidden="true"></i></span>
-        </a></p>
+      <mat-card class="mat-elevation-z8" fxFlex="100">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            Ajándékutalvány
+          </mat-expansion-panel-header>
 
-        <div class="collapse" id="collapseExample">
-          <div class="mt-3">
-            <div class="md-form md-outline mb-0">
-              <input type="text" id="discount-code" class="form-control font-weight-light"
-                     placeholder="ajándékutalvány">
-            </div>
-            <button class="btn btn-primary btn-block my-2">Küldés</button>
+          <mat-form-field fxFlex="100" appearance="outline">
+            <mat-label>Utalvány</mat-label>
+            <input matInput placeholder="">
+            <mat-hint></mat-hint>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-button materialElevation [color]="'primary'">
+              <mat-icon>done</mat-icon>
+              Küldés
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z8 cart-calculates-section" fxFlex="100">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>euro</mat-icon>
+          <mat-card-title>Összesítés:</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div fxLayout="row wrap" fxLayoutAlign="space-between space-between">
+            <mat-card-title><small>Kosár összege:</small></mat-card-title>
+            <div>{{ cart?.itemsTotalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</div>
           </div>
-        </div>
-      </div>
-    </div>
+          <mat-divider class="cart-divider" inset="true"></mat-divider>
 
-    <div class="mb-3 shadow background-white p-2 rounded">
-      <div class="pt-4">
+          <div fxLayout="row wrap" fxLayoutAlign="space-between">
+            <mat-card-title><small>Szállítás összege:</small></mat-card-title>
+            <div>{{ cart?.shippingMethod.cost | currency: 'HUF': 'symbol-narrow' : '1.0'}}</div>
+          </div>
+          <mat-divider class="cart-divider" inset="true"></mat-divider>
 
-        <h6 class="mb-3">Összesítés:</h6>
+          <div fxLayout="row wrap" fxLayoutAlign="space-between">
+            <mat-card-title><small>Végösszeg:</small></mat-card-title>
+            <mat-card-title>{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</mat-card-title>
+          </div>
+        </mat-card-content>
 
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-            Kosár összege:
-            <span>{{ cart?.itemsTotalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-            Szállítás:
-            <span>{{ cart?.shippingMethod.cost | currency: 'HUF': 'symbol-narrow' : '1.0'}}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-            <div>Végösszeg:<strong><p class="mb-0">(ÁFA-val)</p></strong>
-            </div>
-            <span><strong>{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</strong></span>
-          </li>
-        </ul>
-        <button type="button" class="btn btn-primary btn-block" [disabled]="loading">
-          <span *ngIf="loading" class="spinner-border mr-1"></span>
-          Véglegesítés
-        </button>
-
-      </div>
+        <mat-card-actions fxLayoutAlign="center" [style.margin-bottom]="'10px'">
+          <button mat-button materialElevation [color]="'primary'" type="button" class="btn btn-primary btn-block"
+                  [disabled]="loading">
+            <mat-icon>done</mat-icon>
+            Véglegesítés
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   </div>
 </div>

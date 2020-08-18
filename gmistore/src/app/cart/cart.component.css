@@ -1,3 +1,34 @@
 .shipping-label {
   font-size: 18px;
 }
+
+.cart-product-preview-img {
+  max-height: 300px;
+  padding-left: 10px;
+}
+
+.cart-product-card {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.cart-header-text {
+  margin-bottom: 10px;
+}
+
+.cart-calculates-section {
+  margin-bottom: 10px;
+}
+.cart-product-text {
+  margin-top: 10px;
+}
+
+.cart-divider {
+  margin-top: 7px !important;
+  border-top-color: #ffcf02;
+  margin-bottom: 7px !important;
+}
+
+.discounted-price{
+  color: red;
+}

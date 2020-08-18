@@ -27,12 +27,13 @@
             <mat-icon>face</mat-icon>
           </button>
           <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-            <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems" matBadgeSize="medium"
+            <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()" matBadgeSize="medium"
                       matBadgeOverlap="false">favorite
             </mat-icon>
           </button>
-          <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" id="cart-icon">
-            <mat-icon [matBadge]="itemsInCart" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart</mat-icon>
+          <button mat-icon-button class="example-icon" [routerLink]="['/cart']"
+                  aria-label="Example icon-button with share icon" id="cart-icon">
+            <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart</mat-icon>
           </button>
         </mat-toolbar-row>
       </mat-toolbar>

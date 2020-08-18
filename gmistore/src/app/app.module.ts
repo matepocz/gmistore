@@ -47,6 +47,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MaterialElevationDirective} from "./utils/material-elevation-directive";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   declarations: [
@@ -100,6 +102,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     MatSnackBarModule,
     MatTooltipModule,
     MatSlideToggleModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

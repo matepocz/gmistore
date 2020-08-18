@@ -14,7 +14,7 @@ export class CartComponent implements OnInit, OnDestroy {
   loading = false;
   cart: CartModel;
   shippingData: ShippingMethodModel[];
-  currentShipping: ShippingMethodModel;
+  currentShipping: ShippingMethodModel = null;
 
   cartSubscription: Subscription;
   shippingDataSubscription: Subscription;
@@ -47,6 +47,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   refreshProductCount(id: number, count: string) {
+    console.log(id, count)
     this.loading = true;
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response) => {

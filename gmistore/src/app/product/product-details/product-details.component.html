@@ -70,8 +70,8 @@
 
   <div class="col-12 my-3 pl-2" *ngIf="authenticatedUser && !reviewedAlready">
     <p>Kérjük értékelje a terméket: </p>
-    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"
-            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>
+<!--    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"-->
+<!--            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>-->
     <div class="form-group mt-2">
       <label for="ratingComment">Komment: </label>
       <textarea class="form-control" id="ratingComment" rows="3"></textarea>
@@ -81,8 +81,8 @@
 
   <div class="col-12 my-3 pl-2" *ngIf="authenticatedUser && reviewedAlready">
     <p>Értékelésed: </p>
-    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"
-            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>
+<!--    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"-->
+<!--            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>-->
   </div>
 
   <div class="col-12 my-3 pl-2" *ngIf="!authenticatedUser">
@@ -94,31 +94,31 @@
     <p class="text-muted">{{ product?.averageRating }} {{ ratings?.length }} felhasználó értékelése alapján</p>
   </div>
 
-  <div class="col-12 mb-3">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-sm-12 mb-2">
-        <progressbar [value]="fiveStarPercentage" type="success">5 *</progressbar>
-        <small><em>{{ fiveStars }} vélemény</em></small>
-      </div>
-      <div class="col-12 col-md-8 col-sm-12 mb-2">
-        <progressbar [value]="fourStarPercentage" type="info">4 *</progressbar>
-        <small><em>{{ fourStars }} vélemény</em></small>
-      </div>
-      <div class="col-12 col-md-8 col-sm-12 mb-2">
-        <progressbar [value]="threeStarPercentage" type="warning">3 *</progressbar>
-        <small><em>{{ threeStars }} vélemény</em></small>
-      </div>
-      <div class="col-12 col-md-8 col-sm-12 mb-2">
-        <progressbar [value]="twoStarPercentage" type="danger">2 *</progressbar>
-        <small><em>{{ twoStars }} vélemény</em></small>
-      </div>
-      <div class="col-12 col-md-8 col-sm-12 mb-2">
-        <progressbar [value]="oneStarPercentage" type="danger">1 *</progressbar>
-        <small><em>{{ oneStar }} vélemény</em></small>
-      </div>
-    </div>
-  </div>
-</div>
+<!--  <div class="col-12 mb-3">-->
+<!--    <div class="row justify-content-center">-->
+<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
+<!--        <progressbar [value]="fiveStarPercentage" type="success">5 *</progressbar>-->
+<!--        <small><em>{{ fiveStars }} vélemény</em></small>-->
+<!--      </div>-->
+<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
+<!--        <progressbar [value]="fourStarPercentage" type="info">4 *</progressbar>-->
+<!--        <small><em>{{ fourStars }} vélemény</em></small>-->
+<!--      </div>-->
+<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
+<!--        <progressbar [value]="threeStarPercentage" type="warning">3 *</progressbar>-->
+<!--        <small><em>{{ threeStars }} vélemény</em></small>-->
+<!--      </div>-->
+<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
+<!--        <progressbar [value]="twoStarPercentage" type="danger">2 *</progressbar>-->
+<!--        <small><em>{{ twoStars }} vélemény</em></small>-->
+<!--      </div>-->
+<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
+<!--        <progressbar [value]="oneStarPercentage" type="danger">1 *</progressbar>-->
+<!--        <small><em>{{ oneStar }} vélemény</em></small>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
 <div class="row shadow rounded background-white mt-3">
   <div class="col-12 my-3">

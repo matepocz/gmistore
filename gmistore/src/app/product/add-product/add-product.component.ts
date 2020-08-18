@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {ProductModel} from "../../models/product-model";
 import {FormBuilder, Validators} from "@angular/forms";
-import {errorHandler} from "../../utils/errorHandler";
+import {errorHandler} from "../../utils/error-handler";
 import {LocalStorageService} from "ngx-webstorage";
 
 @Component({

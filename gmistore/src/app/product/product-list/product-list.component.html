@@ -1,48 +1,52 @@
-<div class="row justify-content-between px-1">
+<div class="containerX" fxLayoutAlign="center">
+  <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.lg="80" fxLayoutAlign="center">
 
-  <div class="col-12 background-white rounded my-2 shadow">
-    <p class="pt-2">{{ products.length }} termék</p>
-    <hr>
-  </div>
+    <mat-card class="product-card" materialElevation *ngFor="let product of products" [style.margin-top]="'1%'">
+      <div fxFlexFill fxLayoutAlign="center" fxLayout="column">
+        <a [routerLink]="['/product/', product.slug]">
+          <img class="product-card-image" mat-card-image [src]="product.pictureUrl" alt="{{ product.name }} image"
+               [style.margin-top]="'5px'">
+        </a>
+        <span class="spacer"></span>
+        <mat-card-title>{{ product.name | slice: 0: 20 }}</mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
 
-  <div class="card product-card rounded my-1 bg-white"
-       *ngFor="let product of products">
-    <a [routerLink]="['/product/', product.slug]">
-      <img class="product-card-img card-img-top pt-2" [src]="product.pictureUrl" alt="{{ product.name }}"/>
-    </a>
-    <h6 class="text-secondary mt-auto text-center text-justify">{{ product.name | slice: 0 : 45 }}</h6>
+        <mat-card-content>
+          <p> {{ product.description | slice: 0: 100 }}...</p>
+        </mat-card-content>
+        <mat-card-header *ngIf="product.discount">
+          <mat-card-title>
+            <p style="color: red"><small>
+              {{ calculateDiscountedPrice(product) | currency : 'HUF' : 'symbol-narrow' : '3.0-0' }}
+            </small></p>
+          </mat-card-title>
+          <mat-card-subtitle>
+            <del>{{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}</del>
+            ( {{ product.discount }}% )
+          </mat-card-subtitle>
+        </mat-card-header>
 
-    <div *ngIf="product.quantityAvailable > 0">
-      <p class="card-paragraph text-success text-center">{{product.quantityAvailable}} raktáron</p>
-      <div *ngIf="product.discount == 0">
-        <p class="card-paragraph text-center">
-          {{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}
-        </p>
+        <mat-card-title *ngIf="!product.discount">
+          <p><small>
+            {{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}
+          </small></p>
+        </mat-card-title>
+        <mat-card-subtitle [style]="'color: red'" *ngIf="product.quantityAvailable <= 0">Nincs raktáron
+        </mat-card-subtitle>
+        <mat-card-actions fxLayoutAlign="end end" fxLayout="row">
+
+          <button mat-icon-button *ngIf="product.quantityAvailable > 0" (click)="addToCart(product.id)"
+                  [color]="'primary'">
+            <mat-icon>add_shopping_cart</mat-icon>
+          </button>
+
+          <button mat-icon-button [color]="'primary'">
+            <mat-icon>favorite</mat-icon>
+          </button>
+        </mat-card-actions>
+
       </div>
-
-      <div *ngIf="product.discount > 0">
-        <p class="text text-center card-paragraph"><small>
-          <del>{{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }} HUF</del>
-          <span class="text-secondary"> ({{ product.discount }} %)</span>
-          </small>
-        </p>
-        <p class="price text-danger text-center card-paragraph"
-           [innerText]="calculateDiscountedPrice(product) | currency : 'HUF' : 'symbol-narrow' : '3.0' ">
-        </p>
-      </div>
-    </div>
-
-    <div *ngIf="product.quantityAvailable == 0">
-      <p class="text-danger text-center card-paragraph"> 0 raktáron</p>
-    </div>
-
-    <div class="mt-auto" *ngIf="product.quantityAvailable > 0">
-    <p class="text-center">
-      <button class="btn btn-primary">
-        <i class="fa fa-cart-plus" aria-hidden="true"></i> Kosárba
-      </button>
-    </p>
-    </div>
+    </mat-card>
   </div>
 </div>
 

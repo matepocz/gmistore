@@ -1,18 +1,5 @@
 .product-card {
-  transition: box-shadow .3s;
-  width: 14rem;
-  max-width: 49%;
-}
-.product-card:hover {
-  box-shadow: 0 0 17px rgba(33,33,33,.2);
-}
-
-.product-card-img {
-  width: 100%;
-}
-
-.card-paragraph {
-  margin-top: 2px;
-  margin-bottom: 2px;
-  font-size: 16px;
+  width: 13rem;
+  max-width: 40% !important;
+  margin: 1%;
 }

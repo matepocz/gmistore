@@ -1,4 +1,4 @@
-<div class="row">
+<div class="main-wrapper">
   <div class="col-12 shadow rounded my-3 background-white">
     <form name="form" [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <div class="row">
@@ -9,6 +9,14 @@
 
       <div class="col-12 mt-3">
         <div class="form-label-group">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Outline form field</mat-label>
+            <input matInput placeholder="Placeholder">
+            <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+            <mat-hint>Hint</mat-hint>
+          </mat-form-field>
+
           <input type="text" [formControlName]="'name'" id="name" name="name" class="form-control"
                  [ngClass]="{'is-invalid': productForm.get('name').touched
                    && productForm.get('name').invalid}" placeholder="Megnevezés" autofocus required>

@@ -3,7 +3,7 @@ import {ProductService} from "../../service/product-service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {errorHandler} from "../../utils/errorHandler";
+import {errorHandler} from "../../utils/error-handler";
 import {Subscription} from "rxjs";
 
 @Component({

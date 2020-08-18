@@ -55,4 +55,16 @@ public class AuthController {
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/check-username-taken/{username}")
+    public ResponseEntity<Boolean> checkIfUsernameTaken(@PathVariable("username") String username) {
+        boolean result = authService.checkIfUsernameExists(username);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @GetMapping("/check-email-taken/{email}")
+    public ResponseEntity<Boolean> checkIfEmailTaken(@PathVariable("email") String email) {
+        boolean result = authService.checkIfEmailExists(email);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
 }

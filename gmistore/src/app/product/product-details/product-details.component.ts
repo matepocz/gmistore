@@ -4,7 +4,7 @@ import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RatingModel} from "../../models/rating-model";
 import {CartService} from "../../service/cart-service";
-import {AuthService} from "../../user/auth/auth.service";
+import {AuthService} from "../../service/auth-service";
 import {LocalStorageService} from "ngx-webstorage";
 
 @Component({

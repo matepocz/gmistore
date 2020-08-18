@@ -123,4 +123,14 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         return jwtProvider.generateToken(authenticate);
     }
+
+    public boolean checkIfUsernameExists(String username) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
+        return userByUsername.isPresent();
+    }
+
+    public boolean checkIfEmailExists(String email) {
+        Optional<User> userByEmail = userRepository.findUserByEmail(email);
+        return userByEmail.isPresent();
+    }
 }

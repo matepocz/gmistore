@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../auth/auth.service";
+import {AuthService} from "../../service/auth-service";
 
 @Component({
   selector: 'app-confirm-account',

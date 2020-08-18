@@ -1,27 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-@import "~bootstrap/dist/css/bootstrap.css";
-body{
-  background-color: #e9ebee;
-}
-
-* {
-  font-family: 'Open Sans', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-.background-white {
-  background-color: white;
-}
-
-
-html {
-  height: 100%;
-  background-color: #fff;
-  color: #555;
-  font-family: 'Times New Roman', sans-serif;
-  font-weight: 300;
-  font-size: 20px;
-  text-rendering: optimizeLegibility;
+.spacer {
+  flex: 1 1 auto;
 }

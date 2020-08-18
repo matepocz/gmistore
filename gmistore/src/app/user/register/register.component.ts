@@ -1,8 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {RegisterPayload} from "../auth/register-payload";
-import {AuthService} from "../auth/auth.service";
-import {ComparePassword} from "../auth/passwordValidator";
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {RegisterRequestModel} from "../../models/register-request-model";
+import {AuthService} from "../../service/auth-service";
+import {ComparePassword} from "../../utils/password-validator";
+import {Router} from "@angular/router";
+import {usernameValidator} from "../../utils/username-validator";
+import {emailValidator} from "../../utils/email-validator";
+import {Subscription} from "rxjs";
+import {errorHandler} from "../../utils/error-handler";
 
 
 @Component({
@@ -10,61 +15,54 @@ import {ComparePassword} from "../auth/passwordValidator";
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   @ViewChild('form') formValues;
   registerForm: FormGroup;
-  registerPayload: RegisterPayload
-  registerFail: string = 'Hiba a regisztráció során!'
+  registerRequest: RegisterRequestModel
+  hide: boolean = true;
+  isSeller: boolean = false;
 
+  registerSubscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService) {
-    this.registerForm = this.formBuilder.group({
-      firstName: new FormControl('', [Validators.required, Validators.min(3), Validators.max(30), Validators.nullValidator]),  //todo folytatni a regex betűzéssel
-      lastName: new FormControl('', [Validators.required, Validators.min(3), Validators.max(15), Validators.nullValidator]),
-      username: new FormControl('', [Validators.required, Validators.min(5), Validators.max(15), Validators.nullValidator]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.nullValidator, Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]),
-      confirmPassword: new FormControl('', [Validators.required]),
-      seller: new FormControl(false)
-    }, {validator: ComparePassword('password', 'confirmPassword')});
-
-    this.registerPayload = {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      seller: false
-    };
-
+  constructor(private formBuilder: FormBuilder, private authService: AuthService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
+    this.registerForm = this.formBuilder.group({
+      firstName: [null,
+        [Validators.required, Validators.min(3), Validators.max(30), Validators.nullValidator]],
+      lastName: [null,
+        [Validators.required, Validators.min(3), Validators.max(15), Validators.nullValidator]],
+      username: [null,
+        [Validators.required, Validators.min(5), Validators.max(15), Validators.nullValidator],
+        [usernameValidator(this.authService)]],
+      email: [null, [Validators.required, Validators.email], [emailValidator(this.authService)]],
+      password: [null,
+        [Validators.required, Validators.nullValidator,
+          Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]],
+      confirmPassword: [null, [Validators.required]],
+      seller: [false,]
+    }, {validator: ComparePassword('password', 'confirmPassword')});
   }
+
 
   onSubmit() {
-    this.registerPayload.firstName = this.registerForm.get('firstName').value;
-    this.registerPayload.lastName = this.registerForm.get('lastName').value;
-    this.registerPayload.username = this.registerForm.get('username').value;
-    this.registerPayload.email = this.registerForm.get('email').value;
-    this.registerPayload.password = this.registerForm.get('password').value;
-    this.registerPayload.confirmPassword = this.registerForm.get('confirmPassword').value;
-    this.registerPayload.seller = this.registerForm.get('seller').value;
+    this.registerRequest = this.registerForm.value;
 
-    this.authService.register(this.registerPayload).subscribe(data => {
-      // console.log('Seller status? ' + this.registerPayload.seller)
-      // console.log(this.registerPayload)
-      console.log('register success');
-    }, error => {
-
-      console.log('register failed');
-    });
-    this.formValues.resetForm('form');
+    this.registerSubscription = this.authService.register(this.registerRequest).subscribe(
+      (data) => {
+      }, (error) => {
+        errorHandler(error, this.registerForm);
+      }, () => {
+        this.router.navigate(['/register-success'])
+      }
+    );
   }
 
-
-  get condition() {
-    return this.registerForm.controls;
+  ngOnDestroy() {
+    if (this.registerSubscription) {
+      this.registerSubscription.unsubscribe();
+    }
   }
 }

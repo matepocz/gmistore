@@ -1,46 +1,53 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
-import {LoginPayload} from "../auth/login-payload";
-import {AuthService} from "../auth/auth.service";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {LoginRequestModel} from "../../models/login-request-model";
+import {AuthService} from "../../service/auth-service";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['../register/register.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
-  loginPayload: LoginPayload;
+  loginPayload: LoginRequestModel;
+  loginSubscription: Subscription;
+  hide: boolean = true;
 
-  constructor(private authService: AuthService, private router:Router) {
-    this.loginForm = new FormGroup({
-      username: new FormControl(),
-      password: new FormControl()
+  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) {
+    this.loginForm = this.formBuilder.group({
+      username: [null],
+      password: [null]
     });
+  }
 
-    this.loginPayload = {
-      username : '',
-      password :''
+  ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/'])
     }
   }
 
-
-  ngOnInit() {
+  onSubmit() {
+    this.loginPayload = this.loginForm.value;
+    this.authService.login(this.loginPayload).subscribe(
+      (data) => {
+        if (data) {
+          this.router.navigate(['/product-list'])
+        } else {
+          this.loginForm.get('username').setErrors({badCredentials: true})
+        }
+      }, (error: HttpErrorResponse) => {
+        this.loginForm.get('username').setErrors({badCredentials: true})
+      });
   }
 
-  onSubmit() {
-    this.loginPayload.username = this.loginForm.get('username').value;
-    this.loginPayload.password = this.loginForm.get('password').value;
-
-    this.authService.login(this.loginPayload).subscribe(data=>{
-      if(data){
-        console.log('sikeres bejelentkezés')
-        this.router.navigateByUrl('/product-list')
-      }else{
-        console.log('gond a bejelentkezésnél')
-      }
-    });
+  ngOnDestroy() {
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
   }
 }

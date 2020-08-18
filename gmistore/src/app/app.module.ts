@@ -21,7 +21,6 @@ import {ProductListComponent} from './product/product-list/product-list.componen
 import {ProductEditComponent} from './product/product-edit/product-edit.component';
 import {ProductCardComponent} from './product/product-card/product-card.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {CollapseModule} from "ngx-bootstrap/collapse";
 import {JumbotronComponent} from './core/jumbotron/jumbotron.component';
 import {ProductDetailsComponent} from './product/product-details/product-details.component';
 import {UserProfileComponent} from './user/user-profile/user-profile.component';
@@ -30,8 +29,24 @@ import {AuthInterceptor} from "./utils/auth-interceptor";
 import {RegisterSuccessComponent} from './user/register-success/register-success.component';
 import {ConfirmAccountComponent} from './user/confirm-account/confirm-account.component';
 import {CartComponent} from './cart/cart.component';
-import {RatingModule} from "ngx-bootstrap/rating";
-import {ProgressbarModule} from "ngx-bootstrap/progressbar";
+import {MatInputModule} from "@angular/material/input";
+import {MatIconModule} from "@angular/material/icon";
+import {SideNavComponent} from './side-nav/side-nav.component';
+import {LayoutModule} from '@angular/cdk/layout';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import {MatBadgeModule} from "@angular/material/badge";
+import {AddressFormComponent} from './address-form/address-form.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatCardModule} from '@angular/material/card';
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MaterialElevationDirective} from "./utils/material-elevation-directive";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -56,7 +71,10 @@ import {ProgressbarModule} from "ngx-bootstrap/progressbar";
     AddProductComponent,
     RegisterSuccessComponent,
     ConfirmAccountComponent,
-    CartComponent
+    CartComponent,
+    SideNavComponent,
+    AddressFormComponent,
+    MaterialElevationDirective
   ],
   imports: [
     FormsModule,
@@ -65,11 +83,23 @@ import {ProgressbarModule} from "ngx-bootstrap/progressbar";
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    CollapseModule.forRoot(),
     Ng2Webstorage.forRoot(),
     HttpClientModule,
-    RatingModule.forRoot(),
-    ProgressbarModule.forRoot(),
+    MatInputModule,
+    MatIconModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatBadgeModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule,
+    FlexLayoutModule,
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatSlideToggleModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

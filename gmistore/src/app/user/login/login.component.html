@@ -1,28 +1,67 @@
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <form class="form shadow background-white" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="note">
-          <p>Bejelentkezés</p>
-        </div>
+<div class="login-wrapper" fxLayout="column" fxLayoutAlign="center center">
 
-        <div class="form-content">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control"
-                       placeholder="Username *" value="" required=""/>
-              </div>
-              <div class="form-group">
-                <input type="password" id="inputPassword" [formControlName]="'password'" class="form-control"
-                       placeholder="Password *" value="" required=""/>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Bejelentkezés</button>
-          <hr>
-          <p class="text-secondary"><small>Nem regisztrált?</small><a href="/register"><small> Regisztráció</small></a></p>
-        </div>
-      </form>
-    </div>
-  </div>
+  <mat-card class="box mat-elevation-z5">
+    <mat-card-header [style.margin-bottom]="'2%'">
+      <mat-card-subtitle>Bejelentkezés</mat-card-subtitle>
+    </mat-card-header>
+
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-card-content>
+
+        <mat-form-field class="form-full-width" appearance="outline">
+          <mat-label>Felhasználónév</mat-label>
+          <input matInput placeholder="" formControlName="username">
+          <mat-hint></mat-hint>
+          <mat-error *ngIf="loginForm.get('username').errors?.badCredentials">
+            Rossz jelszó vagy felhasználónév
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-full-width" appearance="outline">
+          <mat-label>Jelszó</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" placeholder="" formControlName="password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-hint></mat-hint>
+        </mat-form-field>
+      </mat-card-content>
+      <button mat-stroked-button color="primary" class="btn-block">Bejelentkezés</button>
+      <mat-divider></mat-divider>
+      <a mat-button color="primary" [routerLink]="['/register']" class="login-footer-text">Regisztráció</a>
+      <a mat-button color="primary" [routerLink]="['/new-password']" class="login-footer-text">Új jelszó</a>
+    </form>
+  </mat-card>
+
+</div>
+
+
+<!--  <div class="row justify-content-center">-->
+<!--    <div class="col-md-8">-->
+<!--      <form class="form shadow background-white" [formGroup]="loginForm" (ngSubmit)="onSubmit()">-->
+<!--        <div class="note">-->
+<!--          <p>Bejelentkezés</p>-->
+<!--        </div>-->
+
+<!--        <div class="form-content">-->
+<!--          <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--              <div class="form-group">-->
+<!--                <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control"-->
+<!--                       placeholder="Username *" value="" required=""/>-->
+<!--              </div>-->
+<!--              <div class="form-group">-->
+<!--                <input type="password" id="inputPassword" [formControlName]="'password'" class="form-control"-->
+<!--                       placeholder="Password *" value="" required=""/>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Bejelentkezés</button>-->
+<!--          <hr>-->
+<!--          <p class="text-secondary"><small>Nem regisztrált?</small><a href="/register"><small> Regisztráció</small></a></p>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
 

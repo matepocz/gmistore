@@ -3,6 +3,7 @@ import {CartService} from "../service/cart-service";
 import {CartModel} from "../models/cart-model";
 import {Subscription} from "rxjs";
 import {ShippingMethodModel} from "../models/shipping-method-model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-cart',
@@ -22,10 +23,11 @@ export class CartComponent implements OnInit, OnDestroy {
   removeProductSubscription: Subscription;
   refreshShippingSubscription: Subscription;
 
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private titleService: Title) {
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle("Kosár - GMI Store")
     this.loading = true;
     this.cartSubscription = this.cartService.getCart().subscribe(
       (data) => {

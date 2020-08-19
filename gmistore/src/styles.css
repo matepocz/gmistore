@@ -1,6 +1,66 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .spacer {
   flex: 1 1 auto;
+}
+
+.divider-accent-colored {
+  margin-top: 7px !important;
+  border-top-color: #ffcf02;
+  margin-bottom: 7px !important;
+}
+
+.rating {
+  margin-bottom: 15px;
+}
+
+.star-ratings-css {
+  unicode-bidi: bidi-override;
+  color: #c5c5c5;
+  font-size: 22px;
+  height: 22px;
+  width: 100px;
+  position: relative;
+  padding: 0;
+  text-shadow: 0 1px 0 #a2a2a2;
+}
+
+.star-ratings-css-top {
+  color: #ffcb00;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+  display: block;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.star-ratings-css-bottom {
+  padding: 0;
+  display: block;
+  z-index: 0;
+}
+
+.discounted-price {
+  color: red;
+}
+
+.containerX {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+.mb-15 {
+  margin-top: 15px;
 }

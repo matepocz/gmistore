@@ -6,6 +6,8 @@ import {RatingModel} from "../../models/rating-model";
 import {CartService} from "../../service/cart-service";
 import {AuthService} from "../../service/auth-service";
 import {LocalStorageService} from "ngx-webstorage";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-product-details',
@@ -24,6 +26,9 @@ export class ProductDetailsComponent implements OnInit {
   reviewedAlready = false;
   authenticatedUser = this.authService.isAuthenticated();
 
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   fiveStars = 0;
   fourStars = 0;
   threeStars = 0;
@@ -32,13 +37,14 @@ export class ProductDetailsComponent implements OnInit {
 
   fiveStarPercentage = 0;
   fourStarPercentage = 0;
-  threeStarPercentage= 0;
+  threeStarPercentage = 0;
   twoStarPercentage = 0;
   oneStarPercentage = 0;
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
-              private localStorageService: LocalStorageService) {
+              private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
+              private titleService: Title) {
   }
 
   ngOnInit(): void {
@@ -52,6 +58,7 @@ export class ProductDetailsComponent implements OnInit {
         this.ratings = this.product.ratings;
       }, error => console.log(error),
       () => {
+        this.titleService.setTitle(this.product.name + " - GMI Store")
         this.isReviewedByUserAlready();
         this.countRatings();
         this.fiveStarPercentage = this.calculateRatingPercentage(this.fiveStars);
@@ -78,9 +85,20 @@ export class ProductDetailsComponent implements OnInit {
   addToCart(id: number) {
     this.cartService.addProduct(id).subscribe(
       (response) => {
-        console.log(response);
-      }, (error) => console.log(error)
+        this.openSnackBar("Termék a kosárba került!")
+      }, (error) => {
+        console.log(error);
+        this.openSnackBar("Valami hiba történt!")
+      }
     )
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
   }
 
   confirmSelection(event: KeyboardEvent) {

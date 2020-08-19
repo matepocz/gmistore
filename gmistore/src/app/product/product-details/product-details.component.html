@@ -1,153 +1,211 @@
-<div class="row mt-4 shadow rounded background-white" *ngIf="product">
-  <div class="col-md-6 my-4">
-    <div class="preview-pic tab-content">
-      <div class="tab-pane active" id="pic-1">
-        <img [src]="defaultPicture" alt="main-image"/>
-      </div>
-    </div>
-    <ul class="preview-thumbnail nav nav-tabs">
-      <li class="active" *ngFor="let picture of product.pictures" (click)="changeDefaultImg(picture)">
-        <a class="preview-image"><img src="{{picture}}" alt=""/></a>
-      </li>
-    </ul>
-  </div>
+<div class="containerX" fxLayoutAlign="center">
+  <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
+            fxFlex.lt-md="100" fxFlex.gt-md="70" fxLayoutAlign="space-between" *ngIf="product">
 
-  <div class="details col-md-6 col-sm-12 my-4">
-    <h4 class="product-title">{{product.name}}</h4>
-    <h6 class="text-secondary"><small>Vásárlói vélemények: {{product.ratings.length}}</small></h6>
-    <div class="rating">
-      <div class="star-ratings-css">
-        <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-        </div>
-        <div class="star-ratings-css-bottom">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+    <div fxFlex="40" fxFlex.xs="100" fxFlex.gt-xs="48" fxLayout="column" fxLayoutAlign="start"
+         fxLayoutGap="15px">
+
+      <div fxFlex="100">
+        <img [src]="defaultPicture" fxFlexFill alt="main-image"/>
+      </div>
+
+      <div class="thumbnail-pictures-div" fxFlex="100" fxLayout="row" fxLayoutAlign="space-evenly center">
+        <div *ngFor="let picture of product.pictures" class="preview-thumbnail" fxFlex="30">
+          <img mat-card-image class="preview-image" [src]="picture" (click)="changeDefaultImg(picture)"
+               alt="Thumbnail picture"/>
         </div>
       </div>
-    </div>
-    <h6><small>Termék azonosító: {{product.productCode}}</small></h6>
-    <h6><small>Kategória: {{product.category}}</small></h6>
-    <h6><small>{{product.warrantyMonths}} hónap garancia</small></h6>
-    <h6><small>{{product.quantitySold}} eladott darab</small></h6>
 
-    <div class="action mt-auto mb-auto" *ngIf="product.quantityAvailable > 0">
-      <h6><small>Kiszállítás: 2 munkanapon belül</small></h6>
-      <p class="text-success">{{product.quantityAvailable}} raktáron</p>
-      <h6 class="text-danger" *ngIf="product.discount == 0">
-        {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</h6>
-      <h6 class="text-danger mb-auto" *ngIf="product.discount > 0">
-        <small>
-          <del>{{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}</del>
-        </small>Akciós ár:
-        <span [innerText]="calculateDiscountedPrice() | currency :
-        'HUF' : 'symbol-narrow' : '3.0' "></span>
-      </h6>
-      <button class="add-to-cart btn btn-primary mr-1 mt-auto" type="button" (click)="addToCart(product.id)">
-        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Kosárba
-      </button>
-      <button class="like btn btn-primary" type="button">
-        <i class="fa fa-heart" aria-hidden="true"></i> Kedvencekhez
-      </button>
     </div>
 
-    <div class="action" *ngIf="product.quantityAvailable == 0">
-      <p class="text-secondary">Jelenleg nincs raktáron.</p>
-      <button class="like btn btn-default" type="button">
-        <span class="fa fa-heart"></span>
-      </button>
-    </div>
-  </div>
+    <div fxFlex="40" fxFlex.xs="100" fxFlex.gt-xs="48" fxLayout="column" fxLayoutAlign="stretch start">
+      <div fxFlex="100">
+        <mat-card-title>{{product.name}}</mat-card-title>
+        <mat-card-subtitle>Vásárlói vélemények: {{product.ratings.length}}</mat-card-subtitle>
 
-</div>
-<div class="row mt-3">
-  <div class="col-12 shadow rounded background-white">
-    <h6 class="mt-3">Leírás:</h6>
-    <p class="product-description text-justify mb-3">{{product?.description}}</p>
-  </div>
-</div>
-
-<div class="row shadow rounded background-white mt-3">
-
-  <div class="col-12 my-3 pl-2" *ngIf="authenticatedUser && !reviewedAlready">
-    <p>Kérjük értékelje a terméket: </p>
-<!--    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"-->
-<!--            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>-->
-    <div class="form-group mt-2">
-      <label for="ratingComment">Komment: </label>
-      <textarea class="form-control" id="ratingComment" rows="3"></textarea>
-    </div>
-    <button class="btn btn-primary">Küldés</button>
-  </div>
-
-  <div class="col-12 my-3 pl-2" *ngIf="authenticatedUser && reviewedAlready">
-    <p>Értékelésed: </p>
-<!--    <rating class="pl-3" [(ngModel)]="currentRating" [max]="maxRating" [readonly]="reviewedAlready"-->
-<!--            (keydown)="confirmSelection($event)" (click)="clickedSelection($event)"></rating>-->
-  </div>
-
-  <div class="col-12 my-3 pl-2" *ngIf="!authenticatedUser">
-    <p class="text-center">Termék értékeléséhez kérjük jelentkezz be!</p>
-  </div>
-
-  <div class="col-12">
-    <hr>
-    <p class="text-muted">{{ product?.averageRating }} {{ ratings?.length }} felhasználó értékelése alapján</p>
-  </div>
-
-<!--  <div class="col-12 mb-3">-->
-<!--    <div class="row justify-content-center">-->
-<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
-<!--        <progressbar [value]="fiveStarPercentage" type="success">5 *</progressbar>-->
-<!--        <small><em>{{ fiveStars }} vélemény</em></small>-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
-<!--        <progressbar [value]="fourStarPercentage" type="info">4 *</progressbar>-->
-<!--        <small><em>{{ fourStars }} vélemény</em></small>-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
-<!--        <progressbar [value]="threeStarPercentage" type="warning">3 *</progressbar>-->
-<!--        <small><em>{{ threeStars }} vélemény</em></small>-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
-<!--        <progressbar [value]="twoStarPercentage" type="danger">2 *</progressbar>-->
-<!--        <small><em>{{ twoStars }} vélemény</em></small>-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-8 col-sm-12 mb-2">-->
-<!--        <progressbar [value]="oneStarPercentage" type="danger">1 *</progressbar>-->
-<!--        <small><em>{{ oneStar }} vélemény</em></small>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-<div class="row shadow rounded background-white mt-3">
-  <div class="col-12 my-3">
-    <h6>Vélemények: </h6>
-  </div>
-  <div class="row">
-    <div class="col-12" *ngFor="let rating of ratings">
-      <div class="rating pl-2 mt-1">
-        <div class="star-ratings-css">
-          <div class="star-ratings-css-top"
-               [ngStyle]="{'max-width.px': calculatePercentageForRating(rating.actualRating)}">
-            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-          </div>
-          <div class="star-ratings-css-bottom">
-            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        <div class="rating">
+          <div class="star-ratings-css">
+            <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <div class="star-ratings-css-bottom">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
           </div>
         </div>
+
+        <mat-card-content>
+          <p>Termék azonosító: {{product.productCode}}</p>
+          <p>Kategória: {{product.category}}</p>
+          <p>{{product.warrantyMonths}} hónap garancia</p>
+          <p>{{product.quantitySold}} eladott darab</p>
+        </mat-card-content>
       </div>
-      <div class="col-12">
-        <p class="text-justify pl-2">{{ rating.comment }}</p>
-        <h6 class="text-secondary pl-2">
-          <small><i class="fa fa-user" aria-hidden="true"></i> {{rating.username}}
-            <i class="fa fa-clock-o" aria-hidden="true"></i> {{ rating.timeStamp | date: "yyyy-MM-dd HH:mm" }}
-          </small>
-        </h6>
+
+
+      <div class="" *ngIf="product.quantityAvailable > 0" fxFlex="100" fxLayout="column">
+
+        <span class="spacer"></span>
+        <mat-card-subtitle>Kiszállítás: akár 1 munkanapon belül</mat-card-subtitle>
+        <mat-card-content>{{product.quantityAvailable}} raktáron</mat-card-content>
+
+        <mat-card-header *ngIf="product.discount == 0">
+          <mat-card-content>
+            {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}
+          </mat-card-content>
+        </mat-card-header>
+
+        <mat-card-header *ngIf="product.discount > 0">
+          <mat-card-title class="discounted-price">
+            {{calculateDiscountedPrice() | currency :'HUF' : 'symbol-narrow' : '3.0' }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            <del>
+              {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}
+            </del>
+            ({{ product.discount }} % )
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-actions fxLayoutAlign="bottom start">
+          <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Kosárba
+          </button>
+          <button mat-button [color]="'primary'" type="button">
+            <mat-icon>favorite</mat-icon>
+            Kedvencekhez
+          </button>
+        </mat-card-actions>
       </div>
-      <div class="col-12">
-        <hr>
+
+      <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
+        <span class="spacer"></span>
+        <mat-card-title>Nincs raktáron</mat-card-title>
+        <button mat-button [color]="'primary'" type="button">
+          <mat-icon>favorite</mat-icon>
+          Kedvencekhez
+        </button>
       </div>
     </div>
-  </div>
+
+    <mat-divider class="divider-accent-colored" inset="true"></mat-divider>
+
+    <div class="mt-15" fxFlex="100">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>description</mat-icon>
+        <mat-card-title>
+          Leírás:
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{product?.description}}
+      </mat-card-content>
+    </div>
+
+    <mat-divider class="divider-accent-colored" inset="true"></mat-divider>
+
+    <div class="mt-15" fxFlex="100" fxLayout="row wrap">
+
+      <mat-card-header fxFlex="100">
+        <mat-icon mat-card-avatar>grade</mat-icon>
+        <mat-card-title>Vélemények & értékelések</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-subtitle *ngIf="!authenticatedUser">Jelentkezz be értékeléshez.</mat-card-subtitle>
+
+      <div fxFlex="45">
+        <div fxLayout="row wrap">
+          <mat-card-title fxFlex="30"><strong>{{ currentRating }}</strong> / 5</mat-card-title>
+
+          <div class="rating" fxFlex="65">
+            <div class="star-ratings-css">
+              <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <div class="star-ratings-css-bottom">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-card-subtitle fxFlex="30">{{ ratings?.length }} értékelés</mat-card-subtitle>
+        </div>
+      </div>
+
+      <div fxFlex="55" fxFlex.lt-sm="100" fxLayout="column">
+
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+          <p fxFlex="12" class="rating-bar-text">5 csillag</p>
+          <mat-progress-bar [value]="fiveStarPercentage" matTooltip="{{ fiveStarPercentage }} %" fxFlex="80">
+          </mat-progress-bar>
+          <p fxFlex="5" class="rating-bar-text">{{ fiveStars }}</p>
+        </div>
+
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+          <p fxFlex="12" class="rating-bar-text">4 csillag</p>
+          <mat-progress-bar [value]="fourStarPercentage" matTooltip="{{ fourStarPercentage }} %" fxFlex="80">
+          </mat-progress-bar>
+          <p fxFlex="5" class="rating-bar-text">{{ fourStars }}</p>
+        </div>
+
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+          <p fxFlex="12" class="rating-bar-text">3 csillag</p>
+          <mat-progress-bar [value]="threeStarPercentage" matTooltip="{{ threeStarPercentage }} %" fxFlex="80">
+          </mat-progress-bar>
+          <p fxFlex="5" class="rating-bar-text">{{ threeStars }}</p>
+        </div>
+
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+          <p fxFlex="12" class="rating-bar-text">2 csillag</p>
+          <mat-progress-bar [value]="twoStarPercentage" matTooltip="{{ twoStarPercentage }} %" fxFlex="80">
+          </mat-progress-bar>
+          <p fxFlex="5" class="rating-bar-text">{{ twoStars }}</p>
+        </div>
+
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+          <p fxFlex="12" class="rating-bar-text">1 csillag</p>
+          <mat-progress-bar [value]="oneStarPercentage" matTooltip="{{ oneStarPercentage }} %" fxFlex="80">
+          </mat-progress-bar>
+          <p fxFlex="5" class="rating-bar-text">{{ oneStar }}</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mt-15" fxFlex="100" fxLayout="column" fxLayoutGap="15px">
+      <div *ngFor="let rating of ratings" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
+
+        <mat-divider inset="true" class="divider-accent-colored"></mat-divider>
+
+        <div class="mt-15" fxFlex="30" fxFlex.lt-md="100">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>history</mat-icon>
+            <mat-card-subtitle>{{ rating.timeStamp | date: "yyyy-MM-dd" }}</mat-card-subtitle>
+            <mat-card-subtitle>{{ rating.username }}</mat-card-subtitle>
+          </mat-card-header>
+
+        </div>
+
+        <div class="mt-15" fxFlex="65" fxFlex.lt-md="100" fxLayout="column">
+
+          <div class="rating pl-2 mt-1">
+            <div class="star-ratings-css">
+              <div class="star-ratings-css-top"
+                   [ngStyle]="{'max-width.px': calculatePercentageForRating(rating.actualRating)}">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <div class="star-ratings-css-bottom">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-card-content>{{ rating.comment }}</mat-card-content>
+
+        </div>
+      </div>
+    </div>
+
+  </mat-card>
 </div>

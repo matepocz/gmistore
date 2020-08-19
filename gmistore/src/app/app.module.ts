@@ -1,4 +1,4 @@
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, Title} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
@@ -49,6 +49,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
@@ -104,9 +106,12 @@ import {MatExpansionModule} from "@angular/material/expansion";
     MatSlideToggleModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
+    MatSliderModule,
+    MatProgressBarModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    Title,
   ],
   bootstrap: [AppComponent]
 })

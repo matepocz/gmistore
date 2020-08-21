@@ -1,5 +1,3 @@
-import {RatingModel} from "./rating-model";
-
 export interface ProductModel {
   id: number;
   name: string;
@@ -14,7 +12,6 @@ export interface ProductModel {
   warrantyMonths: number;
   quantityAvailable: number;
   quantitySold: number;
-  ratings: Array<RatingModel>;
   averageRating: number;
   active: boolean;
   addedBy: string;

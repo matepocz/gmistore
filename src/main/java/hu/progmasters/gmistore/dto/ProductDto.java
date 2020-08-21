@@ -1,11 +1,9 @@
 package hu.progmasters.gmistore.dto;
 
-import hu.progmasters.gmistore.model.Rating;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,7 +24,6 @@ public class ProductDto {
     private int warrantyMonths;
     private int quantityAvailable;
     private int quantitySold;
-    private List<Rating> ratings;
     private double averageRating;
     private boolean active;
     private String addedBy;

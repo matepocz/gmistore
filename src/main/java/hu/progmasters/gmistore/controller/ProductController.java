@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/products/")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -46,13 +46,13 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("inactive")
+    @GetMapping("/inactive")
     public ResponseEntity<List<ProductDto>> getAllInactiveProducts() {
         List<ProductDto> products = productService.getAllInActiveProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("{slug}")
+    @GetMapping("/{slug}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable String slug) {
         ProductDto product = productService.getProductBySlug(slug);
         return product != null ?
@@ -70,7 +70,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         boolean result = productService.deleteProduct(id);
         return result ?
@@ -78,7 +78,7 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("{slug}")
+    @PutMapping("/{slug}")
     public ResponseEntity<Void> updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
         boolean result = productService.updateProduct(slug, productDto);
         return result ?
@@ -86,7 +86,7 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("categories")
+    @GetMapping("/categories")
     public ResponseEntity<Map<Category, String>> getProductCategories() {
         return new ResponseEntity<>(productService.getProductCategories(), HttpStatus.OK);
     }

@@ -8,7 +8,7 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class ProductService {
-  private productsUrl = environment.apiUrl + 'api/products/';
+  private productsUrl = environment.apiUrl + 'api/products';
   private imageUploadUrl = environment.apiUrl + 'api/images/upload';
 
   constructor(private httpClient: HttpClient) {
@@ -19,7 +19,7 @@ export class ProductService {
   }
 
   getProductBySlug(slug: string): Observable<ProductModel> {
-    return this.httpClient.get<ProductModel>(this.productsUrl + slug);
+    return this.httpClient.get<ProductModel>(this.productsUrl + '/' + slug);
   }
 
   getActiveProducts(): Observable<ProductModel[]> {
@@ -27,11 +27,11 @@ export class ProductService {
   }
 
   getProductCategories(): Observable<String[]> {
-    return this.httpClient.get<String[]>(this.productsUrl + 'categories');
+    return this.httpClient.get<String[]>(this.productsUrl + '/categories');
   }
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {
-    return this.httpClient.put(this.productsUrl + slug, product);
+    return this.httpClient.put(this.productsUrl + '/' + slug, product);
   }
 
   public async uploadImage(image: File) {

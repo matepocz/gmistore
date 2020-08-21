@@ -64,7 +64,6 @@ public class ProductService {
         product.setPrice(productDto.getPrice());
         product.setDiscount(productDto.getDiscount());
         product.setWarrantyMonths(productDto.getWarrantyMonths());
-        product.setRatings(productDto.getRatings());
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
         product.setAddedBy(productDto.getAddedBy());
@@ -137,7 +136,6 @@ public class ProductService {
         productDto.setWarrantyMonths(product.getWarrantyMonths());
         productDto.setQuantityAvailable(product.getInventory().getQuantityAvailable());
         productDto.setQuantitySold(product.getInventory().getQuantitySold());
-        productDto.setRatings(product.getRatings());
         productDto.setAverageRating(product.getAverageRating());
         productDto.setActive(product.isActive());
         productDto.setAddedBy(product.getAddedBy());

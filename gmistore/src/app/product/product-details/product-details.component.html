@@ -21,18 +21,11 @@
     <div fxFlex="40" fxFlex.xs="100" fxFlex.gt-xs="48" fxLayout="column" fxLayoutAlign="stretch start">
       <div fxFlex="100">
         <mat-card-title>{{product.name}}</mat-card-title>
-        <mat-card-subtitle>Vásárlói vélemények: {{product.ratings.length}}</mat-card-subtitle>
+        <mat-card-subtitle>Vásárlói vélemények: {{ratings?.length}}</mat-card-subtitle>
 
-        <div class="rating">
-          <div class="star-ratings-css">
-            <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}">
-              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            </div>
-            <div class="star-ratings-css-bottom">
-              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            </div>
-          </div>
-        </div>
+        <star-rating [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
+                     [readOnly]="true" staticColor="ok">
+        </star-rating>
 
         <mat-card-content>
           <p>Termék azonosító: {{product.productCode}}</p>
@@ -89,7 +82,7 @@
       </div>
     </div>
 
-    <mat-divider class="divider-accent-colored" inset="true"></mat-divider>
+    <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
     <div class="mt-15" fxFlex="100">
       <mat-card-header>
@@ -103,31 +96,84 @@
       </mat-card-content>
     </div>
 
-    <mat-divider class="divider-accent-colored" inset="true"></mat-divider>
+    <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
-    <div class="mt-15" fxFlex="100" fxLayout="row wrap">
+    <div class="mt-15 mb-15" fxFlex="100" fxLayout="row wrap">
 
       <mat-card-header fxFlex="100">
         <mat-icon mat-card-avatar>grade</mat-icon>
         <mat-card-title>Vélemények & értékelések</mat-card-title>
       </mat-card-header>
 
-      <mat-card-subtitle *ngIf="!authenticatedUser">Jelentkezz be értékeléshez.</mat-card-subtitle>
+      <mat-card-content fxFlex="100" *ngIf="!authenticatedUser">Termék értékeléséhez jelentkezz be</mat-card-content>
 
-      <div fxFlex="45">
-        <div fxLayout="row wrap">
-          <mat-card-title fxFlex="30"><strong>{{ currentRating }}</strong> / 5</mat-card-title>
+      <div fxFlex="100" fxLayout="row wrap" *ngIf="authenticatedUser && !ratedByCurrentUser">
+        <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row wrap" fxLayoutAlign="start">
+          <star-rating labelText="Értékelésed: " staticColor="ok" id="ratingInput"
+                       (starClickChange)="getRatingInputValue($event)"></star-rating>
+          <mat-card-subtitle fxFlex="100">(Kattints a megfelelő csillagra)</mat-card-subtitle>
+        </div>
 
-          <div class="rating" fxFlex="65">
-            <div class="star-ratings-css">
-              <div class="star-ratings-css-top" [ngStyle]="{'max-width.px': averageRatingPercentage}">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-              <div class="star-ratings-css-bottom">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
+        <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row" fxLayoutAlign="start">
+          <mat-form-field fxFlex="100" appearance="outline">
+            <mat-label>Értékelés címe</mat-label>
+            <input matInput>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10" fxLayoutAlign="space-between">
+          <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
+
+            <mat-card-header fxFlex="100">
+              <mat-icon class="rating-positive-icon" mat-card-avatar>add</mat-icon>
+              <mat-card-title><small>Pozítivumok: </small></mat-card-title>
+            </mat-card-header>
+
+            <mat-form-field fxFlex="100" appearance="outline">
+              <mat-label>Pozitívumok</mat-label>
+              <textarea class="rating-comment" rows="4" matInput></textarea>
+            </mat-form-field>
+
           </div>
+
+          <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
+            <mat-card-header fxFlex="100">
+              <mat-icon class="rating-negative-icon" mat-card-avatar>remove</mat-icon>
+              <mat-card-title><small>Negatívumok: </small></mat-card-title>
+            </mat-card-header>
+
+            <mat-form-field fxFlex="100" appearance="outline">
+              <mat-label>Negatívumok</mat-label>
+              <textarea class="rating-comment" rows="4" matInput></textarea>
+            </mat-form-field>
+          </div>
+
+        </div>
+        <div fxFlex="100" fxLayoutAlign="end">
+          <button mat-button color="primary">
+            <mat-icon>done</mat-icon>
+            Értékelés
+          </button>
+        </div>
+
+      </div>
+
+      <div fxFlex="100" fxLayout="row wrap" *ngIf="authenticatedUser && ratedByCurrentUser">
+        <mat-card fxFlex="100" fxLayoutAlign="start">
+          <star-rating labelText="Értékelésed: " staticColor="ok" [rating]="ratingByCurrentUser" [readOnly]="true">
+          </star-rating>
+        </mat-card>
+      </div>
+
+      <mat-divider inset="true" class="divider-accent-colored"></mat-divider>
+
+      <div fxFlex="45" class="mt-15">
+        <div fxLayout="row wrap">
+          <mat-card-title fxFlex="30"><strong>{{ product.averageRating }}</strong> / 5</mat-card-title>
+
+          <star-rating fxFlex="65" [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
+                       [readOnly]="true" staticColor="ok">
+          </star-rating>
 
           <mat-card-subtitle fxFlex="30">{{ ratings?.length }} értékelés</mat-card-subtitle>
         </div>
@@ -180,29 +226,55 @@
 
         <div class="mt-15" fxFlex="30" fxFlex.lt-md="100">
           <mat-card-header>
-            <mat-icon mat-card-avatar>history</mat-icon>
-            <mat-card-subtitle>{{ rating.timeStamp | date: "yyyy-MM-dd" }}</mat-card-subtitle>
-            <mat-card-subtitle>{{ rating.username }}</mat-card-subtitle>
+
+            <mat-card-subtitle>
+              <mat-icon>person</mat-icon>
+              {{ rating.username }}
+            </mat-card-subtitle>
+
+            <mat-card-subtitle>
+              <mat-icon>history</mat-icon>
+              {{ rating.timeStamp | date: "yyyy-MM-dd" }}
+            </mat-card-subtitle>
+
           </mat-card-header>
 
         </div>
 
-        <div class="mt-15" fxFlex="65" fxFlex.lt-md="100" fxLayout="column">
-
-          <div class="rating pl-2 mt-1">
-            <div class="star-ratings-css">
-              <div class="star-ratings-css-top"
-                   [ngStyle]="{'max-width.px': calculatePercentageForRating(rating.actualRating)}">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-              <div class="star-ratings-css-bottom">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
+        <div class="mt-15" fxFlex="65" fxFlex.lt-md="100" fxLayout="row wrap" fxLayoutAlign="start space-evenly">
+          <mat-card-title><small>{{ rating.title }}</small></mat-card-title>
+          <div fxFlex="100" fxLayoutAlign="start">
+            <star-rating [readOnly]="true" staticColor="ok" [rating]="rating.actualRating"></star-rating>
           </div>
 
-          <mat-card-content>{{ rating.comment }}</mat-card-content>
+          <div fxFlex="5" class="mt-15">
+            <mat-icon class="rating-positive-icon">add</mat-icon>
+          </div>
+          <mat-card-content class="mt-15" fxFlex="95">{{ rating.positiveComment }}</mat-card-content>
 
+          <div fxFlex="5">
+            <mat-icon class="rating-negative-icon">remove</mat-icon>
+          </div>
+          <mat-card-content fxFlex="95">{{ rating.negativeComment }}</mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button color="primary">
+              <mat-icon>thumb_up</mat-icon>
+            </button>
+
+            {{ rating.upVotes }}
+            &nbsp;<strong>|</strong>
+
+            <button mat-button color="primary">
+              <mat-icon>report</mat-icon>
+              Jelentés
+            </button>
+
+            <button mat-button color="warn">
+              <mat-icon>delete</mat-icon>
+              Törlés
+            </button>
+
+          </mat-card-actions>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProductService} from "../../service/product-service";
 import {ProductModel} from "../../models/product-model";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -8,22 +8,26 @@ import {AuthService} from "../../service/auth-service";
 import {LocalStorageService} from "ngx-webstorage";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
+import {ClickEvent} from "angular-star-rating";
+import {Subscription} from "rxjs";
+import {RatingService} from "../../service/rating.service";
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   slug: string;
   product: ProductModel;
   defaultPicture: string;
-  averageRatingPercentage: number;
+
   ratings: Array<RatingModel>;
-  currentRating = 0;
-  maxRating: 5;
-  reviewedAlready = false;
+  ratingByCurrentUser = 0;
+  ratingInputValue: number = 0;
+  ratedByCurrentUser = false;
+
   authenticatedUser = this.authService.isAuthenticated();
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
@@ -41,33 +45,46 @@ export class ProductDetailsComponent implements OnInit {
   twoStarPercentage = 0;
   oneStarPercentage = 0;
 
+  productSubscription: Subscription;
+  ratingSubscription: Subscription;
+
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
               private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
-              private titleService: Title) {
+              private titleService: Title, private ratingService: RatingService) {
   }
 
   ngOnInit(): void {
     this.slug = this.route.snapshot.params['slug'];
 
-    this.productService.getProductBySlug(this.slug).subscribe(
+    this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
       data => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
-        this.averageRatingPercentage = (100 / 5) * this.product.averageRating;
-        this.ratings = this.product.ratings;
       }, error => console.log(error),
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
-        this.isReviewedByUserAlready();
-        this.countRatings();
-        this.fiveStarPercentage = this.calculateRatingPercentage(this.fiveStars);
-        this.fourStarPercentage = this.calculateRatingPercentage(this.fourStars);
-        this.threeStarPercentage = this.calculateRatingPercentage(this.threeStars);
-        this.twoStarPercentage = this.calculateRatingPercentage(this.twoStars);
-        this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
       }
     );
+
+    this.ratingSubscription = this.ratingService.getRatingsByProductSlug(this.slug)
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.ratings = data;
+        }, (error) => {
+          console.log(error);
+        },
+        () => {
+          this.isReviewedByUserAlready();
+          this.countRatings();
+          this.fiveStarPercentage = this.calculateRatingPercentage(this.fiveStars);
+          this.fourStarPercentage = this.calculateRatingPercentage(this.fourStars);
+          this.threeStarPercentage = this.calculateRatingPercentage(this.threeStars);
+          this.twoStarPercentage = this.calculateRatingPercentage(this.twoStars);
+          this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
+        }
+      );
   }
 
   changeDefaultImg(picture: string): void {
@@ -76,10 +93,6 @@ export class ProductDetailsComponent implements OnInit {
 
   calculateDiscountedPrice(): number {
     return (this.product.price / 100) * (100 - this.product.discount);
-  }
-
-  calculatePercentageForRating(rating: number): number {
-    return (100 / 5) * rating;
   }
 
   addToCart(id: number) {
@@ -103,19 +116,19 @@ export class ProductDetailsComponent implements OnInit {
 
   confirmSelection(event: KeyboardEvent) {
     if (event.keyCode === 13 || event.key === 'Enter') {
-      this.reviewedAlready = true;
+      this.ratedByCurrentUser = true;
     }
   }
 
   clickedSelection(event: MouseEvent) {
-    this.reviewedAlready = true;
+    this.ratedByCurrentUser = true;
   }
 
   isReviewedByUserAlready() {
     this.ratings.forEach((rating) => {
       if (rating.username === this.localStorageService.retrieve('username')) {
-        this.currentRating = rating.actualRating;
-        this.reviewedAlready = true;
+        this.ratingByCurrentUser = rating.actualRating;
+        this.ratedByCurrentUser = true;
       }
     })
   }
@@ -147,5 +160,14 @@ export class ProductDetailsComponent implements OnInit {
   calculateRatingPercentage(stars: number): number {
     let width = stars / this.ratings?.length;
     return width * 100;
+  }
+
+  getRatingInputValue = ($event: ClickEvent) => {
+    this.ratingInputValue = $event.rating;
+  }
+
+  ngOnDestroy() {
+    this.productSubscription.unsubscribe();
+    this.ratingSubscription.unsubscribe();
   }
 }

@@ -1,7 +1,13 @@
 export class RatingModel {
   id: number;
-  actualRating: number;
-  comment: string;
-  timeStamp: Date;
+  active: boolean;
   username: string;
+  actualRating: number;
+  title: string;
+  positiveComment: string;
+  negativeComment: string;
+  pictures: Array<string>;
+  upVotes: number;
+  voters: Array<string>;
+  timeStamp: Date;
 }

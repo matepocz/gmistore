@@ -51,6 +51,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {StarRatingModule} from "angular-star-rating";
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     BrowserAnimationsModule,
     Ng2Webstorage.forRoot(),
     HttpClientModule,
+    StarRatingModule.forRoot(),
     MatInputModule,
     MatIconModule,
     LayoutModule,
@@ -108,6 +110,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     MatExpansionModule,
     MatSliderModule,
     MatProgressBarModule,
+
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

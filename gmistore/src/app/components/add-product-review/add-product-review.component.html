@@ -1,0 +1,70 @@
+<div class="containerX" fxLayoutAlign="center">
+  <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
+            fxFlex.lt-md="100" fxFlex.gt-md="70" fxLayoutAlign="space-between" *ngIf="ratingForm">
+    <form [formGroup]="ratingForm" (ngSubmit)="onSubmit()" fxFlex="100" fxLayout="column">
+      <div fxFlex="100" fxLayout="column">
+        <mat-card-title>
+          Értékelés írása erre a termékre:
+        </mat-card-title>
+        <mat-card-content>
+          <a [routerLink]="['/product', slug]">
+            <mat-card-content>{{ product?.name}}</mat-card-content>
+          </a>
+        </mat-card-content>
+      </div>
+      <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row wrap" fxLayoutAlign="start">
+        <star-rating labelText="Értékelésed: " staticColor="ok" id="ratingInput"
+                     (starClickChange)="getRatingInputValue($event)"></star-rating>
+        <mat-card-subtitle fxFlex="100">(Kattints a megfelelő csillagra)</mat-card-subtitle>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row wrap" fxLayoutAlign="start">
+        <mat-card-header fxFlex="100">
+          <mat-icon mat-card-avatar>title</mat-icon>
+          <mat-card-title><small>Értékelés címe: </small></mat-card-title>
+        </mat-card-header>
+
+        <mat-form-field fxFlex="100" appearance="outline">
+          <mat-label>Cím</mat-label>
+          <input matInput formControlName="title">
+          <mat-hint align="end">Max. karakterek: {{ ratingForm.get('title').value?.length || 0 }}/100</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10" fxLayoutAlign="space-between">
+        <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
+
+          <mat-card-header fxFlex="100">
+            <mat-icon class="rating-positive-icon" mat-card-avatar>add</mat-icon>
+            <mat-card-title><small>Pozítivumok: </small></mat-card-title>
+          </mat-card-header>
+
+          <mat-form-field fxFlex="100" appearance="outline">
+            <mat-label>Pozitívumok</mat-label>
+            <textarea class="rating-comment" rows="7" matInput formControlName="positiveComment"></textarea>
+          </mat-form-field>
+
+        </div>
+
+        <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
+          <mat-card-header fxFlex="100">
+            <mat-icon class="rating-negative-icon" mat-card-avatar>remove</mat-icon>
+            <mat-card-title><small>Negatívumok: </small></mat-card-title>
+          </mat-card-header>
+
+          <mat-form-field fxFlex="100" appearance="outline">
+            <mat-label>Negatívumok</mat-label>
+            <textarea class="rating-comment" rows="7" matInput formControlName="negativeComment"></textarea>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div fxFlex="100" fxLayoutAlign="end">
+        <button mat-flat-button color="primary">
+          <mat-icon>done</mat-icon>
+          Értékelés
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

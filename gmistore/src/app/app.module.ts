@@ -52,6 +52,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {StarRatingModule} from "angular-star-rating";
+import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
+import {NotFoundComponent} from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +81,9 @@ import {StarRatingModule} from "angular-star-rating";
     CartComponent,
     SideNavComponent,
     AddressFormComponent,
-    MaterialElevationDirective
+    MaterialElevationDirective,
+    AddProductReviewComponent,
+    NotFoundComponent
   ],
   imports: [
     FormsModule,

@@ -16,6 +16,8 @@ import {RegisterSuccessComponent} from "./user/register-success/register-success
 import {ConfirmAccountComponent} from "./user/confirm-account/confirm-account.component";
 import {UserProfileComponent} from "./user/user-profile/user-profile.component";
 import {CartComponent} from "./cart/cart.component";
+import {AddProductReviewComponent} from "./components/add-product-review/add-product-review.component";
+import {NotFoundComponent} from "./components/not-found/not-found.component";
 
 
 const routes: Routes = [
@@ -33,9 +35,10 @@ const routes: Routes = [
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
   {path: 'edit-product/:slug', component: ProductEditComponent},
+  {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
-  {path: '**', redirectTo: 'home',}
+  {path: '**', component: NotFoundComponent,}
 ];
 
 @NgModule({

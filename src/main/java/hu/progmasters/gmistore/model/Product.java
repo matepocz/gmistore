@@ -29,10 +29,10 @@ public class Product implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "product_code")
+    @Column(name = "product_code", unique = true)
     private String productCode;
 
-    @Column(name = "slug")
+    @Column(name = "slug", unique = true)
     private String slug;
 
     @Column(name = "description", columnDefinition = "TEXT")

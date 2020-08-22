@@ -8,7 +8,6 @@ import {AuthService} from "../../service/auth-service";
 import {LocalStorageService} from "ngx-webstorage";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
-import {ClickEvent} from "angular-star-rating";
 import {Subscription} from "rxjs";
 import {RatingService} from "../../service/rating.service";
 
@@ -25,7 +24,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   ratings: Array<RatingModel>;
   ratingByCurrentUser = 0;
-  ratingInputValue: number = 0;
   ratedByCurrentUser = false;
 
   authenticatedUser = this.authService.isAuthenticated();
@@ -46,7 +44,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   oneStarPercentage = 0;
 
   productSubscription: Subscription;
+  addToCartSubscription: Subscription;
   ratingSubscription: Subscription;
+  removeRatingSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
@@ -70,7 +70,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.ratingSubscription = this.ratingService.getRatingsByProductSlug(this.slug)
       .subscribe(
         (data) => {
-          console.log(data);
           this.ratings = data;
         }, (error) => {
           console.log(error);
@@ -96,12 +95,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   addToCart(id: number) {
-    this.cartService.addProduct(id).subscribe(
+    this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
       (response) => {
-        this.openSnackBar("Termék a kosárba került!")
+        this.openSnackBar("Termék a kosárba került!");
       }, (error) => {
         console.log(error);
-        this.openSnackBar("Valami hiba történt!")
+        this.openSnackBar("Valami hiba történt!");
       }
     )
   }
@@ -112,16 +111,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
     });
-  }
-
-  confirmSelection(event: KeyboardEvent) {
-    if (event.keyCode === 13 || event.key === 'Enter') {
-      this.ratedByCurrentUser = true;
-    }
-  }
-
-  clickedSelection(event: MouseEvent) {
-    this.ratedByCurrentUser = true;
   }
 
   isReviewedByUserAlready() {
@@ -162,12 +151,34 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     return width * 100;
   }
 
-  getRatingInputValue = ($event: ClickEvent) => {
-    this.ratingInputValue = $event.rating;
+  navigateToRateProduct() {
+    this.router.navigate(['/add-review', this.slug])
+  }
+
+  openDialog() {
+
+  }
+
+  removeRating(id: number) {
+    this.removeRatingSubscription = this.ratingService.removeRating(id).subscribe(
+      (response) => {
+        if (response === true) {
+          this.openSnackBar("Értékelés törölve!");
+        } else {
+          this.openSnackBar("Nincs jogosultságod a művelethez");
+        }
+      }, error => console.log(error)
+    )
   }
 
   ngOnDestroy() {
     this.productSubscription.unsubscribe();
+    if (this.addToCartSubscription) {
+      this.addToCartSubscription.unsubscribe();
+    }
     this.ratingSubscription.unsubscribe();
+    if (this.removeRatingSubscription) {
+      this.removeRatingSubscription.unsubscribe();
+    }
   }
 }

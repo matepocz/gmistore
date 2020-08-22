@@ -108,64 +108,23 @@
       <mat-card-content fxFlex="100" *ngIf="!authenticatedUser">Termék értékeléséhez jelentkezz be</mat-card-content>
 
       <div fxFlex="100" fxLayout="row wrap" *ngIf="authenticatedUser && !ratedByCurrentUser">
-        <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row wrap" fxLayoutAlign="start">
-          <star-rating labelText="Értékelésed: " staticColor="ok" id="ratingInput"
-                       (starClickChange)="getRatingInputValue($event)"></star-rating>
-          <mat-card-subtitle fxFlex="100">(Kattints a megfelelő csillagra)</mat-card-subtitle>
+        <div fxFlex="50" fxLayout="row wrap" fxLayoutAlign="start">
+          <star-rating labelText="Értékeld ezt a terméket: " staticColor="ok" id="ratingInput"
+                       (starClickChange)="navigateToRateProduct()"></star-rating>
         </div>
-
-        <div fxFlex="50" fxFlex.lt-md="100" fxLayout="row" fxLayoutAlign="start">
-          <mat-form-field fxFlex="100" appearance="outline">
-            <mat-label>Értékelés címe</mat-label>
-            <input matInput>
-          </mat-form-field>
-        </div>
-
-        <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10" fxLayoutAlign="space-between">
-          <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
-
-            <mat-card-header fxFlex="100">
-              <mat-icon class="rating-positive-icon" mat-card-avatar>add</mat-icon>
-              <mat-card-title><small>Pozítivumok: </small></mat-card-title>
-            </mat-card-header>
-
-            <mat-form-field fxFlex="100" appearance="outline">
-              <mat-label>Pozitívumok</mat-label>
-              <textarea class="rating-comment" rows="4" matInput></textarea>
-            </mat-form-field>
-
-          </div>
-
-          <div class="mt-15" fxFlex="45" fxFlex.sm="100" fxFlex.xs="100" fxLayout="row wrap">
-            <mat-card-header fxFlex="100">
-              <mat-icon class="rating-negative-icon" mat-card-avatar>remove</mat-icon>
-              <mat-card-title><small>Negatívumok: </small></mat-card-title>
-            </mat-card-header>
-
-            <mat-form-field fxFlex="100" appearance="outline">
-              <mat-label>Negatívumok</mat-label>
-              <textarea class="rating-comment" rows="4" matInput></textarea>
-            </mat-form-field>
-          </div>
-
-        </div>
-        <div fxFlex="100" fxLayoutAlign="end">
-          <button mat-button color="primary">
-            <mat-icon>done</mat-icon>
-            Értékelés
-          </button>
-        </div>
-
+        <a mat-flat-button color="primary" (click)="navigateToRateProduct()">
+          Értékelés
+        </a>
       </div>
 
       <div fxFlex="100" fxLayout="row wrap" *ngIf="authenticatedUser && ratedByCurrentUser">
-        <mat-card fxFlex="100" fxLayoutAlign="start">
+        <div fxFlex="100" fxLayoutAlign="start">
           <star-rating labelText="Értékelésed: " staticColor="ok" [rating]="ratingByCurrentUser" [readOnly]="true">
           </star-rating>
-        </mat-card>
+        </div>
       </div>
 
-      <mat-divider inset="true" class="divider-accent-colored"></mat-divider>
+      <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
       <div fxFlex="45" class="mt-15">
         <div fxLayout="row wrap">
@@ -222,7 +181,7 @@
     <div class="mt-15" fxFlex="100" fxLayout="column" fxLayoutGap="15px">
       <div *ngFor="let rating of ratings" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
 
-        <mat-divider inset="true" class="divider-accent-colored"></mat-divider>
+        <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
         <div class="mt-15" fxFlex="30" fxFlex.lt-md="100">
           <mat-card-header>
@@ -269,9 +228,14 @@
               Jelentés
             </button>
 
-            <button mat-button color="warn">
+            <button mat-button [color]="'warn'" type="button" (click)="removeRating(rating.id)">
               <mat-icon>delete</mat-icon>
               Törlés
+            </button>
+
+            <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Kosárba
             </button>
 
           </mat-card-actions>

@@ -10,6 +10,7 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
 import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs";
 import {RatingService} from "../../service/rating.service";
+import {SideNavComponent} from "../../side-nav/side-nav.component";
 
 @Component({
   selector: 'app-product-details',
@@ -51,7 +52,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
               private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
-              private titleService: Title, private ratingService: RatingService) {
+              private titleService: Title, private ratingService: RatingService,
+              private sideNavComponent: SideNavComponent) {
   }
 
   ngOnInit(): void {
@@ -98,6 +100,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
       (response) => {
         this.openSnackBar("Termék a kosárba került!");
+        this.sideNavComponent.updateItemsInCart(0);
       }, (error) => {
         console.log(error);
         this.openSnackBar("Valami hiba történt!");

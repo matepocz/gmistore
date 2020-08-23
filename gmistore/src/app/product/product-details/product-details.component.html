@@ -107,8 +107,8 @@
 
       <mat-card-content fxFlex="100" *ngIf="!authenticatedUser">Termék értékeléséhez jelentkezz be</mat-card-content>
 
-      <div fxFlex="100" fxLayout="row wrap" *ngIf="authenticatedUser && !ratedByCurrentUser">
-        <div fxFlex="50" fxLayout="row wrap" fxLayoutAlign="start">
+      <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between" *ngIf="authenticatedUser && !ratedByCurrentUser">
+        <div fxFlex="70" fxFlex.lt-sm="100" fxLayout="row wrap" fxLayoutAlign="start">
           <star-rating labelText="Értékeld ezt a terméket: " staticColor="ok" id="ratingInput"
                        (starClickChange)="navigateToRateProduct()"></star-rating>
         </div>
@@ -127,50 +127,55 @@
       <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
       <div fxFlex="45" class="mt-15">
-        <div fxLayout="row wrap">
+        <div fxLayout="row wrap" fxLayoutAlign.lt-sm="space-between">
           <mat-card-title fxFlex="30"><strong>{{ product.averageRating }}</strong> / 5</mat-card-title>
 
-          <star-rating fxFlex="65" [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
+          <star-rating fxFlex="60" [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
                        [readOnly]="true" staticColor="ok">
           </star-rating>
 
-          <mat-card-subtitle fxFlex="30">{{ ratings?.length }} értékelés</mat-card-subtitle>
+          <mat-card-subtitle fxFlex="30" fxFlex.lt-sm="100">{{ ratings?.length }} értékelés</mat-card-subtitle>
         </div>
       </div>
 
       <div fxFlex="55" fxFlex.lt-sm="100" fxLayout="column">
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" class="rating-bar-text">5 csillag</p>
-          <mat-progress-bar [value]="fiveStarPercentage" matTooltip="{{ fiveStarPercentage }} %" fxFlex="80">
+          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">5 csillag</p>
+          <mat-progress-bar [value]="fiveStarPercentage" matTooltip="{{ fiveStarPercentage }} %" fxFlex="80"
+                            fxFlex.lt-sm="70">
           </mat-progress-bar>
           <p fxFlex="5" class="rating-bar-text">{{ fiveStars }}</p>
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" class="rating-bar-text">4 csillag</p>
-          <mat-progress-bar [value]="fourStarPercentage" matTooltip="{{ fourStarPercentage }} %" fxFlex="80">
+          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">4 csillag</p>
+          <mat-progress-bar [value]="fourStarPercentage" matTooltip="{{ fourStarPercentage }} %" fxFlex="80"
+                            fxFlex.lt-sm="70">
           </mat-progress-bar>
           <p fxFlex="5" class="rating-bar-text">{{ fourStars }}</p>
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" class="rating-bar-text">3 csillag</p>
-          <mat-progress-bar [value]="threeStarPercentage" matTooltip="{{ threeStarPercentage }} %" fxFlex="80">
+          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">3 csillag</p>
+          <mat-progress-bar [value]="threeStarPercentage" matTooltip="{{ threeStarPercentage }} %" fxFlex="80"
+                            fxFlex.lt-sm="70">
           </mat-progress-bar>
           <p fxFlex="5" class="rating-bar-text">{{ threeStars }}</p>
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" class="rating-bar-text">2 csillag</p>
-          <mat-progress-bar [value]="twoStarPercentage" matTooltip="{{ twoStarPercentage }} %" fxFlex="80">
+          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">2 csillag</p>
+          <mat-progress-bar [value]="twoStarPercentage" matTooltip="{{ twoStarPercentage }} %" fxFlex="80"
+                            fxFlex.lt-sm="70">
           </mat-progress-bar>
           <p fxFlex="5" class="rating-bar-text">{{ twoStars }}</p>
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" class="rating-bar-text">1 csillag</p>
-          <mat-progress-bar [value]="oneStarPercentage" matTooltip="{{ oneStarPercentage }} %" fxFlex="80">
+          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">1 csillag</p>
+          <mat-progress-bar [value]="oneStarPercentage" matTooltip="{{ oneStarPercentage }} %" fxFlex="80"
+                            fxFlex.lt-sm="70">
           </mat-progress-bar>
           <p fxFlex="5" class="rating-bar-text">{{ oneStar }}</p>
         </div>
@@ -224,7 +229,7 @@
             &nbsp;<strong>|</strong>
 
             <button mat-button color="primary">
-              <mat-icon>report</mat-icon>
+              <mat-icon>flag</mat-icon>
               Jelentés
             </button>
 
@@ -232,12 +237,6 @@
               <mat-icon>delete</mat-icon>
               Törlés
             </button>
-
-            <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">
-              <mat-icon>add_shopping_cart</mat-icon>
-              Kosárba
-            </button>
-
           </mat-card-actions>
         </div>
       </div>

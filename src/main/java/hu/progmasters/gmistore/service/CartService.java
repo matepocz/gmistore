@@ -156,7 +156,7 @@ public class CartService {
             });
             items.addAll(itemsToMerge);
             cartRepository.deleteById(cartIdFromSession);
-            LOGGER.debug("Carts merged!");
+            LOGGER.debug("Carts merged! cart id: {}", usersCart.getId());
         }
     }
 
@@ -215,5 +215,10 @@ public class CartService {
             setCartsTotalPrice(actualCart);
             actualCart.setExpectedDeliveryDate(shippingService.calculateExpectedShippingDate(shippingMethod));
         }
+    }
+
+    public int getNumberOfItemsInCart(HttpSession session) {
+        Cart actualCart = getActualCart(session);
+        return actualCart.getItems().size();
     }
 }

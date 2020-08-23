@@ -25,6 +25,12 @@ public class CartController {
         this.shippingService = shippingService;
     }
 
+    @GetMapping("/items-in-cart")
+    public ResponseEntity<Integer> getNumberOfItemsInCart(HttpSession session) {
+        int items = cartService.getNumberOfItemsInCart(session);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<CartDto> getCart(HttpSession session) {
         CartDto cart = cartService.getCart(session);

@@ -16,6 +16,10 @@ export class CartService {
   constructor(private httpClient: HttpClient, private userService: UserService) {
   }
 
+  getNumberOfItemsInCart(): Observable<number> {
+    return this.httpClient.get<number>(this.cartUrl + '/items-in-cart');
+  }
+
   getCart(): Observable<CartModel> {
     return this.httpClient.get<CartModel>(this.cartUrl);
   }

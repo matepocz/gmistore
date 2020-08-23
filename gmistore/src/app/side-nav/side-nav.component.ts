@@ -16,7 +16,9 @@ export class SideNavComponent implements OnInit {
   private readonly _mobileQueryListener: () => void;
   opened: boolean = false;
   authenticatedUser: boolean;
+
   cartSubscription: Subscription;
+  itemsInCartSubscription: Subscription;
 
   itemsInCart: number = 0;
   favoriteItems: number = 0;
@@ -36,22 +38,28 @@ export class SideNavComponent implements OnInit {
 
   ngOnInit() {
     this.authenticatedUser = this.authService.isAuthenticated();
-    setTimeout(() => {
-        this.cartService.getCart().subscribe(
-          (response) => {
-            this.itemsInCart = response.cartItems.length;
-          }
-        );
-      },
-      2000);
+    this.updateItemsInCart(2);
   }
 
   logout() {
     this.authService.logout();
+    this.ngOnInit();
+  }
+
+  updateItemsInCart(timeout: number) {
+    setTimeout(() => {
+        this.cartService.getNumberOfItemsInCart().subscribe(
+          (response) => {
+            this.itemsInCart = response;
+          }
+        );
+      },
+      timeout * 1000);
   }
 
   ngOnDestroy(): void {
     this.cartSubscription.unsubscribe();
+    this.itemsInCartSubscription.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 }

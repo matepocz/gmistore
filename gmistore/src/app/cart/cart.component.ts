@@ -4,6 +4,7 @@ import {CartModel} from "../models/cart-model";
 import {Subscription} from "rxjs";
 import {ShippingMethodModel} from "../models/shipping-method-model";
 import {Title} from "@angular/platform-browser";
+import {SideNavComponent} from "../side-nav/side-nav.component";
 
 @Component({
   selector: 'app-cart',
@@ -23,7 +24,8 @@ export class CartComponent implements OnInit, OnDestroy {
   removeProductSubscription: Subscription;
   refreshShippingSubscription: Subscription;
 
-  constructor(private cartService: CartService, private titleService: Title) {
+  constructor(private cartService: CartService, private titleService: Title,
+              private sideNavComponent: SideNavComponent) {
   }
 
   ngOnInit(): void {
@@ -64,6 +66,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
       (response) => {
+        this.sideNavComponent.updateItemsInCart(0);
         this.ngOnInit();
       }, (error) => {
         console.log(error)

@@ -38,7 +38,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import {MatBadgeModule} from "@angular/material/badge";
-import {AddressFormComponent} from './address-form/address-form.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
@@ -54,6 +53,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {StarRatingModule} from "angular-star-rating";
 import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -80,42 +80,42 @@ import {NotFoundComponent} from './components/not-found/not-found.component';
     ConfirmAccountComponent,
     CartComponent,
     SideNavComponent,
-    AddressFormComponent,
     MaterialElevationDirective,
     AddProductReviewComponent,
     NotFoundComponent
   ],
-  imports: [
-    FormsModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    Ng2Webstorage.forRoot(),
-    HttpClientModule,
-    StarRatingModule.forRoot(),
-    MatInputModule,
-    MatIconModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatBadgeModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCardModule,
-    FlexLayoutModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatProgressSpinnerModule,
-    MatExpansionModule,
-    MatSliderModule,
-    MatProgressBarModule,
+    imports: [
+        FormsModule,
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        Ng2Webstorage.forRoot(),
+        HttpClientModule,
+        StarRatingModule.forRoot(),
+        MatInputModule,
+        MatIconModule,
+        LayoutModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatBadgeModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatCardModule,
+        FlexLayoutModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatProgressSpinnerModule,
+        MatExpansionModule,
+        MatSliderModule,
+        MatProgressBarModule,
+        MatCheckboxModule,
 
-  ],
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

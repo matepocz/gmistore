@@ -7,6 +7,7 @@ import {LocalStorageService} from "ngx-webstorage";
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Title} from "@angular/platform-browser";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-add-product',
@@ -110,6 +111,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         }
       }
     )
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.productPictures, event.previousIndex, event.currentIndex);
   }
 
   private setCurrentCategory() {

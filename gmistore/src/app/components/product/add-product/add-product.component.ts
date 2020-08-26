@@ -20,22 +20,22 @@ export class AddProductComponent implements OnInit {
 
   productForm = this.formBuilder.group({
     'id': [null],
-    'name': ['', Validators.compose(
+    'name': [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(200)])],
-    'productCode': ['', Validators.compose(
+    'productCode': [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
-    'description': ['', Validators.compose(
+    'description': [null, Validators.compose(
       [Validators.required, Validators.minLength(10)])],
-    'category': ['', Validators.required],
+    'category': [null, Validators.required],
     'pictureUrl': [null],
     'pictures': [null],
-    'price': ['', Validators.compose([Validators.required, Validators.min(0)])],
-    'discount': ['', Validators.compose(
+    'price': [null, Validators.compose([Validators.required, Validators.min(0)])],
+    'discount': [null, Validators.compose(
       [Validators.required, Validators.min(0), Validators.max(100)])],
-    'warrantyMonths': ['', Validators.compose(
+    'warrantyMonths': [null, Validators.compose(
       [Validators.required, Validators.min(0), Validators.max(360)])],
-    'quantityAvailable': ['', Validators.compose([Validators.required, Validators.min(0)])],
-    'active': [''],
+    'quantityAvailable': [null, Validators.compose([Validators.required, Validators.min(0)])],
+    'active': [false],
   });
 
   constructor(private formBuilder: FormBuilder, private productService: ProductService,

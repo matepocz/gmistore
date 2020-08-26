@@ -6,7 +6,8 @@ export interface UserModel {
   username: string;
   lastName: string;
   firstName: string;
-  address: AddressModel;
+  shippingAddress: AddressModel;
+  billingAddress?: AddressModel;
   email: string;
   phoneNumber: string;
   roles: Array<string>;

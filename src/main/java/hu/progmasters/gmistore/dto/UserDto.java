@@ -22,11 +22,13 @@ public class UserDto {
     private String username;
     private String lastName;
     private String firstName;
-    private Address address;
+    private Address shippingAddress;
+    private Address billingAddress;
     private String email;
     private String phoneNumber;
     private List<Role> roles = new ArrayList<>();
     private LocalDateTime registered;
     private boolean active;
     private List<Order> orderList;
+
 }

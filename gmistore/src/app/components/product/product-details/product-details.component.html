@@ -65,20 +65,30 @@
             <mat-icon>add_shopping_cart</mat-icon>
             Kosárba
           </button>
+
           <button mat-button [color]="'primary'" type="button">
             <mat-icon>favorite</mat-icon>
             Kedvencekhez
           </button>
+
+          <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+            <mat-icon>edit</mat-icon>
+          </a>
         </mat-card-actions>
       </div>
 
       <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
         <span class="spacer"></span>
         <mat-card-title>Nincs raktáron</mat-card-title>
+
         <button mat-button [color]="'primary'" type="button">
           <mat-icon>favorite</mat-icon>
           Kedvencekhez
         </button>
+
+        <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+          <mat-icon>edit</mat-icon>
+        </a>
       </div>
     </div>
 

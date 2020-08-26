@@ -10,11 +10,11 @@ import {Title} from "@angular/platform-browser";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
-  selector: 'app-add-product',
-  templateUrl: './add-product.component.html',
-  styleUrls: ['./add-product.component.css']
+  selector: 'app-product-form',
+  templateUrl: './product-form.component.html',
+  styleUrls: ['./product-form.component.css']
 })
-export class AddProductComponent implements OnInit, OnDestroy {
+export class ProductFormComponent implements OnInit, OnDestroy {
 
   categories: Map<String, String>;
   product: ProductModel;

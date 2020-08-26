@@ -7,7 +7,6 @@ import {RatingInitDataModel} from "../../models/rating-init-data-model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {AddRatingRequestModel} from "../../models/add-rating-request-model";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
@@ -32,7 +31,7 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   newRatingSubscription: Subscription;
 
   constructor(private ratingService: RatingService, private activatedRoute: ActivatedRoute,
-              private formBuilder: FormBuilder, private snackBar: MatSnackBar, private modal: MatDialog) {
+              private formBuilder: FormBuilder, private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {

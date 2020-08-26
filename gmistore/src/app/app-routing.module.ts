@@ -28,7 +28,7 @@ const routes: Routes = [
   {path: 'add-product', component: AddProductComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
-  {path: 'edit-product/:slug', component: ProductEditComponent},
+  {path: 'edit-product/:slug', component: AddProductComponent},
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},

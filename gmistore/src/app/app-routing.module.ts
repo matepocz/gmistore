@@ -23,7 +23,7 @@ const routes: Routes = [
   {path: 'register-success', component: RegisterSuccessComponent},
   {path: 'confirm-account', component: ConfirmAccountComponent},
   {path: 'user/my-account', component: UserProfileComponent},
-  {path: 'user/edit/:id', component: UserEditComponent},
+  {path: 'user/edit', component: UserEditComponent},
   {path: 'add-product', component: ProductFormComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},

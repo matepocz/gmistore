@@ -9,5 +9,7 @@ import { map, shareReplay } from 'rxjs/operators';
   styleUrls: ['./admin-nav.component.css']
 })
 export class AdminNavComponent {
+  isExpanded = true;
   constructor() {}
+
 }

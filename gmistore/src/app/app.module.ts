@@ -52,6 +52,8 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard/admi
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
+import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
+import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,9 @@ import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.compon
     AddProductReviewComponent,
     NotFoundComponent,
     AdminDashboardComponent,
-    AdminNavComponent
+    AdminNavComponent,
+    AdminProductComponent,
+    AdminUserComponent
   ],
   imports: [
     FormsModule,

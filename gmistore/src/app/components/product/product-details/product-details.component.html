@@ -65,20 +65,30 @@
             <mat-icon>add_shopping_cart</mat-icon>
             Kosárba
           </button>
+
           <button mat-button [color]="'primary'" type="button">
             <mat-icon>favorite</mat-icon>
             Kedvencekhez
           </button>
+
+          <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+            <mat-icon>edit</mat-icon>
+          </a>
         </mat-card-actions>
       </div>
 
       <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
         <span class="spacer"></span>
         <mat-card-title>Nincs raktáron</mat-card-title>
+
         <button mat-button [color]="'primary'" type="button">
           <mat-icon>favorite</mat-icon>
           Kedvencekhez
         </button>
+
+        <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+          <mat-icon>edit</mat-icon>
+        </a>
       </div>
     </div>
 
@@ -126,7 +136,7 @@
 
       <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
-      <div fxFlex="45" class="mt-15">
+      <div fxFlex="45" class="mt-15" fxFlex.sm="40">
         <div fxLayout="row wrap" fxLayoutAlign.lt-sm="space-between">
           <mat-card-title fxFlex="30"><strong>{{ product.averageRating }}</strong> / 5</mat-card-title>
 
@@ -138,10 +148,10 @@
         </div>
       </div>
 
-      <div fxFlex="55" fxFlex.lt-sm="100" fxLayout="column">
+      <div fxFlex="55" fxFlex.lt-sm="100" fxFlex.sm="55" fxLayout="column">
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">5 csillag</p>
+          <p fxFlex="12" fxFlex.lt-sm="15" fxFlex.sm="20" class="rating-bar-text">5 csillag</p>
           <mat-progress-bar [value]="fiveStarPercentage" matTooltip="{{ fiveStarPercentage }} %" fxFlex="80"
                             fxFlex.lt-sm="70">
           </mat-progress-bar>
@@ -149,7 +159,7 @@
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">4 csillag</p>
+          <p fxFlex="12" fxFlex.lt-sm="15" fxFlex.sm="20" class="rating-bar-text">4 csillag</p>
           <mat-progress-bar [value]="fourStarPercentage" matTooltip="{{ fourStarPercentage }} %" fxFlex="80"
                             fxFlex.lt-sm="70">
           </mat-progress-bar>
@@ -157,7 +167,7 @@
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">3 csillag</p>
+          <p fxFlex="12" fxFlex.lt-sm="15" fxFlex.sm="20" class="rating-bar-text">3 csillag</p>
           <mat-progress-bar [value]="threeStarPercentage" matTooltip="{{ threeStarPercentage }} %" fxFlex="80"
                             fxFlex.lt-sm="70">
           </mat-progress-bar>
@@ -165,7 +175,7 @@
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">2 csillag</p>
+          <p fxFlex="12" fxFlex.lt-sm="15" fxFlex.sm="20" class="rating-bar-text">2 csillag</p>
           <mat-progress-bar [value]="twoStarPercentage" matTooltip="{{ twoStarPercentage }} %" fxFlex="80"
                             fxFlex.lt-sm="70">
           </mat-progress-bar>
@@ -173,7 +183,7 @@
         </div>
 
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
-          <p fxFlex="12" fxFlex.lt-sm="15" class="rating-bar-text">1 csillag</p>
+          <p fxFlex="12" fxFlex.lt-sm="15" fxFlex.sm="20" class="rating-bar-text">1 csillag</p>
           <mat-progress-bar [value]="oneStarPercentage" matTooltip="{{ oneStarPercentage }} %" fxFlex="80"
                             fxFlex.lt-sm="70">
           </mat-progress-bar>

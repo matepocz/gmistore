@@ -13,12 +13,11 @@ import {ForbiddenComponent} from './components/forbidden/forbidden.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {Ng2Webstorage} from 'ngx-webstorage';
 import {ProductListComponent} from './components/product/product-list/product-list.component';
-import {ProductEditComponent} from './components/product/product-edit/product-edit.component';
 import {ProductCardComponent} from './components/product/product-card/product-card.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ProductDetailsComponent} from './components/product/product-details/product-details.component';
 import {UserProfileComponent} from './components/user/user-profile/user-profile.component';
-import {AddProductComponent} from './components/product/add-product/add-product.component';
+import {ProductFormComponent} from './components/product/product-form/product-form.component';
 import {AuthInterceptor} from "./utils/auth-interceptor";
 import {RegisterSuccessComponent} from './components/user/register-success/register-success.component';
 import {ConfirmAccountComponent} from './components/user/confirm-account/confirm-account.component';
@@ -48,6 +47,7 @@ import {StarRatingModule} from "angular-star-rating";
 import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
@@ -59,11 +59,10 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     UserEditComponent,
     ForbiddenComponent,
     ProductListComponent,
-    ProductEditComponent,
     ProductCardComponent,
     ProductDetailsComponent,
     UserProfileComponent,
-    AddProductComponent,
+    ProductFormComponent,
     RegisterSuccessComponent,
     ConfirmAccountComponent,
     CartComponent,
@@ -102,6 +101,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatSliderModule,
     MatProgressBarModule,
     MatCheckboxModule,
+    DragDropModule,
 
   ],
   providers: [

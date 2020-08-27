@@ -41,6 +41,10 @@ body {
   margin-top: 15px !important;
 }
 
+.mt-10 {
+  margin-top: 10px;
+}
+
 .loading {
   opacity: .3;
 }

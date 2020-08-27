@@ -160,10 +160,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/add-review', this.slug])
   }
 
-  openDialog() {
-
-  }
-
   removeRating(id: number) {
     this.removeRatingSubscription = this.ratingService.removeRating(id).subscribe(
       (response) => {

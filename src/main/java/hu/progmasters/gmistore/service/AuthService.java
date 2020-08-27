@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.dto.RegisterRequest;
+import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.ConfirmationToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ConfirmationTokenRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,8 +66,12 @@ public class AuthService {
         user.setFirstName(registerRequest.getFirstName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setEmail(registerRequest.getEmail());
-        user.setPhoneNumber(registerRequest.getPhoneNumber());
         user.setRegistered(LocalDateTime.now());
+        List<Role> roles = user.getRoles();
+        roles.add(Role.ROLE_USER);
+        if (registerRequest.getSeller()){
+            roles.add(Role.ROLE_SELLER);
+        }
         user.setActive(false);
     }
 

@@ -71,12 +71,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Order> orderList;
-
-    public User() {
-        roles.add(Role.ROLE_USER);
-    }
-
-    public void addSellerRole() {
-        this.roles.add(Role.ROLE_SELLER);
-    }
 }

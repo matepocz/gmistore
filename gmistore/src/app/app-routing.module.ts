@@ -14,6 +14,8 @@ import {UserProfileComponent} from "./components/user/user-profile/user-profile.
 import {CartComponent} from "./components/cart/cart.component";
 import {AddProductReviewComponent} from "./components/add-product-review/add-product-review.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 import {PrivacyComponent} from "./components/privacy/privacy.component";
 import {CookiesPrivacyComponent} from "./components/cookies-privacy/cookies-privacy.component";
 
@@ -36,6 +38,8 @@ const routes: Routes = [
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},
   {path: 'cookies-privacy', component: CookiesPrivacyComponent,},
+  {path: 'admin', component: AdminNavComponent},
+  {path: 'admin/dashboard', component: AdminDashboardComponent},
   {path: '**', component: NotFoundComponent,}
 ];
 

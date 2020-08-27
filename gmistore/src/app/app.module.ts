@@ -47,13 +47,16 @@ import {StarRatingModule} from "angular-star-rating";
 import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {AdminDashboardComponent} from './components/admin/admin-dashboard/admin-dashboard.component';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {AdminNavComponent} from './components/admin/admin-nav/admin-nav.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import { MatCarouselModule } from '@ngmodule/material-carousel';
+import {MatCarouselModule} from '@ngmodule/material-carousel';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatMenuModule} from "@angular/material/menu";
-import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
-import { PrivacyComponent } from './components/privacy/privacy.component';
-import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component'
+import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.component';
+import {PrivacyComponent} from './components/privacy/privacy.component';
+import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
 
 @NgModule({
   declarations: [
@@ -75,6 +78,9 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     SideNavComponent,
     MaterialElevationDirective,
     AddProductReviewComponent,
+    NotFoundComponent,
+    AdminDashboardComponent,
+    AdminNavComponent,
     NotFoundComponent,
     GdprDialogComponent,
     PrivacyComponent,
@@ -115,8 +121,10 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
+    MatGridListModule,
+    MatMenuModule,
 
-    ],
+  ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

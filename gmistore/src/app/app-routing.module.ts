@@ -15,6 +15,8 @@ import {UserProfileComponent} from "./components/user/user-profile/user-profile.
 import {CartComponent} from "./components/cart/cart.component";
 import {AddProductReviewComponent} from "./components/add-product-review/add-product-review.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 
 
 const routes: Routes = [
@@ -32,6 +34,8 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'admin', component: AdminNavComponent},
+  {path: 'admin/dashboard', component: AdminDashboardComponent},
   {path: '**', component: NotFoundComponent,}
 ];
 

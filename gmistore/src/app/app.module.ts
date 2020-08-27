@@ -48,6 +48,10 @@ import {StarRatingModule} from "angular-star-rating";
 import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatMenuModule } from '@angular/material/menu';
+import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +74,9 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     SideNavComponent,
     MaterialElevationDirective,
     AddProductReviewComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    AdminDashboardComponent,
+    AdminNavComponent
   ],
   imports: [
     FormsModule,
@@ -102,6 +108,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatSliderModule,
     MatProgressBarModule,
     MatCheckboxModule,
+    MatGridListModule,
+    MatMenuModule,
 
   ],
   providers: [

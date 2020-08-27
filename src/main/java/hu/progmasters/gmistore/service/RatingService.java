@@ -90,7 +90,7 @@ public class RatingService {
         Optional<Rating> ratingById = ratingRepository.findById(id);
         if (ratingById.isPresent() && authentication != null) {
             if (authentication.getAuthorities().stream()
-                    .noneMatch(authority -> Role.valueOf(authority.getAuthority()).equals(Role.ROLE_ADMIN))){
+                    .noneMatch(authority -> Role.valueOf(authority.getAuthority()).equals(Role.ROLE_ADMIN))) {
                 LOGGER.info("Unauthorized delete request, rating id: {}, username: {}", id, authentication.getName());
                 return false;
             }
@@ -100,5 +100,25 @@ public class RatingService {
         }
         LOGGER.info("Product rating not found, id: {}", id);
         return false;
+    }
+
+    public void upVoteRating(Long id, String username) {
+        Optional<Rating> ratingById = ratingRepository.findById(id);
+        if (ratingById.isPresent() && !ratingById.get().getVoters().contains(username)) {
+            Rating rating = ratingById.get();
+            rating.setUpVotes(rating.getUpVotes() + 1);
+            rating.getVoters().add(username);
+            LOGGER.debug("Product rating upvote saved! rating id: {}, username: {}", id, username);
+        }
+    }
+
+    public void removeUpVoteRating(Long id, String username) {
+        Optional<Rating> ratingById = ratingRepository.findById(id);
+        if (ratingById.isPresent() && ratingById.get().getVoters().contains(username)) {
+            Rating rating = ratingById.get();
+            rating.setUpVotes(rating.getUpVotes() - 1);
+            rating.getVoters().remove(username);
+            LOGGER.debug("Product rating upvote removed! rating id: {}, username: {}", id, username);
+        }
     }
 }

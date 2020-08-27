@@ -31,4 +31,12 @@ export class RatingService {
   removeRating(id: number): Observable<boolean> {
     return this.httpClient.delete<boolean>(this.ratingUrl + '/' + id);
   }
+
+  upVoteRating(id: number): Observable<any> {
+    return this.httpClient.put(this.ratingUrl + '/up-vote-rating/' + id, {});
+  }
+
+  removeUpVoteRating(id: number): Observable<any> {
+    return this.httpClient.delete(this.ratingUrl + '/up-vote-rating/' + id);
+  }
 }

@@ -49,14 +49,14 @@ import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatGridListModule} from '@angular/material/grid-list';
 import {AdminNavComponent} from './components/admin/admin-nav/admin-nav.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { MatMenuModule } from '@angular/material/menu';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatCarouselModule} from '@ngmodule/material-carousel';
 import {MatDialogModule} from '@angular/material/dialog';
 import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.component';
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
-import { MatMenuModule } from '@angular/material/menu';
 import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
 import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
 
@@ -83,7 +83,6 @@ import { AdminUserComponent } from './components/admin/admin-user/admin-user.com
     NotFoundComponent,
     AdminDashboardComponent,
     AdminNavComponent,
-    NotFoundComponent,
     GdprDialogComponent,
     PrivacyComponent,
     CookiesPrivacyComponent,
@@ -122,6 +121,8 @@ import { AdminUserComponent } from './components/admin/admin-user/admin-user.com
     MatSliderModule,
     MatProgressBarModule,
     MatCheckboxModule,
+    MatGridListModule,
+    MatMenuModule,
     DragDropModule,
     MatCarouselModule.forRoot(),
     MatDialogModule,

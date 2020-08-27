@@ -37,6 +37,8 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'admin', component: AdminNavComponent},
+  {path: 'admin/dashboard', component: AdminDashboardComponent},
   {path: 'admin',
     children: [
       { path: 'dashboard',component: AdminDashboardComponent},

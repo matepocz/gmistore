@@ -17,7 +17,7 @@ export class UserEditComponent implements OnInit {
   user: UserModel;
   deliveryAddress: AddressModel;
 
-  constructor(private fb: FormBuilder, private userService: UserService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder, private userService: UserService) {
     this.userForm = this.fb.group({
       //'username': new FormControl('', Validators.required),
       firstName: ['', Validators.required],

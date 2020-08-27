@@ -64,6 +64,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
       }, error => console.log(error),
+      // ha nem talála a product-ot akkor dobaj át a 404-es oldalra
+      //error msg-ből kiszedni és az alapján
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
       }

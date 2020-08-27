@@ -3,6 +3,7 @@ package hu.progmasters.gmistore.service;
 import hu.progmasters.gmistore.dto.NewRatingRequest;
 import hu.progmasters.gmistore.dto.RatingDetails;
 import hu.progmasters.gmistore.dto.RatingInitData;
+import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.Rating;
@@ -89,7 +90,7 @@ public class RatingService {
         Optional<Rating> ratingById = ratingRepository.findById(id);
         if (ratingById.isPresent() && authentication != null) {
             if (authentication.getAuthorities().stream()
-                    .noneMatch(authority -> authority.getAuthority().equals("ADMIN"))){
+                    .noneMatch(authority -> Role.valueOf(authority.getAuthority()).equals(Role.ROLE_ADMIN))){
                 LOGGER.info("Unauthorized delete request, rating id: {}, username: {}", id, authentication.getName());
                 return false;
             }

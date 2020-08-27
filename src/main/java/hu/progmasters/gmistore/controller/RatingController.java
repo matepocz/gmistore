@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -48,7 +47,7 @@ public class RatingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id, Principal principal) {
+    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id) {
         boolean result = ratingService.removeRating(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

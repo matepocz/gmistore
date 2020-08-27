@@ -31,6 +31,7 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'not-found', component: NotFoundComponent,},
   {path: '**', component: NotFoundComponent,}
 ];
 

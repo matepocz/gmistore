@@ -11,6 +11,7 @@ import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs";
 import {RatingService} from "../../../service/rating.service";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-product-details',
@@ -63,9 +64,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       data => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
-      }, error => console.log(error),
-      // ha nem talála a product-ot akkor dobaj át a 404-es oldalra
-      //error msg-ből kiszedni és az alapján
+      }, (error:HttpErrorResponse) =>{
+        if(error.error.details==='Product not found'){
+          this.router.navigate(['/not-found'])
+        }
+      },
+
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
       }

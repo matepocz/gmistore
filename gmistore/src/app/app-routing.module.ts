@@ -52,6 +52,7 @@ export class AppRoutingModule {
   static routableComponents = [
     HomeComponent,
     LoginComponent,
+
     RegisterComponent,
     UserEditComponent,
     ProductListComponent,

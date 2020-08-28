@@ -239,7 +239,7 @@
             {{ rating.upVotes }}
             &nbsp;<strong>|</strong>
 
-            <button mat-button color="primary">
+            <button mat-button color="primary" type="button" (click)="reportRating(rating.id)">
               <mat-icon>flag</mat-icon>
               Jelentés
             </button>

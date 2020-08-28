@@ -52,6 +52,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   ratingSubscription: Subscription;
   removeRatingSubscription: Subscription;
   ratingVoteSub: Subscription;
+  reportSub: Subscription;
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
@@ -234,6 +235,19 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  reportRating(id: number) {
+    this.reportSub = this.ratingService.reportRating(id).subscribe(
+      (response) => {
+        if (response){
+          this.openSnackBar("Jelentés sikeres!");
+        }
+      }, (error) => {
+        console.log(error);
+        this.openSnackBar("Valami hiba történt!");
+      }
+    )
+  }
+
   ngOnDestroy() {
     this.productSubscription.unsubscribe();
     if (this.addToCartSubscription) {
@@ -245,6 +259,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     }
     if (this.ratingVoteSub) {
       this.ratingVoteSub.unsubscribe();
+    }
+    if (this.reportSub){
+      this.reportSub.unsubscribe();
     }
   }
 }

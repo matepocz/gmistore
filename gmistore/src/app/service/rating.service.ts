@@ -28,6 +28,10 @@ export class RatingService {
     return this.httpClient.post(this.ratingUrl, data);
   }
 
+  reportRating(id: number): Observable<boolean> {
+    return this.httpClient.put<boolean>(this.ratingUrl + '/report/' + id, {});
+  }
+
   removeRating(id: number): Observable<boolean> {
     return this.httpClient.delete<boolean>(this.ratingUrl + '/' + id);
   }

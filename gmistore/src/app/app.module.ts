@@ -48,6 +48,8 @@ import {AddProductReviewComponent} from './components/add-product-review/add-pro
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import { MatCarouselModule } from '@ngmodule/material-carousel';
+
 
 @NgModule({
   declarations: [
@@ -69,7 +71,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     SideNavComponent,
     MaterialElevationDirective,
     AddProductReviewComponent,
-    NotFoundComponent
+    NotFoundComponent,
   ],
   imports: [
     FormsModule,
@@ -102,6 +104,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     MatProgressBarModule,
     MatCheckboxModule,
     DragDropModule,
+    MatCarouselModule.forRoot(),
 
   ],
   providers: [

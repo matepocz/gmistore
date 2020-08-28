@@ -22,6 +22,7 @@ public class RatingDetails {
     private Set<String> pictures;
     private Integer upVotes;
     private Set<String> voters;
+    private Boolean reported;
     private LocalDateTime timeStamp;
 
     public RatingDetails(Rating rating) {
@@ -35,6 +36,7 @@ public class RatingDetails {
         this.pictures = rating.getPictures();
         this.upVotes = rating.getUpVotes();
         this.voters = rating.getVoters();
+        this.reported = rating.getReported();
         this.timeStamp = rating.getTimeStamp();
     }
 }

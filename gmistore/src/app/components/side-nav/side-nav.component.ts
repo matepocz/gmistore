@@ -49,9 +49,15 @@ export class SideNavComponent implements OnInit {
       },
       error => console.log(error),
       () => {
+        this.authenticatedUser = false;
+        this.updateItemsInCart(0);
         this.router.navigateByUrl('/');
       }
     );
+  }
+
+  setUserLoggedIn() {
+    this.authenticatedUser = true;
   }
 
   updateItemsInCart(timeout: number) {

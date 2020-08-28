@@ -5,6 +5,7 @@ import {AuthService} from "../../../service/auth-service";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SideNavComponent} from "../../side-nav/side-nav.component";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginSubscription: Subscription;
   hide: boolean = true;
 
-  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) {
+  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder,
+              private sideNav: SideNavComponent) {
     this.loginForm = this.formBuilder.group({
       username: [null],
       password: [null]
@@ -36,7 +38,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authService.login(this.loginPayload).subscribe(
       (data) => {
         if (data) {
-          this.router.navigate(['/product-list'])
+          this.sideNav.setUserLoggedIn();
+          this.sideNav.updateItemsInCart(0);
+          this.router.navigate(['/product-list']);
         } else {
           this.loginForm.get('username').setErrors({badCredentials: true})
         }

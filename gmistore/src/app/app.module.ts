@@ -50,10 +50,10 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import { MatCarouselModule } from '@ngmodule/material-carousel';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from "@angular/material/menu";
 import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
-import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component';
-
+import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component'
 
 @NgModule({
   declarations: [
@@ -80,6 +80,7 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     PrivacyComponent,
     CookiesPrivacyComponent,
   ],
+
   imports: [
     FormsModule,
     BrowserModule,
@@ -112,9 +113,10 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     MatCheckboxModule,
     DragDropModule,
     MatCarouselModule.forRoot(),
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule,
 
-  ],
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

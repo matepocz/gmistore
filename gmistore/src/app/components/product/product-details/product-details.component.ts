@@ -11,6 +11,7 @@ import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs";
 import {RatingService} from "../../../service/rating.service";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-product-details',
@@ -18,6 +19,8 @@ import {SideNavComponent} from "../../side-nav/side-nav.component";
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
+
+  loading = false;
 
   slug: string;
   product: ProductModel;
@@ -48,6 +51,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   addToCartSubscription: Subscription;
   ratingSubscription: Subscription;
   removeRatingSubscription: Subscription;
+  ratingVoteSub: Subscription;
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
@@ -57,13 +61,19 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.slug = this.route.snapshot.params['slug'];
 
     this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
       data => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
-      }, error => console.log(error),
+      }, (error: HttpErrorResponse) => {
+        if (error.error.details === 'Product not found') {
+          this.router.navigate(['/not-found'])
+        }
+      },
+
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
       }
@@ -86,6 +96,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
           this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
         }
       );
+    this.loading = false;
   }
 
   changeDefaultImg(picture: string): void {
@@ -158,10 +169,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/add-review', this.slug])
   }
 
-  openDialog() {
-
-  }
-
   removeRating(id: number) {
     this.removeRatingSubscription = this.ratingService.removeRating(id).subscribe(
       (response) => {
@@ -174,6 +181,59 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     )
   }
 
+  voteRating(id: number) {
+    let actualRating: RatingModel = new RatingModel();
+    let username = this.localStorageService.retrieve('username');
+
+    this.ratings.find((rating) => {
+        if (rating.id === id) {
+          actualRating = rating;
+        }
+      }
+    );
+    console.log(actualRating);
+    if (!actualRating.voters.includes(username)) {
+      this.upVoteRating(id, actualRating);
+    } else if (actualRating.voters.includes(username)) {
+      this.removeUpVoteRating(id, actualRating);
+    }
+  }
+
+  private upVoteRating(id: number, rating: RatingModel) {
+    this.loading = true;
+    this.ratingVoteSub = this.ratingService.upVoteRating(id).subscribe(
+      () => {
+        rating.upVotes++;
+        rating.voters.push(this.localStorageService.retrieve('username'));
+        this.loading = false;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      }
+    );
+  }
+
+  private removeUpVoteRating(id: number, rating: RatingModel) {
+    this.loading = true;
+    this.ratingVoteSub = this.ratingService.removeUpVoteRating(id).subscribe(
+      () => {
+        let username = this.localStorageService.retrieve('username');
+        let indexOfUsername = 0;
+        rating.voters.forEach((name) => {
+          if (name === username) {
+            rating.upVotes--;
+            rating.voters.splice(indexOfUsername, 1);
+          }
+          indexOfUsername++;
+        });
+        this.loading = false;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      }
+    );
+  }
+
   ngOnDestroy() {
     this.productSubscription.unsubscribe();
     if (this.addToCartSubscription) {
@@ -182,6 +242,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.ratingSubscription.unsubscribe();
     if (this.removeRatingSubscription) {
       this.removeRatingSubscription.unsubscribe();
+    }
+    if (this.ratingVoteSub) {
+      this.ratingVoteSub.unsubscribe();
     }
   }
 }

@@ -5,10 +5,9 @@ import {LoginComponent} from "./components/user/login/login.component";
 import {RegisterComponent} from "./components/user/register/register.component";
 import {UserEditComponent} from "./components/user/user-edit/user-edit.component";
 import {ProductListComponent} from "./components/product/product-list/product-list.component";
-import {ProductEditComponent} from "./components/product/product-edit/product-edit.component";
 import {ForbiddenComponent} from "./components/forbidden/forbidden.component";
 import {ProductDetailsComponent} from "./components/product/product-details/product-details.component";
-import {AddProductComponent} from "./components/product/add-product/add-product.component";
+import {ProductFormComponent} from "./components/product/product-form/product-form.component";
 import {RegisterSuccessComponent} from "./components/user/register-success/register-success.component";
 import {ConfirmAccountComponent} from "./components/user/confirm-account/confirm-account.component";
 import {UserProfileComponent} from "./components/user/user-profile/user-profile.component";
@@ -18,7 +17,6 @@ import {NotFoundComponent} from "./components/not-found/not-found.component";
 import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
-import {SideNavComponent} from "./components/side-nav/side-nav.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 
 
@@ -30,10 +28,10 @@ const routes: Routes = [
   {path: 'confirm-account', component: ConfirmAccountComponent},
   {path: 'user/my-account', component: UserProfileComponent},
   {path: 'user/edit', component: UserEditComponent},
-  {path: 'add-product', component: AddProductComponent},
+  {path: 'add-product', component: ProductFormComponent},
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
-  {path: 'edit-product/:slug', component: ProductEditComponent},
+  {path: 'edit-product/:slug', component: ProductFormComponent},
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
@@ -43,6 +41,7 @@ const routes: Routes = [
       { path: 'product',component: AdminProductComponent},
       { path: 'user',component: AdminUserComponent},
     ]},
+  {path: 'not-found', component: NotFoundComponent,},
   {path: '**', component: NotFoundComponent,}
 ];
 
@@ -58,7 +57,6 @@ export class AppRoutingModule {
     RegisterComponent,
     UserEditComponent,
     ProductListComponent,
-    ProductEditComponent,
     ForbiddenComponent
   ];
 }

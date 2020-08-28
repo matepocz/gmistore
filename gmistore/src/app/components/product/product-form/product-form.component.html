@@ -1,12 +1,18 @@
 <div class="containerX" fxLayoutAlign="center">
   <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
-            fxFlex.lt-md="100" fxFlex.gt-md="70" fxFlex.md="70" fxLayoutAlign="space-between" [ngClass]="{'loading': loading}">
+            fxFlex.lt-md="100" fxFlex.gt-md="60" fxFlex.md="70" fxLayoutAlign="space-between"
+            [ngClass]="{'loading': loading}">
 
     <form name="form" [formGroup]="productForm" (ngSubmit)="onSubmit()" fxFlex="100" fxLayout="column">
 
-      <mat-card-header class="mt-15">
+      <mat-card-header *ngIf="!slug" class="mt-15">
         <mat-icon mat-card-avatar>add</mat-icon>
         <mat-card-title>Új termék létrehozása</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-header *ngIf="slug" class="mt-15">
+        <mat-icon mat-card-avatar>create</mat-icon>
+        <mat-card-title>Termék szerkesztése</mat-card-title>
       </mat-card-header>
 
       <div fxFlex="100" fxLayout="column">
@@ -14,7 +20,10 @@
           <mat-label>Termék megnevezése</mat-label>
           <input matInput placeholder="" formControlName="name">
           <mat-icon matSuffix>title</mat-icon>
-          <mat-hint align="end">Max. karakterek: {{ productForm.get('name').value?.length || 0 }}/200</mat-hint>
+          <mat-hint *ngIf="slug">Nem szerkeszthető.</mat-hint>
+          <mat-hint align="end" *ngIf="!slug">
+            Max. karakterek: {{ productForm.get('name').value?.length || 0 }}/200
+          </mat-hint>
           <mat-error *ngIf="productForm.get('name').invalid">Min. 3, Max. 200 karakter hosszú!</mat-error>
           <mat-error *ngIf="productForm.get('name').errors?.serverError">
             {{ productForm.get('name').errors?.serverError }}
@@ -27,7 +36,8 @@
           <mat-label>Termék azonosító</mat-label>
           <input matInput placeholder="" formControlName="productCode">
           <mat-icon matSuffix></mat-icon>
-          <mat-hint>Pl.: GMI12345</mat-hint>
+          <mat-hint *ngIf="slug">Nem szerkeszthető.</mat-hint>
+          <mat-hint *ngIf="!slug">Pl.: GMI12345</mat-hint>
           <mat-error *ngIf="productForm.get('productCode').invalid">Min. 3, Max. 30 karakter hosszú!</mat-error>
           <mat-error *ngIf="productForm.get('productCode').errors?.serverError">
             {{ productForm.get('productCode').errors?.serverError }}
@@ -55,7 +65,7 @@
       <div fxFlex="100" fxLayout="column">
         <mat-form-field fxFlex="100" appearance="outline">
           <mat-label>Termék leírása</mat-label>
-          <textarea matTextareaAutosize [matAutosizeMaxRows]="18" rows="8" matInput placeholder=""
+          <textarea matTextareaAutosize [matAutosizeMaxRows]="20" rows="10" matInput placeholder=""
                     formControlName="description"></textarea>
           <mat-error *ngIf="productForm.get('description').invalid">Minimum 10 karakter!</mat-error>
           <mat-error *ngIf="productForm.get('description').errors?.serverError">
@@ -113,43 +123,61 @@
 
       </div>
 
-      <div fxFlex="100">
+      <div fxFlex="100" fxLayout="column" fxLayoutAlign="start">
 
-          <input type="image">
+        <div fxFlex="100">
+          <input style="display:none" multiple accept="image/*"
+                 id="pictureUrl" type="file" (change)="onFileChange($event)" #imageInput>
+          <button mat-flat-button color="primary" type="button" class="btn btn-outline-primary"
+                  (click)="imageInput.click()">
+            <mat-icon>add</mat-icon>
+            Képek kiválasztása
+          </button>
+          <div>
+            <mat-hint>Max. 1MB / kép</mat-hint>
+          </div>
+        </div>
 
+        <div fxFlex="100" class="mt-15" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutAlign.lt-lg="space-between"
+             cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+          <mat-card materialElevation fxFlex.xs="20" fxFlex.sm="17" fxFlex.md="15" fxFlex.gt-md="10" fxLayout="column"
+                    fxLayoutAlign="center center" cdkDrag *ngFor="let picture of productPictures"
+                    class="image-thumbnail-div mat-elevation-z4"
+          >
+
+            <div class="example-handle" cdkDragHandle>
+              <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                <path d="M0 0h24v24H0z" fill="none"></path>
+              </svg>
+            </div>
+
+            <img mat-card-image [src]="picture" (click)="removeImage(picture)" class="image-thumbnail"
+                 alt="picture thumbnail">
+          </mat-card>
+
+        </div>
+
+        <div fxFlex="100" class="mt-10" *ngIf="productPictures.length > 0">
+          <mat-hint>A képek az ikonnal sorba rendezhetőek, kattintással törölhetőek.</mat-hint>
+        </div>
       </div>
 
-<!--      <div class="form-group">-->
-<!--        <label for="pictureUrl"></label>-->
-<!--        <input style="display:none" multiple accept="image/*" formControlName="pictureUrl"-->
-<!--               id="pictureUrl" type="file" (change)="onFileChange($event)" #imageInput>-->
-<!--        <button type="button" class="btn btn-outline-primary" (click)="imageInput.click()">Képek kiválasztása-->
-<!--        </button>-->
-<!--        <small id="pictureUrlHelper" class="form-text text-muted">-->
-<!--          Kép feltöltése szükséges. Max. 1MB / kép</small>-->
-<!--      </div>-->
-<!--      <div class="row">-->
-<!--        <div class="col-12">-->
-<!--          <ul class="preview-thumbnail nav nav-tabs">-->
-<!--            <li class="active" *ngFor="let picture of uploadedPictures">-->
-<!--              <a class="preview-image"><img src="{{picture}}" alt="pic" width="100" height="100"-->
-<!--                                            (click)="removeImage(picture)"/></a>-->
-<!--            </li>-->
-<!--          </ul>-->
-<!--        </div>-->
-<!--      </div>-->
-
       <div fxFlex="100" class="mt-15" fxLayout="column">
-          <mat-checkbox color="primary" formControlName="active">Termék azonnal rendelhető</mat-checkbox>
+        <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+        <mat-checkbox color="primary" formControlName="active">Termék azonnal rendelhető</mat-checkbox>
       </div>
 
       <mat-card-actions class="mt-15" fxFlex="100" fxLayoutAlign="center">
         <button mat-flat-button color="primary" [disabled]="loading" type="submit">
-          <mat-icon>create</mat-icon> Küldés
+          <mat-icon>create</mat-icon>
+          Küldés
         </button>
 
         <a mat-flat-button color="primary" [style.margin-left]="'10px'" [disabled]="loading">
-          <mat-icon>arrow_back</mat-icon> Vissza
+          <mat-icon>arrow_back</mat-icon>
+          Vissza
         </a>
       </mat-card-actions>
     </form>

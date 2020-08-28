@@ -41,10 +41,17 @@ body {
   margin-top: 15px !important;
 }
 
+.mt-10 {
+  margin-top: 10px;
+}
+
 .loading {
   opacity: .3;
 }
 
 .full-width {
   width: 100%;
+}
+.star-container {
+  z-index: 0;
 }

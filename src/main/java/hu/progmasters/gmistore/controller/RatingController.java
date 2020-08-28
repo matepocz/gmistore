@@ -48,8 +48,20 @@ public class RatingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id, Principal principal) {
+    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id) {
         boolean result = ratingService.removeRating(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("/up-vote-rating/{id}")
+    public ResponseEntity<Void> upVoteRating(@PathVariable("id") Long id, Principal principal) {
+        ratingService.upVoteRating(id, principal.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/up-vote-rating/{id}")
+    public ResponseEntity<Void> removeUpVoteRating(@PathVariable("id") Long id, Principal principal) {
+        ratingService.removeUpVoteRating(id, principal.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

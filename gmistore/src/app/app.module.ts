@@ -48,9 +48,12 @@ import {AddProductReviewComponent} from './components/add-product-review/add-pro
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import {MatCarouselModule} from '@ngmodule/material-carousel';
+import { MatCarouselModule } from '@ngmodule/material-carousel';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatMenuModule} from "@angular/material/menu";
-
+import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
+import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component'
 
 @NgModule({
   declarations: [
@@ -73,40 +76,45 @@ import {MatMenuModule} from "@angular/material/menu";
     MaterialElevationDirective,
     AddProductReviewComponent,
     NotFoundComponent,
+    GdprDialogComponent,
+    PrivacyComponent,
+    CookiesPrivacyComponent,
   ],
-    imports: [
-        FormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        Ng2Webstorage.forRoot(),
-        HttpClientModule,
-        StarRatingModule.forRoot(),
-        MatInputModule,
-        MatIconModule,
-        LayoutModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatListModule,
-        MatBadgeModule,
-        MatSelectModule,
-        MatRadioModule,
-        MatCardModule,
-        FlexLayoutModule,
-        MatSnackBarModule,
-        MatTooltipModule,
-        MatSlideToggleModule,
-        MatProgressSpinnerModule,
-        MatExpansionModule,
-        MatSliderModule,
-        MatProgressBarModule,
-        MatCheckboxModule,
-        DragDropModule,
-        MatCarouselModule.forRoot(),
-        MatMenuModule,
+
+  imports: [
+    FormsModule,
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    Ng2Webstorage.forRoot(),
+    HttpClientModule,
+    StarRatingModule.forRoot(),
+    MatInputModule,
+    MatIconModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatBadgeModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule,
+    FlexLayoutModule,
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatSlideToggleModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    MatSliderModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    DragDropModule,
+    MatCarouselModule.forRoot(),
+    MatDialogModule,
+    MatMenuModule,
 
     ],
   providers: [

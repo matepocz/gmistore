@@ -14,6 +14,8 @@ import {UserProfileComponent} from "./components/user/user-profile/user-profile.
 import {CartComponent} from "./components/cart/cart.component";
 import {AddProductReviewComponent} from "./components/add-product-review/add-product-review.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {PrivacyComponent} from "./components/privacy/privacy.component";
+import {CookiesPrivacyComponent} from "./components/cookies-privacy/cookies-privacy.component";
 
 
 const routes: Routes = [
@@ -32,6 +34,8 @@ const routes: Routes = [
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
   {path: 'not-found', component: NotFoundComponent,},
+  {path: 'privacy', component: PrivacyComponent,},
+  {path: 'cookies-privacy', component: CookiesPrivacyComponent,},
   {path: '**', component: NotFoundComponent,}
 ];
 

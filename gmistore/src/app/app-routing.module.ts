@@ -18,6 +18,8 @@ import {NotFoundComponent} from "./components/not-found/not-found.component";
 import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
+import {SideNavComponent} from "./components/side-nav/side-nav.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 
 
 const routes: Routes = [
@@ -35,7 +37,7 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
-  {path: 'admin',
+  {path: 'admin', component: AdminNavComponent,
     children: [
       { path: 'dashboard',component: AdminDashboardComponent},
       { path: 'product',component: AdminProductComponent},

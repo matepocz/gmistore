@@ -47,6 +47,14 @@ public class RatingController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping("/report/{id}")
+    public ResponseEntity<Boolean> reportRating(@PathVariable("id") Long id) {
+        boolean result = ratingService.reportRating(id);
+        return result ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id) {
         boolean result = ratingService.removeRating(id);

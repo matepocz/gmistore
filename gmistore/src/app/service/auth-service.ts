@@ -54,10 +54,9 @@ export class AuthService {
       this.authUrl + 'check-email-taken/' + email).pipe(delay(1000));
   }
 
-  logout() {
+  logout(): Observable<any>{
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
-    this.httpClient.post(environment.apiUrl + 'logout', {});
-    this._router.navigate(['/'])
+    return this.httpClient.post(environment.apiUrl + 'logout', {});
   }
 }

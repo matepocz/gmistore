@@ -4,6 +4,7 @@ import {Observable, Subscription} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {AuthService} from "../../service/auth-service";
 import {CartService} from "../../service/cart-service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-side-nav',
@@ -30,7 +31,8 @@ export class SideNavComponent implements OnInit {
     );
 
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
-              changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService) {
+              changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
+              private router: Router) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -42,8 +44,14 @@ export class SideNavComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.ngOnInit();
+    this.authService.logout().subscribe(
+      () => {
+      },
+      error => console.log(error),
+      () => {
+        this.router.navigateByUrl('/');
+      }
+    );
   }
 
   updateItemsInCart(timeout: number) {

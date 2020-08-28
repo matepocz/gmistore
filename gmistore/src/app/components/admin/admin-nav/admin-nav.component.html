@@ -1,20 +1,17 @@
 <mat-sidenav-container fxLayout="row" class="sidenav-container" fxLayoutAlign="space-between">
-  <mat-sidenav  fxFlex="40" fxLayout="column" mode="side" opened="true">
-    <mat-toolbar>
-      <mat-icon (click)="isExpanded = !isExpanded" aria-label="Menu">menu</mat-icon>
-    </mat-toolbar>
+  <mat-sidenav [fixedTopGap] fxLayout="column" mode="side" opened="true">
     <mat-nav-list>
       <mat-list-item [routerLink]="'/admin/dashboard'">
-        <mat-icon mat-list-icon>assignment</mat-icon>
-        <h4 mat-line *ngIf="isExpanded">Dashboard</h4>
+        <mat-icon mat-list-icon>dashboard</mat-icon>
+        <h4 mat-line fxHide.lt-md="true">Dashboard</h4>
       </mat-list-item>
       <mat-list-item [routerLink]="'/admin/user'">
-        <mat-icon mat-list-icon>Person</mat-icon>
-        <h4 mat-line *ngIf="isExpanded">Users</h4>
+        <mat-icon mat-list-icon>person</mat-icon>
+        <h4 mat-line fxHide.lt-md="true">Users</h4>
       </mat-list-item>
-      <mat-list-item [routerLink]="'/admin/product'">
-        <mat-icon mat-list-icon>domain</mat-icon>
-        <h4 mat-line *ngIf="isExpanded">Products</h4>
+      <mat-list-item  [routerLink]="'/admin/product'">
+        <mat-icon mat-list-icon>devices_other</mat-icon>
+        <h4 mat-line fxHide.lt-md="true">Products</h4>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>

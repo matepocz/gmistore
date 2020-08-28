@@ -49,6 +49,10 @@ import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import { MatCarouselModule } from '@ngmodule/material-carousel';
+import {MatDialogModule} from '@angular/material/dialog';
+import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
+import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component';
 
 
 @NgModule({
@@ -72,6 +76,9 @@ import { MatCarouselModule } from '@ngmodule/material-carousel';
     MaterialElevationDirective,
     AddProductReviewComponent,
     NotFoundComponent,
+    GdprDialogComponent,
+    PrivacyComponent,
+    CookiesPrivacyComponent,
   ],
   imports: [
     FormsModule,
@@ -105,6 +112,7 @@ import { MatCarouselModule } from '@ngmodule/material-carousel';
     MatCheckboxModule,
     DragDropModule,
     MatCarouselModule.forRoot(),
+    MatDialogModule
 
   ],
   providers: [

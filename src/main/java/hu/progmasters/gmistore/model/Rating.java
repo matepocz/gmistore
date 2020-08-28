@@ -58,6 +58,9 @@ public class Rating implements Serializable {
     @Column(name = "rating_voters")
     private Set<String> voters = new HashSet<>();
 
+    @Column(name = "is_reported")
+    private Boolean reported;
+
     @Column(name = "timestamp")
     @NotNull
     private LocalDateTime timeStamp;

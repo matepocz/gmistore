@@ -221,4 +221,19 @@ public class CartService {
         Cart actualCart = getActualCart(session);
         return actualCart.getItems().size();
     }
+
+    public boolean canCheckout(HttpSession session) {
+        Cart actualCart = getActualCart(session);
+        Set<CartItem> cartItems = actualCart.getItems();
+        if (cartItems.isEmpty()) {
+            return false;
+        }
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            if (product.getInventory().getQuantityAvailable() < cartItem.getCount()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

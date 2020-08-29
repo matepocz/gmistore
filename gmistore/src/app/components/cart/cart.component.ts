@@ -5,6 +5,7 @@ import {Subscription} from "rxjs";
 import {ShippingMethodModel} from "../../models/shipping-method-model";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cart',
@@ -23,9 +24,10 @@ export class CartComponent implements OnInit, OnDestroy {
   refreshSubscription: Subscription;
   removeProductSubscription: Subscription;
   refreshShippingSubscription: Subscription;
+  checkoutSub: Subscription;
 
   constructor(private cartService: CartService, private titleService: Title,
-              private sideNavComponent: SideNavComponent) {
+              private sideNavComponent: SideNavComponent, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -35,9 +37,9 @@ export class CartComponent implements OnInit, OnDestroy {
       (data) => {
         this.cart = data;
         this.currentShipping = data.shippingMethod;
-        console.log(data);
       }, (error) => {
         console.log(error);
+        this.loading = false;
       }, () => {
         this.loading = false;
       }
@@ -55,6 +57,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response) => {
+        this.loading = false;
         this.ngOnInit();
       }, (error) => {
         console.log(error);
@@ -69,7 +72,8 @@ export class CartComponent implements OnInit, OnDestroy {
         this.sideNavComponent.updateItemsInCart(0);
         this.ngOnInit();
       }, (error) => {
-        console.log(error)
+        this.loading = false;
+        console.log(error);
       }, () => this.loading = false
     )
   }
@@ -78,9 +82,29 @@ export class CartComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
       (response) => {
-      }, error => console.log(error),
+      }, error => {
+        console.log(error);
+        this.loading = false;
+      },
       () => {
+        this.loading = false;
         this.ngOnInit();
+      }
+    )
+  }
+
+  checkout() {
+    this.loading = true;
+    this.checkoutSub = this.cartService.canCheckout().subscribe(
+      (response) => {
+        console.log(response);
+        this.loading = false;
+        if (response) {
+          this.router.navigate(['/checkout']);
+        }
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
       }
     )
   }
@@ -96,6 +120,9 @@ export class CartComponent implements OnInit, OnDestroy {
     }
     if (this.refreshShippingSubscription) {
       this.refreshShippingSubscription.unsubscribe();
+    }
+    if (this.checkoutSub) {
+      this.checkoutSub.unsubscribe();
     }
   }
 }

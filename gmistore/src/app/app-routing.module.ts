@@ -16,6 +16,10 @@ import {AddProductReviewComponent} from "./components/add-product-review/add-pro
 import {NotFoundComponent} from "./components/not-found/not-found.component";
 import {PrivacyComponent} from "./components/privacy/privacy.component";
 import {CookiesPrivacyComponent} from "./components/cookies-privacy/cookies-privacy.component";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
+import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 
 
 const routes: Routes = [
@@ -33,6 +37,14 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {
+    path: 'admin', component: AdminNavComponent,
+    children: [
+      {path: 'dashboard', component: AdminDashboardComponent},
+      {path: 'product', component: AdminProductComponent},
+      {path: 'user', component: AdminUserComponent},
+    ]
+  },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},
   {path: 'cookies-privacy', component: CookiesPrivacyComponent,},

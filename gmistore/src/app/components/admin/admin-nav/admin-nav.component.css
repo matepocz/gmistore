@@ -1,0 +1,16 @@
+.mat-drawer-content {
+  min-height: 84vh;
+}
+
+.mat-drawer-container {
+  z-index: 0;
+}
+
+:host /deep/ .mat-list-item-content {
+  padding: 5px!important;
+
+}
+
+:host /deep/ .mat-list-text {
+  padding: 6px!important;
+}

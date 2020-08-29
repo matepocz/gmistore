@@ -22,7 +22,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
         UserDto userDto = new UserDto(
                 user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
-                user.getShippingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
+                user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList());
         return userDto;
     }

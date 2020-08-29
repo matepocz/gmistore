@@ -48,12 +48,13 @@ import {AddProductReviewComponent} from './components/add-product-review/add-pro
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import { MatCarouselModule } from '@ngmodule/material-carousel';
+import {MatCarouselModule} from '@ngmodule/material-carousel';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatMenuModule} from "@angular/material/menu";
-import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
-import { PrivacyComponent } from './components/privacy/privacy.component';
-import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component'
+import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.component';
+import {PrivacyComponent} from './components/privacy/privacy.component';
+import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [
@@ -79,6 +80,11 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     GdprDialogComponent,
     PrivacyComponent,
     CookiesPrivacyComponent,
+    NotFoundComponent,
+    AdminDashboardComponent,
+    AdminNavComponent,
+    AdminProductComponent,
+    AdminUserComponent
   ],
 
   imports: [
@@ -111,12 +117,14 @@ import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-pr
     MatSliderModule,
     MatProgressBarModule,
     MatCheckboxModule,
+    MatGridListModule,
+    MatMenuModule,
     DragDropModule,
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
 
-    ],
+  ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

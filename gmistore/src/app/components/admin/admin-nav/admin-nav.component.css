@@ -6,3 +6,11 @@
   z-index: 0;
 }
 
+:host /deep/ .mat-list-item-content {
+  padding: 5px!important;
+
+}
+
+:host /deep/ .mat-list-text {
+  padding: 6px!important;
+}

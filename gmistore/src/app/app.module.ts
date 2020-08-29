@@ -55,6 +55,12 @@ import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.componen
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
 import {MatGridListModule} from "@angular/material/grid-list";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
+import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
+import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
+import {CheckoutComponent} from './components/checkout/checkout.component';
+import {MatStepperModule} from "@angular/material/stepper";
 
 @NgModule({
   declarations: [
@@ -84,7 +90,8 @@ import {MatGridListModule} from "@angular/material/grid-list";
     AdminDashboardComponent,
     AdminNavComponent,
     AdminProductComponent,
-    AdminUserComponent
+    AdminUserComponent,
+    CheckoutComponent
   ],
 
   imports: [
@@ -123,6 +130,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
+    MatStepperModule,
 
   ],
   providers: [

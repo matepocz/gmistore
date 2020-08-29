@@ -54,6 +54,11 @@ import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.compon
 import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
 import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from "@angular/material/menu";
+import { GdprDialogComponent } from './components/gdpr-dialog/gdpr-dialog.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
+import { CookiesPrivacyComponent } from './components/cookies-privacy/cookies-privacy.component'
 
 @NgModule({
   declarations: [
@@ -76,11 +81,16 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     MaterialElevationDirective,
     AddProductReviewComponent,
     NotFoundComponent,
+    GdprDialogComponent,
+    PrivacyComponent,
+    CookiesPrivacyComponent,
+    NotFoundComponent,
     AdminDashboardComponent,
     AdminNavComponent,
     AdminProductComponent,
     AdminUserComponent
   ],
+
   imports: [
     FormsModule,
     BrowserModule,
@@ -112,10 +122,13 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     MatProgressBarModule,
     MatCheckboxModule,
     DragDropModule,
+    MatCarouselModule.forRoot(),
+    MatDialogModule,
+    MatMenuModule,
     MatGridListModule,
     MatMenuModule,
 
-  ],
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

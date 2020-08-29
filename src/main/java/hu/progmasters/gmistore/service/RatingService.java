@@ -68,6 +68,7 @@ public class RatingService {
             rating.setPositiveComment(newRatingRequest.getPositiveComment());
             rating.setNegativeComment(newRatingRequest.getNegativeComment());
             rating.setPictures(newRatingRequest.getPictures());
+            rating.setReported(false);
             rating.setTimeStamp(LocalDateTime.now());
             ratingRepository.save(rating);
             calculateAndSetAverageRating(actualProduct);
@@ -120,5 +121,17 @@ public class RatingService {
             rating.getVoters().remove(username);
             LOGGER.debug("Product rating upvote removed! rating id: {}, username: {}", id, username);
         }
+    }
+
+    public boolean reportRating(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Rating> ratingById = ratingRepository.findById(id);
+        if (ratingById.isPresent() && authentication != null && !authentication.getName().equals("anonymousUser")) {
+            ratingById.get().setReported(true);
+            LOGGER.info("Product rating reported by user, rating id: {}, username: {}", id, authentication.getName());
+            return true;
+        }
+        LOGGER.info("Product rating reported, but not found, or user not authenticated! rating id: {}", id);
+        return false;
     }
 }

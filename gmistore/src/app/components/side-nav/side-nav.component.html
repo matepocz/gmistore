@@ -7,27 +7,44 @@
       <mat-toolbar>Menu</mat-toolbar>
       <mat-nav-list>
         <a mat-list-item [routerLink]="'/product-list'">Termékek</a>
-        <a mat-list-item href="#">Link 2</a>
-        <a mat-list-item href="#">Link 3</a>
-        <mat-divider class="divider-primary-colored"></mat-divider>
+        <a mat-list-item href="#" *ngIf="authenticatedUser">Kedvencek</a>
+        <a mat-list-item [routerLink]="['/user/my-account']" *ngIf="authenticatedUser">Profil</a>
+        <mat-divider class="divider-primary-colored" *ngIf="authenticatedUser"></mat-divider>
         <a mat-list-item (click)="logout()" *ngIf="authenticatedUser">Kijelentkezés</a>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
 
-      <mat-toolbar color="primary" class="nav-bar">
-        <mat-toolbar-row>
-          <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+      <mat-toolbar color="primary" class="nav-bar" fxLayout="row" fxLayoutAlign="center">
+        <mat-toolbar-row fxFlex.gt-sm="81">
+          <button type="button" fxHide.gt-sm="true" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
             <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
           </button>
           <span>GMI</span>
+
+          <a fxHide.lt-md="true" mat-button [routerLink]="'/product-list'">Termékek</a>
           <span class="spacer"></span>
           <a mat-button [routerLink]="'/register'" *ngIf="!authenticatedUser">Regisztráció</a>
 
-          <button mat-icon-button [routerLink]="'/my-account'" *ngIf="authenticatedUser">
-            <mat-icon>face</mat-icon>
+          <button fxHide.lt-md="true" mat-icon-button *ngIf="authenticatedUser" [matMenuTriggerFor]="menu"
+                  aria-label="Icon button for user options" matTooltip="Felhasználó opciók" [style.margin-right]="'10px'">
+            <mat-icon>person</mat-icon>
+            <mat-icon>arrow_drop_down</mat-icon>
           </button>
-          <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+          <mat-menu fxHide.lt-md="true" #menu="matMenu" xPosition="before">
+
+            <a mat-menu-item [routerLink]="['/user/my-account']">
+              <span>Profilom</span>
+            </a>
+
+            <a mat-menu-item (click)="logout()">
+              <span>Kijelentkezés</span>
+            </a>
+
+          </mat-menu>
+
+          <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon"
+          *ngIf="authenticatedUser">
             <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()" matBadgeSize="medium"
                       matBadgeOverlap="false">favorite
             </mat-icon>
@@ -36,6 +53,7 @@
                   aria-label="Example icon-button with share icon" id="cart-icon">
             <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart</mat-icon>
           </button>
+
         </mat-toolbar-row>
       </mat-toolbar>
       <main class="main-page">

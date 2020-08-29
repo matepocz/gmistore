@@ -1,5 +1,6 @@
 .login-wrapper {
   min-height: 83vh;
+  margin: 15px 0;
 }
 
 .box {
@@ -45,6 +46,7 @@
 
 .login-wrapper .mat-card {
   padding: 40px 70px 50px;
+
 }
 
 .login-wrapper .mat-stroked-button {
@@ -60,3 +62,5 @@
 .login-footer-text {
   margin-top: 10px !important;
 }
+
+

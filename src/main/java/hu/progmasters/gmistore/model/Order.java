@@ -1,6 +1,5 @@
 package hu.progmasters.gmistore.model;
 
-import hu.progmasters.gmistore.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,9 +22,9 @@ public class Order implements Serializable {
     @Column(name = "unique_id")
     private String uniqueId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private OrderStatus status;
+    @ManyToOne
+    @JoinColumn(name = "order_status", referencedColumnName = "id")
+    private LookupEntity status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_item", referencedColumnName = "id")

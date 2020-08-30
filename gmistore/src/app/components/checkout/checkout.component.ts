@@ -5,6 +5,7 @@ import {AuthService} from "../../service/auth-service";
 import {OrderService} from "../../service/order.service";
 import {Subscription} from "rxjs";
 import {CustomerDetailsModel} from "../../models/customer-details.model";
+import {CartModel} from "../../models/cart-model";
 
 @Component({
   selector: 'app-checkout',
@@ -17,6 +18,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   authenticatedUser: boolean;
 
+  cartDetails: CartModel;
   customerDetails: CustomerDetailsModel;
 
   detailsForm: FormGroup;
@@ -24,6 +26,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   billingAddressForm: FormGroup;
 
   customerDetailsSub: Subscription;
+  cartSub: Subscription;
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private authService: AuthService, private orderService: OrderService) {
@@ -102,13 +105,33 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       )
     }
 
-    this.loading = false;
+    this.cartSub = this.cartService.getCart().subscribe(
+      (response) => {
+        console.log(response);
+        this.cartDetails = response;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      },
+      () => {
+        this.loading = false;
+      }
+    );
+
+  }
+
+  copyShippingDetails() {
+
+  }
+
+  onSubmit() {
+    console.log(this.customerDetails);
   }
 
   ngOnDestroy() {
+    this.cartSub.unsubscribe();
     if (this.customerDetailsSub) {
       this.customerDetailsSub.unsubscribe();
     }
   }
-
 }

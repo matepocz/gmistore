@@ -42,7 +42,7 @@ public class OrderService {
         }
 
         if (user.getBillingAddress() != null) {
-            AddressDetails billingAddress = new AddressDetails(user.getShippingAddress());
+            AddressDetails billingAddress = new AddressDetails(user.getBillingAddress());
             customerDetails.setBillingAddress(billingAddress);
         } else {
             customerDetails.setBillingAddress(null);

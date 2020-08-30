@@ -6,6 +6,7 @@ import {OrderService} from "../../service/order.service";
 import {Subscription} from "rxjs";
 import {CustomerDetailsModel} from "../../models/customer-details.model";
 import {CartModel} from "../../models/cart-model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-checkout',
@@ -29,10 +30,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   cartSub: Subscription;
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
-              private authService: AuthService, private orderService: OrderService) {
+              private authService: AuthService, private orderService: OrderService,
+              private titleService: Title) {
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle("Kosár véglegesítése - GMI Store")
     this.authenticatedUser = this.authService.isAuthenticated();
 
     this.detailsForm = this.formBuilder.group({

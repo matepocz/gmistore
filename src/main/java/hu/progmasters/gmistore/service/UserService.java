@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UserService {
@@ -25,5 +27,10 @@ public class UserService {
                 user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList());
         return userDto;
+    }
+
+    public User getUserByUsername(String username) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
+        return userByUsername.orElse(null);
     }
 }

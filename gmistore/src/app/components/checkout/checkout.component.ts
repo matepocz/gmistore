@@ -1,32 +1,44 @@
-import {Component, OnInit} from '@angular/core';
-import {AddressModel} from "../../models/address-model";
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CartService} from "../../service/cart-service";
 import {AuthService} from "../../service/auth-service";
+import {OrderService} from "../../service/order.service";
+import {Subscription} from "rxjs";
+import {CustomerDetailsModel} from "../../models/customer-details.model";
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, OnDestroy {
 
   isLinear: true;
   loading: boolean = true;
   authenticatedUser: boolean;
 
-  shippingAddress: AddressModel;
-  billingAddress: AddressModel;
+  customerDetails: CustomerDetailsModel;
 
+  detailsForm: FormGroup;
   shippingAddressForm: FormGroup;
   billingAddressForm: FormGroup;
 
+  customerDetailsSub: Subscription;
+
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
-              private authService: AuthService) {
+              private authService: AuthService, private orderService: OrderService) {
   }
 
   ngOnInit(): void {
     this.authenticatedUser = this.authService.isAuthenticated();
+
+    this.detailsForm = this.formBuilder.group({
+      firstName: [null],
+      lastName: [null],
+      email: [null, Validators.compose([Validators.required, Validators.email])],
+      phoneNumber: [null]
+    });
+
     this.shippingAddressForm = this.formBuilder.group({
       id: [null],
       city: [null, Validators.required],
@@ -48,11 +60,55 @@ export class CheckoutComponent implements OnInit {
       country: [null],
       postcode: [null]
     });
-    if (this.authenticatedUser){
 
+    if (this.authenticatedUser) {
+      this.customerDetailsSub = this.orderService.getCustomerDetails().subscribe(
+        (response) => {
+          console.log(response);
+          this.customerDetails = response;
+        }, (error) => {
+          console.log(error);
+        },
+        () => {
+          this.detailsForm.patchValue({
+            firstName: this.customerDetails.firstName,
+            lastName: this.customerDetails.lastName,
+            email: this.customerDetails.email,
+            phoneNumber: this.customerDetails.phoneNumber
+          });
+
+          this.shippingAddressForm.patchValue({
+            id: this.customerDetails.shippingAddress.id,
+            city: this.customerDetails.shippingAddress.city,
+            street: this.customerDetails.shippingAddress.street,
+            number: this.customerDetails.shippingAddress.number,
+            floor: this.customerDetails.shippingAddress.floor,
+            door: this.customerDetails.shippingAddress.door,
+            country: this.customerDetails.shippingAddress.country,
+            postcode: this.customerDetails.shippingAddress.postcode
+          });
+
+          this.billingAddressForm.patchValue({
+            id: this.customerDetails.billingAddress.id,
+            city: this.customerDetails.billingAddress.city,
+            street: this.customerDetails.billingAddress.street,
+            number: this.customerDetails.billingAddress.number,
+            floor: this.customerDetails.billingAddress.floor,
+            door: this.customerDetails.billingAddress.door,
+            country: this.customerDetails.billingAddress.country,
+            postcode: this.customerDetails.billingAddress.postcode
+          });
+        }
+      )
     }
 
     this.loading = false;
+  }
+
+  ngOnDestroy() {
+    if (this.customerDetailsSub) {
+      this.customerDetailsSub.unsubscribe();
+    }
   }
 
 }

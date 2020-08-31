@@ -59,6 +59,7 @@ import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
 import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
 import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -127,6 +128,7 @@ import { AdminUserComponent } from './components/admin/admin-user/admin-user.com
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
+    ChartsModule,
 
   ],
   providers: [

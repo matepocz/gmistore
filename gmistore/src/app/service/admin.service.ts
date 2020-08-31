@@ -14,6 +14,6 @@ export class AdminService {
   }
 
   getUserRegistrationsCount(): Observable<UserRegistrationsCounterModel> {
-    return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl);
+    return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + "registered");
   }
 }

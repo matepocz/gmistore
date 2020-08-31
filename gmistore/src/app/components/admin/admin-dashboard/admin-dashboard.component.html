@@ -16,7 +16,9 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content title="Card 1" class="dashboard-card-content">
-          <div>Card Content Here</div>
+          <div class="chart-wrapper" *ngIf="isLoaded">
+            <canvas id="lineChart">{{chart}}</canvas>
+          </div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

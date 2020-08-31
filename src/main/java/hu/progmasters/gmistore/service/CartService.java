@@ -101,7 +101,7 @@ public class CartService {
         cart.setTotalPrice(cart.getItemsTotalPrice() + cart.getShippingMethod().getCost());
     }
 
-    private Cart getActualCart(HttpSession session) {
+    public Cart getActualCart(HttpSession session) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Optional<User> userByUsername = userRepository.findUserByUsername(authentication.getName());

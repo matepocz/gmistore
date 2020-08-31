@@ -17,4 +17,8 @@ export class OrderService {
   getCustomerDetails(): Observable<CustomerDetailsModel> {
     return this.httpClient.get<CustomerDetailsModel>(this.ordersUrl + '/customer-details');
   }
+
+  createOrder(data: CustomerDetailsModel): Observable<any> {
+    return this.httpClient.post(this.ordersUrl, data);
+  }
 }

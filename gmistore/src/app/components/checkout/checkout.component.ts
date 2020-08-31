@@ -7,6 +7,7 @@ import {Subscription} from "rxjs";
 import {CustomerDetailsModel} from "../../models/customer-details.model";
 import {CartModel} from "../../models/cart-model";
 import {Title} from "@angular/platform-browser";
+import {SideNavComponent} from "../side-nav/side-nav.component";
 
 @Component({
   selector: 'app-checkout',
@@ -28,10 +29,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   customerDetailsSub: Subscription;
   cartSub: Subscription;
+  createOrderSub: Subscription;
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private authService: AuthService, private orderService: OrderService,
-              private titleService: Title) {
+              private titleService: Title, private sideNav: SideNavComponent) {
   }
 
   ngOnInit(): void {
@@ -47,13 +49,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     this.shippingAddressForm = this.formBuilder.group({
       id: [null],
-      city: [null, Validators.required],
-      street: [null],
-      number: [null],
+      city: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])],
+      street: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])],
+      number: [null,
+        Validators.compose([Validators.required, Validators.min(1)])],
       floor: [null],
       door: [null],
-      country: [null],
-      postcode: [null]
+      country: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])],
+      postcode: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])]
     });
 
     this.billingAddressForm = this.formBuilder.group({
@@ -120,21 +127,52 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     );
-
   }
 
   copyShippingDetails() {
-
+    this.billingAddressForm.patchValue({
+      id: this.shippingAddressForm.get('id').value,
+      city: this.shippingAddressForm.get('city').value,
+      street: this.shippingAddressForm.get('street').value,
+      number: this.shippingAddressForm.get('number').value,
+      floor: this.shippingAddressForm.get('floor').value,
+      door: this.shippingAddressForm.get('door').value,
+      country: this.shippingAddressForm.get('country').value,
+      postcode: this.shippingAddressForm.get('postcode').value,
+    });
   }
 
   onSubmit() {
+    this.loading = true;
+    this.customerDetails.firstName = this.detailsForm.get('firstName').value;
+    this.customerDetails.lastName = this.detailsForm.get('lastName').value;
+    this.customerDetails.email = this.detailsForm.get('email').value;
+    this.customerDetails.phoneNumber = this.detailsForm.get('phoneNumber').value;
+    this.customerDetails.shippingAddress = this.shippingAddressForm.value;
+    this.customerDetails.billingAddress = this.billingAddressForm.value;
+
     console.log(this.customerDetails);
+    this.createOrderSub = this.orderService.createOrder(this.customerDetails).subscribe(
+      (response) => {
+        console.log(response);
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      },
+      () => {
+        this.sideNav.updateItemsInCart(0);
+        this.loading = false;
+      }
+    )
   }
 
   ngOnDestroy() {
     this.cartSub.unsubscribe();
     if (this.customerDetailsSub) {
       this.customerDetailsSub.unsubscribe();
+    }
+    if (this.createOrderSub) {
+      this.createOrderSub.unsubscribe();
     }
   }
 }

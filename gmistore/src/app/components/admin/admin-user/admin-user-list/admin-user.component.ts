@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
-import {AdminService} from "../../../service/admin.service";
-import {UserModel} from "../../../models/user-model";
+import {AdminService} from "../../../../service/admin.service";
+import {UserModel} from "../../../../models/user-model";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";

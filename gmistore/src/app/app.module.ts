@@ -58,7 +58,7 @@ import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.componen
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
 import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
-import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
+import { AdminUserComponent } from './components/admin/admin-user/admin-user-list/admin-user.component';
 import { ChartsModule } from 'ng2-charts';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";

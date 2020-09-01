@@ -47,14 +47,22 @@ import {StarRatingModule} from "angular-star-rating";
 import {AddProductReviewComponent} from './components/add-product-review/add-product-review.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {AdminNavComponent} from './components/admin/admin-nav/admin-nav.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatCarouselModule} from '@ngmodule/material-carousel';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatMenuModule} from "@angular/material/menu";
+import {MatGridListModule} from "@angular/material/grid-list";
 import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.component';
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
-import {MatGridListModule} from "@angular/material/grid-list";
+import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
+import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
+import { ChartsModule } from 'ng2-charts';
+import {MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -123,6 +131,10 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
+    ChartsModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
 
   ],
   providers: [

@@ -22,4 +22,8 @@ public class LookupService {
     public LookupEntity getPaymentMethodByKey(String key) {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PAYMENT_METHOD, key);
     }
+
+    public LookupEntity getOrderStatusByKey(String key) {
+        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key);
+    }
 }

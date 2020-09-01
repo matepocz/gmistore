@@ -224,6 +224,8 @@ public class CartService {
 
     public boolean canCheckout(HttpSession session) {
         Cart actualCart = getActualCart(session);
+        actualCart.setExpectedDeliveryDate(
+                shippingService.calculateExpectedShippingDate(actualCart.getShippingMethod()));
         Set<CartItem> cartItems = actualCart.getItems();
         if (cartItems.isEmpty()) {
             return false;

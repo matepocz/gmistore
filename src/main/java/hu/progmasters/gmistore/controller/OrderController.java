@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.OrderRequest;
 import hu.progmasters.gmistore.service.OrderService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createOrder(@RequestBody CustomerDetails customerDetails, HttpSession session) {
-        orderService.createOrder(customerDetails, session);
+    public ResponseEntity<Void> createOrder(@RequestBody OrderRequest orderRequest, HttpSession session) {
+        orderService.createOrder(orderRequest, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

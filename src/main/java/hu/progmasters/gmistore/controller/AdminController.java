@@ -1,9 +1,11 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.UserDto;
 import hu.progmasters.gmistore.dto.UserRegistrationDateDto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AdminService;
+import hu.progmasters.gmistore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     AdminService adminService;
+    UserService userService;
 
     @Autowired
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService,UserService userService) {
         this.adminService = adminService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -37,5 +41,11 @@ public class AdminController {
         Map<String, Integer> sortedUserRegistrationByDate = adminService.getSortedUserRegistrationByDate(Role.ROLE_USER);
         UserRegistrationDateDto userRegistrations = new UserRegistrationDateDto(sortedUserRegistrationByDate);
         return new ResponseEntity<>(userRegistrations, HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> userList = userService.getUserList();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 }

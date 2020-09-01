@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class UserService {
@@ -29,5 +32,11 @@ public class UserService {
                 user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList());
         return userDto;
+    }
+
+    public List<UserDto> getUserList(){
+        return userRepository.findAll().stream().map(user -> new UserDto(user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
+                user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
+                user.isActive(), user.getOrderList())).collect(Collectors.toList());
     }
 }

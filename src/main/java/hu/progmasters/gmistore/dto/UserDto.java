@@ -3,6 +3,7 @@ package hu.progmasters.gmistore.dto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.Address;
 import hu.progmasters.gmistore.model.Order;
+import hu.progmasters.gmistore.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

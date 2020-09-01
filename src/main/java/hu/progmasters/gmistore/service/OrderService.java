@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.OrderRequest;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
@@ -32,14 +33,16 @@ public class OrderService {
     private final UserService userService;
     private final CartService cartService;
     private final LookupService lookupService;
+    private final InventoryService inventoryService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService) {
+                        LookupService lookupService, InventoryService inventoryService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
         this.lookupService = lookupService;
+        this.inventoryService = inventoryService;
     }
 
     public CustomerDetails getCustomerDetails() {
@@ -81,7 +84,7 @@ public class OrderService {
         return customerDetails;
     }
 
-    public boolean createOrder(CustomerDetails customerDetails, HttpSession session) {
+    public boolean createOrder(OrderRequest orderRequest, HttpSession session) {
         Cart actualCart = cartService.getActualCart(session);
         if (actualCart.getItems().isEmpty()) {
             return false;
@@ -89,22 +92,45 @@ public class OrderService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User userByUsername = userService.getUserByUsername(username);
 
-        userByUsername.setPhoneNumber(customerDetails.getPhoneNumber());
-        updateCustomerAddresses(customerDetails, userByUsername);
+        userByUsername.setPhoneNumber(orderRequest.getPhoneNumber());
+        updateCustomerAddresses(orderRequest, userByUsername);
         Order order = setOrderDetails(actualCart, userByUsername);
+        order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
+        order.setStatus(lookupService.getOrderStatusByKey("CONFIRMED"));
         saveOrderItems(actualCart, order);
         orderRepository.save(order);
+        inventoryService.updateAvailableAndSoldQuantities(actualCart.getItems());
         cartService.deleteCart(actualCart.getId());
         LOGGER.info("New Order, unique id: {}, username: {}", order.getUniqueId(), userByUsername.getUsername());
         return true;
     }
 
-    private void updateCustomerAddresses(CustomerDetails customerDetails, User user) {
-        Address shippingAddress = mapAddressDetailsToAddress(customerDetails.getShippingAddress());
-        user.setShippingAddress(shippingAddress);
-        Address billingAddress = mapAddressDetailsToAddress(customerDetails.getBillingAddress());
-        user.setBillingAddress(billingAddress);
-        //TODO creates new instances?
+    private void updateCustomerAddresses(OrderRequest orderRequest, User user) {
+        Address shippingAddress = mapAddressDetailsToAddress(orderRequest.getShippingAddress());
+        if (user.getShippingAddress() != null) {
+            Address currentShippingAddress = user.getShippingAddress();
+            updateAddress(currentShippingAddress, shippingAddress);
+        } else {
+            user.setShippingAddress(shippingAddress);
+        }
+
+        Address billingAddress = mapAddressDetailsToAddress(orderRequest.getBillingAddress());
+        if (user.getBillingAddress() != null) {
+            Address currentBillingAddress = user.getBillingAddress();
+            updateAddress(currentBillingAddress, billingAddress);
+        } else {
+            user.setBillingAddress(billingAddress);
+        }
+    }
+
+    private void updateAddress(Address currentAddress, Address newAddress) {
+        currentAddress.setCity(newAddress.getCity());
+        currentAddress.setStreet(newAddress.getStreet());
+        currentAddress.setNumber(newAddress.getNumber());
+        currentAddress.setDoor(newAddress.getDoor());
+        currentAddress.setFloor(newAddress.getFloor());
+        currentAddress.setCountry(newAddress.getCountry());
+        currentAddress.setPostcode(newAddress.getPostcode());
     }
 
     private Address mapAddressDetailsToAddress(AddressDetails addressDetails) {
@@ -127,9 +153,6 @@ public class OrderService {
         order.setTotalPrice(actualCart.getTotalPrice());
         order.setUser(userByUsername);
         order.setUniqueId(generateUniqueId());
-
-        order.setPaymentMethod(lookupService.getPaymentMethodByKey("BANK_CARD"));
-        //TODO continue the work on Payment methods
         return order;
     }
 
@@ -152,7 +175,6 @@ public class OrderService {
                 .collect(Collectors.joining("", "GMI", String.valueOf(generateRandomDigits())));
         Optional<Order> order = orderRepository.findOrderByUniqueId(generatedId);
         return order.isPresent() ? generateUniqueId() : generatedId;
-        //TODO change the pattern of this unique ID?
     }
 
     private int generateRandomNumberForLetters() {

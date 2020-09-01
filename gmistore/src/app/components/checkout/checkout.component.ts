@@ -8,6 +8,7 @@ import {CustomerDetailsModel} from "../../models/customer-details.model";
 import {CartModel} from "../../models/cart-model";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
+import {OrderRequestModel} from "../../models/order-request.model";
 
 @Component({
   selector: 'app-checkout',
@@ -22,6 +23,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   cartDetails: CartModel;
   customerDetails: CustomerDetailsModel;
+  orderRequest: OrderRequestModel;
 
   detailsForm: FormGroup;
   shippingAddressForm: FormGroup;
@@ -144,15 +146,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.loading = true;
-    this.customerDetails.firstName = this.detailsForm.get('firstName').value;
-    this.customerDetails.lastName = this.detailsForm.get('lastName').value;
-    this.customerDetails.email = this.detailsForm.get('email').value;
-    this.customerDetails.phoneNumber = this.detailsForm.get('phoneNumber').value;
-    this.customerDetails.shippingAddress = this.shippingAddressForm.value;
-    this.customerDetails.billingAddress = this.billingAddressForm.value;
+    this.orderRequest = this.detailsForm.value;
+    this.orderRequest.shippingAddress = this.shippingAddressForm.value;
+    this.orderRequest.billingAddress = this.billingAddressForm.value;
+    this.orderRequest.paymentMethod = "BANK_CARD";
 
-    console.log(this.customerDetails);
-    this.createOrderSub = this.orderService.createOrder(this.customerDetails).subscribe(
+    this.createOrderSub = this.orderService.createOrder(this.orderRequest).subscribe(
       (response) => {
         console.log(response);
       }, (error) => {

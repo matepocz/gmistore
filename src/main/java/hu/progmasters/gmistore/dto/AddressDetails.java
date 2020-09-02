@@ -12,9 +12,9 @@ public class AddressDetails {
     private Long id;
     private String city;
     private String street;
-    private int number;
-    private int floor;
-    private int door;
+    private Integer number;
+    private Integer floor;
+    private Integer door;
     private String country;
     private String postcode;
 

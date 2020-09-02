@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final SessionRegistry sessionRegistry;
 
-    public UserService(UserRepository userRepository,SessionRegistry sessionRegistry) {
+    public UserService(UserRepository userRepository, SessionRegistry sessionRegistry) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
     }
@@ -30,7 +30,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
         UserDto userDto = new UserDto(
                 user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
-                user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
+                user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList());
         return userDto;
     }
@@ -38,10 +38,11 @@ public class UserService {
     public User getUserByUsername(String username) {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         return userByUsername.orElse(null);
+    }
 
-    public List<UserDto> getUserList(){
+    public List<UserDto> getUserList() {
         return userRepository.findAll().stream().map(user -> new UserDto(user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
-                user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
+                user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList())).collect(Collectors.toList());
     }
 }

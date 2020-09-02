@@ -15,11 +15,27 @@
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Vezetéknév</mat-label>
               <input matInput placeholder="" formControlName="lastName" required>
+              <mat-error *ngIf="detailsForm.get('lastName').invalid &&
+              !detailsForm.get('lastName').errors?.serverError">
+                Név túl rövid
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('lastName').errors?.serverError">
+                {{ detailsForm.get('lastName').errors?.serverError }}
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Keresztnév</mat-label>
               <input matInput placeholder="" formControlName="firstName" required>
+              <mat-error *ngIf="detailsForm.get('firstName').invalid &&
+              !detailsForm.get('firstName').errors?.serverError">
+                Név túl rövid
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('firstName').errors?.serverError">
+                {{ detailsForm.get('firstName').errors?.serverError }}
+              </mat-error>
             </mat-form-field>
           </div>
 
@@ -28,6 +44,14 @@
               <mat-label>Email</mat-label>
               <input matInput placeholder="" formControlName="email" required>
               <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="detailsForm.get('email').invalid &&
+              !detailsForm.get('email').errors?.serverError">
+                Érvénytelen email.
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('email').errors?.serverError">
+                {{ detailsForm.get('email').errors?.serverError }}
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">

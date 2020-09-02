@@ -18,6 +18,10 @@ export class UserService {
     return this.httpClient.get<UserModel>(this.apiUrl + 'user/my-account');
   }
 
+  getLoggedInUsers(): Observable<any> {
+    return this.httpClient.get(this.apiUrl + 'user/loggedUsers');
+  }
+
   storeLocalCart() {
 
   }

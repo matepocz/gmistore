@@ -4,6 +4,7 @@ import hu.progmasters.gmistore.security.JwtAuthenticationFilter;
 import hu.progmasters.gmistore.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,10 +16,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -58,10 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/products/inactive").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST,"/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
+                .antMatchers(HttpMethod.POST, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST,"/api/ratings**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/ratings**").authenticated()
                 .antMatchers("/api/products/added-by-user/**").authenticated()
                 .antMatchers("/api/user/my-account").authenticated()
                 .antMatchers("/**").permitAll()
@@ -70,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
                 .and().httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
     }
 
     @Bean
@@ -94,4 +99,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+    }
 }
+

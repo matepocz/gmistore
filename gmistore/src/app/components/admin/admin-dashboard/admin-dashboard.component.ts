@@ -1,33 +1,90 @@
-import { Component } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Chart} from "chart.js";
+import {AdminService} from "../../../service/admin.service";
+import {UserRegistrationsCounterModel} from "../../../models/UserRegistrationsCounterModel";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent {
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'Card 1', cols: 2, rows: 1 },
-          { title: 'Card 2', cols: 2, rows: 1 },
-          { title: 'Card 3', cols: 2, rows: 1 },
-          { title: 'Card 4', cols: 2, rows: 1 }
-        ];
+export class AdminDashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('lineChart') private chartRef;
+  chart: Chart;
+  chartData: UserRegistrationsCounterModel;
+  subscription: Subscription;
+
+  constructor(private adminService: AdminService) {
+  }
+
+  ngOnInit(): void {
+   this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
+      (data: UserRegistrationsCounterModel) => {
+        this.chartData = data;
+
+      }, error => { console.log(error)
+      },
+      () => {
+        this.chart = new Chart(this.chartRef.nativeElement, {
+          type: 'bar',
+          data: {
+            labels: this.chartData.dates,
+            datasets: [
+              {
+                borderWidth: 1,
+                data: this.chartData.size,
+                backgroundColor: this.barColors(),
+                borderColor: this.barBorderColors(),
+              }
+            ]
+          },
+          options: {
+            legend: {
+              display: false
+            },
+            scales: {
+              xAxes: [{
+                display: true
+              }],
+              yAxes: [{
+                display: true
+              }],
+            }
+          }
+        });
       }
+    )
+  }
 
-      return [
-        { title: 'Card 1', cols: 2, rows: 1 },
-        { title: 'Card 2', cols: 1, rows: 1 },
-        { title: 'Card 3', cols: 1, rows: 2 },
-        { title: 'Card 4', cols: 1, rows: 1 }
-      ];
-    })
-  );
+  barColors = () => {
+    let letters = '0123456789ABCDEF'.split('');
+    let color = '#E6'; //transparency 90%
+    let colors = [];
+    for (let j = 0; j < this.chartData.size.length; j++) {
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      colors.push(color)
+      color = '#E6';
+    }
+    console.log(colors);
+    return colors;
+  }
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  barBorderColors = () => {
+    let color = '#851a2a';
+    let colors = [];
+    for (let j = 0; j < this.chartData.size.length; j++) {
+      colors.push(color)
+    }
+    console.log(colors);
+    return colors;
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }

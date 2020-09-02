@@ -18,7 +18,7 @@ import {PrivacyComponent} from "./components/privacy/privacy.component";
 import {CookiesPrivacyComponent} from "./components/cookies-privacy/cookies-privacy.component";
 import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
-import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
+import {AdminUserComponent} from "./components/admin/admin-user/admin-user-list/admin-user.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 import {CheckoutComponent} from "./components/checkout/checkout.component";
 

@@ -1,47 +1,59 @@
 package hu.progmasters.gmistore.model;
 
-import hu.progmasters.gmistore.enums.OrderStatus;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "product_order")
+@Table(name = "orders")
 public class Order implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "generated_unique_id")
-    private String generatedUniqueId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private OrderStatus status;
-
-    @Column(name = "quantity", columnDefinition = "int default 0")
-    private Integer quantity;
-
-    @Column(name = "date")
-    private LocalDateTime date;
-
-    @Column(name = "delivery_date")
-    private LocalDateTime deliveryDate;
-
-    @OneToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
-    private List<Product> productList = new ArrayList<>();
+    @Column(name = "unique_id")
+    private String uniqueId;
 
     @ManyToOne
+    @JoinColumn(name = "order_status", referencedColumnName = "id")
+    private LookupEntity status;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_item", referencedColumnName = "id")
+    private Set<OrderItem> items;
+
+    @ManyToOne
+    @JoinColumn(name = "delivery_mode", referencedColumnName = "id")
+    private LookupEntity deliveryMode;
+
+    @ManyToOne
+    @JoinColumn(name = "payment_method", referencedColumnName = "id")
+    private LookupEntity paymentMethod;
+
+    @Column(name = "delivery_cost")
+    private Double deliveryCost;
+
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+    @Column(name = "ordered_at")
+    private LocalDateTime orderedAt;
+
+    @Column(name = "expected_delivery_date")
+    private LocalDateTime expectedDeliveryDate;
+
+    @Column(name = "delivered_at")
+    private LocalDateTime deliveredAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

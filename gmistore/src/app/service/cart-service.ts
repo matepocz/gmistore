@@ -63,4 +63,8 @@ export class CartService {
       {params}
     );
   }
+
+  canCheckout(): Observable<boolean> {
+    return this.httpClient.get<boolean>(this.cartUrl + '/can-checkout');
+  }
 }

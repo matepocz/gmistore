@@ -57,6 +57,13 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {GdprDialogComponent} from './components/gdpr-dialog/gdpr-dialog.component';
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {CookiesPrivacyComponent} from './components/cookies-privacy/cookies-privacy.component'
+import {MatGridListModule} from "@angular/material/grid-list";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
+import {AdminUserComponent} from "./components/admin/admin-user/admin-user.component";
+import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
+import {CheckoutComponent} from './components/checkout/checkout.component';
+import {MatStepperModule} from "@angular/material/stepper";
 import { AdminProductComponent } from './components/admin/admin-product/admin-product.component';
 import { AdminUserComponent } from './components/admin/admin-user/admin-user-list/admin-user.component';
 import { ChartsModule } from 'ng2-charts';
@@ -92,7 +99,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     AdminDashboardComponent,
     AdminNavComponent,
     AdminProductComponent,
-    AdminUserComponent
+    AdminUserComponent,
+    CheckoutComponent
   ],
 
   imports: [
@@ -131,6 +139,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     MatCarouselModule.forRoot(),
     MatDialogModule,
     MatMenuModule,
+    MatStepperModule,
     ChartsModule,
     MatTableModule,
     MatSortModule,

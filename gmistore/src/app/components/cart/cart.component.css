@@ -22,13 +22,3 @@
 .cart-product-text {
   margin-top: 10px;
 }
-
-.cart-divider {
-  margin-top: 7px !important;
-  border-top-color: #ffcf02;
-  margin-bottom: 7px !important;
-}
-
-.discounted-price{
-  color: red;
-}

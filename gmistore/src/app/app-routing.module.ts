@@ -20,6 +20,7 @@ import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-
 import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user-list/admin-user.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
+import {CheckoutComponent} from "./components/checkout/checkout.component";
 
 
 const routes: Routes = [
@@ -37,6 +38,7 @@ const routes: Routes = [
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'checkout', component: CheckoutComponent},
   {
     path: 'admin', component: AdminNavComponent,
     children: [

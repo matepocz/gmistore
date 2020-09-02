@@ -162,6 +162,25 @@
       </mat-step>
 
       <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
+        <ng-template fxFlex="100" matStepLabel>Fizetési mód</ng-template>
+        <div fxFlex="100" class="mt-15 mb-15">
+          <mat-radio-group aria-labelledby="payment-methods" class="payment-radio-group"
+                           fxLayout="column" fxLayoutGap="10px" [(ngModel)]="chosenPaymentMethod">
+            <mat-radio-button color="primary" *ngFor="let method of paymentMethods" [value]="method"
+                              class="delivery-radio-button" fxFlex="100">
+              {{ method.displayName | titlecase }}
+            </mat-radio-button>
+
+          </mat-radio-group>
+        </div>
+
+        <div class="mt-15" fxFlex="100">
+          <button mat-button matStepperPrevious>Vissza</button>
+          <button mat-button matStepperNext>Következő</button>
+        </div>
+      </mat-step>
+
+      <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
         <ng-template fxFlex="100" matStepLabel>Összegzés</ng-template>
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
@@ -209,7 +228,7 @@
             <mat-card-title><small>Fizetési mód</small></mat-card-title>
             <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
             <p>
-              Bankkártya
+              {{ chosenPaymentMethod.displayName }}
             </p>
           </mat-card>
 

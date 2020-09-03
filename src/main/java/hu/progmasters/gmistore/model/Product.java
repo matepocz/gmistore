@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hu.progmasters.gmistore.enums.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,6 +65,7 @@ public class Product implements Serializable {
     private Inventory inventory;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Rating> ratings;
 
     @Column(name = "average_rating", columnDefinition = "double default 0.0")

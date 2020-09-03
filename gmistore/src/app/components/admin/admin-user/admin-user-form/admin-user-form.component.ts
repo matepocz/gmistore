@@ -1,9 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {compareNumbers} from "@angular/compiler-cli/src/diagnostics/typescript_version";
+import {ActivatedRoute} from "@angular/router";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../../../service/user.service";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 
@@ -18,13 +16,18 @@ export class AdminUserFormComponent implements OnInit {
   user: UserModel;
   loaded: boolean = false;
 
-  user2 = {
-    "Asaa": "sad"
-  };
-
   constructor(private sharingService: SharingService, private fb: FormBuilder, private route: ActivatedRoute, private adminService: AdminService) {
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
+        city: [''],
+        street: [''],
+        number: [''],
+        floor: [''],
+        door: [''],
+        country: [''],
+        postcode: ['']
+      }),
+      billingAddress: this.fb.group({
         city: [''],
         street: [''],
         number: [''],

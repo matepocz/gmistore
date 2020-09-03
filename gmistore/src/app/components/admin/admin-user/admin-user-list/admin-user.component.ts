@@ -6,6 +6,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
+import {SharingService} from "../../../../service/sharing.service";
 
 @Component({
   selector: 'app-admin-user',
@@ -21,7 +22,9 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   userData: Array<UserModel>;
   dataSource: MatTableDataSource<UserModel>;
 
-  constructor(private adminService: AdminService,private router: Router) {
+  constructor(private adminService: AdminService,
+              private router: Router,
+              private sharingService: SharingService) {
   }
 
   ngOnInit(): void {
@@ -57,6 +60,10 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
   editUser(id:string) {
     // let chosenUserData = this.userData.filter(u => u.id == id);
+    // this.adminService.getAccount(+id).subscribe(
+    //   (user: UserModel) => this.sharingService.nextMessage(user),
+    //   err=> console.log(err),
+    //   () =>  this.router.navigate(['/admin/user/edit',id])
     this.router.navigate(['/admin/user/edit',id])
   }
 }

@@ -56,7 +56,7 @@
         </mat-card>-->
 
         <div fxFlex.gt-sm="45" fxLayoutGap="1%">
-        <app-shipping-address [userDataForm]="userForm"></app-shipping-address>
+        <app-shipping-address *ngIf="loaded" [userDataForm]="userForm" [userShipping]="user"></app-shipping-address>
         <app-billing-address [userDataForm]="userForm"> </app-billing-address>
         </div>
 

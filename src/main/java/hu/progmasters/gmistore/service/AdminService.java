@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.UserDto;
+import hu.progmasters.gmistore.dto.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
@@ -55,16 +56,8 @@ public class AdminService {
     }
 
     public List<User> getUserRegistrations(Role userRole) {
-        List<User> all = userRepository.findAll();
-        List<User> users = new ArrayList<>();
-        for (User user : all) {
-            for (Role role : user.getRoles()) {
-                if (role.equals(userRole)) {
-                    users.add(user);
-                }
-            }
-        }
-        return users;
+        List<User> users = this.userRepository.findAll();
+        return users.stream().filter(use -> use.getRoles().contains(userRole)).collect(Collectors.toList());
     }
 
 }

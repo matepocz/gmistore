@@ -16,12 +16,13 @@ export class AdminUserFormComponent implements OnInit {
   userForm: FormGroup;
   details: any[];
   user: UserModel;
+  loaded: boolean = false;
 
   user2 = {
-    "Asaa":"sad"
+    "Asaa": "sad"
   };
 
-  constructor(private sharingService: SharingService, private fb: FormBuilder,private route:ActivatedRoute,private adminService: AdminService) {
+  constructor(private sharingService: SharingService, private fb: FormBuilder, private route: ActivatedRoute, private adminService: AdminService) {
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
         city: [''],
@@ -60,7 +61,7 @@ export class AdminUserFormComponent implements OnInit {
 
   getUserDetails(id) {
     this.adminService.getAccount(id).subscribe(data => {
-      console.log(data)
+      console.log(data);
       this.user = data;
       this.sharingService.nextMessage(data);
 
@@ -74,8 +75,9 @@ export class AdminUserFormComponent implements OnInit {
         registered: this.getDate(data.registered),
         active: data.active,
       });
-
+      this.loaded = true;
     }, error => console.log(error))
+
   }
 
   getDate = (d: Date) => {
@@ -85,4 +87,5 @@ export class AdminUserFormComponent implements OnInit {
     let day = dt.getDay();
     return dty + "/" + dtm + "/" + day
   }
+
 }

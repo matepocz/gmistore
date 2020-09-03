@@ -15,6 +15,11 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByEmail(String email);
+
     Optional<User> findUserByUsername(String username);
+
+    @Query("select new hu.progmasters.gmistore.dto.UserRegistrationDTO( u.id,u.registered ) from User u join u.roles as r where r in :role")
+    List<UserRegistrationDTO> findByRolesIn(@Param("role") Role role);
+
 
 }

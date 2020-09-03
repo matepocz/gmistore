@@ -7,6 +7,11 @@ public class UserRegistrationDTO {
     private long id;
     private LocalDateTime registered;
 
+    public UserRegistrationDTO(long id, LocalDateTime registered) {
+        this.id = id;
+        this.registered = registered;
+    }
+
     public long getId() {
         return id;
     }

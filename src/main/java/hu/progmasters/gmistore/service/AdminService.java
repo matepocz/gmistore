@@ -42,9 +42,9 @@ public class AdminService {
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {
         Map<String, Integer> userDates = new HashMap<>();
-        List<User> sellerRegistrations = getUserRegistrations(userRole);
+        List<UserRegistrationDTO> sellerRegistrations = getUserRegistrations(userRole);
 
-        for (User sellerRegistration : sellerRegistrations) {
+        for (UserRegistrationDTO sellerRegistration : sellerRegistrations) {
             int year = sellerRegistration.getRegistered().getYear();
             int month = sellerRegistration.getRegistered().getMonthValue();
             int dayOfMonth = sellerRegistration.getRegistered().getDayOfMonth();
@@ -55,9 +55,9 @@ public class AdminService {
         return userDates;
     }
 
-    public List<User> getUserRegistrations(Role userRole) {
-        List<User> users = this.userRepository.findAll();
-        return users.stream().filter(use -> use.getRoles().contains(userRole)).collect(Collectors.toList());
+    public List<UserRegistrationDTO> getUserRegistrations(Role userRole) {
+        return this.userRepository.findByRolesIn(userRole);
+//                users.stream().filter(use -> use.getRoles().contains(userRole)).collect(Collectors.toList());
     }
 
 }

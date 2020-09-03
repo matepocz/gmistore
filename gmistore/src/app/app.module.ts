@@ -63,6 +63,9 @@ import { ChartsModule } from 'ng2-charts';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { AdminUserFormComponent } from './components/admin/admin-user/admin-user-form/admin-user-form.component';
+import { ShippingAddressComponent } from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
+import { BillingAddressComponent } from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +95,10 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     AdminDashboardComponent,
     AdminNavComponent,
     AdminProductComponent,
-    AdminUserComponent
+    AdminUserComponent,
+    AdminUserFormComponent,
+    ShippingAddressComponent,
+    BillingAddressComponent,
   ],
 
   imports: [

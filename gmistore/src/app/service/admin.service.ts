@@ -18,6 +18,10 @@ export class AdminService {
     return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + "registered");
   }
 
+  getAccount(id:number): Observable<UserModel> {
+    return this.httpClient.get<UserModel>(this.adminUrl + 'user/' + id);
+  }
+
   getUserList(): Observable<Array<UserModel>> {
     return this.httpClient.get<Array<UserModel>>(this.adminUrl + 'users');
   }

@@ -1,0 +1,70 @@
+<form [formGroup]="userForm">
+  <div fxLayoutAlign="center" [style.margin]="'2%'">
+    <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
+
+      <div fxFlex.gt-sm="90" fxLayoutGap="10px">
+
+        <mat-card fxFlex.gt-sm="55">
+          <mat-card-header>
+            <mat-card-title>Profile</mat-card-title>
+            <mat-card-subtitle>Details</mat-card-subtitle>
+          </mat-card-header>
+          <div fxLayout="column" fxLayoutGap="10px">
+
+            <div fxLayout="row" fxLayoutGap="2px">
+            <mat-form-field fxFlex appearance="outline" >
+              <mat-label>Keresztnév</mat-label>
+              <input matInput formControlName="firstName" >
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline" >
+              <mat-label>Vezetéknév</mat-label>
+              <input matInput readonly formControlName="lastName">
+            </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" >
+              <mat-label>Felhasználónév</mat-label>
+              <input matInput formControlName="username" disabled>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" >
+              <mat-label>E-mail</mat-label>
+              <input matInput formControlName="email" >
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Telefon</mat-label>
+              <input matInput formControlName="phoneNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Regisztrált</mat-label>
+              <input matInput formControlName="registered">
+            </mat-form-field>
+
+          </div>
+        </mat-card>
+
+       <!-- <mat-card>
+          <p *ngFor="let item of userForm.controls | keyvalue">
+            <mat-form-field appearance="outline" fxFlexFill>
+              <mat-label>Adat</mat-label>
+              <input *ngIf="item.key" matInput formControlName="{{item.key}}" disabled>
+            </mat-form-field>
+          </p>
+        </mat-card>-->
+
+        <div fxFlex.gt-sm="45" fxLayoutGap="1%">
+        <app-shipping-address [userDataForm]="userForm"></app-shipping-address>
+        <app-billing-address [userDataForm]="userForm"> </app-billing-address>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</form>
+
+

@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.UserDto;
+import hu.progmasters.gmistore.dto.UserIsActiveDto;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.security.core.session.SessionRegistry;
@@ -38,5 +39,11 @@ public class UserService {
         return userRepository.findAll().stream().map(user -> new UserDto(user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
                 user.getBillingAddress(),user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList())).collect(Collectors.toList());
+    }
+
+    public User getUserById(Long id) {
+        System.out.println(sessionRegistry.getAllPrincipals());
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 }

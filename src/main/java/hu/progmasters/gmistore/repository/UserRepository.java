@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByEmail(String email);
 
+    @Query("select u from User u where u.id = :id")
+    Optional<User> findUserById(@Param("id") Long id);
     Optional<User> findUserByUsername(String username);
 
     @Query("select new hu.progmasters.gmistore.dto.UserRegistrationDTO( u.id,u.registered ) from User u join u.roles as r where r in :role")

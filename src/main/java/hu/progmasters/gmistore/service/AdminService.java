@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.UserDto;
+import hu.progmasters.gmistore.dto.UserIsActiveDto;
 import hu.progmasters.gmistore.dto.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
@@ -9,20 +10,24 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class AdminService {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final SessionRegistry sessionRegistry;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository) {
+    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository,UserService userService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public UserDto getUserById(Long id) {
@@ -60,4 +65,8 @@ public class AdminService {
 //                users.stream().filter(use -> use.getRoles().contains(userRole)).collect(Collectors.toList());
     }
 
+    public void updateUserActivity(UserIsActiveDto userIsActive) {
+        User userById = userService.getUserById(userIsActive.getId());
+        userById.setActive(userIsActive.isActive());
+    }
 }

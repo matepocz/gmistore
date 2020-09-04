@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.UserDto;
+import hu.progmasters.gmistore.dto.UserIsActiveDto;
 import hu.progmasters.gmistore.dto.UserRegistrationDateDto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
@@ -9,10 +10,7 @@ import hu.progmasters.gmistore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +29,7 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("users/{id}")
     ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserDto user = adminService.getUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -54,5 +52,11 @@ public class AdminController {
     ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> userList = userService.getUserList();
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @PutMapping("users/active")
+    ResponseEntity<Void> setUserIsActive(@RequestBody UserIsActiveDto userIsActive) {
+        adminService.updateUserActivity(userIsActive);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

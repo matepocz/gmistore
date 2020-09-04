@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {AdminService} from "../../../../service/admin.service";
-import {UserModel} from "../../../../models/user-model";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
-import {SharingService} from "../../../../service/sharing.service";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
+import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
 
 @Component({
   selector: 'app-admin-user',
@@ -21,8 +20,8 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'username', 'email', 'roles', 'active', 'edit'];
   subscription: Subscription;
-  userData: Array<UserModel>;
-  dataSource: MatTableDataSource<UserModel>;
+  userData: Array<UserListDetailsModel>;
+  dataSource: MatTableDataSource<UserListDetailsModel>;
 
   constructor(private adminService: AdminService,
               private router: Router) {

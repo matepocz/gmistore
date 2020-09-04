@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
 import {ActivatedRoute} from "@angular/router";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
+import {RolesFormModel} from "../../../../models/rolesInitModel";
 
 @Component({
   selector: 'app-admin-user-form',
@@ -15,6 +16,7 @@ export class AdminUserFormComponent implements OnInit {
   details: any[];
   user: UserModel;
   loaded: boolean = false;
+  roleOptions: Array<RolesFormModel>;
 
   constructor(private sharingService: SharingService, private fb: FormBuilder, private route: ActivatedRoute, private adminService: AdminService) {
     this.userForm = this.fb.group({
@@ -42,7 +44,7 @@ export class AdminUserFormComponent implements OnInit {
       email: ['', Validators.required],
       phoneNumber: [''],
       registered: ['', Validators.required],
-      roles: new FormArray([], Validators.required),
+      roles: this.fb.array([], Validators.required),
       active: ['', Validators.required],
 
     })
@@ -63,6 +65,11 @@ export class AdminUserFormComponent implements OnInit {
   }
 
   getUserDetails(id) {
+    this.adminService.getInitRoles().subscribe(
+      data => {
+      this.roleOptions = data
+    })
+
     this.adminService.getAccount(id).subscribe(data => {
       console.log(data);
       this.user = data;
@@ -74,7 +81,7 @@ export class AdminUserFormComponent implements OnInit {
         lastName: data.lastName,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        roles: data.roles,
+        roles: this.createRolesFormArray(data.roles),
         registered: this.getDate(data.registered),
         active: data.active,
       });
@@ -91,4 +98,18 @@ export class AdminUserFormComponent implements OnInit {
     return dty + "/" + dtm + "/" + day
   }
 
+  private createRolesFormArray = (roles: Array<string>) => {
+    console.log(roles);
+    return this.roleOptions.map(
+      role => {
+        console.log(role.name);
+        return roles.includes(role.name);
+      });
+  }
+
+  private createRolesToSend(): string[] {
+    return this.userForm.value.roles
+      .map((role, index) => role ? this.roleOptions[index] : null)
+      .filter(weapon => weapon !== null);
+  }
 }

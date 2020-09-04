@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.repository;
 
+import hu.progmasters.gmistore.dto.UserListDetailDto;
 import hu.progmasters.gmistore.dto.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
@@ -23,5 +24,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select new hu.progmasters.gmistore.dto.UserRegistrationDTO( u.id,u.registered ) from User u join u.roles as r where r in :role")
     List<UserRegistrationDTO> findByRolesIn(@Param("role") Role role);
 
-
+    @Query("select u from User u")
+    List<User> findAllUsersWithListDetails();
 }

@@ -62,7 +62,6 @@ public class AdminService {
 
     public List<UserRegistrationDTO> getUserRegistrations(Role userRole) {
         return this.userRepository.findByRolesIn(userRole);
-//                users.stream().filter(use -> use.getRoles().contains(userRole)).collect(Collectors.toList());
     }
 
     public void updateUserActivity(UserIsActiveDto userIsActive) {

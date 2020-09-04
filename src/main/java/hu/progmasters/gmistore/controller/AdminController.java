@@ -1,8 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
-import hu.progmasters.gmistore.dto.UserDto;
-import hu.progmasters.gmistore.dto.UserIsActiveDto;
-import hu.progmasters.gmistore.dto.UserRegistrationDateDto;
+import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AdminService;
@@ -49,9 +47,15 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> userList = userService.getUserList();
+    ResponseEntity<List<UserListDetailDto>> getAllUsers() {
+        List<UserListDetailDto> userList = userService.getUserList();
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/roles")
+    ResponseEntity<List<RolesFormDto>> getRoles() {
+        List<RolesFormDto> roles = userService.getRoles();
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
     @PutMapping("users/active")

@@ -18,13 +18,13 @@ export class ShippingAddressComponent implements OnInit {
   ngOnInit() {
     this.userDataForm.patchValue({
       shippingAddress: {
-        city: this.userShipping.city,
-        street: this.userShipping.street,
-        number: this.userShipping.number,
-        floor: this.userShipping.floor,
-        door: this.userShipping.door,
-        country: this.userShipping.country,
-        postcode: this.userShipping.postcode
+        city: this.userShipping?.city,
+        street: this.userShipping?.street,
+        number: this.userShipping?.number,
+        floor: this.userShipping?.floor,
+        door: this.userShipping?.door,
+        country: this.userShipping?.country,
+        postcode: this.userShipping?.postcode
       },
     })
   }

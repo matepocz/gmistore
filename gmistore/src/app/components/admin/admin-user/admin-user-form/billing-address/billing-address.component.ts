@@ -16,13 +16,13 @@ export class BillingAddressComponent implements OnInit {
   ngOnInit(): void {
     this.userDataForm.patchValue({
       billingAddress: {
-        city: this.userBilling.city,
-        street: this.userBilling.street,
-        number: this.userBilling.number,
-        floor: this.userBilling.floor,
-        door: this.userBilling.door,
-        country: this.userBilling.country,
-        postcode: this.userBilling.postcode
+        city: this.userBilling?.city,
+        street: this.userBilling?.street,
+        number: this.userBilling?.number,
+        floor: this.userBilling?.floor,
+        door: this.userBilling?.door,
+        country: this.userBilling?.country,
+        postcode: this.userBilling?.postcode
       },
     })
   }

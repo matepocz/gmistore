@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.AuthenticationResponse;
 import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.enums.Role;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +71,7 @@ public class AuthService {
         user.setRegistered(LocalDateTime.now());
         List<Role> roles = user.getRoles();
         roles.add(Role.ROLE_USER);
-        if (registerRequest.getSeller()){
+        if (registerRequest.getSeller()) {
             roles.add(Role.ROLE_SELLER);
         }
         user.setActive(false);
@@ -120,21 +122,40 @@ public class AuthService {
      * Attempts to log in the user
      *
      * @param loginRequest A DTO containing username and password
-     * @return A JWT token
+     * @return A DTO, containing the username, the JWT token
      */
-    public String login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        return jwtProvider.generateToken(authenticate);
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(loginRequest.getUsername());
+        if (userByUsername.isPresent()) {
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
+            AuthenticationResponse response = new AuthenticationResponse();
+            response.setAuthenticationToken(jwtProvider.generateToken(authenticate));
+            response.setUsername(loginRequest.getUsername());
+            return response;
+        }
+        throw new UsernameNotFoundException("User not found!");
     }
 
+    /**
+     * Checks if the given username taken already
+     *
+     * @param username A username to check if it is already taken
+     * @return a boolean, true if the username already taken, false otherwise
+     */
     public boolean checkIfUsernameExists(String username) {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         return userByUsername.isPresent();
     }
 
+    /**
+     * Checks if the given email address taken already
+     *
+     * @param email An email address to check if it is already taken
+     * @return a boolean, true if the email address already taken, false otherwise
+     */
     public boolean checkIfEmailExists(String email) {
         Optional<User> userByEmail = userRepository.findUserByEmail(email);
         return userByEmail.isPresent();

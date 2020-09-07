@@ -31,6 +31,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   ratedByCurrentUser = false;
 
   authenticatedUser = this.authService.isAuthenticated();
+  currentUsername: string;
+  isAdmin: boolean = false;
+  isSeller: boolean = false;
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -53,6 +56,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   removeRatingSubscription: Subscription;
   ratingVoteSub: Subscription;
   reportSub: Subscription;
+  isAdminSub: Subscription;
+  isSellerSub: Subscription;
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
@@ -63,6 +68,19 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = true;
+    this.isAdminSub = this.authService.isAdmin.subscribe(
+      (response) => {
+        this.isAdmin = response;
+      }, error => console.log(error)
+    );
+
+    this.isSellerSub = this.authService.isSeller.subscribe(
+      (response) => {
+        this.isSeller = response;
+      }, error => console.log(error)
+    );
+
+    this.currentUsername = this.authService.currentUsername;
     this.slug = this.route.snapshot.params['slug'];
 
     this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
@@ -110,7 +128,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   addToCart(id: number) {
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
-      (response) => {
+      () => {
         this.openSnackBar("Termék a kosárba került!");
         this.sideNavComponent.updateItemsInCart(0);
       }, (error) => {
@@ -238,7 +256,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   reportRating(id: number) {
     this.reportSub = this.ratingService.reportRating(id).subscribe(
       (response) => {
-        if (response){
+        if (response) {
           this.openSnackBar("Jelentés sikeres!");
         }
       }, (error) => {
@@ -250,6 +268,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.productSubscription.unsubscribe();
+    this.isAdminSub.unsubscribe();
+    this.isSellerSub.unsubscribe();
     if (this.addToCartSubscription) {
       this.addToCartSubscription.unsubscribe();
     }
@@ -260,7 +280,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     if (this.ratingVoteSub) {
       this.ratingVoteSub.unsubscribe();
     }
-    if (this.reportSub){
+    if (this.reportSub) {
       this.reportSub.unsubscribe();
     }
   }

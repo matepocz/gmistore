@@ -22,10 +22,19 @@ public class LookupService {
         this.lookupRepository = lookupRepository;
     }
 
+    /**
+     * Fetch a payment method by it's key
+     * @param key The given key
+     * @return A LookupEntity
+     */
     public LookupEntity getPaymentMethodByKey(String key) {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PAYMENT_METHOD, key);
     }
 
+    /**
+     * Fetch all the payment methods
+     * @return A List of DTOs
+     */
     public List<PaymentMethodDetails> getPaymentMethods() {
         List<LookupEntity> paymentMethods = lookupRepository.findByDomainType(DomainType.PAYMENT_METHOD);
         return paymentMethods.stream()
@@ -34,6 +43,11 @@ public class LookupService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Fetch an order status by it's key
+     * @param key The given key
+     * @return A LookupEntity
+     */
     public LookupEntity getOrderStatusByKey(String key) {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key);
     }

@@ -45,6 +45,10 @@ public class OrderService {
         this.inventoryService = inventoryService;
     }
 
+    /**
+     * Attempts to fetch a registered user's details
+     * @return A CustomerDetails DTO
+     */
     public CustomerDetails getCustomerDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByUsername(authentication.getName());
@@ -84,6 +88,12 @@ public class OrderService {
         return customerDetails;
     }
 
+    /**
+     * Attempts to create a new Order
+     * @param orderRequest A DTO containing the required details
+     * @param session The actual session object
+     * @return A boolean, true if successful, false otherwise
+     */
     public boolean createOrder(OrderRequest orderRequest, HttpSession session) {
         Cart actualCart = cartService.getActualCart(session);
         if (actualCart.getItems().isEmpty()) {

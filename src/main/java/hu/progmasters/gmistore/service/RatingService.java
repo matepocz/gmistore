@@ -57,7 +57,7 @@ public class RatingService {
         String productSlug = newRatingRequest.getProduct();
         Optional<Product> productBySlug = productRepository.findProductBySlug(productSlug);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (productBySlug.isPresent() && authentication != null) {
+        if (productBySlug.isPresent() && !authentication.getName().equals("anonymousUser")) {
             Product actualProduct = productBySlug.get();
             Rating rating = new Rating();
             rating.setActive(true);
@@ -89,7 +89,7 @@ public class RatingService {
     public boolean removeRating(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<Rating> ratingById = ratingRepository.findById(id);
-        if (ratingById.isPresent() && authentication != null) {
+        if (ratingById.isPresent()) {
             if (authentication.getAuthorities().stream()
                     .noneMatch(authority -> Role.valueOf(authority.getAuthority()).equals(Role.ROLE_ADMIN))) {
                 LOGGER.info("Unauthorized delete request, rating id: {}, username: {}", id, authentication.getName());

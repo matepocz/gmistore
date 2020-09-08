@@ -4,12 +4,15 @@ import hu.progmasters.gmistore.dto.NewRatingRequest;
 import hu.progmasters.gmistore.dto.RatingDetails;
 import hu.progmasters.gmistore.dto.RatingInitData;
 import hu.progmasters.gmistore.service.RatingService;
+import hu.progmasters.gmistore.validator.RatingRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -18,10 +21,17 @@ import java.util.List;
 public class RatingController {
 
     private final RatingService ratingService;
+    private final RatingRequestValidator ratingRequestValidator;
 
     @Autowired
-    public RatingController(RatingService ratingService) {
+    public RatingController(RatingService ratingService, RatingRequestValidator ratingRequestValidator) {
         this.ratingService = ratingService;
+        this.ratingRequestValidator = ratingRequestValidator;
+    }
+
+    @InitBinder
+    public void bind(WebDataBinder binder) {
+        binder.addValidators(ratingRequestValidator);
     }
 
     @GetMapping("/{productSlug}")
@@ -40,7 +50,7 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewRating(@RequestBody NewRatingRequest newRatingRequest) {
+    public ResponseEntity<Void> createNewRating(@Valid @RequestBody NewRatingRequest newRatingRequest) {
         boolean result = ratingService.create(newRatingRequest);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :

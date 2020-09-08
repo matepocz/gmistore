@@ -1,0 +1,300 @@
+<div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
+  <mat-card class="mat-elevation-z4" fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100"
+            fxFlex.lg="80"
+            fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
+
+    <mat-card-title>Rendelés véglegesítése</mat-card-title>
+
+    <mat-vertical-stepper fxFlex="100" [linear]="isLinear" #stepper>
+      <mat-step [stepControl]="detailsForm">
+        <form [formGroup]="detailsForm" fxLayout="row wrap">
+          <ng-template matStepLabel fxFlex="100">Adataid:</ng-template>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Vezetéknév</mat-label>
+              <input matInput placeholder="" formControlName="lastName" required>
+              <mat-error *ngIf="detailsForm.get('lastName').invalid &&
+              !detailsForm.get('lastName').errors?.serverError">
+                Név túl rövid
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('lastName').errors?.serverError">
+                {{ detailsForm.get('lastName').errors?.serverError }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Keresztnév</mat-label>
+              <input matInput placeholder="" formControlName="firstName" required>
+              <mat-error *ngIf="detailsForm.get('firstName').invalid &&
+              !detailsForm.get('firstName').errors?.serverError">
+                Név túl rövid
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('firstName').errors?.serverError">
+                {{ detailsForm.get('firstName').errors?.serverError }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="" formControlName="email" required>
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="detailsForm.get('email').invalid &&
+              !detailsForm.get('email').errors?.serverError">
+                Érvénytelen email.
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('email').errors?.serverError">
+                {{ detailsForm.get('email').errors?.serverError }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Telefon</mat-label>
+              <input matInput placeholder="" formControlName="phoneNumber" required>
+              <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+
+            <div fxFlex="100">
+              <button mat-button matStepperNext>Következő</button>
+            </div>
+
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="shippingAddressForm">
+        <form [formGroup]="shippingAddressForm" fxLayout="row wrap">
+          <ng-template matStepLabel fxFlex="100">Szállítási cím</ng-template>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Város</mat-label>
+              <input matInput placeholder="" formControlName="city" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Utca/út</mat-label>
+              <input matInput placeholder="" formControlName="street" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Házszám</mat-label>
+              <input matInput placeholder="" formControlName="number" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Emelet</mat-label>
+              <input matInput placeholder="" formControlName="floor" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Ajtó</mat-label>
+              <input matInput placeholder="" formControlName="door" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Ország</mat-label>
+              <input matInput placeholder="" formControlName="country" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Irányítószám</mat-label>
+              <input matInput placeholder="" formControlName="postcode" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100">
+            <button mat-button matStepperPrevious>Vissza</button>
+            <button mat-button matStepperNext>Következő</button>
+          </div>
+
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="billingAddressForm">
+        <form [formGroup]="billingAddressForm" fxLayout="row wrap">
+          <ng-template matStepLabel>Számlázási cím</ng-template>
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <div fxFlex="100">
+              <button mat-flat-button color="primary" (click)="copyShippingDetails()">
+                Ugyanaz, mint a szállítási cím
+              </button>
+            </div>
+
+            <mat-form-field class="mt-15" fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Város</mat-label>
+              <input matInput placeholder="" formControlName="city" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Utca/út</mat-label>
+              <input matInput placeholder="" formControlName="street" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Házszám</mat-label>
+              <input matInput placeholder="" formControlName="number" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Emelet</mat-label>
+              <input matInput placeholder="" formControlName="floor" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Ajtó</mat-label>
+              <input matInput placeholder="" formControlName="door" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Ország</mat-label>
+              <input matInput placeholder="" formControlName="country" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+              <mat-label>Irányítószám</mat-label>
+              <input matInput placeholder="" formControlName="postcode" required>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100">
+            <button mat-button matStepperPrevious>Vissza</button>
+            <button mat-button matStepperNext>Következő</button>
+          </div>
+
+        </form>
+      </mat-step>
+
+      <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
+        <ng-template fxFlex="100" matStepLabel>Fizetési mód</ng-template>
+        <div fxFlex="100" class="mt-15 mb-15">
+          <mat-radio-group aria-labelledby="payment-methods" class="payment-radio-group"
+                           fxLayout="column" fxLayoutGap="10px" [(ngModel)]="chosenPaymentMethod">
+            <mat-radio-button color="primary" *ngFor="let method of paymentMethods" [value]="method"
+                              class="delivery-radio-button" fxFlex="100">
+              {{ method.displayName | titlecase }}
+            </mat-radio-button>
+
+          </mat-radio-group>
+        </div>
+
+        <div class="mt-15" fxFlex="100">
+          <button mat-button matStepperPrevious>Vissza</button>
+          <button mat-button matStepperNext>Következő</button>
+        </div>
+      </mat-step>
+
+      <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
+        <ng-template fxFlex="100" matStepLabel>Összegzés</ng-template>
+
+        <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
+          <mat-card fxFlex="32" fxFlex.lt-md="100" fxLayout="column">
+            <mat-card-title><small>Kiszállítás</small></mat-card-title>
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+            <mat-card-content>
+              <p>
+                {{ detailsForm.get('lastName').value}} {{ detailsForm.get('firstName').value}}
+              </p>
+
+              <p>
+                {{ shippingAddressForm.get('city').value}},
+                {{ shippingAddressForm.get('street').value}} út/utca ,
+                {{ shippingAddressForm.get('number').value}}
+              </p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card fxFlex="32" fxFlex.lt-md="100" fxLayout="column">
+            <mat-card-title><small>Számlázás</small></mat-card-title>
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+            <mat-card-content>
+              <p>
+                {{ detailsForm.get('lastName').value}} {{ detailsForm.get('firstName').value}}
+              </p>
+
+              <p>
+                {{ billingAddressForm.get('city').value}},
+                {{ billingAddressForm.get('street').value}} út/utca ,
+                {{ billingAddressForm.get('number').value}}
+              </p>
+
+              <p>
+                {{ detailsForm.get('email').value}}
+              </p>
+
+              <p>
+                {{ detailsForm.get('phoneNumber').value}}
+              </p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card fxFlex="32" fxFlex.lt-md="100">
+            <mat-card-title><small>Fizetési mód</small></mat-card-title>
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+            <p>
+              {{ chosenPaymentMethod.displayName }}
+            </p>
+          </mat-card>
+
+          <mat-card class="mt-15 mat-elevation-z2" fxFlex="100" fxLayout="column">
+            <mat-card-title><small>Termékek</small></mat-card-title>
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+
+            <mat-card-content *ngFor="let item of cartDetails.cartItems" fxFlex="100" fxLayout="row wrap"
+                              fxLayoutAlign="space-between">
+              <p fxFlex="65">
+                {{ item.count}} x {{ item.product.name}}
+              </p>
+
+              <span fxFlex="30" fxLayoutAlign="end">
+              {{ item.product.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
+            </span>
+
+              <div fxFlex="100">
+                <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+              </div>
+            </mat-card-content>
+
+            <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">
+              <mat-card-title>
+                Összesen:
+              </mat-card-title>
+
+              <span>
+              <strong>
+                {{ cartDetails.totalPrice | currency: 'HUF': 'symbol-narrow': '2.0'}}
+              </strong>
+            </span>
+            </div>
+          </mat-card>
+
+          <div fxFlex="100" class="mt-15">
+            <button mat-button matStepperPrevious>Vissza</button>
+            <button mat-button (click)="onSubmit()">Elfogadás / Fizetés</button>
+          </div>
+
+        </div>
+      </mat-step>
+    </mat-vertical-stepper>
+  </mat-card>
+</div>

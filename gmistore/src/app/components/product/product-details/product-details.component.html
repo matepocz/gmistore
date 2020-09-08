@@ -71,7 +71,7 @@
             Kedvencekhez
           </button>
 
-          <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+          <a *ngIf="isAdmin" mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
             <mat-icon>edit</mat-icon>
           </a>
         </mat-card-actions>
@@ -86,9 +86,9 @@
           Kedvencekhez
         </button>
 
-        <a mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+        <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
           <mat-icon>edit</mat-icon>
-        </a>
+        </button>
       </div>
     </div>
 
@@ -244,7 +244,7 @@
               Jelentés
             </button>
 
-            <button mat-button [color]="'warn'" type="button" (click)="removeRating(rating.id)">
+            <button *ngIf="isAdmin" mat-button [color]="'warn'" type="button" (click)="removeRating(rating.id)">
               <mat-icon>delete</mat-icon>
               Törlés
             </button>

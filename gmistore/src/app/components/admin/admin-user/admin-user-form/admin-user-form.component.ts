@@ -53,6 +53,7 @@ export class AdminUserFormComponent implements OnInit {
     })
   }
 
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(
       paramMap => {
@@ -92,9 +93,7 @@ export class AdminUserFormComponent implements OnInit {
         active: data.active,
       });
       this.loaded = true;
-    }, error => {
-      console.log(error)
-    })
+    }, error => console.log(error))
 
   }
 

@@ -16,13 +16,18 @@ export class SideNavComponent implements OnInit {
 
   private readonly _mobileQueryListener: () => void;
   opened: boolean = false;
-  authenticatedUser: boolean;
-
-  cartSubscription: Subscription;
-  itemsInCartSubscription: Subscription;
 
   itemsInCart: number = 0;
   favoriteItems: number = 0;
+
+  authenticatedUser: boolean;
+  isAdmin: boolean = false;
+  isSeller: boolean = false;
+
+  cartSubscription: Subscription;
+  itemsInCartSubscription: Subscription;
+  isAdminSub: Subscription;
+  isSellerSub: Subscription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -40,6 +45,21 @@ export class SideNavComponent implements OnInit {
 
   ngOnInit() {
     this.authenticatedUser = this.authService.isAuthenticated();
+    this.isAdminSub = this.authService.isAdmin.subscribe(
+      (response) => {
+        this.isAdmin = response;
+      }, (error) => {
+        console.log(error);
+      }
+    );
+
+    this.isSellerSub = this.authService.isSeller.subscribe(
+      (response) => {
+        this.isSeller = response;
+      }, (error) => {
+        console.log(error);
+      }
+    );
     this.updateItemsInCart(2);
   }
 
@@ -74,6 +94,8 @@ export class SideNavComponent implements OnInit {
   ngOnDestroy(): void {
     this.cartSubscription.unsubscribe();
     this.itemsInCartSubscription.unsubscribe();
+    this.isAdminSub.unsubscribe();
+    this.isSellerSub.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 }

@@ -1,129 +1,187 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.OrderDto;
+import hu.progmasters.gmistore.dto.AddressDetails;
+import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.OrderRequest;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
-import hu.progmasters.gmistore.enums.OrderStatus;
-import hu.progmasters.gmistore.model.Order;
-import hu.progmasters.gmistore.model.Product;
-import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional
 public class OrderService {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+
     private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final CartService cartService;
+    private final LookupService lookupService;
+    private final InventoryService inventoryService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
+                        LookupService lookupService, InventoryService inventoryService) {
         this.orderRepository = orderRepository;
+        this.userService = userService;
+        this.cartService = cartService;
+        this.lookupService = lookupService;
+        this.inventoryService = inventoryService;
     }
 
-    private String generateOrderUniqueId() {
-        EnglishAlphabet[] alphabet = EnglishAlphabet.values();
-        StringBuilder generatedId = new StringBuilder();
-        generatedId.append("GMI-");
-        for (int i = 0; i < 5; i++) {
-            generatedId.append(alphabet[generateRandomNumberForLetters()]);
+    public CustomerDetails getCustomerDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByUsername(authentication.getName());
+        if (user != null) {
+            LOGGER.debug("Customer details found! username: {}", authentication.getName());
+            return setValuesForCustomerDetails(user);
         }
-        generatedId.append("-");
-        generatedId.append(generateFiveDigitNumber());
-        Optional<Order> order = orderRepository.findOrdersByGeneratedUniqueId(generatedId.toString());
-        if (order.isEmpty()) {
-            return generatedId.toString();
+        LOGGER.info("Customer details not found! username: {}", authentication.getName());
+        return null;
+    }
+
+    private CustomerDetails setValuesForCustomerDetails(User user) {
+        CustomerDetails customerDetails = new CustomerDetails();
+        if (user.getShippingAddress() != null) {
+            AddressDetails shippingAddress = new AddressDetails(user.getShippingAddress());
+            customerDetails.setShippingAddress(shippingAddress);
         } else {
-            return generateOrderUniqueId();
+            customerDetails.setShippingAddress(null);
         }
+
+        if (user.getBillingAddress() != null) {
+            AddressDetails billingAddress = new AddressDetails(user.getBillingAddress());
+            customerDetails.setBillingAddress(billingAddress);
+        } else {
+            customerDetails.setBillingAddress(null);
+        }
+
+        if (user.getPhoneNumber() != null) {
+            customerDetails.setPhoneNumber(user.getPhoneNumber());
+        } else {
+            customerDetails.setPhoneNumber(null);
+        }
+
+        customerDetails.setFirstName(user.getFirstName());
+        customerDetails.setLastName(user.getLastName());
+        customerDetails.setEmail(user.getEmail());
+        return customerDetails;
+    }
+
+    public boolean createOrder(OrderRequest orderRequest, HttpSession session) {
+        Cart actualCart = cartService.getActualCart(session);
+        if (actualCart.getItems().isEmpty()) {
+            return false;
+        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User userByUsername = userService.getUserByUsername(username);
+
+        userByUsername.setPhoneNumber(orderRequest.getPhoneNumber());
+        updateCustomerAddresses(orderRequest, userByUsername);
+        Order order = setOrderDetails(actualCart, userByUsername);
+        order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
+        order.setStatus(lookupService.getOrderStatusByKey("CONFIRMED"));
+        saveOrderItems(actualCart, order);
+        orderRepository.save(order);
+        inventoryService.updateAvailableAndSoldQuantities(actualCart.getItems());
+        cartService.deleteCart(actualCart.getId());
+        LOGGER.info("New Order, unique id: {}, username: {}", order.getUniqueId(), userByUsername.getUsername());
+        return true;
+    }
+
+    private void updateCustomerAddresses(OrderRequest orderRequest, User user) {
+        Address shippingAddress = mapAddressDetailsToAddress(orderRequest.getShippingAddress());
+        if (user.getShippingAddress() != null) {
+            Address currentShippingAddress = user.getShippingAddress();
+            updateAddress(currentShippingAddress, shippingAddress);
+        } else {
+            user.setShippingAddress(shippingAddress);
+        }
+
+        Address billingAddress = mapAddressDetailsToAddress(orderRequest.getBillingAddress());
+        if (user.getBillingAddress() != null) {
+            Address currentBillingAddress = user.getBillingAddress();
+            updateAddress(currentBillingAddress, billingAddress);
+        } else {
+            user.setBillingAddress(billingAddress);
+        }
+    }
+
+    private void updateAddress(Address currentAddress, Address newAddress) {
+        currentAddress.setCity(newAddress.getCity());
+        currentAddress.setStreet(newAddress.getStreet());
+        currentAddress.setNumber(newAddress.getNumber());
+        currentAddress.setDoor(newAddress.getDoor());
+        currentAddress.setFloor(newAddress.getFloor());
+        currentAddress.setCountry(newAddress.getCountry());
+        currentAddress.setPostcode(newAddress.getPostcode());
+    }
+
+    private Address mapAddressDetailsToAddress(AddressDetails addressDetails) {
+        Address address = new Address();
+        address.setCity(addressDetails.getCity());
+        address.setStreet(addressDetails.getStreet());
+        address.setNumber(addressDetails.getNumber());
+        address.setDoor(addressDetails.getDoor());
+        address.setFloor(addressDetails.getFloor());
+        address.setCountry(addressDetails.getCountry());
+        address.setPostcode(addressDetails.getPostcode());
+        return address;
+    }
+
+    private Order setOrderDetails(Cart actualCart, User userByUsername) {
+        Order order = new Order();
+        order.setDeliveryCost(actualCart.getShippingMethod().getCost());
+        order.setExpectedDeliveryDate(actualCart.getExpectedDeliveryDate());
+        order.setOrderedAt(LocalDateTime.now());
+        order.setTotalPrice(actualCart.getTotalPrice());
+        order.setUser(userByUsername);
+        order.setUniqueId(generateUniqueId());
+        return order;
+    }
+
+    private void saveOrderItems(Cart actualCart, Order order) {
+        Set<OrderItem> orderItems = new HashSet<>();
+        for (CartItem item : actualCart.getItems()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(item.getProduct());
+            orderItem.setQuantity(item.getCount());
+            orderItem.setPrice(item.getProduct().getPrice());
+            orderItems.add(orderItem);
+        }
+        order.setItems(orderItems);
+    }
+
+    private String generateUniqueId() {
+        EnglishAlphabet[] alphabet = EnglishAlphabet.values();
+        String generatedId = IntStream.range(0, 6)
+                .mapToObj(i -> String.valueOf(alphabet[generateRandomNumberForLetters()]))
+                .collect(Collectors.joining("", "GMI", String.valueOf(generateRandomDigits())));
+        Optional<Order> order = orderRepository.findOrderByUniqueId(generatedId);
+        return order.isPresent() ? generateUniqueId() : generatedId;
     }
 
     private int generateRandomNumberForLetters() {
-        Random random = new Random();
-        return random.nextInt(EnglishAlphabet.values().length);
+        return new Random().nextInt(EnglishAlphabet.values().length);
     }
 
-    private int generateFiveDigitNumber() {
+    private int generateRandomDigits() {
         return ThreadLocalRandom.current().nextInt(100000, 1000000);
-    }
-
-    public List<OrderDto> getAllOrders() {
-        List<Order> allOrders = orderRepository.findAll();
-        return allOrders.stream().map(order -> mapOrderToOrderDto(order)).collect(Collectors.toList());
-    }
-
-    public OrderDto getOrderByGeneratedUniqueId(String generatedUniqueId) {
-        Optional<Order> optionalOrder = orderRepository.findOrdersByGeneratedUniqueId(generatedUniqueId);
-        if (optionalOrder.isPresent()) {
-            Order orderByGeneratedUniqueId = optionalOrder.get();
-            return mapOrderToOrderDto(orderByGeneratedUniqueId);
-        } else {
-            return null;
-        }
-    }
-
-    public void registerOrder(OrderDto orderDto) {
-        Order order = mapOrderDtoToOrder(orderDto);
-        orderRepository.save(order);
-    }
-
-    public void deleteOrderById(Long id) {
-        Optional<Order> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            orderRepository.deleteById(id);
-        }
-    }
-
-    public OrderDto setOrderDeliveryDateById(Long id, LocalDateTime deliveryDate, OrderDto orderDto) {
-        OrderDto updatedOrderDto = null;
-        Optional<Order> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            updateOrderValues(orderDto, order);
-            Order updatedOrder = orderRepository.save(order);
-            updatedOrderDto = mapOrderToOrderDto(updatedOrder);
-        }
-        return updatedOrderDto;
-    }
-
-    private void updateOrderValues(OrderDto orderDto, Order order) {
-        order.setGeneratedUniqueId(orderDto.getGeneratedUniqueId());
-        order.setStatus(OrderStatus.valueOf(orderDto.getStatus().toUpperCase()));
-        order.setQuantity(orderDto.getQuantity());
-        order.setDate(orderDto.getDate());
-        order.setDeliveryDate(orderDto.getDeliveryDate());
-        order.setProductList(orderDto.getProductList());
-        order.setUser(orderDto.getUser());
-    }
-
-    private OrderDto mapOrderToOrderDto(Order order) {
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(order.getId());
-        orderDto.setGeneratedUniqueId(order.getGeneratedUniqueId());
-        orderDto.setStatus(order.getStatus().getDisplayName());
-        orderDto.setQuantity(order.getQuantity());
-        orderDto.setDate(order.getDate());
-        orderDto.setDeliveryDate(order.getDeliveryDate());
-        orderDto.setProductList(order.getProductList());
-        orderDto.setUser(order.getUser());
-        return orderDto;
-    }
-
-    private Order mapOrderDtoToOrder(OrderDto orderDto) {
-        Order order = new Order();
-        order.setId(orderDto.getId());
-        order.setGeneratedUniqueId(orderDto.getGeneratedUniqueId());
-        order.setStatus(OrderStatus.valueOf(orderDto.getStatus().toUpperCase()));
-        order.setQuantity(orderDto.getQuantity());
-        order.setDate(orderDto.getDate());
-        order.setDeliveryDate(orderDto.getDeliveryDate());
-        order.setProductList(orderDto.getProductList());
-        order.setUser(orderDto.getUser());
-        return order;
     }
 }

@@ -1,4 +1,4 @@
-export interface RolesFormModel {
+export interface RolesInitModel {
   name: string;
   displayName: string;
 }

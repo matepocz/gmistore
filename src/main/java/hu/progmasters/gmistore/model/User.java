@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hu.progmasters.gmistore.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,5 +71,6 @@ public class User {
     private Cart cart;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Order> orderList;
 }

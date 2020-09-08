@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
 import {ActivatedRoute} from "@angular/router";
-import { FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
@@ -18,7 +18,10 @@ export class AdminUserFormComponent implements OnInit {
   loaded: boolean = false;
   roleOptions: Array<RolesInitModel>;
 
-  constructor(private sharingService: SharingService, private fb: FormBuilder, private route: ActivatedRoute, private adminService: AdminService) {
+  constructor(private sharingService: SharingService,
+              private fb: FormBuilder, private route: ActivatedRoute,
+              private adminService: AdminService) {
+
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
         city: [''],
@@ -64,6 +67,10 @@ export class AdminUserFormComponent implements OnInit {
 
   }
 
+  getRolesFormArray = () => {
+    return this.userForm.get("roles") as FormArray;
+  };
+
   getUserDetails(id) {
     this.adminService.getInitRoles().subscribe(
       data => {
@@ -99,10 +106,11 @@ export class AdminUserFormComponent implements OnInit {
   }
 
   private createRolesFormArray = (roles: Array<string>) => {
-    console.log(roles);
+    let tempRoll = this.getRolesFormArray();
+
     return this.roleOptions.map(
       role => {
-        console.log(role.name);
+        tempRoll.push(new FormControl(roles.includes(role.name)));
         return roles.includes(role.name);
       });
   }
@@ -110,6 +118,6 @@ export class AdminUserFormComponent implements OnInit {
   private createRolesToSend(): string[] {
     return this.userForm.value.roles
       .map((role, index) => role ? this.roleOptions[index] : null)
-      .filter(weapon => weapon !== null);
+      .filter(role => role !== null);
   }
 }

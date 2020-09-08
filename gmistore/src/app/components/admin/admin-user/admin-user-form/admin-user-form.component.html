@@ -44,20 +44,14 @@
             </mat-form-field>
 
           </div>
-          <mat-card>
-            <h2 class="example-h2">Roles selection</h2>
-            <section class="example-section">
-
-              <ul  formArrayName="roles" *ngFor="let role of roleOptions; let i = index">
-                <li>
-<!--                  <mat-checkbox [formControlName]="i" class="example-margin" [(ngModel)]="checked">Checked</mat-checkbox>-->
-                  <input type="checkbox" [formControlName]="i">
-                  {{ role.displayName }}
-                </li>
-
-              </ul>
-            </section>
-          </mat-card>
+          <h2 class="example-h2">Roles selection</h2>
+          <ul formArrayName="roles" *ngFor="let role of getRolesFormArray().controls; let i = index">
+            <li>
+              <mat-checkbox [formControlName]="i">
+                {{ roleOptions[i].displayName }}</mat-checkbox>
+            </li>
+          </ul>
+          <mat-divider></mat-divider>
         </mat-card>
 
         <!-- <mat-card>
@@ -69,15 +63,13 @@
            </p>
          </mat-card>-->
 
-        <div fxFlex.gt-sm="45" fxLayoutGap="10px">
+        <div fxFlex.gt-sm="45" fxLayout="column" fxLayoutGap="10px">
           <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"
                                 [userShipping]="user.shippingAddress"></app-shipping-address>
           <app-billing-address *ngIf="loaded" [userDataForm]="userForm"
                                [userBilling]="user.billingAddress"></app-billing-address>
         </div>
-
       </div>
-
 
     </div>
   </div>

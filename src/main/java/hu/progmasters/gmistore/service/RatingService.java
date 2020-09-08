@@ -67,6 +67,7 @@ public class RatingService {
             rating.setTitle(newRatingRequest.getTitle());
             rating.setPositiveComment(newRatingRequest.getPositiveComment());
             rating.setNegativeComment(newRatingRequest.getNegativeComment());
+            rating.setUpVotes(0);
             rating.setPictures(newRatingRequest.getPictures());
             rating.setReported(false);
             rating.setTimeStamp(LocalDateTime.now());
@@ -117,7 +118,9 @@ public class RatingService {
         Optional<Rating> ratingById = ratingRepository.findById(id);
         if (ratingById.isPresent() && ratingById.get().getVoters().contains(username)) {
             Rating rating = ratingById.get();
-            rating.setUpVotes(rating.getUpVotes() - 1);
+            if (rating.getUpVotes() > 0) {
+                rating.setUpVotes(rating.getUpVotes() - 1);
+            }
             rating.getVoters().remove(username);
             LOGGER.debug("Product rating upvote removed! rating id: {}, username: {}", id, username);
         }

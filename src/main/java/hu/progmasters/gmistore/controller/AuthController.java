@@ -79,8 +79,8 @@ public class AuthController {
         Collection<? extends GrantedAuthority> authorities =
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return !roles.isEmpty() ?
+        return !roles.contains("ROLE_ANONYMOUS") ?
                 new ResponseEntity<>(roles, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                new ResponseEntity<>(HttpStatus.OK);
     }
 }

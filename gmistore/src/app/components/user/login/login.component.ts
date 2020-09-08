@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {LoginRequestModel} from "../../../models/login-request-model";
 import {AuthService} from "../../../service/auth-service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   hide: boolean = true;
 
   constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder,
-              private sideNav: SideNavComponent) {
+              private sideNav: SideNavComponent, private route: ActivatedRoute) {
     this.loginForm = this.formBuilder.group({
       username: [null],
       password: [null]
@@ -38,9 +38,23 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authService.login(this.loginPayload).subscribe(
       (data) => {
         if (data) {
+
+          let returnUrl;
+          this.route.queryParams.subscribe(
+            (params) => {
+              console.log(params);
+              returnUrl = params['returnUrl'];
+            }, error => console.log(error)
+          );
+
           this.sideNav.setUserLoggedIn();
           this.sideNav.updateItemsInCart(0);
-          this.router.navigate(['/product-list']);
+
+          if (returnUrl) {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            this.router.navigate(['/product-list']);
+          }
         } else {
           this.loginForm.get('username').setErrors({badCredentials: true})
         }

@@ -53,8 +53,8 @@ export class AuthService {
       );
   }
 
-  private fetchCurrentUserRoles() {
-    this.getUserRoles().then(
+  private async fetchCurrentUserRoles() {
+    await this.getUserRoles().then(
       (response) => {
         this.currentUserRoles = new BehaviorSubject<Array<RoleModel>>(response);
         this.userRoles = this.currentUserRoles.asObservable();
@@ -75,10 +75,6 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.localStorageService.retrieve('username') != null;
-  }
-
-  public get getCurrentUserRoles(): Array<RoleModel> {
-    return this.currentUserRoles.value;
   }
 
   public get currentUsername(): string {

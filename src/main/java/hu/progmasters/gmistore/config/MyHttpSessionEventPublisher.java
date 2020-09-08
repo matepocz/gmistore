@@ -36,6 +36,7 @@ public class MyHttpSessionEventPublisher extends HttpSessionEventPublisher {
                 cartRepository.deleteById(cartId);
             }
         }
+        LOGGER.debug("Session destroyed: {}", event.getSession().getId());
         super.sessionDestroyed(event);
     }
 }

@@ -28,21 +28,39 @@ public class ShippingService {
         this.shippingMethodRepository = shippingMethodRepository;
     }
 
+    /**
+     * Fetch all the ShippingMethods
+     * @return A list of ShippingMethod DTOs
+     */
     public List<ShippingMethodItem> getShippingData() {
         List<ShippingMethod> shippingMethods = shippingMethodRepository.findAll();
         return shippingMethods.stream().map(ShippingMethodItem::new).collect(Collectors.toList());
     }
 
+    /**
+     * Fetch an initial ShippingMethod, used for newly created Carts
+     * @return A ShippingMethod object
+     */
     public ShippingMethod getInitialShippingMethod() {
         Optional<ShippingMethod> first = shippingMethodRepository.findAll().stream().findFirst();
         return first.orElse(null);
     }
 
+    /**
+     * Attempts to fetch a ShippingMethod by it's name as a String
+     * @param method The given method's name, as String
+     * @return If found a ShippingMethod object, null otherwise
+     */
     public ShippingMethod fetchShippingMethod(String method) {
         Optional<ShippingMethod> byMethod = shippingMethodRepository.findByMethod(method);
         return byMethod.orElse(null);
     }
 
+    /**
+     * Calculates an expected delivery date
+     * @param shippingMethod A ShippingMethod object
+     * @return A LocalDateTime object with the expected date
+     */
     public LocalDateTime calculateExpectedShippingDate(ShippingMethod shippingMethod) {
         LocalDateTime expectedDate = checkOrderDeadline();
         int addedDays = 0;

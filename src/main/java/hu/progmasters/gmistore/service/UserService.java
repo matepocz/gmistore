@@ -45,16 +45,14 @@ public class UserService {
         return allUsersWithListDetails.stream().map(UserListDetailDto::new)
                 .collect(Collectors.toList());
 
+
+    }
+
     public User getUserByUsername(String username) {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         return userByUsername.orElse(null);
     }
 
-    public List<UserDto> getUserList() {
-        return userRepository.findAll().stream().map(user -> new UserDto(user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
-                user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
-                user.isActive(), user.getOrderList())).collect(Collectors.toList());
-    }
 
     public User getUserById(Long id) {
         System.out.println(sessionRegistry.getAllPrincipals());

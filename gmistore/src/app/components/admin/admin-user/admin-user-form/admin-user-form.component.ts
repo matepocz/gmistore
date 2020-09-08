@@ -67,7 +67,7 @@ export class AdminUserFormComponent implements OnInit {
 
   }
 
-  getArray = () => {
+  getRolesFormArray = () => {
     return this.userForm.get("roles") as FormArray;
   };
 
@@ -107,11 +107,11 @@ export class AdminUserFormComponent implements OnInit {
 
   private createRolesFormArray = (roles: Array<string>) => {
     console.log(roles);
-    let tempRoll = this.getArray();
+    let tempRoll = this.getRolesFormArray();
     let arrayRoles =  this.roleOptions.map(
       role => {
         console.log(role.name);
-        tempRoll.push(new FormControl(roles.includes(role.name)))
+        tempRoll.push(new FormControl(roles.includes(role.name)));
         return roles.includes(role.name);
       });
     return arrayRoles;

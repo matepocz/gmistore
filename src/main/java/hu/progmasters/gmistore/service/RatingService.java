@@ -36,6 +36,11 @@ public class RatingService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * Fetch all active ratings for the given product
+     * @param productSlug The given product's unique ID
+     * @return A list of Rating DTOs
+     */
     public List<RatingDetails> getRatingsByProductSlug(String productSlug) {
         return ratingRepository.findAllByProductSlug(productSlug)
                 .stream()
@@ -44,6 +49,11 @@ public class RatingService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Fetch the product's name, wraps into a DTO
+     * @param productSlug The given product's unique ID
+     * @return A DTO
+     */
     public RatingInitData getInitData(String productSlug) {
         LOGGER.debug("Rating init data requested, slug: {}", productSlug);
         Optional<Product> productBySlug = productRepository.findProductBySlug(productSlug);
@@ -53,6 +63,11 @@ public class RatingService {
         return new RatingInitData(name);
     }
 
+    /**
+     * Creates a new Rating
+     * @param newRatingRequest A DTO containing the required details
+     * @return A boolean, true if successful, false otherwise
+     */
     public boolean create(NewRatingRequest newRatingRequest) {
         String productSlug = newRatingRequest.getProduct();
         Optional<Product> productBySlug = productRepository.findProductBySlug(productSlug);
@@ -87,6 +102,11 @@ public class RatingService {
         actualProduct.setAverageRating(averageRating);
     }
 
+    /**
+     * Set the given Rating's state to inactive
+     * @param id The given Rating's ID
+     * @return A boolean, true if successful, false otherwise
+     */
     public boolean removeRating(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<Rating> ratingById = ratingRepository.findById(id);
@@ -104,6 +124,11 @@ public class RatingService {
         return false;
     }
 
+    /**
+     * Increases the given Rating's vote counter by one.
+     * @param id The given Rating's ID
+     * @param username The actual user's username who up voted the Rating
+     */
     public void upVoteRating(Long id, String username) {
         Optional<Rating> ratingById = ratingRepository.findById(id);
         if (ratingById.isPresent() && !ratingById.get().getVoters().contains(username)) {
@@ -114,6 +139,11 @@ public class RatingService {
         }
     }
 
+    /**
+     * Decreases the given Rating's vote counter by one.
+     * @param id The given Rating's ID
+     * @param username The actual user's username who removed their up vote from this Rating
+     */
     public void removeUpVoteRating(Long id, String username) {
         Optional<Rating> ratingById = ratingRepository.findById(id);
         if (ratingById.isPresent() && ratingById.get().getVoters().contains(username)) {
@@ -126,6 +156,11 @@ public class RatingService {
         }
     }
 
+    /**
+     * Set a Rating's reported flag to true
+     * @param id The given Rating's ID
+     * @return A boolean, true if successful, false otherwise
+     */
     public boolean reportRating(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<Rating> ratingById = ratingRepository.findById(id);

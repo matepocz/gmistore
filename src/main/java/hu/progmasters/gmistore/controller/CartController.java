@@ -70,4 +70,10 @@ public class CartController {
         cartService.updateShippingMethod(method, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/can-checkout")
+    public ResponseEntity<Boolean> canCheckout(HttpSession session) {
+        boolean result = cartService.canCheckout(session);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -29,6 +30,7 @@ public class Rating implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JsonBackReference
     private Product product;
 
     @NotNull

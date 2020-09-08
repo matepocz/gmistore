@@ -1,6 +1,6 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
   <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.lg="80"
-       fxLayoutAlign="space-evenly start">
+       fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
     <div fxFlex.lt-md="100" fxFlex.gt-lg="60" fxFlex.lg="60">
       <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
         <mat-card-header>
@@ -77,7 +77,7 @@
               </div>
             </mat-card-actions>
           </div>
-          <mat-divider class="cart-divider" inset="true"
+          <mat-divider class="divider-primary-colored" inset="true"
                        *ngIf="cart.cartItems.indexOf(item) != cart.cartItems.length - 1"></mat-divider>
         </div>
       </mat-card>
@@ -92,7 +92,7 @@
         <mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="currentShipping"
                          fxLayout="column" fxLayoutGap="10px" [(ngModel)]="currentShipping.method"
                          (ngModelChange)="refreshSippingPrice()">
-          <mat-radio-button [color]="'accent'" *ngFor="let shipping of shippingData" [value]="shipping?.method"
+          <mat-radio-button color="primary" *ngFor="let shipping of shippingData" [value]="shipping?.method"
                             class="delivery-radio-button" fxFlex="100">
             {{ shipping.method | titlecase }} ({{ shipping.days }} munkanap)
             {{ shipping.cost | currency: 'HUF': 'symbol-narrow': '1.0'}}
@@ -100,7 +100,7 @@
 
         </mat-radio-group>
 
-        <mat-divider class="cart-divider" inset="true"></mat-divider>
+        <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
         <mat-card-subtitle [style.margin-top]="'10px'">Várható szállítás*:</mat-card-subtitle>
         <mat-card-content>{{cart?.expectedDeliveryDate | date: 'MMMM d EEEE'}}</mat-card-content>
         <mat-card-subtitle [style.margin-top]="'10px'">
@@ -120,7 +120,7 @@
         </mat-form-field>
 
         <mat-action-row>
-          <button mat-button materialElevation [color]="'primary'">
+          <button mat-flat-button materialElevation [color]="'primary'">
             <mat-icon>done</mat-icon>
             Küldés
           </button>
@@ -138,26 +138,26 @@
             <mat-card-title><small>Kosár összege:</small></mat-card-title>
             <div>{{ cart?.itemsTotalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</div>
           </div>
-          <mat-divider class="cart-divider" inset="true"></mat-divider>
+          <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-card-title><small>Szállítás összege:</small></mat-card-title>
             <div>{{ cart?.shippingMethod.cost | currency: 'HUF': 'symbol-narrow' : '1.0'}}</div>
           </div>
-          <mat-divider class="cart-divider" inset="true"></mat-divider>
+          <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-card-title><small>Végösszeg:</small></mat-card-title>
-            <mat-card-title>{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</mat-card-title>
+            <mat-card-title class="cart-product-text">{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</mat-card-title>
           </div>
         </mat-card-content>
 
         <mat-card-actions fxLayoutAlign="center" [style.margin-bottom]="'10px'">
-          <button mat-button materialElevation [color]="'primary'" type="button" class="btn btn-primary btn-block"
-                  [disabled]="loading">
+          <a mat-flat-button materialElevation [color]="'primary'" type="button" [disabled]="loading"
+          (click)="checkout()">
             <mat-icon>done</mat-icon>
             Véglegesítés
-          </button>
+          </a>
         </mat-card-actions>
       </mat-card>
     </div>

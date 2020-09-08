@@ -101,7 +101,7 @@ public class CartService {
         cart.setTotalPrice(cart.getItemsTotalPrice() + cart.getShippingMethod().getCost());
     }
 
-    private Cart getActualCart(HttpSession session) {
+    public Cart getActualCart(HttpSession session) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             Optional<User> userByUsername = userRepository.findUserByUsername(authentication.getName());
@@ -220,5 +220,22 @@ public class CartService {
     public int getNumberOfItemsInCart(HttpSession session) {
         Cart actualCart = getActualCart(session);
         return actualCart.getItems().size();
+    }
+
+    public boolean canCheckout(HttpSession session) {
+        Cart actualCart = getActualCart(session);
+        actualCart.setExpectedDeliveryDate(
+                shippingService.calculateExpectedShippingDate(actualCart.getShippingMethod()));
+        Set<CartItem> cartItems = actualCart.getItems();
+        if (cartItems.isEmpty()) {
+            return false;
+        }
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            if (product.getInventory().getQuantityAvailable() < cartItem.getCount()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

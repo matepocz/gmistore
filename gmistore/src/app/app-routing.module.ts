@@ -21,7 +21,9 @@ import {AdminProductComponent} from "./components/admin/admin-product/admin-prod
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user-list/admin-user.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 import {AdminUserFormComponent} from "./components/admin/admin-user/admin-user-form/admin-user-form.component";
-
+import {CheckoutComponent} from "./components/checkout/checkout.component";
+import {AuthGuard} from "./utils/auth.guard";
+import {RoleModel} from "./models/role.model";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -31,13 +33,24 @@ const routes: Routes = [
   {path: 'confirm-account', component: ConfirmAccountComponent},
   {path: 'user/my-account', component: UserProfileComponent},
   {path: 'user/edit', component: UserEditComponent},
-  {path: 'add-product', component: ProductFormComponent},
+  {
+    path: 'add-product',
+    component: ProductFormComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
   {path: 'product-list', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
-  {path: 'edit-product/:slug', component: ProductFormComponent},
+  {
+    path: 'edit-product/:slug',
+    component: ProductFormComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_ADMIN, RoleModel.ROLE_SELLER]}
+  },
   {path: 'add-review/:slug', component: AddProductReviewComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'checkout', component: CheckoutComponent},
   {
     path: 'admin', component: AdminNavComponent,
     children: [

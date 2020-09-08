@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +44,16 @@ public class UserService {
         List<User> allUsersWithListDetails = userRepository.findAllUsersWithListDetails();
         return allUsersWithListDetails.stream().map(UserListDetailDto::new)
                 .collect(Collectors.toList());
+
+    public User getUserByUsername(String username) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
+        return userByUsername.orElse(null);
+    }
+
+    public List<UserDto> getUserList() {
+        return userRepository.findAll().stream().map(user -> new UserDto(user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
+                user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
+                user.isActive(), user.getOrderList())).collect(Collectors.toList());
     }
 
     public User getUserById(Long id) {

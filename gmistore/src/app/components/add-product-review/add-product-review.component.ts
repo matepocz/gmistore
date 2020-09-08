@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ClickEvent} from "angular-star-rating";
 import {RatingService} from "../../service/rating.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {RatingInitDataModel} from "../../models/rating-init-data-model";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -31,18 +31,16 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   newRatingSubscription: Subscription;
 
   constructor(private ratingService: RatingService, private activatedRoute: ActivatedRoute,
-              private formBuilder: FormBuilder, private snackBar: MatSnackBar) {
+              private formBuilder: FormBuilder, private snackBar: MatSnackBar,
+              private router: Router) {
   }
 
   ngOnInit(): void {
     this.activatedRouteSubscription = this.activatedRoute.paramMap.subscribe(
       (params) => {
         this.slug = params.get('slug');
-        console.log(this.slug);
-
         this.initDataSubscription = this.ratingService.getInitData(this.slug).subscribe(
           (response: RatingInitDataModel) => {
-            console.log(response);
             this.product = response;
           }, (error) => {
             console.log(error);
@@ -77,9 +75,10 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
     this.newRatingSubscription = this.ratingService.addNewRating(this.ratingData).subscribe(
       () => {},
       (error: HttpErrorResponse) => {
-        this.openSnackBar('Valami hiba történt!');
+        this.openSnackBar('Valami hiba történt! Mindent kitöltöttél?');
       },
       () => {
+        this.router.navigate(['/product', this.slug]);
       }
     );
   }

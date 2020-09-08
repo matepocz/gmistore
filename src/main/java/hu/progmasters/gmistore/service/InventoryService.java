@@ -21,16 +21,30 @@ public class InventoryService {
         this.inventoryRepository = inventoryRepository;
     }
 
+    /**
+     * Creates an Inventory object for the given Product with the given product count
+     * @param product The actual Product object
+     * @param quantityAvailable The given product count
+     */
     public void saveInventory(Product product, int quantityAvailable) {
         Inventory inventory = new Inventory(product, quantityAvailable);
         inventoryRepository.save(inventory);
     }
 
+    /**
+     * Attempts to find an Inventory object by a given Product object
+     * @param product The actual Product object
+     * @return An Inventory object if successful, null otherwise
+     */
     public Inventory findInventoryByProduct(Product product) {
         Optional<Inventory> inventoryByProduct = inventoryRepository.findByProduct(product);
         return inventoryByProduct.orElse(null);
     }
 
+    /**
+     * Updates the available and sold quantities for a List of Products
+     * @param items A Set of CartItems
+     */
     public void updateAvailableAndSoldQuantities(Set<CartItem> items) {
         for (CartItem item : items) {
             Inventory inventoryByProduct = findInventoryByProduct(item.getProduct());

@@ -39,6 +39,11 @@ public class CartService {
         this.shippingService = shippingService;
     }
 
+    /**
+     * Converts an actual Cart object to DTO
+     * @param session The actual session object
+     * @return A CartDto containing the required details
+     */
     public CartDto getCart(HttpSession session) {
         Cart actualCart = getActualCart(session);
         CartDto cartDto = new CartDto();
@@ -53,6 +58,13 @@ public class CartService {
         return cartDto;
     }
 
+    /**
+     * Attempts to place a product into a user's cart
+     * @param id The given Product's unique ID
+     * @param count The count of the given product
+     * @param session The actual session object
+     * @return A boolean, true if successful, false otherwise
+     */
     public boolean addProduct(Long id, int count, HttpSession session) {
         Cart actualCart = getActualCart(session);
         Optional<Product> productById = productRepository.findProductById(id);
@@ -101,6 +113,12 @@ public class CartService {
         cart.setTotalPrice(cart.getItemsTotalPrice() + cart.getShippingMethod().getCost());
     }
 
+    /**
+     * Fetch a Cart object for the actual user. If a user is authenticated the cart is "attached" to the user,
+     * else the cart's unique ID is stored in the currently active session object.
+     * @param session The actual session object
+     * @return A Cart object
+     */
     public Cart getActualCart(HttpSession session) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
@@ -137,6 +155,7 @@ public class CartService {
         session.setAttribute("cart", actualCart.getId());
         return actualCart;
     }
+
 
     private void mergeCarts(Long cartIdFromSession, Cart usersCart) {
         Optional<Cart> cartById = cartRepository.findById(cartIdFromSession);
@@ -178,6 +197,13 @@ public class CartService {
         actualCart.setShippingMethod(shippingMethod);
     }
 
+    /**
+     * Attempts to update the given Product's counter in the actual Cart.
+     * @param id The given Product's unique ID
+     * @param count The desired product count
+     * @param session The actual session object
+     * @return The actual Cart object
+     */
     public Cart updateProductCount(Long id, int count, HttpSession session) {
         Cart actualCart = getActualCart(session);
         Set<CartItem> items = actualCart.getItems();
@@ -196,6 +222,11 @@ public class CartService {
         return actualCart;
     }
 
+    /**
+     * Removes a Product (CartItem with the details) and re-calculates the Cart's total price.
+     * @param id The given CartItem's unique ID
+     * @param session The actual session object
+     */
     public void removeCartItem(Long id, HttpSession session) {
         Cart actualCart = getActualCart(session);
         actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
@@ -204,10 +235,19 @@ public class CartService {
         LOGGER.debug("Cart item removed from cart, id: {}", actualCart.getId());
     }
 
+    /**
+     * Remove a Cart from the database
+     * @param id The given Cart's unique ID
+     */
     public void deleteCart(Long id) {
         cartRepository.findById(id).ifPresent(cartRepository::delete);
     }
 
+    /**
+     * Attempts to update the Cart's shipping method
+     * @param method The required shipping method as a String
+     * @param session The current session object
+     */
     public void updateShippingMethod(String method, HttpSession session) {
         Cart actualCart = getActualCart(session);
         ShippingMethod shippingMethod = shippingService.fetchShippingMethod(method);
@@ -218,11 +258,21 @@ public class CartService {
         }
     }
 
+    /**
+     * Fetch the number of items in the user's cart
+     * @param session The actual session object
+     * @return int
+     */
     public int getNumberOfItemsInCart(HttpSession session) {
         Cart actualCart = getActualCart(session);
         return actualCart.getItems().size();
     }
 
+    /**
+     * Checks whether the user can checkout their current Cart
+     * @param session The actual session object
+     * @return A boolean, true if possible to checkout, false otherwise
+     */
     public boolean canCheckout(HttpSession session) {
         Cart actualCart = getActualCart(session);
         actualCart.setExpectedDeliveryDate(

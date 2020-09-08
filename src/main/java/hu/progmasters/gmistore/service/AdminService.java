@@ -1,28 +1,39 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.UserDto;
+import hu.progmasters.gmistore.dto.UserIsActiveDto;
+import hu.progmasters.gmistore.dto.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class AdminService {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final SessionRegistry sessionRegistry;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository) {
+    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository,UserService userService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
+        this.userService = userService;
+    }
+
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalIdentifierException("No such ID exits."));
+        return new UserDto(user);
     }
 
     public List<String> getUsersFromSessionRegistry() {
@@ -36,9 +47,9 @@ public class AdminService {
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {
         Map<String, Integer> userDates = new HashMap<>();
-        List<User> sellerRegistrations = getUserRegistrations(userRole);
+        List<UserRegistrationDTO> sellerRegistrations = getUserRegistrations(userRole);
 
-        for (User sellerRegistration : sellerRegistrations) {
+        for (UserRegistrationDTO sellerRegistration : sellerRegistrations) {
             int year = sellerRegistration.getRegistered().getYear();
             int month = sellerRegistration.getRegistered().getMonthValue();
             int dayOfMonth = sellerRegistration.getRegistered().getDayOfMonth();
@@ -49,17 +60,12 @@ public class AdminService {
         return userDates;
     }
 
-        public List<User> getUserRegistrations (Role userRole){
-            List<User> all = userRepository.findAll();
-            List<User> users = new ArrayList<>();
-            for (User user : all) {
-                for (Role role : user.getRoles()) {
-                    if (role.equals(userRole)) {
-                        users.add(user);
-                    }
-                }
-            }
-            return users;
-        }
-
+    public List<UserRegistrationDTO> getUserRegistrations(Role userRole) {
+        return this.userRepository.findByRolesIn(userRole);
     }
+
+    public void updateUserActivity(UserIsActiveDto userIsActive) {
+        User userById = userService.getUserById(userIsActive.getId());
+        userById.setActive(userIsActive.isActive());
+    }
+}

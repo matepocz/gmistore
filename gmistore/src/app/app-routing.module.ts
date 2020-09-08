@@ -20,10 +20,10 @@ import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-
 import {AdminProductComponent} from "./components/admin/admin-product/admin-product.component";
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user-list/admin-user.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
+import {AdminUserFormComponent} from "./components/admin/admin-user/admin-user-form/admin-user-form.component";
 import {CheckoutComponent} from "./components/checkout/checkout.component";
 import {AuthGuard} from "./utils/auth.guard";
 import {RoleModel} from "./models/role.model";
-
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -57,6 +57,7 @@ const routes: Routes = [
       {path: 'dashboard', component: AdminDashboardComponent},
       {path: 'product', component: AdminProductComponent},
       {path: 'user', component: AdminUserComponent},
+      {path: 'user/edit/:id', component: AdminUserFormComponent},
     ]
   },
   {path: 'not-found', component: NotFoundComponent,},

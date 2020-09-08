@@ -9,6 +9,7 @@
         <a mat-list-item [routerLink]="'/product-list'">Termékek</a>
         <a mat-list-item href="#" *ngIf="authenticatedUser">Kedvencek</a>
         <a mat-list-item [routerLink]="['/user/my-account']" *ngIf="authenticatedUser">Profil</a>
+        <a mat-list-item [routerLink]="['/add-product']" *ngIf="isAdmin || isSeller">Új termék</a>
         <mat-divider class="divider-primary-colored" *ngIf="authenticatedUser"></mat-divider>
         <a mat-list-item (click)="logout()" *ngIf="authenticatedUser">Kijelentkezés</a>
       </mat-nav-list>
@@ -36,6 +37,10 @@
 
             <a mat-menu-item [routerLink]="['/user/my-account']">
               <span>Profilom</span>
+            </a>
+
+            <a mat-menu-item *ngIf="isAdmin || isSeller" [routerLink]="['/add-product']">
+              <span>Új termék</span>
             </a>
 
             <a mat-menu-item (click)="logout()">

@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
-import {RolesFormModel} from "../../../../models/rolesInitModel";
+import {RolesInitModel} from "../../../../models/rolesInitModel";
 
 @Component({
   selector: 'app-admin-user-form',
@@ -16,7 +16,7 @@ export class AdminUserFormComponent implements OnInit {
   details: any[];
   user: UserModel;
   loaded: boolean = false;
-  roleOptions: Array<RolesFormModel> = [{name: 'teszt1', displayName: 'disp1'}];
+  roleOptions: Array<RolesInitModel>;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
 import {ActivatedRoute} from "@angular/router";
-import { FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesFormModel} from "../../../../models/rolesInitModel";
@@ -16,9 +16,12 @@ export class AdminUserFormComponent implements OnInit {
   details: any[];
   user: UserModel;
   loaded: boolean = false;
-  roleOptions: Array<RolesFormModel>;
+  roleOptions: Array<RolesFormModel> = [{name: 'teszt1', displayName: 'disp1'}];
 
-  constructor(private sharingService: SharingService, private fb: FormBuilder, private route: ActivatedRoute, private adminService: AdminService) {
+  constructor(private sharingService: SharingService,
+              private fb: FormBuilder, private route: ActivatedRoute,
+              private adminService: AdminService) {
+
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
         city: [''],
@@ -50,7 +53,6 @@ export class AdminUserFormComponent implements OnInit {
     })
   }
 
-
   ngOnInit(): void {
     this.route.paramMap.subscribe(
       paramMap => {
@@ -64,11 +66,15 @@ export class AdminUserFormComponent implements OnInit {
 
   }
 
+  getArray = () => {
+    return this.userForm.get("roles") as FormArray;
+  };
+
   getUserDetails(id) {
     this.adminService.getInitRoles().subscribe(
       data => {
       this.roleOptions = data
-    })
+    });
 
     this.adminService.getAccount(id).subscribe(data => {
       console.log(data);
@@ -86,7 +92,9 @@ export class AdminUserFormComponent implements OnInit {
         active: data.active,
       });
       this.loaded = true;
-    }, error => console.log(error))
+    }, error => {
+      console.log(error)
+    })
 
   }
 
@@ -96,16 +104,19 @@ export class AdminUserFormComponent implements OnInit {
     let dty = dt.getFullYear();
     let day = dt.getDay();
     return dty + "/" + dtm + "/" + day
-  }
+  };
 
   private createRolesFormArray = (roles: Array<string>) => {
     console.log(roles);
-    return this.roleOptions.map(
+    let tempRoll = this.getArray();
+    let arrayRoles =  this.roleOptions.map(
       role => {
         console.log(role.name);
+        tempRoll.push(new FormControl(roles.includes(role.name)))
         return roles.includes(role.name);
       });
-  }
+    return arrayRoles;
+  };
 
   private createRolesToSend(): string[] {
     return this.userForm.value.roles

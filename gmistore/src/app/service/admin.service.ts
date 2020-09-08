@@ -6,7 +6,7 @@ import {UserRegistrationsCounterModel} from "../models/UserRegistrationsCounterM
 import {UserModel} from "../models/user-model";
 import {UserIsActiveModel} from "../models/userIsActiveModel";
 import {UserListDetailsModel} from "../models/UserListDetailsModel";
-import {RolesInitModel} from "../models/rolesInitModel";
+import {RolesFormModel} from "../models/rolesInitModel";
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class AdminService {
     return this.httpClient.put(this.adminUrl + 'users/active',userIsActiveData);
   }
 
-  getInitRoles():Observable<RolesInitModel[]>  {
-    return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
+  getInitRoles():Observable<RolesFormModel[]>  {
+    return this.httpClient.get<Array<RolesFormModel>>(this.adminUrl + 'users/roles');
   }
 }

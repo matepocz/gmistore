@@ -48,11 +48,11 @@
             <h2 class="example-h2">Roles selection</h2>
             <section class="example-section">
 
-              <ul  formArrayName="roles" *ngFor="let role of roleOptions; let i = index">
+              <ul formArrayName="roles" *ngFor="let role of getArray().controls; let i = index">
                 <li>
 <!--                  <mat-checkbox [formControlName]="i" class="example-margin" [(ngModel)]="checked">Checked</mat-checkbox>-->
                   <input type="checkbox" [formControlName]="i">
-                  {{ role.displayName }}
+                  {{ roleOptions[i].displayName }}
                 </li>
 
               </ul>

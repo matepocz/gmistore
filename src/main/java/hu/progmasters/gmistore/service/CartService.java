@@ -167,6 +167,7 @@ public class CartService {
         setInitialShippingMethod(cart);
         cart.setItemsTotalPrice(0.0);
         cart.setTotalPrice(0.0);
+        cart.setExpectedDeliveryDate(shippingService.calculateExpectedShippingDate(cart.getShippingMethod()));
         cart = cartRepository.save(cart);
         LOGGER.debug("Cart created!");
         return cart;

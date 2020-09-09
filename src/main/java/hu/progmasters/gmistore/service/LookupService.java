@@ -53,6 +53,10 @@ public class LookupService {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key);
     }
 
+    /**
+     * Fetch all active main product categories
+     * @return A list of MainProductCategoryDetails
+     */
     public List<MainProductCategoryDetails> getMainProductCategories() {
         return lookupRepository.findByDomainTypeAndParentIsNull(DomainType.PRODUCT_CATEGORY)
                 .stream()

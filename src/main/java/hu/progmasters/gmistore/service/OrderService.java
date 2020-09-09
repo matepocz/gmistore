@@ -47,6 +47,7 @@ public class OrderService {
 
     /**
      * Attempts to fetch a registered user's details
+     *
      * @return A CustomerDetails DTO
      */
     public CustomerDetails getCustomerDetails() {
@@ -90,8 +91,9 @@ public class OrderService {
 
     /**
      * Attempts to create a new Order
+     *
      * @param orderRequest A DTO containing the required details
-     * @param session The actual session object
+     * @param session      The actual session object
      * @return A boolean, true if successful, false otherwise
      */
     public boolean createOrder(OrderRequest orderRequest, HttpSession session) {
@@ -137,8 +139,12 @@ public class OrderService {
         currentAddress.setCity(newAddress.getCity());
         currentAddress.setStreet(newAddress.getStreet());
         currentAddress.setNumber(newAddress.getNumber());
-        currentAddress.setDoor(newAddress.getDoor());
-        currentAddress.setFloor(newAddress.getFloor());
+        if (newAddress.getDoor() != null) {
+            currentAddress.setDoor(newAddress.getDoor());
+        }
+        if (newAddress.getFloor() != null) {
+            currentAddress.setFloor(newAddress.getFloor());
+        }
         currentAddress.setCountry(newAddress.getCountry());
         currentAddress.setPostcode(newAddress.getPostcode());
     }
@@ -148,8 +154,12 @@ public class OrderService {
         address.setCity(addressDetails.getCity());
         address.setStreet(addressDetails.getStreet());
         address.setNumber(addressDetails.getNumber());
-        address.setDoor(addressDetails.getDoor());
-        address.setFloor(addressDetails.getFloor());
+        if (addressDetails.getDoor() != null) {
+            address.setDoor(addressDetails.getDoor());
+        }
+        if (addressDetails.getFloor() != null) {
+            address.setFloor(addressDetails.getFloor());
+        }
         address.setCountry(addressDetails.getCountry());
         address.setPostcode(addressDetails.getPostcode());
         return address;

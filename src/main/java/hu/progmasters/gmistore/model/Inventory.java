@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,9 +26,11 @@ public class Inventory implements Serializable {
     @JsonIgnore
     private Product product;
 
+    @NotNull
     @Column(name = "quantity_available", nullable = false)
     private int quantityAvailable;
 
+    @NotNull
     @Column(name = "quantity_sold", columnDefinition = "int default 0")
     private int quantitySold;
 

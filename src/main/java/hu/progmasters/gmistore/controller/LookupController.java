@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.MainProductCategoryDetails;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.service.LookupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,11 @@ public class LookupController {
     public ResponseEntity<List<PaymentMethodDetails>> getPaymentMethods() {
         List<PaymentMethodDetails> paymentMethods = lookupService.getPaymentMethods();
         return new ResponseEntity<>(paymentMethods, HttpStatus.OK);
+    }
+
+    @GetMapping("/main-product-categories")
+    public ResponseEntity<List<MainProductCategoryDetails>> getMainProductCategories() {
+        List<MainProductCategoryDetails> categories = lookupService.getMainProductCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

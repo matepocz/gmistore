@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -33,9 +34,11 @@ public class Cart implements Serializable {
     @JoinColumn(name = "shipping_method", referencedColumnName = "id")
     private ShippingMethod shippingMethod;
 
+    @NotNull
     @Column(name = "items_total_price", columnDefinition = "double default 0.0")
     private Double itemsTotalPrice;
 
+    @NotNull
     @Column(name = "total_price", columnDefinition = "double default 0.0")
     private Double totalPrice;
 

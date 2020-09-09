@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.MainProductCategoryDetails;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.model.LookupEntity;
@@ -50,5 +51,13 @@ public class LookupService {
      */
     public LookupEntity getOrderStatusByKey(String key) {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key);
+    }
+
+    public List<MainProductCategoryDetails> getMainProductCategories() {
+        return lookupRepository.findByDomainTypeAndParentIsNull(DomainType.PRODUCT_CATEGORY)
+                .stream()
+                .filter(LookupEntity::isDisplayFlag)
+                .map(MainProductCategoryDetails::new)
+                .collect(Collectors.toList());
     }
 }

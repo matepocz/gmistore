@@ -34,12 +34,14 @@ public class Inventory implements Serializable {
     @Column(name = "quantity_sold", columnDefinition = "int default 0")
     private int quantitySold;
 
+    @NotNull
     @Column(name = "updated")
     private LocalDateTime updated;
 
     public Inventory(Product product, int quantityAvailable) {
         this.product = product;
         this.quantityAvailable = quantityAvailable;
+        this.quantitySold = 0;
         this.updated = LocalDateTime.now();
     }
 

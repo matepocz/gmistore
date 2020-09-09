@@ -5,14 +5,14 @@
 
     <mat-card-title>Rendelés véglegesítése</mat-card-title>
 
-    <mat-vertical-stepper fxFlex="100" [linear]="isLinear" #stepper>
-      <mat-step [stepControl]="detailsForm">
+    <mat-vertical-stepper fxFlex="100" fxLayout="column" [linear]="true" *ngIf="customerDetails">
+      <mat-step fxFlex="100" [stepControl]="detailsForm" [completed]="detailsForm.valid" [editable]="true">
         <form [formGroup]="detailsForm" fxLayout="row wrap">
           <ng-template matStepLabel fxFlex="100">Adataid:</ng-template>
 
           <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
 
-            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+            <mat-form-field fxFlex.lt-md="100" fxFlex.md="40" fxFlex="25" appearance="outline">
               <mat-label>Vezetéknév</mat-label>
               <input matInput placeholder="" formControlName="lastName" required>
               <mat-error *ngIf="detailsForm.get('lastName').invalid &&
@@ -25,7 +25,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+            <mat-form-field fxFlex.lt-md="100" fxFlex.md="40" fxFlex="25" appearance="outline">
               <mat-label>Keresztnév</mat-label>
               <input matInput placeholder="" formControlName="firstName" required>
               <mat-error *ngIf="detailsForm.get('firstName').invalid &&
@@ -40,7 +40,7 @@
           </div>
 
           <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
-            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+            <mat-form-field fxFlex.lt-md="100" fxFlex.md="40" fxFlex="25" appearance="outline">
               <mat-label>Email</mat-label>
               <input matInput placeholder="" formControlName="email" required>
               <mat-icon matSuffix>email</mat-icon>
@@ -54,21 +54,29 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
+            <mat-form-field fxFlex.lt-md="100" fxFlex.md="40" fxFlex="25" appearance="outline">
               <mat-label>Telefon</mat-label>
               <input matInput placeholder="" formControlName="phoneNumber" required>
               <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="detailsForm.get('phoneNumber').invalid &&
+              !detailsForm.get('phoneNumber').errors?.serverError">
+                Érvénytelen telefonszám
+              </mat-error>
+
+              <mat-error *ngIf="detailsForm.get('phoneNumber').errors?.serverError">
+                {{ detailsForm.get('phoneNumber').errors.serverError }}
+              </mat-error>
             </mat-form-field>
 
             <div fxFlex="100">
-              <button mat-button matStepperNext>Következő</button>
+              <button mat-button matStepperNext [disabled]="detailsForm.invalid">Következő</button>
             </div>
 
           </div>
         </form>
       </mat-step>
 
-      <mat-step [stepControl]="shippingAddressForm">
+      <mat-step [stepControl]="shippingAddressForm" [completed]="shippingAddressForm.valid" [editable]="true">
         <form [formGroup]="shippingAddressForm" fxLayout="row wrap">
           <ng-template matStepLabel fxFlex="100">Szállítási cím</ng-template>
 
@@ -94,12 +102,12 @@
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Emelet</mat-label>
-              <input matInput placeholder="" formControlName="floor" required>
+              <input matInput placeholder="" formControlName="floor">
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Ajtó</mat-label>
-              <input matInput placeholder="" formControlName="door" required>
+              <input matInput placeholder="" formControlName="door">
             </mat-form-field>
           </div>
 
@@ -118,7 +126,7 @@
 
           <div fxFlex="100">
             <button mat-button matStepperPrevious>Vissza</button>
-            <button mat-button matStepperNext>Következő</button>
+            <button mat-button matStepperNext [disabled]="shippingAddressForm.invalid">Következő</button>
           </div>
 
         </form>
@@ -155,12 +163,12 @@
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Emelet</mat-label>
-              <input matInput placeholder="" formControlName="floor" required>
+              <input matInput placeholder="" formControlName="floor">
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Ajtó</mat-label>
-              <input matInput placeholder="" formControlName="door" required>
+              <input matInput placeholder="" formControlName="door">
             </mat-form-field>
           </div>
 
@@ -179,7 +187,7 @@
 
           <div fxFlex="100">
             <button mat-button matStepperPrevious>Vissza</button>
-            <button mat-button matStepperNext>Következő</button>
+            <button mat-button matStepperNext [disabled]="billingAddressForm.invalid">Következő</button>
           </div>
 
         </form>
@@ -260,7 +268,7 @@
             <mat-card-title><small>Termékek</small></mat-card-title>
             <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
-            <mat-card-content *ngFor="let item of cartDetails.cartItems" fxFlex="100" fxLayout="row wrap"
+            <mat-card-content *ngFor="let item of cartDetails?.cartItems" fxFlex="100" fxLayout="row wrap"
                               fxLayoutAlign="space-between">
               <p fxFlex="65">
                 {{ item.count}} x {{ item.product.name}}
@@ -282,7 +290,7 @@
 
               <span>
               <strong>
-                {{ cartDetails.totalPrice | currency: 'HUF': 'symbol-narrow': '2.0'}}
+                {{ cartDetails?.totalPrice | currency: 'HUF': 'symbol-narrow': '2.0'}}
               </strong>
             </span>
             </div>

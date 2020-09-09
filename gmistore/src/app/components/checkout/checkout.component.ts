@@ -12,6 +12,7 @@ import {OrderRequestModel} from "../../models/order-request.model";
 import {Router} from "@angular/router";
 import {PaymentMethodDetailsModel} from "../../models/payment-method-details.model";
 import {errorHandler} from "../../utils/error-handler";
+import {AddressModel} from "../../models/address-model";
 
 @Component({
   selector: 'app-checkout',
@@ -20,7 +21,6 @@ import {errorHandler} from "../../utils/error-handler";
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
 
-  isLinear: true;
   loading: boolean = true;
   authenticatedUser: boolean;
 
@@ -64,43 +64,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     );
 
     this.detailsForm = this.formBuilder.group({
-      firstName: [null],
-      lastName: [null],
+      firstName: [null, Validators.compose(
+        [Validators.required, Validators.minLength(3), Validators.maxLength(100)])],
+      lastName: [null, Validators.compose(
+        [Validators.required, Validators.minLength(3), Validators.maxLength(100)])],
       email: [null, Validators.compose([Validators.required, Validators.email])],
-      phoneNumber: [null]
+      phoneNumber: [null, Validators.required]
     });
 
-    this.shippingAddressForm = this.formBuilder.group({
-      id: [null],
-      city: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])],
-      street: [null,
-        Validators.compose([Validators.required, Validators.minLength(2)])],
-      number: [null,
-        Validators.compose([Validators.required, Validators.min(1)])],
-      floor: [null],
-      door: [null],
-      country: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])],
-      postcode: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])]
-    });
-
-    this.billingAddressForm = this.formBuilder.group({
-      id: [null],
-      city: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])],
-      street: [null,
-        Validators.compose([Validators.required, Validators.minLength(2)])],
-      number: [null,
-        Validators.compose([Validators.required, Validators.min(1)])],
-      floor: [null],
-      door: [null],
-      country: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])],
-      postcode: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])]
-    });
+    this.shippingAddressForm = this.makeNewAddressForm();
+    this.billingAddressForm = this.makeNewAddressForm();
 
     this.paymentMethodsSub = this.orderService.getPaymentMethods().subscribe(
       (response) => {
@@ -118,16 +91,34 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         (response) => {
           console.log(response);
           this.customerDetails = response;
+          this.pathDetailsForm();
+          CheckoutComponent.patchAddressForm(this.shippingAddressForm, this.customerDetails.shippingAddress);
+          CheckoutComponent.patchAddressForm(this.billingAddressForm, this.customerDetails.billingAddress);
         }, (error) => {
           console.log(error);
         },
         () => {
-          this.pathDetailsForm();
-          this.patchShippingAddressForm();
-          this.patchBillingAddressForm();
         }
       )
     }
+  }
+
+  private makeNewAddressForm() {
+    return this.formBuilder.group({
+      id: [null],
+      city: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])],
+      street: [null,
+        Validators.compose([Validators.required, Validators.minLength(2)])],
+      number: [null,
+        Validators.compose([Validators.required, Validators.min(1)])],
+      floor: [null],
+      door: [null],
+      country: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])],
+      postcode: [null,
+        Validators.compose([Validators.required, Validators.minLength(3)])]
+    });
   }
 
   private pathDetailsForm() {
@@ -139,30 +130,19 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  private patchShippingAddressForm() {
-    this.shippingAddressForm.patchValue({
-      id: this.customerDetails.shippingAddress.id,
-      city: this.customerDetails.shippingAddress.city,
-      street: this.customerDetails.shippingAddress.street,
-      number: this.customerDetails.shippingAddress.number,
-      floor: this.customerDetails.shippingAddress.floor,
-      door: this.customerDetails.shippingAddress.door,
-      country: this.customerDetails.shippingAddress.country,
-      postcode: this.customerDetails.shippingAddress.postcode
-    });
-  }
-
-  private patchBillingAddressForm() {
-    this.billingAddressForm.patchValue({
-      id: this.customerDetails.billingAddress.id,
-      city: this.customerDetails.billingAddress.city,
-      street: this.customerDetails.billingAddress.street,
-      number: this.customerDetails.billingAddress.number,
-      floor: this.customerDetails.billingAddress.floor,
-      door: this.customerDetails.billingAddress.door,
-      country: this.customerDetails.billingAddress.country,
-      postcode: this.customerDetails.billingAddress.postcode
-    });
+  private static patchAddressForm(form: FormGroup, address: AddressModel) {
+    if (address !== null) {
+      form.patchValue({
+        id: address.id,
+        city: address.city,
+        street: address.street,
+        number: address.number,
+        floor: address.floor,
+        door: address.door,
+        country: address.country,
+        postcode: address.postcode
+      });
+    }
   }
 
   copyShippingDetails() {

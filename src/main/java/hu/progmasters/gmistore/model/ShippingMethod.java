@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -17,12 +18,15 @@ public class ShippingMethod implements Serializable {
     @Column(name = "id")
     private int id;
 
+    @NotNull
     @Column(name = "method")
     private String method;
 
+    @NotNull
     @Column(name = "cost")
     private double cost;
 
+    @NotNull
     @Column(name = "days")
     private int days;
 }

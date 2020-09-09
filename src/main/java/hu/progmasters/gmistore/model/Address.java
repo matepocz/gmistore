@@ -29,14 +29,15 @@ public class Address {
 
     @NotNull
     @Column(name = "number")
-    private int number;
+    private Integer number;
 
     @Column(name = "floor")
-    private int floor;
+    private Integer floor;
 
     @Column(name = "door")
-    private int door;
+    private Integer door;
 
+    @NotNull
     @Column(name = "country")
     private String country;
 

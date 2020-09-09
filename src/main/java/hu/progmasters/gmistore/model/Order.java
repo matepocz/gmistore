@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -20,15 +22,18 @@ public class Order implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "unique_id")
+    @NotNull
+    @Column(name = "unique_id", unique = true)
     private String uniqueId;
 
     @ManyToOne
     @JoinColumn(name = "order_status", referencedColumnName = "id")
+    @NotNull
     private LookupEntity status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_item", referencedColumnName = "id")
+    @NotNull
     private Set<OrderItem> items;
 
     @ManyToOne
@@ -37,17 +42,24 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "payment_method", referencedColumnName = "id")
+    @NotNull
     private LookupEntity paymentMethod;
 
     @Column(name = "delivery_cost")
+    @NotNull
+    @Min(value = 0, message = "Delivery cost cannot be negative number")
     private Double deliveryCost;
 
     @Column(name = "total_price")
+    @NotNull
+    @Min(value = 0, message = "Total price cannot be negative number")
     private Double totalPrice;
 
+    @NotNull
     @Column(name = "ordered_at")
     private LocalDateTime orderedAt;
 
+    @NotNull
     @Column(name = "expected_delivery_date")
     private LocalDateTime expectedDeliveryDate;
 

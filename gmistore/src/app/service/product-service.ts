@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ProductModel} from "../models/product-model";
 import {environment} from "../../environments/environment";
+import {MainProductCategoryModel} from "../models/main-product-category.model";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {environment} from "../../environments/environment";
 export class ProductService {
   private productsUrl = environment.apiUrl + 'api/products';
   private imageUploadUrl = environment.apiUrl + 'api/images/upload';
+  private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -28,6 +30,10 @@ export class ProductService {
 
   getProductCategories(): Observable<String[]> {
     return this.httpClient.get<String[]>(this.productsUrl + '/categories');
+  }
+
+  getMainProductCategories(): Observable<Array<MainProductCategoryModel>> {
+    return this.httpClient.get<Array<MainProductCategoryModel>>(this.lookupUrl + '/main-product-categories');
   }
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {

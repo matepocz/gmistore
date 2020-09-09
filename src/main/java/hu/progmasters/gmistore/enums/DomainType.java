@@ -4,5 +4,5 @@ public enum DomainType {
     ORDER_STATUS,
     PAYMENT_METHOD,
     SHIPPING_METHOD,
-    CATEGORY,
+    PRODUCT_CATEGORY,
 }

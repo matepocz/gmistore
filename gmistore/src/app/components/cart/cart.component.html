@@ -1,7 +1,7 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
   <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.lg="80"
        fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
-    <div fxFlex.lt-md="100" fxFlex.gt-lg="60" fxFlex.lg="60">
+    <div fxFlex.lt-md="100" fxFlex.gt-lg="60" fxFlex.lg="60" *ngIf="cart?.cartItems.length > 0">
       <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
         <mat-card-header>
           <mat-card-title class="cart-header-text">
@@ -64,13 +64,14 @@
 
             <mat-card-actions fxLayout="row" fxFlex="100">
               <div>
-                <button mat-button [color]="'primary'" (click)="removeProduct(item.id)">
+                <button mat-button [color]="'primary'" (click)="removeProduct(item.id)"
+                        aria-label="Delete product from cart">
                   <mat-icon>delete</mat-icon>
                   Törlés
                 </button>
               </div>
               <div>
-                <button mat-button [color]="'primary'">
+                <button mat-button [color]="'primary'" aria-label="Add product to favorites instead of cart">
                   <mat-icon>favorite</mat-icon>
                   Kedvencekhez
                 </button>
@@ -83,7 +84,8 @@
       </mat-card>
     </div>
 
-    <div fxFlex.md="100" fxFlex.lg="35" fxFlex.gt-lg="35" fxLayout="column" fxLayoutGap="10px">
+    <div fxFlex.md="100" fxFlex.lg="35" fxFlex.gt-lg="35" fxLayout="column" fxLayoutGap="10px"
+         *ngIf="cart?.cartItems.length > 0">
       <mat-card fxFlex="100" class="mat-elevation-z8">
         <mat-card-header>
           <mat-icon mat-card-avatar>local_shipping</mat-icon>
@@ -108,7 +110,7 @@
         </mat-card-subtitle>
       </mat-card>
 
-      <mat-expansion-panel class="mat-elevation-z8" fxFlex="100">
+      <mat-expansion-panel class="mat-elevation-z8" fxFlex="100" *ngIf="cart?.cartItems.length > 0">
         <mat-expansion-panel-header>
           Ajándékutalvány
         </mat-expansion-panel-header>
@@ -127,7 +129,7 @@
         </mat-action-row>
       </mat-expansion-panel>
 
-      <mat-card class="mat-elevation-z8 cart-calculates-section" fxFlex="100">
+      <mat-card class="mat-elevation-z8 cart-calculates-section" fxFlex="100" *ngIf="cart?.cartItems.length > 0">
         <mat-card-header>
           <mat-icon mat-card-avatar>euro</mat-icon>
           <mat-card-title>Összesítés:</mat-card-title>
@@ -154,12 +156,19 @@
 
         <mat-card-actions fxLayoutAlign="center" [style.margin-bottom]="'10px'">
           <a mat-flat-button materialElevation [color]="'primary'" type="button" [disabled]="loading"
-          (click)="checkout()">
+          (click)="checkout()" aria-label="Checkout button">
             <mat-icon>done</mat-icon>
             Véglegesítés
           </a>
         </mat-card-actions>
       </mat-card>
     </div>
+
+    <mat-card fxFlex="100" fxLayout="column" fxLayoutAlign="center center" *ngIf="cart?.cartItems.length == 0">
+      <mat-card-title>
+        A kosár jelenleg üres.
+      </mat-card-title>
+    </mat-card>
+
   </div>
 </div>

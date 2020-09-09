@@ -19,4 +19,7 @@ public interface LookupRepository extends JpaRepository<LookupEntity, Long> {
 
     @Query("SELECT l FROM LookupEntity l WHERE l.domainType = :domainType AND l.parent is null")
     List<LookupEntity> findByDomainTypeAndParentIsNull(DomainType domainType);
+
+    @Query("SELECT l FROM LookupEntity l WHERE l.domainType = :domainType AND l.parent = :parent")
+    List<LookupEntity> findByDomainTypeAndParent(DomainType domainType, LookupEntity parent);
 }

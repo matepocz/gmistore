@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -17,16 +18,20 @@ public class LookupEntity {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "domain_type")
     private DomainType domainType;
 
-    @Column(name = "lookup_key")
+    @NotNull
+    @Column(name = "lookup_key", unique = true)
     private String lookupKey;
 
+    @NotNull
     @Column(name = "display_name")
     private String displayName;
 
+    @NotNull
     @Column(name = "order_sequence")
     private int orderSequence;
 

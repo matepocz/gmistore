@@ -50,6 +50,11 @@ public class Product implements Serializable {
     @JoinColumn(name = "sub_category", referencedColumnName = "id")
     private LookupEntity subCategory;
 
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_feature")
+    @Column(name = "feature")
+    private Set<String> features = new HashSet<>();
+
     @Column(name = "picture_url")
     private String pictureUrl;
 

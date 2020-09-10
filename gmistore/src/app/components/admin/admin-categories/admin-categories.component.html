@@ -1,0 +1,23 @@
+<div class="containerX" fxLayoutAlign="center">
+  <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
+            fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="space-between">
+    <mat-card-header fxFlex="100" class="mb-15">
+      <mat-card-title>
+        Termék kategóriák
+      </mat-card-title>
+    </mat-card-header>
+    <div fxFlex="100" fxLayout="column" *ngFor="let mainCategory of categories">
+      <mat-card-content class="mat-body-strong">
+        {{ mainCategory.displayName }} ({{ mainCategory.subCategories.length }} termék kategória)
+      </mat-card-content>
+
+      <div fxFlex="100" fxLayout="column" *ngFor="let subCategory of mainCategory.subCategories">
+        <ul>
+          <li>{{ subCategory.displayName }}</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </mat-card>
+</div>

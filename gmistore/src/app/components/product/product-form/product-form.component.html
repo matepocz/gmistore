@@ -48,15 +48,33 @@
       <div fxFlex="100" fxLayout="column">
         <mat-form-field appearance="outline">
           <mat-label>Kategória</mat-label>
-          <mat-select formControlName="category" required>
+          <mat-select formControlName="mainCategory" (selectionChange)="fetchSubCategories($event)" required>
             <mat-option>--</mat-option>
-            <mat-option *ngFor="let category of categories | keyvalue" [value]="category.key">
-              {{ category.value }}
+            <mat-option *ngFor="let category of mainProductCategories" [value]="category.id">
+              {{ category.displayName }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="productForm.get('category').hasError('required')">Kategória szükséges!</mat-error>
-          <mat-error *ngIf="productForm.get('category').errors?.serverError">
-            {{ productForm.get('category').errors?.serverError}}
+
+          <mat-error *ngIf="productForm.get('mainCategory').hasError('required')">Kategória szükséges!</mat-error>
+          <mat-error *ngIf="productForm.get('mainCategory').errors?.serverError">
+            {{ productForm.get('mainCategory').errors?.serverError}}
+          </mat-error>
+          <mat-hint></mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="100" fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Termék kategória</mat-label>
+          <mat-select formControlName="subCategory" (selectionChange)="setCurrentSubCategory($event)" required>
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let category of subProductCategories" [value]="category.key">
+              {{ category.displayName }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="productForm.get('subCategory').hasError('required')">Kategória szükséges!</mat-error>
+          <mat-error *ngIf="productForm.get('subCategory').errors?.serverError">
+            {{ productForm.get('subCategory').errors?.serverError}}
           </mat-error>
           <mat-hint></mat-hint>
         </mat-form-field>

@@ -1,20 +1,24 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.MainProductCategoryDetails;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
+import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.repository.LookupRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class LookupService {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LookupService.class);
 
     private final LookupRepository lookupRepository;
 
@@ -25,6 +29,7 @@ public class LookupService {
 
     /**
      * Fetch a payment method by it's key
+     *
      * @param key The given key
      * @return A LookupEntity
      */
@@ -34,6 +39,7 @@ public class LookupService {
 
     /**
      * Fetch all the payment methods
+     *
      * @return A List of DTOs
      */
     public List<PaymentMethodDetails> getPaymentMethods() {
@@ -46,6 +52,7 @@ public class LookupService {
 
     /**
      * Fetch an order status by it's key
+     *
      * @param key The given key
      * @return A LookupEntity
      */
@@ -55,13 +62,34 @@ public class LookupService {
 
     /**
      * Fetch all active main product categories
+     *
      * @return A list of MainProductCategoryDetails
      */
-    public List<MainProductCategoryDetails> getMainProductCategories() {
+    public List<ProductCategoryDetails> getMainProductCategories() {
         return lookupRepository.findByDomainTypeAndParentIsNull(DomainType.PRODUCT_CATEGORY)
                 .stream()
                 .filter(LookupEntity::isDisplayFlag)
-                .map(MainProductCategoryDetails::new)
+                .map(ProductCategoryDetails::new)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Fetch all active sub categories for the given main category
+     *
+     * @param id The given main category's unique ID
+     * @return A list of subcategories
+     */
+    public List<ProductCategoryDetails> getSubProductCategories(Long id) {
+        Optional<LookupEntity> categoryById = lookupRepository.findById(id);
+        return categoryById.map(
+                lookupEntity -> lookupRepository.findByDomainTypeAndParent(DomainType.PRODUCT_CATEGORY, lookupEntity)
+                        .stream()
+                        .filter(LookupEntity::isDisplayFlag)
+                        .map(ProductCategoryDetails::new)
+                        .collect(Collectors.toList())).orElse(null);
+    }
+
+    public LookupEntity getCategoryByKey(String key) {
+        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PRODUCT_CATEGORY, key);
     }
 }

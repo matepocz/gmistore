@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ProductModel} from "../models/product-model";
 import {environment} from "../../environments/environment";
-import {MainProductCategoryModel} from "../models/main-product-category.model";
+import {ProductCategoryModel} from "../models/product-category.model";
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +32,12 @@ export class ProductService {
     return this.httpClient.get<String[]>(this.productsUrl + '/categories');
   }
 
-  getMainProductCategories(): Observable<Array<MainProductCategoryModel>> {
-    return this.httpClient.get<Array<MainProductCategoryModel>>(this.lookupUrl + '/main-product-categories');
+  getMainProductCategories(): Observable<Array<ProductCategoryModel>> {
+    return this.httpClient.get<Array<ProductCategoryModel>>(this.lookupUrl + '/main-product-categories');
+  }
+
+  getSubProductCategories(id: number): Observable<Array<ProductCategoryModel>> {
+    return this.httpClient.get<Array<ProductCategoryModel>>(this.lookupUrl + '/sub-product-categories/' + id);
   }
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {

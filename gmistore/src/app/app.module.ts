@@ -69,6 +69,7 @@ import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-f
 import {ShippingAddressComponent} from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
 import {BillingAddressComponent} from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
 import {MatChipsModule} from "@angular/material/chips";
+import {AdminCategoriesComponent} from './components/admin/admin-categories/admin-categories.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import {MatChipsModule} from "@angular/material/chips";
     AdminUserFormComponent,
     ShippingAddressComponent,
     BillingAddressComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    AdminCategoriesComponent
   ],
 
     imports: [

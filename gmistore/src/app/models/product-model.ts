@@ -8,6 +8,7 @@ export interface ProductModel {
   description: string;
   mainCategory: ProductCategoryModel;
   subCategory: ProductCategoryModel;
+  features: Array<string>;
   pictureUrl: string;
   pictures: Array<string>;
   price: number;

@@ -24,6 +24,7 @@ import {AdminUserFormComponent} from "./components/admin/admin-user/admin-user-f
 import {CheckoutComponent} from "./components/checkout/checkout.component";
 import {AuthGuard} from "./utils/auth.guard";
 import {RoleModel} from "./models/role.model";
+import {AdminCategoriesComponent} from "./components/admin/admin-categories/admin-categories.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -54,11 +55,14 @@ const routes: Routes = [
   {
     path: 'admin', component: AdminNavComponent,
     children: [
+      {path: 'categories', component: AdminCategoriesComponent},
       {path: 'dashboard', component: AdminDashboardComponent},
       {path: 'product', component: AdminProductComponent},
       {path: 'user', component: AdminUserComponent},
       {path: 'user/edit/:id', component: AdminUserFormComponent},
-    ]
+    ],
+    canActivate: [AuthGuard],
+    data: {roles: RoleModel.ROLE_ADMIN}
   },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},

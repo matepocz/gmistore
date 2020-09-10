@@ -37,4 +37,8 @@ export class AdminService {
   getInitRoles():Observable<RolesInitModel[]>  {
     return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
   }
+
+  updateUser(data: UserModel): Observable<any>{
+    return this.httpClient.put(this.adminUrl + 'users/ '+ data.id, data);
+  }
 }

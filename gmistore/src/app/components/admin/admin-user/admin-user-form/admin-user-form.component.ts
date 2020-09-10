@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
+import {errorHandler} from "../../../../utils/error-handler";
 
 @Component({
   selector: 'app-admin-user-form',
@@ -20,7 +21,8 @@ export class AdminUserFormComponent implements OnInit {
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
-              private adminService: AdminService) {
+              private adminService: AdminService,
+              private router: Router) {
 
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -119,5 +121,18 @@ export class AdminUserFormComponent implements OnInit {
     return this.userForm.value.roles
       .map((role, index) => role ? this.roleOptions[index] : null)
       .filter(role => role !== null);
+  }
+
+  onSubmit() {
+    const data = {...this.userForm.value};
+    data.roles = this.createRolesToSend();
+    this.updateUser(data);
+  }
+
+  private updateUser(data: UserModel) {
+    this.adminService.updateUser(data).subscribe(
+      () => this.router.navigate(['/admin/user']),
+      error => errorHandler(error, this.userForm),
+    );
   }
 }

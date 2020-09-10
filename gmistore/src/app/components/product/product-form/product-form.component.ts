@@ -10,6 +10,8 @@ import {Title} from "@angular/platform-browser";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ProductCategoryModel} from "../../../models/product-category.model";
 import {MatSelectChange} from "@angular/material/select";
+import {COMMA, ENTER} from "@angular/cdk/keycodes";
+import {MatChipInputEvent} from "@angular/material/chips";
 
 @Component({
   selector: 'app-product-form',
@@ -17,6 +19,12 @@ import {MatSelectChange} from "@angular/material/select";
   styleUrls: ['./product-form.component.css']
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
+
+  selectableDetails: boolean = true;
+  removableDetails: boolean = true;
+  addOnBlur: boolean = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  productFeatures: Array<string> = new Array<string>();
 
   mainProductCategories: Array<ProductCategoryModel>;
   subProductCategories: Array<ProductCategoryModel> = new Array<ProductCategoryModel>();
@@ -87,6 +95,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               this.productCode = this.product.productCode;
               this.currentMainCategory = data.mainCategory;
               this.currentSubCategory = data.subCategory;
+              this.productFeatures = data.features;
               this.fetchCurrentSubCategories();
             }, (error) => {
               console.log(error);
@@ -178,6 +187,26 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  addFeature($event: MatChipInputEvent) {
+    const input = $event.input;
+    const value = $event.value;
+
+    if ((value || '').trim() && this.productFeatures.length < 5) {
+      this.productFeatures.push(value.trim());
+    }
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  removeFeature(feature: string): void {
+    const index = this.productFeatures.indexOf(feature);
+
+    if (index >= 0) {
+      this.productFeatures.splice(index, 1);
+    }
+  }
+
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.productPictures, event.previousIndex, event.currentIndex);
   }
@@ -191,6 +220,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.product.mainCategory = this.currentMainCategory;
     this.product.subCategory = this.currentSubCategory;
     this.product.pictures = this.productPictures;
+    this.product.features = this.productFeatures;
 
     if (this.slug) {
       this.processProductUpdate();

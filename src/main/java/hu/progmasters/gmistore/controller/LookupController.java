@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.MainCategoryDetails;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.service.LookupService;
@@ -42,5 +43,11 @@ public class LookupController {
         return categories != null ?
                 new ResponseEntity<>(categories, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<MainCategoryDetails>> getCategories() {
+        List<MainCategoryDetails> categories = lookupService.getCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

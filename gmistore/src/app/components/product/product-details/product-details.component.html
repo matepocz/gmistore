@@ -35,7 +35,7 @@
         </mat-card-content>
       </div>
 
-      <div fxFlex="100" fxLayout="column">
+      <div fxFlex="100" fxLayout="column" *ngIf="product?.features.length > 0">
         <mat-panel-title>Főbb jellemzők: </mat-panel-title>
         <ul>
           <li *ngFor="let feature of product.features">{{ feature }}</li>

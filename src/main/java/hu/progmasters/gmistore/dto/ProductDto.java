@@ -16,7 +16,8 @@ public class ProductDto {
     private String productCode;
     private String slug;
     private String description;
-    private String category;
+    private MainProductCategoryDetails mainCategory;
+    private MainProductCategoryDetails subCategory;
     private String pictureUrl;
     private Set<String> pictures;
     private Double price;

@@ -1,7 +1,6 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import hu.progmasters.gmistore.enums.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,9 +29,11 @@ public class Product implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @NotNull
     @Column(name = "product_code", unique = true)
     private String productCode;
 
+    @NotNull
     @Column(name = "slug", unique = true)
     private String slug;
 
@@ -40,8 +41,14 @@ public class Product implements Serializable {
     private String description;
 
     @NotNull(message = "Product must have a category.")
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "main_category", referencedColumnName = "id")
+    private LookupEntity mainCategory;
+
+    @NotNull(message = "Product must have a category.")
+    @ManyToOne
+    @JoinColumn(name = "sub_category", referencedColumnName = "id")
+    private LookupEntity subCategory;
 
     @Column(name = "picture_url")
     private String pictureUrl;

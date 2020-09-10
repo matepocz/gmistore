@@ -8,13 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MainProductCategoryDetails {
+public class ProductCategoryDetails {
 
     private Long id;
     private String key;
     private String displayName;
 
-    public MainProductCategoryDetails(LookupEntity lookupEntity) {
+    public ProductCategoryDetails(LookupEntity lookupEntity) {
         this.id = lookupEntity.getId();
         this.key = lookupEntity.getLookupKey();
         this.displayName = lookupEntity.getDisplayName();

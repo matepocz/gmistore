@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.MainProductCategoryDetails;
 import hu.progmasters.gmistore.dto.ProductDto;
-import hu.progmasters.gmistore.enums.Category;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class ProductServiceTest {
         productDto.setProductCode("GMI123");
         productDto.setDescription("test 1");
         productDto.setPrice(1.0);
-        productDto.setCategory(Category.COMPUTER.toString());
+        productDto.setMainCategory(new MainProductCategoryDetails());
         productDto.setActive(true);
         productDto.setQuantityAvailable(1);
         productDto.setAddedBy("matep");
@@ -46,7 +46,7 @@ public class ProductServiceTest {
         productDto.setSlug("test-1-gmi123");
         productDto.setDescription("test 1");
         productDto.setPrice(10.0);
-        productDto.setCategory(Category.PHONE.toString());
+        productDto.setMainCategory(new MainProductCategoryDetails());
         productDto.setActive(true);
         productDto.setQuantityAvailable(1);
         boolean actualResult = productService.updateProduct("test-1-gmi123", productDto);

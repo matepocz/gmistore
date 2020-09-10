@@ -65,9 +65,10 @@ import {ChartsModule} from 'ng2-charts';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import { AdminUserFormComponent } from './components/admin/admin-user/admin-user-form/admin-user-form.component';
-import { ShippingAddressComponent } from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
-import { BillingAddressComponent } from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
+import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-form/admin-user-form.component';
+import {ShippingAddressComponent} from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
+import {BillingAddressComponent} from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -104,49 +105,50 @@ import { BillingAddressComponent } from './components/admin/admin-user/admin-use
     CheckoutComponent
   ],
 
-  imports: [
-    FormsModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    Ng2Webstorage.forRoot(),
-    HttpClientModule,
-    StarRatingModule.forRoot(),
-    MatInputModule,
-    MatIconModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatBadgeModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCardModule,
-    FlexLayoutModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatProgressSpinnerModule,
-    MatExpansionModule,
-    MatSliderModule,
-    MatProgressBarModule,
-    MatCheckboxModule,
-    MatGridListModule,
-    MatMenuModule,
-    DragDropModule,
-    MatCarouselModule.forRoot(),
-    MatDialogModule,
-    MatMenuModule,
-    MatStepperModule,
-    ChartsModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
+    imports: [
+        FormsModule,
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        Ng2Webstorage.forRoot(),
+        HttpClientModule,
+        StarRatingModule.forRoot(),
+        MatInputModule,
+        MatIconModule,
+        LayoutModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatBadgeModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatCardModule,
+        FlexLayoutModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatProgressSpinnerModule,
+        MatExpansionModule,
+        MatSliderModule,
+        MatProgressBarModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatMenuModule,
+        DragDropModule,
+        MatCarouselModule.forRoot(),
+        MatDialogModule,
+        MatMenuModule,
+        MatStepperModule,
+        ChartsModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatChipsModule,
 
-  ],
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,

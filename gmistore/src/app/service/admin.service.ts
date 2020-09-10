@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
@@ -7,12 +7,14 @@ import {UserModel} from "../models/user-model";
 import {UserIsActiveModel} from "../models/userIsActiveModel";
 import {UserListDetailsModel} from "../models/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
+import {MainCategoryModel} from "../models/main-category.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
   private adminUrl = environment.apiUrl + 'admin/';
+  private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -36,5 +38,9 @@ export class AdminService {
 
   getInitRoles():Observable<RolesInitModel[]>  {
     return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
+  }
+
+  getProductCategories(): Observable<Array<MainCategoryModel>> {
+    return this.httpClient.get<Array<MainCategoryModel>>(this.lookupUrl + '/categories');
   }
 }

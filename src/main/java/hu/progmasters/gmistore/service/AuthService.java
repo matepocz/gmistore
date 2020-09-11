@@ -11,6 +11,7 @@ import hu.progmasters.gmistore.repository.UserRepository;
 import hu.progmasters.gmistore.response.ConfirmAccountResponse;
 import hu.progmasters.gmistore.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AuthService {
+
+    @Value("${client-url}")
+    private String clientUrl;
 
     private final UserRepository userRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
@@ -85,8 +89,9 @@ public class AuthService {
         mailMessage.setSubject("Regisztráció véglegesítése");
         mailMessage.setFrom("gmistarter@gmail.com");
         mailMessage.setText("Kedves " + user.getFirstName() + ", \n" +
-                " a regisztrációd megerősítéséhez kérjük kattints ide : "
-                + "http://localhost:4200/confirm-account?token=" + confirmationToken.getToken() +
+                "A regisztrációd megerősítéséhez, kérjük kattints ide : "
+                + clientUrl + "/confirm-account?token=" + confirmationToken.getToken() +
+                "\n" +
                 "\n" +
                 "Amennyiben nem te regisztráltál, kérjük hagyd figyelmen kívűl ezt az emailt!" +
                 "\n" +

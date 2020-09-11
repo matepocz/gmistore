@@ -2,7 +2,9 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
+import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.repository.PasswordTokenRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,10 +22,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SessionRegistry sessionRegistry;
+    private final PasswordTokenRepository passwordTokenRepository;
 
-    public UserService(UserRepository userRepository, SessionRegistry sessionRegistry) {
+    public UserService(UserRepository userRepository, SessionRegistry sessionRegistry,
+                       PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
+        this.passwordTokenRepository = passwordTokenRepository;
     }
 
     public UserDto getUserData(String username) {
@@ -73,5 +78,15 @@ public class UserService {
         userById.setShippingAddress(user.getShippingAddress());
         userById.setRoles(user.getRoles().stream().map(Role::valueOf).collect(Collectors.toList()));
         userRepository.save(userById);
+    }
+
+    public User findUserByEmail(String userEmail) {
+        return userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User with " + userEmail + " not found!"));
+    }
+
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, user);
+        passwordTokenRepository.save(myToken);
     }
 }

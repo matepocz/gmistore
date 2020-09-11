@@ -1,9 +1,6 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.RolesFormDto;
-import hu.progmasters.gmistore.dto.UserDto;
-import hu.progmasters.gmistore.dto.UserIsActiveDto;
-import hu.progmasters.gmistore.dto.UserListDetailDto;
+import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
@@ -65,4 +62,14 @@ public class UserService {
         return roles;
     }
 
+    public void updateUserById(UserEditableDetailsDto user) {
+        User userById = getUserById(user.getId());
+        userById.setBillingAddress(user.getBillingAddress());
+        userById.setFirstName(user.getFirstName());
+        userById.setLastName(user.getLastName());
+        userById.setPhoneNumber(user.getPhoneNumber());
+        userById.setUsername(user.getUsername());
+        userById.setShippingAddress(user.getShippingAddress());
+        userById.setRoles(user.getRoles());
+    }
 }

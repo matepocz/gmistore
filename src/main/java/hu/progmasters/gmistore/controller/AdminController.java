@@ -63,4 +63,10 @@ public class AdminController {
         adminService.updateUserActivity(userIsActive);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("users/active")
+    ResponseEntity<Void> updateUserDetails(@RequestBody UserEditableDetailsDto user) {
+        adminService.updateUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

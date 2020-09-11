@@ -7,6 +7,7 @@ import {UserModel} from "../models/user-model";
 import {UserIsActiveModel} from "../models/userIsActiveModel";
 import {UserListDetailsModel} from "../models/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
+import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class AdminService {
     return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
   }
 
-  updateUser(data: UserModel): Observable<any>{
-    return this.httpClient.put(this.adminUrl + 'users/ '+ data.id, data);
+  updateUser(data: UserEditableDetailsByAdmin): Observable<any>{
+    return this.httpClient.put(this.adminUrl + 'users', data);
   }
 }

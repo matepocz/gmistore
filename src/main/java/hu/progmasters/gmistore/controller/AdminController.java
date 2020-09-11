@@ -64,8 +64,9 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("users/active")
+    @PutMapping("/users")
     ResponseEntity<Void> updateUserDetails(@RequestBody UserEditableDetailsDto user) {
+        System.out.println(user);
         adminService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }

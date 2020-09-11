@@ -51,7 +51,7 @@ public class UserService {
     public User getUserById(Long id) {
         System.out.println(sessionRegistry.getAllPrincipals());
         return userRepository.findUserById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with " + id + " not found!"));
     }
 
     public List<RolesFormDto> getRoles() {
@@ -63,6 +63,7 @@ public class UserService {
     }
 
     public void updateUserById(UserEditableDetailsDto user) {
+        System.out.println(user.getId());
         User userById = getUserById(user.getId());
         userById.setBillingAddress(user.getBillingAddress());
         userById.setFirstName(user.getFirstName());
@@ -70,6 +71,7 @@ public class UserService {
         userById.setPhoneNumber(user.getPhoneNumber());
         userById.setUsername(user.getUsername());
         userById.setShippingAddress(user.getShippingAddress());
-        userById.setRoles(user.getRoles());
+        userById.setRoles(user.getRoles().stream().map(Role::valueOf).collect(Collectors.toList()));
+        userRepository.save(userById);
     }
 }

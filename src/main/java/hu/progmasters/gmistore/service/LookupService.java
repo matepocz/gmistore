@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
+import hu.progmasters.gmistore.dto.NewMainCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.enums.DomainType;
@@ -119,5 +120,22 @@ public class LookupService {
                     return new MainCategoryDetails(category, subCategories);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public boolean createMainCategory(NewMainCategoryRequest newMainCategoryRequest) {
+        LookupEntity newMainCategory = new LookupEntity();
+        newMainCategory.setDomainType(DomainType.PRODUCT_CATEGORY);
+        newMainCategory.setLookupKey(newMainCategoryRequest.getKey());
+        newMainCategory.setDisplayName(newMainCategoryRequest.getDisplayName());
+        newMainCategory.setDisplayFlag(newMainCategoryRequest.getIsActive());
+        LookupEntity savedEntity = lookupRepository.save(newMainCategory);
+
+        if (savedEntity.getId() != null) {
+            LOGGER.info("New main category: {}, id: {}", savedEntity.getLookupKey(), savedEntity.getId());
+            return true;
+        } else {
+            LOGGER.warn("Main category creation failed!");
+            return false;
+        }
     }
 }

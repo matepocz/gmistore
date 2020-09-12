@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LookupRepository extends JpaRepository<LookupEntity, Long> {
@@ -15,7 +16,7 @@ public interface LookupRepository extends JpaRepository<LookupEntity, Long> {
     List<LookupEntity> findByDomainType(DomainType domainType);
 
     @Query("SELECT l FROM LookupEntity l WHERE l.domainType = :domainType AND l.lookupKey = :lookupKey")
-    LookupEntity findByDomainTypeAndLookupKey(DomainType domainType, String lookupKey);
+    Optional<LookupEntity> findByDomainTypeAndLookupKey(DomainType domainType, String lookupKey);
 
     @Query("SELECT l FROM LookupEntity l WHERE l.domainType = :domainType AND l.parent is null")
     List<LookupEntity> findByDomainTypeAndParentIsNull(DomainType domainType);

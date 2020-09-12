@@ -7,9 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NewMainCategoryRequest {
+public class NewCategoryRequest {
 
     private String key;
     private String displayName;
     private Boolean isActive;
+    private String mainCategoryKey;
+    private Boolean isSubCategory;
 }

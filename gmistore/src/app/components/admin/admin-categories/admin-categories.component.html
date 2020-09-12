@@ -2,7 +2,7 @@
   <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
             fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start">
 
-    <mat-card-header fxFlex="100">
+    <mat-card-header fxFlex="100" class="mt-15">
       <mat-card-title>Termék kategóriák</mat-card-title>
       <mat-icon mat-card-avatar>category</mat-icon>
     </mat-card-header>
@@ -33,7 +33,7 @@
 
         <mat-tab label="Új fő kategória" fxLayout="column">
 
-          <form class="mt-15" [formGroup]="categoryForm" (ngSubmit)="onCategorySubmit()">
+          <form class="mt-15" [formGroup]="mainCategoryForm" (ngSubmit)="onMainCategorySubmit()">
 
             <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px" class="mt-15">
               <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
@@ -43,12 +43,13 @@
                 </label>
                 <mat-icon matSuffix>vpn_key</mat-icon>
                 <mat-hint>Pl.: SMART_TECH</mat-hint>
-                <mat-error *ngIf="categoryForm.get('key').invalid && !categoryForm.get('key').errors?.serverError">
+                <mat-error
+                  *ngIf="mainCategoryForm.get('key').invalid && !mainCategoryForm.get('key').errors?.serverError">
                   Túl rövid, vagy nem megfelelő név
                 </mat-error>
 
-                <mat-error *ngIf="categoryForm.get('key').errors?.serverError">
-                  {{ categoryForm.get('key').errors?.serverError }}
+                <mat-error *ngIf="mainCategoryForm.get('key').errors?.serverError">
+                  {{ mainCategoryForm.get('key').errors?.serverError }}
                 </mat-error>
               </mat-form-field>
 
@@ -59,13 +60,13 @@
                 </label>
                 <mat-icon matSuffix>category</mat-icon>
                 <mat-hint>Pl.: Okos kütyük</mat-hint>
-                <mat-error *ngIf="categoryForm.get('displayName').invalid &&
-                !categoryForm.get('displayName').errors?.serverError">
+                <mat-error *ngIf="mainCategoryForm.get('displayName').invalid &&
+                !mainCategoryForm.get('displayName').errors?.serverError">
                   Túl rövid, vagy nem megfelelő név
                 </mat-error>
 
-                <mat-error *ngIf="categoryForm.get('displayName').errors?.serverError">
-                  {{ categoryForm.get('displayName').errors?.serverError }}
+                <mat-error *ngIf="mainCategoryForm.get('displayName').errors?.serverError">
+                  {{ mainCategoryForm.get('displayName').errors?.serverError }}
                 </mat-error>
               </mat-form-field>
 
@@ -78,7 +79,7 @@
               </div>
 
               <div fxFlex="100">
-                <button mat-stroked-button color="primary" class="btn-block" [disabled]="categoryForm.invalid">
+                <button mat-stroked-button color="primary" class="btn-block" [disabled]="mainCategoryForm.invalid">
                   Mentés
                 </button>
               </div>
@@ -87,7 +88,78 @@
         </mat-tab>
 
         <mat-tab label="Új termék kategória" fxLayout="column">
+          <form class="mt-15" [formGroup]="subCategoryForm" (ngSubmit)="onSubCategorySubmit()">
 
+            <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px" class="mt-15">
+
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="90" appearance="outline">
+                <mat-label>Fő kategória</mat-label>
+                <mat-select formControlName="mainCategoryKey" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let category of categories" [value]="category.key">
+                    {{ category.displayName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="subCategoryForm.get('mainCategoryKey').hasError('required')">
+                  Kategória szükséges!
+                </mat-error>
+
+                <mat-error *ngIf="subCategoryForm.get('mainCategoryKey').errors?.serverError">
+                  {{ subCategoryForm.get('mainCategoryKey').errors?.serverError}}
+                </mat-error>
+
+                <mat-hint></mat-hint>
+              </mat-form-field>
+
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
+                <mat-label>Kategória neve az adatbázisban</mat-label>
+                <label>
+                  <input matInput placeholder="" formControlName="key">
+                </label>
+                <mat-icon matSuffix>vpn_key</mat-icon>
+                <mat-hint>Pl.: MOBILE_PHONE</mat-hint>
+                <mat-error
+                  *ngIf="subCategoryForm.get('key').invalid && !subCategoryForm.get('key').errors?.serverError">
+                  Túl rövid, vagy nem megfelelő név
+                </mat-error>
+
+                <mat-error *ngIf="subCategoryForm.get('key').errors?.serverError">
+                  {{ subCategoryForm.get('key').errors?.serverError }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
+                <mat-label>Kategória megnevezése</mat-label>
+                <label>
+                  <input matInput placeholder="" formControlName="displayName">
+                </label>
+                <mat-icon matSuffix>category</mat-icon>
+                <mat-hint>Pl.: Telefon</mat-hint>
+                <mat-error *ngIf="subCategoryForm.get('displayName').invalid &&
+                !subCategoryForm.get('displayName').errors?.serverError">
+                  Túl rövid, vagy nem megfelelő név
+                </mat-error>
+
+                <mat-error *ngIf="subCategoryForm.get('displayName').errors?.serverError">
+                  {{ subCategoryForm.get('displayName').errors?.serverError }}
+                </mat-error>
+              </mat-form-field>
+
+              <div fxFlex="100">
+                <mat-slide-toggle fxFlex="100" color="primary" formControlName="isActive"
+                                  [style.margin-bottom]="'20px'"
+                                  [style.margin-top]="'20px'">
+                  A kategória aktív?
+                </mat-slide-toggle>
+              </div>
+
+              <div fxFlex="100">
+                <button mat-stroked-button color="primary" class="btn-block" [disabled]="subCategoryForm.invalid">
+                  Mentés
+                </button>
+              </div>
+            </div>
+          </form>
         </mat-tab>
 
       </mat-tab-group>

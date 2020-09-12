@@ -3,7 +3,7 @@ import {AdminService} from "../../../service/admin.service";
 import {MainCategoryModel} from "../../../models/main-category.model";
 import {Subscription} from "rxjs";
 import {FormBuilder, FormGroupDirective, Validators} from "@angular/forms";
-import {NewMainCategoryModel} from "../../../models/new-main-category.model";
+import {NewCategoryModel} from "../../../models/new-category.model";
 import {errorHandler} from "../../../utils/error-handler";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
@@ -14,25 +14,35 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
 })
 export class AdminCategoriesComponent implements OnInit, OnDestroy {
 
-  @ViewChild(FormGroupDirective) mainCategoryDirective: FormGroupDirective;
+  @ViewChild(FormGroupDirective) categoryForm: FormGroupDirective;
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   categories: Array<MainCategoryModel>;
 
-  newMainCategory: NewMainCategoryModel;
+  newCategoryModel: NewCategoryModel;
 
-  categoryForm = this.formBuilder.group({
+  mainCategoryForm = this.formBuilder.group({
     key: [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
     displayName: [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
-    isActive: [true]
+    isActive: [true],
+  });
+
+  subCategoryForm = this.formBuilder.group({
+    key: [null, Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+    displayName: [null, Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+    isActive: [true],
+    mainCategoryKey: [null]
   });
 
   categoriesSub: Subscription;
   createMainCategorySub: Subscription;
+  createSubCategorySub: Subscription;
 
   constructor(private adminService: AdminService, private formBuilder: FormBuilder,
               private snackBar: MatSnackBar) {
@@ -52,20 +62,40 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     )
   }
 
-  onCategorySubmit() {
-    this.newMainCategory = this.categoryForm.value;
-    this.adminService.createMainCategory(this.newMainCategory).subscribe(
-      (response) => {
+  onMainCategorySubmit() {
+    this.newCategoryModel = this.mainCategoryForm.value;
+    this.newCategoryModel.isSubCategory = false;
+    this.createMainCategorySub = this.adminService.createNewProductCategory(this.newCategoryModel).subscribe(
+      (response: boolean) => {
         if (response) {
           this.openSnackBar("Kategória hozzáadva!");
           this.fetchCategories();
-          this.mainCategoryDirective.resetForm();
+          this.categoryForm.resetForm();
         } else {
           this.openSnackBar("Valami hiba történt!");
         }
       }, (error) => {
         console.log(error);
-        errorHandler(error, this.categoryForm);
+        errorHandler(error, this.mainCategoryForm);
+      }
+    )
+  }
+
+  onSubCategorySubmit() {
+    this.newCategoryModel = this.subCategoryForm.value;
+    this.newCategoryModel.isSubCategory = true;
+    this.createSubCategorySub = this.adminService.createNewProductCategory(this.newCategoryModel).subscribe(
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Kategória hozzáadva!");
+          this.fetchCategories();
+          this.categoryForm.resetForm();
+        } else {
+          this.openSnackBar("Valami hiba történt!");
+        }
+      }, (error) => {
+        errorHandler(error, this.subCategoryForm);
+        console.log(error);
       }
     )
   }
@@ -82,6 +112,9 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
     this.categoriesSub.unsubscribe();
     if (this.createMainCategorySub) {
       this.createMainCategorySub.unsubscribe();
+    }
+    if (this.createSubCategorySub) {
+      this.createSubCategorySub.unsubscribe();
     }
   }
 }

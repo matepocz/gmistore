@@ -100,6 +100,11 @@ public class LookupService {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PRODUCT_CATEGORY, key);
     }
 
+    /**
+     * Fetch all main and subcategories
+     *
+     * @return A List of MainCategoryDetails DTO
+     */
     public List<MainCategoryDetails> getCategories() {
         return lookupRepository.findByDomainTypeAndParentIsNull(DomainType.PRODUCT_CATEGORY)
                 .stream()

@@ -1,16 +1,14 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
+import hu.progmasters.gmistore.dto.NewMainCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.service.LookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,5 +47,11 @@ public class LookupController {
     public ResponseEntity<List<MainCategoryDetails>> getCategories() {
         List<MainCategoryDetails> categories = lookupService.getCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @PostMapping("/main-category")
+    public ResponseEntity<Boolean> createMainCategory(@RequestBody NewMainCategoryRequest newMainCategoryRequest) {
+        boolean result = lookupService.createMainCategory(newMainCategoryRequest);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

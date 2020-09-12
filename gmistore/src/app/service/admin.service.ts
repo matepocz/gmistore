@@ -8,7 +8,7 @@ import {UserIsActiveModel} from "../models/userIsActiveModel";
 import {UserListDetailsModel} from "../models/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
 import {MainCategoryModel} from "../models/main-category.model";
-import {NewMainCategoryModel} from "../models/new-main-category.model";
+import {NewCategoryModel} from "../models/new-category.model";
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +45,7 @@ export class AdminService {
     return this.httpClient.get<Array<MainCategoryModel>>(this.lookupUrl + '/categories');
   }
 
-  createMainCategory(data: NewMainCategoryModel): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.lookupUrl + '/main-category', data);
+  createNewProductCategory(data: NewCategoryModel): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.lookupUrl + '/new-category', data);
   }
-
 }

@@ -1,15 +1,18 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
-import hu.progmasters.gmistore.dto.NewMainCategoryRequest;
+import hu.progmasters.gmistore.dto.NewCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.service.LookupService;
+import hu.progmasters.gmistore.validator.NewCategoryRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,10 +20,17 @@ import java.util.List;
 public class LookupController {
 
     private final LookupService lookupService;
+    private final NewCategoryRequestValidator newCategoryRequestValidator;
 
     @Autowired
-    public LookupController(LookupService lookupService) {
+    public LookupController(LookupService lookupService, NewCategoryRequestValidator newCategoryRequestValidator) {
         this.lookupService = lookupService;
+        this.newCategoryRequestValidator = newCategoryRequestValidator;
+    }
+
+    @InitBinder
+    public void binder(WebDataBinder binder) {
+        binder.addValidators(newCategoryRequestValidator);
     }
 
     @GetMapping("/payment-methods")
@@ -49,9 +59,9 @@ public class LookupController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping("/main-category")
-    public ResponseEntity<Boolean> createMainCategory(@RequestBody NewMainCategoryRequest newMainCategoryRequest) {
-        boolean result = lookupService.createMainCategory(newMainCategoryRequest);
+    @PostMapping("/new-category")
+    public ResponseEntity<Boolean> createCategory(@Valid @RequestBody NewCategoryRequest newCategoryRequest) {
+        boolean result = lookupService.createCategory(newCategoryRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

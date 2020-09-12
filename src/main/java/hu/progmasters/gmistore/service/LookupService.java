@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
-import hu.progmasters.gmistore.dto.NewMainCategoryRequest;
+import hu.progmasters.gmistore.dto.NewCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.enums.DomainType;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,8 @@ public class LookupService {
      * @return A LookupEntity
      */
     public LookupEntity getPaymentMethodByKey(String key) {
-        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PAYMENT_METHOD, key);
+        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PAYMENT_METHOD, key)
+                .orElseThrow(() -> new EntityNotFoundException("Payment method not found!"));
     }
 
     /**
@@ -59,7 +61,8 @@ public class LookupService {
      * @return A LookupEntity
      */
     public LookupEntity getOrderStatusByKey(String key) {
-        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key);
+        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key)
+                .orElseThrow(() -> new EntityNotFoundException("Order status not found!"));
     }
 
     /**
@@ -98,7 +101,8 @@ public class LookupService {
      * @return A LookupEntity
      */
     public LookupEntity getCategoryByKey(String key) {
-        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PRODUCT_CATEGORY, key);
+        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.PRODUCT_CATEGORY, key)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
     }
 
     /**
@@ -122,20 +126,43 @@ public class LookupService {
                 .collect(Collectors.toList());
     }
 
-    public boolean createMainCategory(NewMainCategoryRequest newMainCategoryRequest) {
-        LookupEntity newMainCategory = new LookupEntity();
-        newMainCategory.setDomainType(DomainType.PRODUCT_CATEGORY);
-        newMainCategory.setLookupKey(newMainCategoryRequest.getKey());
-        newMainCategory.setDisplayName(newMainCategoryRequest.getDisplayName());
-        newMainCategory.setDisplayFlag(newMainCategoryRequest.getIsActive());
-        LookupEntity savedEntity = lookupRepository.save(newMainCategory);
-
-        if (savedEntity.getId() != null) {
-            LOGGER.info("New main category: {}, id: {}", savedEntity.getLookupKey(), savedEntity.getId());
-            return true;
-        } else {
-            LOGGER.warn("Main category creation failed!");
+    /**
+     * Creates a new product category
+     *
+     * @param newCategoryRequest A DTO containing the required details
+     * @return A boolean, true if successful, false otherwise
+     */
+    public boolean createCategory(NewCategoryRequest newCategoryRequest) {
+        LookupEntity newCategory = setCategoryValues(newCategoryRequest);
+        if (newCategory == null) {
+            LOGGER.warn("Category creation failed, parent category not found or it is inactive! key: {}",
+                    newCategoryRequest.getMainCategoryKey());
             return false;
         }
+        LookupEntity savedEntity = lookupRepository.save(newCategory);
+
+        if (savedEntity.getId() != null) {
+            LOGGER.info("New product category: {}, id: {}", savedEntity.getLookupKey(), savedEntity.getId());
+            return true;
+        } else {
+            LOGGER.warn("Category creation failed!");
+            return false;
+        }
+    }
+
+    private LookupEntity setCategoryValues(NewCategoryRequest newCategoryRequest) {
+        LookupEntity newCategory = new LookupEntity();
+        newCategory.setDomainType(DomainType.PRODUCT_CATEGORY);
+        newCategory.setLookupKey(newCategoryRequest.getKey());
+        newCategory.setDisplayName(newCategoryRequest.getDisplayName());
+        newCategory.setDisplayFlag(newCategoryRequest.getIsActive());
+        if (newCategoryRequest.getIsSubCategory().equals(true)) {
+            LookupEntity parentCategory = getCategoryByKey(newCategoryRequest.getMainCategoryKey());
+            if (parentCategory == null || !parentCategory.isDisplayFlag()) {
+                return null;
+            }
+            newCategory.setParent(parentCategory);
+        }
+        return newCategory;
     }
 }

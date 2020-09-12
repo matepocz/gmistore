@@ -70,6 +70,7 @@ import {ShippingAddressComponent} from './components/admin/admin-user/admin-user
 import {BillingAddressComponent} from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {AdminCategoriesComponent} from './components/admin/admin-categories/admin-categories.component';
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -149,6 +150,7 @@ import {AdminCategoriesComponent} from './components/admin/admin-categories/admi
         MatSortModule,
         MatPaginatorModule,
         MatChipsModule,
+        MatTabsModule,
 
     ],
   providers: [

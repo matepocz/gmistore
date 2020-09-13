@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.repository;
 
+import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,8 +11,14 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductByName(String name);
+
     Optional<Product> findProductById(Long id);
+
     Optional<Product> findProductByProductCode(String productCode);
+
     Optional<Product> findProductBySlug(String slug);
+
     List<Product> findProductsByAddedBy(String name);
+
+    List<Product> findProductsBySubCategory(LookupEntity category);
 }

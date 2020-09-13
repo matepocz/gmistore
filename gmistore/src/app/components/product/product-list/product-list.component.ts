@@ -6,6 +6,7 @@ import {Subscription} from "rxjs";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-product-list',
@@ -13,6 +14,9 @@ import {SideNavComponent} from "../../side-nav/side-nav.component";
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit, OnDestroy {
+
+  loading: boolean = false;
+  category: string;
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -26,18 +30,36 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
-              private sideNavComponent: SideNavComponent) {
+              private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute) {
+    this.products = new Array<ProductModel>();
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle("Termékek - GMI Store")
-    this.products = new Array<ProductModel>();
-    this.productsSubscription = this.productService.getActiveProducts().subscribe(
-      (data) => {
-        this.products = data;
-        this.setMinAndMaxPrices();
-      }, (error) => console.log(error)
+    this.loading = true;
+    this.titleService.setTitle("Termékek - GMI Store");
+    this.activatedRoute.queryParamMap.subscribe(
+      (params) => {
+        this.category = params.get('category');
+        this.fetchProductsByCategory();
+        this.loading = false;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      }
     );
+  }
+
+  private fetchProductsByCategory() {
+    if (this.category) {
+      this.loading = true;
+      this.productsSubscription = this.productService.getProductsByCategory(this.category).subscribe(
+        (response: Array<ProductModel>) => {
+          this.products = response;
+          console.log(response);
+          this.setMinAndMaxPrices();
+        }, error => console.log(error)
+      )
+    }
   }
 
   setMinAndMaxPrices() {

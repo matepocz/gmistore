@@ -1,5 +1,5 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'1%'">
-  <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="start" fxLayoutGap="10px"
+  <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start" fxLayoutGap="10px"
   [ngClass]="{'loading': loading}">
 
 <!--    <mat-card fxFlex="18" fxHide.lt-md class="options-panel mat-elevation-z5" fxLayout="row wrap"-->
@@ -51,8 +51,9 @@
 <!--    </mat-card>-->
     <!--TODO to continue later, when there is more filter options become available-->
 
-    <div fxFlex.gt-md="80" fxFlex.md="80" fxLayout="row wrap">
-      <mat-card class="product-card" materialElevation *ngFor="let product of products">
+    <div fxFlex.gt-md="80" fxFlex.md="80" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
+      <mat-card class="product-card" fxFlex.lt-md="47" fxFlex.md="30" fxFlex.gt-md="19"
+                materialElevation *ngFor="let product of products">
         <div fxFlexFill fxLayoutAlign="center" fxLayout="column">
           <a [routerLink]="['/product/', product.slug]">
             <img class="product-card-image" mat-card-image [src]="product.pictureUrl" alt="{{ product.name }} image"

@@ -28,8 +28,8 @@ export class ProductService {
     return this.httpClient.get<ProductModel[]>(this.productsUrl);
   }
 
-  getProductCategories(): Observable<String[]> {
-    return this.httpClient.get<String[]>(this.productsUrl + '/categories');
+  getProductsByCategory(category: string): Observable<Array<ProductModel>> {
+    return this.httpClient.get<Array<ProductModel>>(this.productsUrl + '/by-category/' + category);
   }
 
   getMainProductCategories(): Observable<Array<ProductCategoryModel>> {

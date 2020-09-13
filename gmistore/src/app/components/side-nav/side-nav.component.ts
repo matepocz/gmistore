@@ -5,6 +5,8 @@ import {map, shareReplay} from 'rxjs/operators';
 import {AuthService} from "../../service/auth-service";
 import {CartService} from "../../service/cart-service";
 import {Router} from "@angular/router";
+import {MainCategoryModel} from "../../models/main-category.model";
+import {AdminService} from "../../service/admin.service";
 
 @Component({
   selector: 'app-side-nav',
@@ -17,6 +19,8 @@ export class SideNavComponent implements OnInit {
   private readonly _mobileQueryListener: () => void;
   opened: boolean = false;
 
+  categories: Array<MainCategoryModel>;
+
   itemsInCart: number = 0;
   favoriteItems: number = 0;
 
@@ -28,6 +32,7 @@ export class SideNavComponent implements OnInit {
   itemsInCartSubscription: Subscription;
   isAdminSub: Subscription;
   isSellerSub: Subscription;
+  categoriesSub: Subscription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -37,13 +42,22 @@ export class SideNavComponent implements OnInit {
 
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
-              private router: Router) {
+              private router: Router, private adminService: AdminService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
   ngOnInit() {
+    this.adminService.getProductCategories().subscribe(
+      (response: Array<MainCategoryModel>) => {
+        this.categories = response;
+        console.log(this.categories);
+      }, (error) => {
+        console.log(error);
+      }
+    );
+
     this.authenticatedUser = this.authService.isAuthenticated();
     this.isAdminSub = this.authService.isAdmin.subscribe(
       (response) => {
@@ -91,11 +105,17 @@ export class SideNavComponent implements OnInit {
       timeout * 1000);
   }
 
+  getData(selected) {
+    let mainCategoryModel = this.categories.find(item => item.key === selected.key);
+    return {data: mainCategoryModel.subCategories};
+  }
+
   ngOnDestroy(): void {
     this.cartSubscription.unsubscribe();
     this.itemsInCartSubscription.unsubscribe();
     this.isAdminSub.unsubscribe();
     this.isSellerSub.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.categoriesSub.unsubscribe();
   }
 }

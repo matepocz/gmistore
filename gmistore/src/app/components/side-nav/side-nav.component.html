@@ -36,7 +36,7 @@
                 <button mat-menu-item *ngIf="item.subCategories?.length > 0" [matMenuTriggerFor]="level2"
                         [matMenuTriggerData]="getData(item)">{{item.displayName}}</button>
                 <button mat-menu-item *ngIf="!item.subCategories"
-                        [routerLink]="['product-list']" [queryParams]="{category: item.key}">
+                        [routerLink]="['/product-list']" [queryParams]="{category: item.key}">
                   {{item.displayName}}
                 </button>
               </ng-template>
@@ -46,7 +46,7 @@
           <mat-menu #level2="matMenu">
             <ng-template matMenuContent let-data="data">
               <ng-template ngFor let-item [ngForOf]="data">
-                <button mat-menu-item [routerLink]="['product-list']" [queryParams]="{category: item.key}">
+                <button mat-menu-item [routerLink]="['/product-list']" [queryParams]="{category: item.key}">
                   {{ item.displayName }}
                 </button>
               </ng-template>

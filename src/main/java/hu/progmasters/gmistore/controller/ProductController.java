@@ -1,7 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.ProductDto;
-import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -43,6 +41,12 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductDto>> getActiveProducts() {
         List<ProductDto> products = productService.getAllActiveProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/by-category/{category}")
+    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable("category") String category) {
+        List<ProductDto> products = productService.getActiveProductsByCategory(category);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -84,10 +88,5 @@ public class ProductController {
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/categories")
-    public ResponseEntity<Map<Category, String>> getProductCategories() {
-        return new ResponseEntity<>(productService.getProductCategories(), HttpStatus.OK);
     }
 }

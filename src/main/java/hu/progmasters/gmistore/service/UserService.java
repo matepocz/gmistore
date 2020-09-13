@@ -8,6 +8,7 @@ import hu.progmasters.gmistore.repository.PasswordTokenRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final SessionRegistry sessionRegistry;
     private final PasswordTokenRepository passwordTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, SessionRegistry sessionRegistry,
+
+    public UserService(PasswordEncoder passwordEncoder,
+                       UserRepository userRepository,
+                       SessionRegistry sessionRegistry,
                        PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
         this.passwordTokenRepository = passwordTokenRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto getUserData(String username) {
@@ -88,5 +94,13 @@ public class UserService {
     public void createPasswordResetTokenForUser(User user, String token) {
         PasswordResetToken myToken = new PasswordResetToken(token, user);
         passwordTokenRepository.save(myToken);
+    }
+
+    public Optional<User> getUserByPasswordResetToken(String token) {
+        return Optional.ofNullable(passwordTokenRepository.findByToken(token).getUser());
+    }
+
+    public void changeUserPassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 }

@@ -3,6 +3,7 @@ package hu.progmasters.gmistore.controller;
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.response.GenericResponse;
 import hu.progmasters.gmistore.service.AdminService;
 import hu.progmasters.gmistore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,6 @@ package hu.progmasters.gmistore.service;
 import com.github.slugify.Slugify;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.dto.ProductDto;
-import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
@@ -17,12 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -106,6 +102,21 @@ public class ProductService {
         List<Product> allProduct = productRepository.findAll();
         return allProduct.stream().map(this::mapProductToProductDto)
                 .filter(ProductDto::isActive).collect(Collectors.toList());
+    }
+
+    /**
+     * Fetch all active products where subcategory equals to given category
+     *
+     * @param category The given category
+     * @return A List of ProductDto
+     */
+    public List<ProductDto> getActiveProductsByCategory(String category) {
+        LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
+        List<Product> productsBySubCategory = productRepository.findProductsBySubCategory(categoryByKey);
+        return productsBySubCategory.stream()
+                .filter(Product::isActive)
+                .map(this::mapProductToProductDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -223,16 +234,5 @@ public class ProductService {
             isAdmin = userByUsername.get().getRoles().contains(Role.ROLE_ADMIN);
         }
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
-    }
-
-    public Map<Category, String> getProductCategories() {
-        Map<Category, String> categoriesWithDisplayNames = new EnumMap<>(Category.class);
-        Category[] categories = Category.values();
-        List<String> displayNames =
-                Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
-        for (int i = 0; i < categories.length; i++) {
-            categoriesWithDisplayNames.put(categories[i], displayNames.get(i));
-        }
-        return categoriesWithDisplayNames;
     }
 }

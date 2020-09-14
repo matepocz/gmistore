@@ -5,65 +5,21 @@
       <div fxFlex.gt-sm="90" fxLayoutGap="10px">
 
         <mat-card fxFlex.gt-sm="55">
-          <mat-card-header>
-            <mat-card-title>Profile</mat-card-title>
-            <mat-card-subtitle>Details</mat-card-subtitle>
-          </mat-card-header>
-          <div fxLayout="column" fxLayoutGap="10px">
 
-            <div fxLayout="row" fxLayoutGap="2px">
-              <mat-form-field fxFlex appearance="outline">
-                <mat-label>Keresztnév</mat-label>
-                <input matInput formControlName="firstName">
-              </mat-form-field>
+          <app-profile *ngIf="loaded"
+                       [userDataForm]="userForm"
+                       [data]="user">
+          </app-profile>
 
-              <mat-form-field fxFlex appearance="outline">
-                <mat-label>Vezetéknév</mat-label>
-                <input matInput readonly formControlName="lastName">
-              </mat-form-field>
-            </div>
+          <app-roles *ngIf="loaded" [roles]="user.roles"
+                     [roleOptions]="roleOptions"
+                     [userRolesData]="user.roles"
+                     [userDataForm]="userForm"
+                     (rolesToSend)="rolesToSend($event)">
+          </app-roles>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Felhasználónév</mat-label>
-              <input matInput formControlName="username" readonly>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>E-mail</mat-label>
-              <input matInput [value]="user.email" readonly>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Telefon</mat-label>
-              <input matInput formControlName="phoneNumber">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Regisztrált</mat-label>
-              <input matInput [value]="user.email" readonly>
-            </mat-form-field>
-
-          </div>
-          <h2>Roles selection</h2>
-          <ul formArrayName="roles" *ngFor="let role of getRolesFormArray().controls; let i = index">
-            <li>
-              <mat-checkbox color="primary" [formControlName]="i">
-                {{ roleOptions[i].displayName }}</mat-checkbox>
-            </li>
-          </ul>
-          <mat-divider></mat-divider>
           <button mat-flat-button color="primary" (click)="onSubmit(user.id)">Submit</button>
         </mat-card>
-
-
-        <!-- <mat-card>
-           <p *ngFor="let item of userForm.controls | keyvalue">
-             <mat-form-field appearance="outline" fxFlexFill>
-               <mat-label>Adat</mat-label>
-               <input *ngIf="item.key" matInput formControlName="{{item.key}}" disabled>
-             </mat-form-field>
-           </p>
-         </mat-card>-->
 
         <div fxFlex.gt-sm="45" fxLayout="column" fxLayoutGap="10px">
           <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"

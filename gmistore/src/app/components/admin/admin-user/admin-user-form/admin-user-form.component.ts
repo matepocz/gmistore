@@ -19,6 +19,7 @@ export class AdminUserFormComponent implements OnInit {
   user: UserModel;
   loaded: boolean = false;
   roleOptions: Array<RolesInitModel>;
+  private toSend: any;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
@@ -67,66 +68,28 @@ export class AdminUserFormComponent implements OnInit {
       },
       error => console.warn(error),
     );
-
   }
-
-  getRolesFormArray = () => {
-    return this.userForm.get("roles") as FormArray;
-  };
 
   getUserDetails(id) {
     this.adminService.getInitRoles().subscribe(
-      data => {
-        this.roleOptions = data
+      rolesData => {
+        this.roleOptions = rolesData
       })
 
-    this.adminService.getAccount(id).subscribe(data => {
+    this.adminService.getAccount(id).subscribe(
+      data => {
       console.log(data);
       this.user = data;
       this.sharingService.nextMessage(data);
-
-      this.userForm.patchValue({
-        username: data.username,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        roles: this.createRolesFormArray(data.roles),
-        registered: this.getDate(data.registered),
-        active: data.active,
-      });
-      this.loaded = true;
-    }, error => console.log(error))
-
-  }
-
-  getDate = (d: Date) => {
-    let dt = new Date(d);
-    let dtm = dt.getMonth();
-    let dty = dt.getFullYear();
-    let day = dt.getDay();
-    return dty + "/" + dtm + "/" + day
-  }
-
-  private createRolesFormArray = (roles: Array<string>) => {
-    let tempRoll = this.getRolesFormArray();
-
-    return this.roleOptions.map(
-      role => {
-        tempRoll.push(new FormControl(roles.includes(role.name)));
-        return roles.includes(role.name);
-      });
-  }
-
-  private createRolesToSend(): string[] {
-    return this.userForm.value.roles
-      .map((role, index) => role ? this.roleOptions[index].name : null)
-      .filter(role => role !== null);
+    },
+        error => console.log(error),
+      () => this.loaded = true
+    )
   }
 
   onSubmit(id:number) {
     const data: UserEditableDetailsByAdmin = {...this.userForm.value};
-    data.roles = this.createRolesToSend();
+    data.roles = this.toSend;
     data.id = id;
     this.updateUser(data);
   }
@@ -136,5 +99,9 @@ export class AdminUserFormComponent implements OnInit {
       () => this.router.navigate(['/admin/user']),
       error => errorHandler(error, this.userForm),
     );
+  }
+
+  rolesToSend(roles: any) {
+    this.toSend = roles;
   }
 }

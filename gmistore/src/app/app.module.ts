@@ -66,13 +66,15 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-form/admin-user-form.component';
-import {ShippingAddressComponent} from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
-import {BillingAddressComponent} from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
+import {ShippingAddressComponent} from './components/user/user-form-components/shipping-address/shipping-address.component';
+import {BillingAddressComponent} from './components/user/user-form-components/billing-address/billing-address.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {AdminCategoriesComponent} from './components/admin/admin-categories/admin-categories.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {PasswordResetComponent} from './components/user/password-reset/password-reset.component';
 import {NewPasswordComponent} from './components/user/password-reset/new-password/new-password.component';
+import { RolesComponent } from './components/user/user-form-components/roles/roles.component';
+import { ProfileComponent } from './components/user/user-form-components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +111,9 @@ import {NewPasswordComponent} from './components/user/password-reset/new-passwor
     CheckoutComponent,
     AdminCategoriesComponent,
     PasswordResetComponent,
-    NewPasswordComponent
+    NewPasswordComponent,
+    RolesComponent,
+    ProfileComponent
   ],
 
   imports: [

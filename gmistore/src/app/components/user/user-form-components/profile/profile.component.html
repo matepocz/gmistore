@@ -1,0 +1,41 @@
+<form [formGroup]="userDataForm">
+  <mat-card-header>
+  <mat-card-title>Profil</mat-card-title>
+  <mat-card-subtitle>Adatok</mat-card-subtitle>
+</mat-card-header>
+<div fxLayout="column" fxLayoutGap="10px">
+
+  <div fxLayout="row" fxLayoutGap="2px">
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>Keresztnév</mat-label>
+      <input matInput formControlName="firstName">
+    </mat-form-field>
+
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>Vezetéknév</mat-label>
+      <input matInput readonly formControlName="lastName">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Felhasználónév</mat-label>
+    <input matInput formControlName="username" readonly>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>E-mail</mat-label>
+    <input matInput [value]="data?.email" readonly>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Telefon</mat-label>
+    <input matInput formControlName="phoneNumber">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Regisztrált</mat-label>
+    <input matInput [value]="data?.registered | date" readonly>
+  </mat-form-field>
+
+</div>
+</form>

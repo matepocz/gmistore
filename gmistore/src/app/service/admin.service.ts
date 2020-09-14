@@ -25,7 +25,7 @@ export class AdminService {
     return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + "registered");
   }
 
-  getAccount(id:number): Observable<UserModel> {
+  getAccount(id: number): Observable<UserModel> {
     return this.httpClient.get<UserModel>(this.adminUrl + 'users/' + id);
   }
 
@@ -35,10 +35,10 @@ export class AdminService {
 
   setUserActivity(userIsActiveData: UserIsActiveModel) {
     console.log(userIsActiveData)
-    return this.httpClient.put(this.adminUrl + 'users/active',userIsActiveData);
+    return this.httpClient.put(this.adminUrl + 'users/active', userIsActiveData);
   }
 
-  getInitRoles():Observable<RolesInitModel[]>  {
+  getInitRoles(): Observable<RolesInitModel[]> {
     return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
   }
 
@@ -48,7 +48,9 @@ export class AdminService {
 
   createNewProductCategory(data: NewCategoryModel): Observable<boolean> {
     return this.httpClient.post<boolean>(this.lookupUrl + '/new-category', data);
-  updateUser(data: UserEditableDetailsByAdmin): Observable<any>{
+  }
+
+  updateUser(data: UserEditableDetailsByAdmin): Observable<any> {
     return this.httpClient.put(this.adminUrl + 'users', data);
   }
 }

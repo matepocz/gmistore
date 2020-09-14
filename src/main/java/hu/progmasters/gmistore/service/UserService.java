@@ -1,14 +1,14 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.RolesFormDto;
-import hu.progmasters.gmistore.dto.UserDto;
-import hu.progmasters.gmistore.dto.UserIsActiveDto;
-import hu.progmasters.gmistore.dto.UserListDetailDto;
+import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
+import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.repository.PasswordTokenRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +23,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SessionRegistry sessionRegistry;
+    private final PasswordTokenRepository passwordTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, SessionRegistry sessionRegistry) {
+
+    public UserService(PasswordEncoder passwordEncoder,
+                       UserRepository userRepository,
+                       SessionRegistry sessionRegistry,
+                       PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
+        this.passwordTokenRepository = passwordTokenRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto getUserData(String username) {
@@ -54,7 +62,7 @@ public class UserService {
     public User getUserById(Long id) {
         System.out.println(sessionRegistry.getAllPrincipals());
         return userRepository.findUserById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with " + id + " not found!"));
     }
 
     public List<RolesFormDto> getRoles() {
@@ -65,4 +73,37 @@ public class UserService {
         return roles;
     }
 
+    public void updateUserById(UserEditableDetailsDto user) {
+        System.out.println(user.getId());
+        User userById = getUserById(user.getId());
+        userById.setBillingAddress(user.getBillingAddress());
+        userById.setFirstName(user.getFirstName());
+        userById.setLastName(user.getLastName());
+        userById.setPhoneNumber(user.getPhoneNumber());
+        userById.setUsername(user.getUsername());
+        userById.setShippingAddress(user.getShippingAddress());
+        userById.setRoles(user.getRoles().stream().map(Role::valueOf).collect(Collectors.toList()));
+        userRepository.save(userById);
+    }
+
+    public User findUserByEmail(String userEmail) {
+        return userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User with " + userEmail + " not found!"));
+    }
+
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, user);
+        passwordTokenRepository.save(myToken);
+    }
+
+    public Optional<User> getUserByPasswordResetToken(String token) {
+        return Optional.ofNullable(passwordTokenRepository.findByToken(token).getUser());
+    }
+
+    public void changeUserPassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+//        PasswordResetToken byTokenByUser = passwordTokenRepository.findPasswordResetTokenByUser(user);
+        passwordTokenRepository.deleteByUser(user);
+        userRepository.save(user);
+    }
 }

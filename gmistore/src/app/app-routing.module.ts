@@ -25,10 +25,14 @@ import {CheckoutComponent} from "./components/checkout/checkout.component";
 import {AuthGuard} from "./utils/auth.guard";
 import {RoleModel} from "./models/role.model";
 import {AdminCategoriesComponent} from "./components/admin/admin-categories/admin-categories.component";
+import {PasswordResetComponent} from "./components/user/password-reset/password-reset.component";
+import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'reset-password', component: PasswordResetComponent},
+  {path: 'changePassword', component: NewPasswordComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'register-success', component: RegisterSuccessComponent},
   {path: 'confirm-account', component: ConfirmAccountComponent},

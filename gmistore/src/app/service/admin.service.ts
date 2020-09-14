@@ -9,6 +9,7 @@ import {UserListDetailsModel} from "../models/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
 import {MainCategoryModel} from "../models/main-category.model";
 import {NewCategoryModel} from "../models/new-category.model";
+import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +48,7 @@ export class AdminService {
 
   createNewProductCategory(data: NewCategoryModel): Observable<boolean> {
     return this.httpClient.post<boolean>(this.lookupUrl + '/new-category', data);
+  updateUser(data: UserEditableDetailsByAdmin): Observable<any>{
+    return this.httpClient.put(this.adminUrl + 'users', data);
   }
 }

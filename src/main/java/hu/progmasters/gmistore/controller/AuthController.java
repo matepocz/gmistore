@@ -1,11 +1,17 @@
 package hu.progmasters.gmistore.controller;
 
+import com.sun.tools.jconsole.JConsoleContext;
 import hu.progmasters.gmistore.dto.AuthenticationResponse;
 import hu.progmasters.gmistore.dto.LoginRequest;
+import hu.progmasters.gmistore.dto.PasswordTokenDto;
 import hu.progmasters.gmistore.dto.RegisterRequest;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.response.ConfirmAccountResponse;
+import hu.progmasters.gmistore.response.GenericResponse;
 import hu.progmasters.gmistore.service.AuthService;
+import hu.progmasters.gmistore.service.ResetPasswordService;
+import hu.progmasters.gmistore.service.SecurityService;
+import hu.progmasters.gmistore.service.UserService;
 import hu.progmasters.gmistore.validator.RegisterRequestValidator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +19,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,11 +40,21 @@ public class AuthController {
 
     private final AuthService authService;
     private final RegisterRequestValidator registerRequestValidator;
+    private final SecurityService securityService;
+    private final ResetPasswordService resetPasswordService;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(AuthService authService, RegisterRequestValidator registerRequestValidator) {
+    public AuthController(AuthService authService,
+                          RegisterRequestValidator registerRequestValidator,
+                          SecurityService securityService,
+                          ResetPasswordService resetPasswordService,
+                          UserService userService) {
         this.authService = authService;
         this.registerRequestValidator = registerRequestValidator;
+        this.securityService = securityService;
+        this.resetPasswordService = resetPasswordService;
+        this.userService = userService;
     }
 
     @InitBinder("registerRequest")
@@ -82,5 +102,32 @@ public class AuthController {
         return !roles.contains("ROLE_ANONYMOUS") ?
                 new ResponseEntity<>(roles, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<User> findUserAndSendMailToResetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
+        resetPasswordService.findUserAndSendMailToResetPassword(request, userEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/savePassword")
+    public ResponseEntity<User> savePassword(final Locale locale, @RequestBody PasswordTokenDto passwordDto) {
+        System.out.println(passwordDto.getToken());
+        String result = securityService.validatePasswordResetToken(passwordDto.getToken());
+        if (result != null) {
+            LOGGER.info("Not valid token:" + passwordDto.getToken());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Optional<User> user = userService.getUserByPasswordResetToken(passwordDto.getToken());
+        if (user.isPresent()) {
+            LOGGER.info(user.get().getUsername() + " found");
+            userService.changeUserPassword(user.get(), passwordDto.getPassword());
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } else {
+            LOGGER.info("User not found by token");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 }

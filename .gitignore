@@ -33,3 +33,4 @@ build/
 /src/main/resources/application.properties
 /src/test/resources/application-test.yaml
 /src/main/resources/application-prod.yaml
+/src/test/resources/application.yaml

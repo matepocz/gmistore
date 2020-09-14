@@ -25,12 +25,12 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Felhasználónév</mat-label>
-              <input matInput formControlName="username" disabled>
+              <input matInput formControlName="username" readonly>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>E-mail</mat-label>
-              <input matInput formControlName="email">
+              <input matInput [value]="user.email" readonly>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -40,19 +40,21 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Regisztrált</mat-label>
-              <input matInput formControlName="registered">
+              <input matInput [value]="user.email" readonly>
             </mat-form-field>
 
           </div>
-          <h2 class="example-h2">Roles selection</h2>
+          <h2>Roles selection</h2>
           <ul formArrayName="roles" *ngFor="let role of getRolesFormArray().controls; let i = index">
             <li>
-              <mat-checkbox [formControlName]="i">
+              <mat-checkbox color="primary" [formControlName]="i">
                 {{ roleOptions[i].displayName }}</mat-checkbox>
             </li>
           </ul>
           <mat-divider></mat-divider>
+          <button mat-flat-button color="primary" (click)="onSubmit(user.id)">Submit</button>
         </mat-card>
+
 
         <!-- <mat-card>
            <p *ngFor="let item of userForm.controls | keyvalue">
@@ -70,7 +72,6 @@
                                [userBilling]="user.billingAddress"></app-billing-address>
         </div>
       </div>
-
     </div>
   </div>
 </form>

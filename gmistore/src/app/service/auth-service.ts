@@ -80,7 +80,7 @@ export class AuthService {
   }
 
   sendResetMail(mail) {
-    return this.httpClient.post(this.authUrl + 'resetPassword?email=' + mail.email,null);
+    return this.httpClient.post(this.authUrl + 'resetPassword?email=' + mail,null);
   }
 
   isAuthenticated(): boolean {

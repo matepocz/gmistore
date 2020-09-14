@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
 import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
+import {AuthService} from "../../../../service/auth-service";
 
 @Component({
   selector: 'app-admin-user',
@@ -18,12 +19,14 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  displayedColumns: string[] = ['id', 'username', 'email', 'roles', 'active', 'edit'];
+  displayedColumns: string[] = ['id', 'username', 'email', 'roles', 'mail','active', 'edit'];
   subscription: Subscription;
   userData: Array<UserListDetailsModel>;
   dataSource: MatTableDataSource<UserListDetailsModel>;
+  myVariableColor: any;
 
   constructor(private adminService: AdminService,
+              private authService: AuthService,
               private router: Router) {
   }
 
@@ -40,7 +43,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       }
-    )
+    );
   }
 
   applyFilter(event: Event) {
@@ -49,12 +52,6 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
     }
   }
 
@@ -73,9 +70,23 @@ export class AdminUserComponent implements OnInit, OnDestroy {
       id: number = id;
     }();
 
-    this.adminService.setUserActivity(userIsActiveData).subscribe(
+    (this.adminService.setUserActivity(userIsActiveData).subscribe(
       () => console.log("Activity" + value.checked),
       (err) => console.log(err)
+    ));
+  }
+
+  sendResetPassword(email: string) {
+    (this.authService.sendResetMail(email).subscribe(
+      () => this.myVariableColor = 'green',
+        error => this.myVariableColor = 'red'
+      )
     )
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

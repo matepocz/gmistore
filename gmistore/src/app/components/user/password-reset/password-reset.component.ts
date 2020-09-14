@@ -29,7 +29,7 @@ export class PasswordResetComponent implements OnInit {
 
   onSubmit() {
     this.formValue = this.resetPassForm.value;
-    this.authService.sendResetMail(this.formValue).subscribe(
+    this.authService.sendResetMail(this.formValue.email).subscribe(
       (r) => console.log(r),
       (error) => {
         this.mailNotSent = true;

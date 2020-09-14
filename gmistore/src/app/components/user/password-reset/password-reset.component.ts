@@ -7,7 +7,7 @@ import {emailValidator} from "../../../utils/email-validator";
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
-  styleUrls: ['./password-reset.component.css']
+  styleUrls: ['../register/register.component.css']
 })
 export class PasswordResetComponent implements OnInit {
   resetPassForm: FormGroup;

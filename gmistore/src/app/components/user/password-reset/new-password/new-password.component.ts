@@ -6,25 +6,24 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ComparePassword} from "../../../../utils/password-validator";
 import {errorHandler} from "../../../../utils/error-handler";
 import {Subscription} from "rxjs";
+import {RegisterComponent} from "../../register/register.component";
 
 @Component({
   selector: 'app-new-password',
   templateUrl: './new-password.component.html',
-  styleUrls: ['./new-password.component.css']
+  styleUrls: ['../../register/register.component.css']
 })
 export class NewPasswordComponent implements OnDestroy {
 
   hide: boolean = true;
+  newPasswordForm: FormGroup;
+  private resetPasswordSubscription: Subscription;
 
   resetPasswordData = new class implements PasswordResetToken {
     password: string;
     confirmPassword: string;
     token: string;
   };
-
-  newPasswordForm: FormGroup;
-  private resetPasswordSubscription: Subscription;
-  errorToken: boolean = false;
 
   constructor(private authService: AuthService,
               private activatedRoute: ActivatedRoute,
@@ -38,6 +37,7 @@ export class NewPasswordComponent implements OnDestroy {
     });
 
     this.newPasswordForm = this.formBuilder.group({
+        token:[null],
         password: [null,
           [Validators.required, Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]],
         confirmPassword: [null, [Validators.required]],
@@ -53,7 +53,6 @@ export class NewPasswordComponent implements OnDestroy {
       data => console.log(data),
       error => {
         errorHandler(error, this.newPasswordForm);
-        this.errorToken = true;
       },
       () => this.router.navigate(['/login'])
     );

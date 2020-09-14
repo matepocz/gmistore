@@ -10,10 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordTokenDto {
-
-    private String oldPassword;
-
-    private  String token;
-
-    private String newPassword;
+    private String token;
+    private String password;
+    private String confirmPassword;
 }

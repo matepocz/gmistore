@@ -42,44 +42,4 @@ public class UserController {
         UserDto userDto = userService.getUserData(username);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
-
-    @PostMapping("/resetPassword")
-    public GenericResponse findUserAndSendMailToResetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
-        resetPasswordService.findUserAndSendMailToResetPassword(request, userEmail);
-        return new GenericResponse(
-                "jkkj");
-    }
-
-    @GetMapping("/changePassword")
-    public String showChangePasswordPage(Locale locale, Model model,
-                                         @RequestParam("token") String token) {
-        String result = securityService.validatePasswordResetToken(token);
-
-        //TODO - redirect to frontend page
-        if (result != null) {
-//            String message = messages.getMessage("auth.message." + result, null, locale);
-            return "redirect:/login.html?lang="
-                    + locale.getLanguage() + "&message=";
-        } else {
-            model.addAttribute("token", token);
-            return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
-        }
-    }
-
-    @PostMapping("/savePassword")
-    public ResponseEntity<User> savePassword(final Locale locale, @Valid PasswordTokenDto passwordDto) {
-
-        String result = securityService.validatePasswordResetToken(passwordDto.getToken());
-        if (result != null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Optional<User> user = userService.getUserByPasswordResetToken(passwordDto.getToken());
-        if (user.isPresent()) {
-            userService.changeUserPassword(user.get(), passwordDto.getNewPassword());
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 }

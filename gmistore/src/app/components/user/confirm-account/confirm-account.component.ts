@@ -15,7 +15,6 @@ export class ConfirmAccountComponent implements OnInit {
     this.authService.confirmAccount().subscribe(data=>{
       console.log(data);
     },error => {console.log(error)},()=>{
-
     });
   }
 

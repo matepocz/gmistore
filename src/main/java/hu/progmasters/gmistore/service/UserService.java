@@ -102,5 +102,8 @@ public class UserService {
 
     public void changeUserPassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
+//        PasswordResetToken byTokenByUser = passwordTokenRepository.findPasswordResetTokenByUser(user);
+        passwordTokenRepository.deleteByUser(user);
+        userRepository.save(user);
     }
 }

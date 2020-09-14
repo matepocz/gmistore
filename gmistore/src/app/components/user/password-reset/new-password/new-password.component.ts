@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AuthService} from "../../../../service/auth-service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PasswordResetToken} from "../../../../models/passwordResetToken";
@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
   templateUrl: './new-password.component.html',
   styleUrls: ['./new-password.component.css']
 })
-export class NewPasswordComponent implements OnDestroy{
+export class NewPasswordComponent implements OnDestroy {
 
   hide: boolean = true;
 
@@ -24,6 +24,7 @@ export class NewPasswordComponent implements OnDestroy{
 
   newPasswordForm: FormGroup;
   private resetPasswordSubscription: Subscription;
+  errorToken: boolean = false;
 
   constructor(private authService: AuthService,
               private activatedRoute: ActivatedRoute,
@@ -50,7 +51,10 @@ export class NewPasswordComponent implements OnDestroy{
     this.resetPasswordData.confirmPassword = this.newPasswordForm.value.confirmPassword;
     this.resetPasswordSubscription = this.authService.confirmResetPassword(this.resetPasswordData).subscribe(
       data => console.log(data),
-      error => errorHandler(error, this.newPasswordForm),
+      error => {
+        errorHandler(error, this.newPasswordForm);
+        this.errorToken = true;
+      },
       () => this.router.navigate(['/login'])
     );
   }

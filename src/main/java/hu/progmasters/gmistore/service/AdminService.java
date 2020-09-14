@@ -1,8 +1,6 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.UserDto;
-import hu.progmasters.gmistore.dto.UserIsActiveDto;
-import hu.progmasters.gmistore.dto.UserRegistrationDTO;
+import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
@@ -67,5 +65,9 @@ public class AdminService {
     public void updateUserActivity(UserIsActiveDto userIsActive) {
         User userById = userService.getUserById(userIsActive.getId());
         userById.setActive(userIsActive.isActive());
+    }
+
+    public void updateUser(UserEditableDetailsDto user) {
+        userService.updateUserById(user);
     }
 }

@@ -3,6 +3,7 @@ package hu.progmasters.gmistore.controller;
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.response.GenericResponse;
 import hu.progmasters.gmistore.service.AdminService;
 import hu.progmasters.gmistore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,13 @@ public class AdminController {
     @PutMapping("users/active")
     ResponseEntity<Void> setUserIsActive(@RequestBody UserIsActiveDto userIsActive) {
         adminService.updateUserActivity(userIsActive);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/users")
+    ResponseEntity<Void> updateUserDetails(@RequestBody UserEditableDetailsDto user) {
+        System.out.println(user);
+        adminService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

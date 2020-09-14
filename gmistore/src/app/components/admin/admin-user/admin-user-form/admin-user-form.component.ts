@@ -6,6 +6,7 @@ import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
 import {errorHandler} from "../../../../utils/error-handler";
+import {UserEditableDetailsByAdmin} from "../../../../models/userEditableDetailsByAdmin";
 
 @Component({
   selector: 'app-admin-user-form',
@@ -76,8 +77,8 @@ export class AdminUserFormComponent implements OnInit {
   getUserDetails(id) {
     this.adminService.getInitRoles().subscribe(
       data => {
-      this.roleOptions = data
-    })
+        this.roleOptions = data
+      })
 
     this.adminService.getAccount(id).subscribe(data => {
       console.log(data);
@@ -119,17 +120,18 @@ export class AdminUserFormComponent implements OnInit {
 
   private createRolesToSend(): string[] {
     return this.userForm.value.roles
-      .map((role, index) => role ? this.roleOptions[index] : null)
+      .map((role, index) => role ? this.roleOptions[index].name : null)
       .filter(role => role !== null);
   }
 
-  onSubmit() {
-    const data = {...this.userForm.value};
+  onSubmit(id:number) {
+    const data: UserEditableDetailsByAdmin = {...this.userForm.value};
     data.roles = this.createRolesToSend();
+    data.id = id;
     this.updateUser(data);
   }
 
-  private updateUser(data: UserModel) {
+  private updateUser(data: UserEditableDetailsByAdmin) {
     this.adminService.updateUser(data).subscribe(
       () => this.router.navigate(['/admin/user']),
       error => errorHandler(error, this.userForm),

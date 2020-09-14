@@ -9,6 +9,7 @@ import {LocalStorageService} from "ngx-webstorage";
 import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../environments/environment";
 import {RoleModel} from "../models/role.model";
+import {PasswordResetToken} from "../models/passwordResetToken";
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,12 @@ export class AuthService {
     this.activatedRoute.queryParams.subscribe(params => {
       confirmAccountToken = params['token'];
     });
-    return this.httpClient.get(this.authUrl + "confirm-account/" + confirmAccountToken)
+    return this.httpClient.get(this.authUrl + "reset-account/" + confirmAccountToken)
+  }
+
+  confirmResetPassword(resetPasswordData: PasswordResetToken) {
+    console.log(resetPasswordData)
+    return this.httpClient.post<PasswordResetToken>(this.authUrl + "savePassword",resetPasswordData)
   }
 
   login(loginPayload: LoginRequestModel): Observable<boolean> {
@@ -71,6 +77,10 @@ export class AuthService {
 
   async getUserRoles(): Promise<Array<RoleModel>> {
     return await this.httpClient.get<Array<RoleModel>>(this.authUrl + 'user-roles').toPromise();
+  }
+
+  sendResetMail(mail) {
+    return this.httpClient.post(this.authUrl + 'resetPassword?email=' + mail.email,null);
   }
 
   isAuthenticated(): boolean {

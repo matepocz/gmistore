@@ -65,6 +65,12 @@ import {ChartsModule} from 'ng2-charts';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-form/admin-user-form.component';
+import {ShippingAddressComponent} from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
+import {BillingAddressComponent} from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
+import {MatChipsModule} from "@angular/material/chips";
+import {AdminCategoriesComponent} from './components/admin/admin-categories/admin-categories.component';
+import {MatTabsModule} from "@angular/material/tabs";
 import { AdminUserFormComponent } from './components/admin/admin-user/admin-user-form/admin-user-form.component';
 import { ShippingAddressComponent } from './components/admin/admin-user/admin-user-form/shipping-address/shipping-address.component';
 import { BillingAddressComponent } from './components/admin/admin-user/admin-user-form/billing-address/billing-address.component';
@@ -104,6 +110,7 @@ import { NewPasswordComponent } from './components/user/password-reset/new-passw
     ShippingAddressComponent,
     BillingAddressComponent,
     CheckoutComponent,
+    AdminCategoriesComponent,
     PasswordResetComponent,
     NewPasswordComponent
   ],
@@ -149,7 +156,8 @@ import { NewPasswordComponent } from './components/user/password-reset/new-passw
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-
+    MatChipsModule,
+    MatTabsModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

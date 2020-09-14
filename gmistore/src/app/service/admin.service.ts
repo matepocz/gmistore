@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
@@ -7,6 +7,8 @@ import {UserModel} from "../models/user-model";
 import {UserIsActiveModel} from "../models/userIsActiveModel";
 import {UserListDetailsModel} from "../models/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
+import {MainCategoryModel} from "../models/main-category.model";
+import {NewCategoryModel} from "../models/new-category.model";
 import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 
 @Injectable({
@@ -14,6 +16,7 @@ import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 })
 export class AdminService {
   private adminUrl = environment.apiUrl + 'admin/';
+  private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -39,6 +42,12 @@ export class AdminService {
     return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
   }
 
+  getProductCategories(): Observable<Array<MainCategoryModel>> {
+    return this.httpClient.get<Array<MainCategoryModel>>(this.lookupUrl + '/categories');
+  }
+
+  createNewProductCategory(data: NewCategoryModel): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.lookupUrl + '/new-category', data);
   updateUser(data: UserEditableDetailsByAdmin): Observable<any>{
     return this.httpClient.put(this.adminUrl + 'users', data);
   }

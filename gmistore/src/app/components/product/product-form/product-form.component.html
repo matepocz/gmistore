@@ -48,17 +48,55 @@
       <div fxFlex="100" fxLayout="column">
         <mat-form-field appearance="outline">
           <mat-label>Kategória</mat-label>
-          <mat-select formControlName="category" required>
+          <mat-select formControlName="mainCategory" (selectionChange)="fetchSubCategories($event)" required>
             <mat-option>--</mat-option>
-            <mat-option *ngFor="let category of categories | keyvalue" [value]="category.key">
-              {{ category.value }}
+            <mat-option *ngFor="let category of mainProductCategories" [value]="category.id">
+              {{ category.displayName }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="productForm.get('category').hasError('required')">Kategória szükséges!</mat-error>
-          <mat-error *ngIf="productForm.get('category').errors?.serverError">
-            {{ productForm.get('category').errors?.serverError}}
+
+          <mat-error *ngIf="productForm.get('mainCategory').hasError('required')">Kategória szükséges!</mat-error>
+          <mat-error *ngIf="productForm.get('mainCategory').errors?.serverError">
+            {{ productForm.get('mainCategory').errors?.serverError}}
           </mat-error>
           <mat-hint></mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="100" fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Termék kategória</mat-label>
+          <mat-select formControlName="subCategory" (selectionChange)="setCurrentSubCategory($event)" required>
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let category of subProductCategories" [value]="category.key">
+              {{ category.displayName }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="productForm.get('subCategory').hasError('required')">Kategória szükséges!</mat-error>
+          <mat-error *ngIf="productForm.get('subCategory').errors?.serverError">
+            {{ productForm.get('subCategory').errors?.serverError}}
+          </mat-error>
+          <mat-hint></mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="100" class="mb-15">
+        <mat-form-field [style.width]="'100%'" appearance="outline">
+          <mat-label>Főbb jellemzők</mat-label>
+          <mat-chip-list #chipList aria-label="Key informations">
+            <mat-chip *ngFor="let feature of productFeatures" [selectable]="selectableDetails"
+                      [removable]="removableDetails" (removed)="removeFeature(feature)">
+              {{ feature }}
+              <mat-icon matChipRemove *ngIf="removableDetails">cancel</mat-icon>
+            </mat-chip>
+
+            <label>
+              <input placeholder="" [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                     (matChipInputTokenEnd)="addFeature($event)">
+            </label>
+          </mat-chip-list>
+          <mat-hint align="end">Vesszővel elválasztva, maximum {{ productFeatures?.length }} / 5</mat-hint>
         </mat-form-field>
       </div>
 
@@ -148,7 +186,8 @@
             <div class="example-handle" cdkDragHandle>
               <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
                 <path
-                  d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                  d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9
+                  3h-4v3H7l5 5 5-5h-3v-3z"></path>
                 <path d="M0 0h24v24H0z" fill="none"></path>
               </svg>
             </div>

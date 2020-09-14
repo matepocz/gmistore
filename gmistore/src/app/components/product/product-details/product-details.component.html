@@ -29,10 +29,17 @@
 
         <mat-card-content>
           <p>Termék azonosító: {{product.productCode}}</p>
-          <p>Kategória: {{product.category}}</p>
+          <p>Kategória: {{product.subCategory.displayName}}</p>
           <p>{{product.warrantyMonths}} hónap garancia</p>
           <p>{{product.quantitySold}} eladott darab</p>
         </mat-card-content>
+      </div>
+
+      <div fxFlex="100" fxLayout="column" *ngIf="product?.features.length > 0">
+        <mat-panel-title>Főbb jellemzők: </mat-panel-title>
+        <ul>
+          <li *ngFor="let feature of product.features">{{ feature }}</li>
+        </ul>
       </div>
 
 

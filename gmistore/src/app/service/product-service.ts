@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ProductModel} from "../models/product-model";
 import {environment} from "../../environments/environment";
+import {ProductCategoryModel} from "../models/product-category.model";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {environment} from "../../environments/environment";
 export class ProductService {
   private productsUrl = environment.apiUrl + 'api/products';
   private imageUploadUrl = environment.apiUrl + 'api/images/upload';
+  private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -26,8 +28,16 @@ export class ProductService {
     return this.httpClient.get<ProductModel[]>(this.productsUrl);
   }
 
-  getProductCategories(): Observable<String[]> {
-    return this.httpClient.get<String[]>(this.productsUrl + '/categories');
+  getProductsByCategory(category: string): Observable<Array<ProductModel>> {
+    return this.httpClient.get<Array<ProductModel>>(this.productsUrl + '/by-category/' + category);
+  }
+
+  getMainProductCategories(): Observable<Array<ProductCategoryModel>> {
+    return this.httpClient.get<Array<ProductCategoryModel>>(this.lookupUrl + '/main-product-categories');
+  }
+
+  getSubProductCategories(id: number): Observable<Array<ProductCategoryModel>> {
+    return this.httpClient.get<Array<ProductCategoryModel>>(this.lookupUrl + '/sub-product-categories/' + id);
   }
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {

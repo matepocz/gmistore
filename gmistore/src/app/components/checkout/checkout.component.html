@@ -6,9 +6,9 @@
     <mat-card-title>Rendelés véglegesítése</mat-card-title>
 
     <mat-vertical-stepper fxFlex="100" fxLayout="column" [linear]="true" *ngIf="customerDetails">
-      <mat-step fxFlex="100" [stepControl]="detailsForm" [completed]="detailsForm.valid" [editable]="true">
-        <form [formGroup]="detailsForm" fxLayout="row wrap">
-          <ng-template matStepLabel fxFlex="100">Adataid:</ng-template>
+      <mat-step fxFlex="100" fxLayout="column" [stepControl]="detailsForm" [completed]="detailsForm.valid" [editable]="true">
+        <form [formGroup]="detailsForm" fxFlex="100" fxLayout="row wrap">
+          <ng-template matStepLabel>Adataid:</ng-template>
 
           <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
 
@@ -78,7 +78,7 @@
 
       <mat-step [stepControl]="shippingAddressForm" [completed]="shippingAddressForm.valid" [editable]="true">
         <form [formGroup]="shippingAddressForm" fxLayout="row wrap">
-          <ng-template matStepLabel fxFlex="100">Szállítási cím</ng-template>
+          <ng-template matStepLabel>Szállítási cím</ng-template>
 
           <div fxFlex="100" fxLayout="row wrap" fxLayoutGap="10px">
 
@@ -194,7 +194,7 @@
       </mat-step>
 
       <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
-        <ng-template fxFlex="100" matStepLabel>Fizetési mód</ng-template>
+        <ng-template matStepLabel>Fizetési mód</ng-template>
         <div fxFlex="100" class="mt-15 mb-15">
           <mat-radio-group aria-labelledby="payment-methods" class="payment-radio-group"
                            fxLayout="column" fxLayoutGap="10px" [(ngModel)]="chosenPaymentMethod">
@@ -213,7 +213,7 @@
       </mat-step>
 
       <mat-step fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-evenly">
-        <ng-template fxFlex="100" matStepLabel>Összegzés</ng-template>
+        <ng-template matStepLabel>Összegzés</ng-template>
 
         <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="space-between">
           <mat-card fxFlex="32" fxFlex.lt-md="100" fxLayout="column">

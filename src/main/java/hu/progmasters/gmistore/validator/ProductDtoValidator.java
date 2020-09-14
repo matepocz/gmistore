@@ -32,8 +32,11 @@ public class ProductDtoValidator implements Validator {
         if (productDto.getName() == null) {
             errors.rejectValue("name", "product.name.empty");
         }
-        if (productDto.getCategory() == null) {
-            errors.rejectValue("category", "product.category.empty");
+        if (productDto.getMainCategory() == null) {
+            errors.rejectValue("mainCategory", "product.category.empty");
+        }
+        if (productDto.getSubCategory() == null) {
+            errors.rejectValue("subCategory", "product.category.empty");
         }
         if (productDto.getPrice() == null || productDto.getPrice() <= 0.0) {
             errors.rejectValue("price", "product.price.negative");

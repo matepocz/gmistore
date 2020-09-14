@@ -19,7 +19,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   @ViewChild('form') formValues;
   registerForm: FormGroup;
   registerRequest: RegisterRequestModel
-  hide: boolean = true;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
   isSeller: boolean = false;
 
   registerSubscription: Subscription;

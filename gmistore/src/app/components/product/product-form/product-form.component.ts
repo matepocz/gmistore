@@ -8,6 +8,10 @@ import {Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {ProductCategoryModel} from "../../../models/product-category.model";
+import {MatSelectChange} from "@angular/material/select";
+import {COMMA, ENTER} from "@angular/cdk/keycodes";
+import {MatChipInputEvent} from "@angular/material/chips";
 
 @Component({
   selector: 'app-product-form',
@@ -16,15 +20,24 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
 
-  categories: Map<String, String>;
+  selectableDetails: boolean = true;
+  removableDetails: boolean = true;
+  addOnBlur: boolean = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  productFeatures: Array<string> = new Array<string>();
+
+  mainProductCategories: Array<ProductCategoryModel>;
+  subProductCategories: Array<ProductCategoryModel> = new Array<ProductCategoryModel>();
+
   product: ProductModel;
   productName: string;
   productCode: string;
-  currentCategory: string;
+  currentMainCategory: ProductCategoryModel;
+  currentSubCategory: ProductCategoryModel;
 
   selectedFiles: FileList;
   productPictures: string[];
-  loading = false;
+  loading: boolean = false;
   slug: string;
 
   productForm = this.formBuilder.group({
@@ -35,7 +48,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
     description: [null, Validators.compose(
       [Validators.required, Validators.minLength(10)])],
-    category: [null, Validators.required],
+    mainCategory: [null, Validators.required],
+    subCategory: [null, Validators.required],
     pictureUrl: [null],
     pictures: [null],
     price: [null, Validators.compose([Validators.required, Validators.min(0)])],
@@ -47,7 +61,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     active: [false],
   });
 
-  categorySubscription: Subscription;
+  mainCategorySub: Subscription;
+  subCategorySub: Subscription;
   productSubscription: Subscription;
   submitProductSub: Subscription;
   paramMapSub: Subscription;
@@ -60,69 +75,140 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = true;
     this.titleService.setTitle("Új termék");
-    this.categories = new Map<String, String>();
+    this.fetchMainCategories();
+
     this.productPictures = new Array<string>();
-    this.categorySubscription = this.productService.getProductCategories().subscribe(
-      (data) => {
-        for (let value in data) {
-          this.categories.set(value, data[value]);
-        }
-        this.loading = false;
-      }, (error) => {
-        console.warn(error);
-      }
-    );
+
     this.paramMapSub = this.activatedRoute.paramMap.subscribe(
       (data) => {
         this.slug = data.get('slug');
         if (this.slug) {
+          this.loading = true;
           this.productForm.get('name').disable();
           this.productForm.get('productCode').disable();
           this.titleService.setTitle("Termék szerkesztése");
+
           this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
             (data) => {
               this.product = data;
               this.productName = this.product.name;
               this.productCode = this.product.productCode;
-              this.currentCategory = data.category;
+              this.currentMainCategory = data.mainCategory;
+              this.currentSubCategory = data.subCategory;
+              this.productFeatures = data.features;
+              this.fetchCurrentSubCategories();
             }, (error) => {
               console.log(error);
             }, () => {
               this.productPictures = this.product.pictures;
-              this.setCurrentCategory();
-
-              this.productForm.patchValue({
-                id: this.product.id,
-                name: this.product.name,
-                slug: this.product.slug,
-                productCode: this.product.productCode,
-                description: this.product.description,
-                category: this.currentCategory,
-                pictureUrl: this.product.pictureUrl,
-                pictures: this.product.pictures,
-                price: this.product.price,
-                discount: this.product.discount,
-                warrantyMonths: this.product.warrantyMonths,
-                quantityAvailable: this.product.quantityAvailable,
-                active: this.product.active,
-                addedBy: this.product.addedBy
-              });
+              this.pathValueProductForm();
+              this.loading = false;
             });
         }
       }
     )
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.productPictures, event.previousIndex, event.currentIndex);
+  fetchMainCategories() {
+    this.mainCategorySub = this.productService.getMainProductCategories().subscribe(
+      (response: Array<ProductCategoryModel>) => {
+        this.mainProductCategories = response;
+        this.loading = false;
+      }, (error) => {
+        console.log(error);
+        this.loading = false;
+      }
+    );
   }
 
-  private setCurrentCategory() {
-    this.categories.forEach((value, key) => {
-      if (value === this.product.category) {
-        this.currentCategory = key.toString();
-      }
+  pathValueProductForm() {
+    this.productForm.patchValue({
+      id: this.product.id,
+      name: this.product.name,
+      slug: this.product.slug,
+      productCode: this.product.productCode,
+      description: this.product.description,
+      mainCategory: this.currentMainCategory.id,
+      subCategory: this.currentSubCategory.key,
+      pictureUrl: this.product.pictureUrl,
+      pictures: this.product.pictures,
+      price: this.product.price,
+      discount: this.product.discount,
+      warrantyMonths: this.product.warrantyMonths,
+      quantityAvailable: this.product.quantityAvailable,
+      active: this.product.active,
+      addedBy: this.product.addedBy
     });
+  }
+
+  fetchCurrentSubCategories() {
+    this.subCategorySub = this.productService.getSubProductCategories(this.currentMainCategory.id).subscribe(
+      (response: Array<ProductCategoryModel>) => {
+        this.subProductCategories = response;
+      }, (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  fetchSubCategories($event: MatSelectChange) {
+    if ($event.value !== undefined) {
+      this.loading = true;
+      this.setCurrentMainCategory($event);
+      this.subCategorySub = this.productService.getSubProductCategories($event.value).subscribe(
+        (response: Array<ProductCategoryModel>) => {
+          this.subProductCategories = response;
+          this.loading = false;
+        }, (error) => {
+          console.log(error);
+          this.loading = false;
+        }
+      );
+    }
+  }
+
+  setCurrentMainCategory($event: MatSelectChange) {
+    this.mainProductCategories.forEach(
+      (category) => {
+        if (category.id === $event.value) {
+          this.currentMainCategory = category;
+        }
+      }
+    );
+  }
+
+  setCurrentSubCategory($event: MatSelectChange) {
+    this.subProductCategories.forEach(
+      (category) => {
+        if (category.key === $event.value) {
+          this.currentSubCategory = category;
+        }
+      }
+    );
+  }
+
+  addFeature($event: MatChipInputEvent) {
+    const input = $event.input;
+    const value = $event.value;
+
+    if ((value || '').trim() && this.productFeatures.length < 5) {
+      this.productFeatures.push(value.trim());
+    }
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  removeFeature(feature: string): void {
+    const index = this.productFeatures.indexOf(feature);
+
+    if (index >= 0) {
+      this.productFeatures.splice(index, 1);
+    }
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.productPictures, event.previousIndex, event.currentIndex);
   }
 
   onSubmit() {
@@ -131,33 +217,42 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (this.productPictures.length > 0) {
       this.product.pictureUrl = this.productPictures[0];
     }
-    if (this.slug) {
-      this.product.name = this.productName;
-      this.product.productCode = this.productCode;
-    }
+    this.product.mainCategory = this.currentMainCategory;
+    this.product.subCategory = this.currentSubCategory;
     this.product.pictures = this.productPictures;
-    this.product.addedBy = this.localStorageService.retrieve("username");
+    this.product.features = this.productFeatures;
 
     if (this.slug) {
-      this.submitProductSub = this.productService.updateProduct(this.product, this.slug).subscribe(
-        () => {
-        },
-        error => errorHandler(error, this.productForm),
-        () => {
-          this.router.navigate(['product', this.slug]);
-        }
-      )
+      this.processProductUpdate();
     } else {
-      this.submitProductSub = this.productService.addProduct(this.product).subscribe(
-        () => {
-        }, (error) => {
-          errorHandler(error, this.productForm);
-        }, () => {
-          this.router.navigate(['product-list']);
-        }
-      );
+      this.processNewProduct();
     }
     this.loading = false;
+  }
+
+  processNewProduct() {
+    this.product.addedBy = this.localStorageService.retrieve("username");
+    this.submitProductSub = this.productService.addProduct(this.product).subscribe(
+      () => {
+      }, (error) => {
+        errorHandler(error, this.productForm);
+      }, () => {
+        this.router.navigate(['product-list']);
+      }
+    );
+  }
+
+  processProductUpdate() {
+    this.product.name = this.productName;
+    this.product.productCode = this.productCode;
+    this.submitProductSub = this.productService.updateProduct(this.product, this.slug).subscribe(
+      () => {
+      },
+      error => errorHandler(error, this.productForm),
+      () => {
+        this.router.navigate(['product', this.slug]);
+      }
+    )
   }
 
   onFileChange(event) {
@@ -191,7 +286,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.paramMapSub.unsubscribe();
-    this.categorySubscription.unsubscribe();
+    this.mainCategorySub.unsubscribe();
+    if (this.subCategorySub) {
+      this.subCategorySub.unsubscribe();
+    }
     if (this.productSubscription) {
       this.productSubscription.unsubscribe();
     }

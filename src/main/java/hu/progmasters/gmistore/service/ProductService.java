@@ -1,10 +1,11 @@
 package hu.progmasters.gmistore.service;
 
 import com.github.slugify.Slugify;
+import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.dto.ProductDto;
-import hu.progmasters.gmistore.enums.Category;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
+import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ProductRepository;
@@ -15,12 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -31,13 +29,15 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
     private final UserRepository userRepository;
+    private final LookupService lookupService;
 
     @Autowired
     public ProductService(ProductRepository productRepository, InventoryService inventoryService,
-                          UserRepository userRepository) {
+                          UserRepository userRepository, LookupService lookupService) {
         this.productRepository = productRepository;
         this.inventoryService = inventoryService;
         this.userRepository = userRepository;
+        this.lookupService = lookupService;
     }
 
     /**
@@ -58,7 +58,9 @@ public class ProductService {
         product.setProductCode(productDto.getProductCode());
         product.setSlug(generateSlug(productDto.getName(), productDto.getProductCode()));
         product.setDescription(productDto.getDescription());
-        product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
+        product.setMainCategory(getCategoryByKey(productDto.getMainCategory().getKey()));
+        product.setSubCategory(getCategoryByKey(productDto.getSubCategory().getKey()));
+        product.setFeatures(productDto.getFeatures());
         product.setPictureUrl(productDto.getPictureUrl());
         product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
@@ -68,6 +70,10 @@ public class ProductService {
         product.setActive(productDto.isActive());
         product.setAddedBy(productDto.getAddedBy());
         return product;
+    }
+
+    LookupEntity getCategoryByKey(String key) {
+        return lookupService.getCategoryByKey(key);
     }
 
     private String generateSlug(String name, String productCode) {
@@ -96,6 +102,21 @@ public class ProductService {
         List<Product> allProduct = productRepository.findAll();
         return allProduct.stream().map(this::mapProductToProductDto)
                 .filter(ProductDto::isActive).collect(Collectors.toList());
+    }
+
+    /**
+     * Fetch all active products where subcategory equals to given category
+     *
+     * @param category The given category
+     * @return A List of ProductDto
+     */
+    public List<ProductDto> getActiveProductsByCategory(String category) {
+        LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
+        List<Product> productsBySubCategory = productRepository.findProductsBySubCategory(categoryByKey);
+        return productsBySubCategory.stream()
+                .filter(Product::isActive)
+                .map(this::mapProductToProductDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -128,7 +149,9 @@ public class ProductService {
         productDto.setProductCode(product.getProductCode());
         productDto.setSlug(product.getSlug());
         productDto.setDescription(product.getDescription());
-        productDto.setCategory(product.getCategory().getDisplayName());
+        productDto.setMainCategory(new ProductCategoryDetails(product.getMainCategory()));
+        productDto.setSubCategory(new ProductCategoryDetails(product.getSubCategory()));
+        productDto.setFeatures(product.getFeatures());
         productDto.setPictureUrl(product.getPictureUrl());
         productDto.setPictures(product.getPictures());
         productDto.setPrice(product.getPrice());
@@ -170,7 +193,9 @@ public class ProductService {
         product.setName(productDto.getName());
         product.setProductCode(productDto.getProductCode());
         product.setDescription(productDto.getDescription());
-        product.setCategory(Category.valueOf(productDto.getCategory().toUpperCase()));
+        product.setMainCategory(getCategoryByKey(productDto.getMainCategory().getKey()));
+        product.setSubCategory(getCategoryByKey(productDto.getSubCategory().getKey()));
+        product.setFeatures(productDto.getFeatures());
         product.setPictureUrl(productDto.getPictureUrl());
         product.setPictures(productDto.getPictures());
         product.setPrice(productDto.getPrice());
@@ -209,16 +234,5 @@ public class ProductService {
             isAdmin = userByUsername.get().getRoles().contains(Role.ROLE_ADMIN);
         }
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
-    }
-
-    public Map<Category, String> getProductCategories() {
-        Map<Category, String> categoriesWithDisplayNames = new EnumMap<>(Category.class);
-        Category[] categories = Category.values();
-        List<String> displayNames =
-                Stream.of(Category.values()).map(Category::getDisplayName).collect(Collectors.toList());
-        for (int i = 0; i < categories.length; i++) {
-            categoriesWithDisplayNames.put(categories[i], displayNames.get(i));
-        }
-        return categoriesWithDisplayNames;
     }
 }

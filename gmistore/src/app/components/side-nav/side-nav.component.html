@@ -1,6 +1,6 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
   <mat-sidenav-container class="sidenav-container" [hasBackdrop]="true">
-<!--                         [style.marginTop.px]="mobileQuery.matches ? 56 : 0">-->
+    <!--                         [style.marginTop.px]="mobileQuery.matches ? 56 : 0">-->
     <mat-sidenav #drawer class="sidenav" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56"
                  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                  [mode]="mobileQuery.matches ? 'over' : 'side'">
@@ -18,18 +18,48 @@
 
       <mat-toolbar color="primary" class="nav-bar" fxLayout="row" fxLayoutAlign="center">
         <mat-toolbar-row fxFlex.gt-sm="81">
-          <button type="button" fxHide.gt-sm="true" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+          <button type="button" fxHide.gt-sm="true" aria-label="Toggle sidenav" mat-icon-button
+                  (click)="drawer.toggle()">
             <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
           </button>
           <span>GMI</span>
 
-          <a fxHide.lt-md="true" mat-button [routerLink]="'/product-list'">Termékek</a>
+          <button mat-button fxHide.lt-md="true" [matMenuTriggerFor]="level1" [matMenuTriggerData]="categories"
+          aria-label="Categories menu button">
+            Kategóriák
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+
+          <mat-menu #level1="matMenu">
+            <ng-template matMenuContent>
+              <ng-template ngFor let-item [ngForOf]="categories">
+                <button mat-menu-item *ngIf="item.subCategories?.length > 0" [matMenuTriggerFor]="level2"
+                        [matMenuTriggerData]="getData(item)">{{item.displayName}}</button>
+                <button mat-menu-item *ngIf="!item.subCategories"
+                        [routerLink]="['/product-list']" [queryParams]="{category: item.key}">
+                  {{item.displayName}}
+                </button>
+              </ng-template>
+            </ng-template>
+          </mat-menu>
+
+          <mat-menu #level2="matMenu">
+            <ng-template matMenuContent let-data="data">
+              <ng-template ngFor let-item [ngForOf]="data">
+                <button mat-menu-item [routerLink]="['/product-list']" [queryParams]="{category: item.key}">
+                  {{ item.displayName }}
+                </button>
+              </ng-template>
+            </ng-template>
+          </mat-menu>
+
           <span class="spacer"></span>
           <a mat-button [routerLink]="'/register'" *ngIf="!authenticatedUser">Regisztráció</a>
           <a mat-button [routerLink]="'/login'" *ngIf="!authenticatedUser">Bejelentkezés</a>
 
           <button fxHide.lt-md="true" mat-icon-button *ngIf="authenticatedUser" [matMenuTriggerFor]="menu"
-                  aria-label="Icon button for user options" matTooltip="Felhasználó opciók" [style.margin-right]="'10px'">
+                  aria-label="Icon button for user options" matTooltip="Felhasználó opciók"
+                  [style.margin-right]="'10px'">
             <mat-icon>person</mat-icon>
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
@@ -50,14 +80,16 @@
           </mat-menu>
 
           <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon"
-          *ngIf="authenticatedUser">
-            <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()" matBadgeSize="medium"
+                  *ngIf="authenticatedUser">
+            <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()"
+                      matBadgeSize="medium"
                       matBadgeOverlap="false">favorite
             </mat-icon>
           </button>
           <button mat-icon-button class="example-icon" [routerLink]="['/cart']"
                   aria-label="Example icon-button with share icon" id="cart-icon">
-            <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart</mat-icon>
+            <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart
+            </mat-icon>
           </button>
 
         </mat-toolbar-row>

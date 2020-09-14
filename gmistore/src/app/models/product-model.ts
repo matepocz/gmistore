@@ -1,10 +1,14 @@
+import {ProductCategoryModel} from "./product-category.model";
+
 export interface ProductModel {
   id: number;
   name: string;
   productCode: string;
   slug: string;
   description: string;
-  category: string;
+  mainCategory: ProductCategoryModel;
+  subCategory: ProductCategoryModel;
+  features: Array<string>;
   pictureUrl: string;
   pictures: Array<string>;
   price: number;

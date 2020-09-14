@@ -35,7 +35,7 @@ public class ImageService {
         String[] result = new String[2];
 
         result[0] = ((String) uploadResult.get("public_id"));
-        result[1] = ((String) uploadResult.get("url"));
+        result[1] = ((String) uploadResult.get("secure_url"));
 
         return result;
     }

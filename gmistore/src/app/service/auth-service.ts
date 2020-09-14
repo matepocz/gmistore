@@ -110,6 +110,6 @@ export class AuthService {
     this.isAdmin.next(false);
     this.isSeller.next(false);
     this.currentUserRoles.next(new Array<RoleModel>());
-    return this.httpClient.post(environment.apiUrl + 'logout', {});
+    return this.httpClient.post(environment.apiUrl + 'api/logout', {});
   }
 }

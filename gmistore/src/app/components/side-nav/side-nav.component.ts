@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints, MediaMatcher} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
@@ -13,8 +13,10 @@ import {AdminService} from "../../service/admin.service";
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.css']
 })
+
 export class SideNavComponent implements OnInit {
   mobileQuery: MediaQueryList;
+  @ViewChild('drawer') drawer: ElementRef;
 
   private readonly _mobileQueryListener: () => void;
   opened: boolean = false;
@@ -52,7 +54,6 @@ export class SideNavComponent implements OnInit {
     this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
-        console.log(this.categories);
       }, (error) => {
         console.log(error);
       }
@@ -108,6 +109,14 @@ export class SideNavComponent implements OnInit {
   getData(selected) {
     let mainCategoryModel = this.categories.find(item => item.key === selected.key);
     return {data: mainCategoryModel.subCategories};
+  }
+
+  closeNav() {
+    this.opened = false;
+  }
+
+  openNav() {
+    this.opened = true;
   }
 
   ngOnDestroy(): void {

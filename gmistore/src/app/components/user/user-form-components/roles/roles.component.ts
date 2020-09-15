@@ -38,6 +38,10 @@ export class RolesComponent implements OnInit {
       });
   }
 
+  changeCheckBox() {
+    this.rolesToSend.emit(this.createRolesToSend());
+  }
+
   createRolesToSend = () => {
     return this.userDataForm.value.roles
       .map((role, index) => role ? this.roleOptions[index].name : null)

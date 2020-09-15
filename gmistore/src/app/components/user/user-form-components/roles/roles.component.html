@@ -2,7 +2,7 @@
 <h2>Szerep kiválasztása</h2>
 <ul formArrayName="roles" *ngFor="let role of getRolesFormArray().controls; let i = index">
   <li>
-    <mat-checkbox color="primary" (change)="createRolesToSend()" [formControlName]="i">
+    <mat-checkbox color="primary" (change)="changeCheckBox()" [formControlName]="i">
       {{ roleOptions[i].displayName }}</mat-checkbox>
   </li>
 </ul>

@@ -32,13 +32,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       firstName: [null,
-        [Validators.required, Validators.min(3), Validators.max(30), Validators.nullValidator]],
+        [Validators.required, Validators.minLength(3), Validators.maxLength(100),
+          Validators.nullValidator]],
       lastName: [null,
-        [Validators.required, Validators.min(3), Validators.max(15), Validators.nullValidator]],
+        [Validators.required, Validators.minLength(3), Validators.maxLength(100),
+          Validators.nullValidator]],
       username: [null,
-        [Validators.required, Validators.min(5), Validators.max(15), Validators.nullValidator],
-        [usernameValidator(this.authService)]],
-      email: [null, [Validators.required, Validators.email], [emailValidator(this.authService)]],
+        [Validators.required, Validators.minLength(5), Validators.maxLength(100),
+          Validators.nullValidator], [usernameValidator(this.authService)]],
+      email: [null, Validators.compose(
+        [Validators.required, Validators.email, Validators.maxLength(100)]),
+        [emailValidator(this.authService)]],
       password: [null,
         [Validators.required, Validators.nullValidator,
           Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}")]],
@@ -49,6 +53,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
 
   onSubmit() {
+    console.log(this.registerForm.get('username'));
     this.registerRequest = this.registerForm.value;
 
     this.registerSubscription = this.authService.register(this.registerRequest).subscribe(

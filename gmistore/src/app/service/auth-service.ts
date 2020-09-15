@@ -38,7 +38,7 @@ export class AuthService {
     this.activatedRoute.queryParams.subscribe(params => {
       confirmAccountToken = params['token'];
     });
-    return this.httpClient.get(this.authUrl + "reset-account/" + confirmAccountToken)
+    return this.httpClient.get(this.authUrl + "confirm-account/" + confirmAccountToken)
   }
 
   confirmResetPassword(resetPasswordData: PasswordResetToken) {

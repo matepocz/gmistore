@@ -83,8 +83,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
   addToCart(id: number) {
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
       (response) => {
-        this.sideNavComponent.updateItemsInCart(0);
-        this.openSnackBar('A termék a kosárba került!');
+        if (response) {
+          this.openSnackBar('A termék a kosárba került!');
+          this.sideNavComponent.updateItemsInCart(0);
+        } else {
+          this.openSnackBar("A kért mennyiség nincs készleten!");
+        }
       }, (error) => {
         console.log(error);
         this.openSnackBar("Valami hiba történt!");

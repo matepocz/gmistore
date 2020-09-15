@@ -128,9 +128,13 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   addToCart(id: number) {
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
-      () => {
-        this.openSnackBar("Termék a kosárba került!");
-        this.sideNavComponent.updateItemsInCart(0);
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("A termék a kosárba került!");
+          this.sideNavComponent.updateItemsInCart(0);
+        } else {
+          this.openSnackBar("A kért mennyiség nincs készleten!");
+        }
       }, (error) => {
         console.log(error);
         this.openSnackBar("Valami hiba történt!");
@@ -194,7 +198,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         if (response === true) {
           this.openSnackBar("Értékelés törölve!");
         } else {
-          this.openSnackBar("Nincs jogosultságod a művelethez");
+          this.openSnackBar("Nincs jogosultságod a művelethez!");
         }
       }, error => console.log(error)
     )
@@ -202,8 +206,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   voteRating(id: number) {
     let actualRating: RatingModel = new RatingModel();
-    let username = this.localStorageService.retrieve('username');
-
+    let username = this.authService.currentUsername;
     this.ratings.find((rating) => {
         if (rating.id === id) {
           actualRating = rating;
@@ -223,7 +226,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.ratingVoteSub = this.ratingService.upVoteRating(id).subscribe(
       () => {
         rating.upVotes++;
-        rating.voters.push(this.localStorageService.retrieve('username'));
+        rating.voters.push(this.authService.currentUsername);
         this.loading = false;
       }, (error) => {
         console.log(error);
@@ -236,7 +239,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.ratingVoteSub = this.ratingService.removeUpVoteRating(id).subscribe(
       () => {
-        let username = this.localStorageService.retrieve('username');
+        let username = this.authService.currentUsername;
         let indexOfUsername = 0;
         rating.voters.forEach((name) => {
           if (name === username) {

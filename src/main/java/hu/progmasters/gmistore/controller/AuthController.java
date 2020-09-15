@@ -13,6 +13,7 @@ import hu.progmasters.gmistore.service.ResetPasswordService;
 import hu.progmasters.gmistore.service.SecurityService;
 import hu.progmasters.gmistore.service.UserService;
 import hu.progmasters.gmistore.validator.RegisterRequestValidator;
+import hu.progmasters.gmistore.validator.ResetPasswordValidator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,23 +44,31 @@ public class AuthController {
     private final SecurityService securityService;
     private final ResetPasswordService resetPasswordService;
     private final UserService userService;
+    private final ResetPasswordValidator resetPasswordValidator;
 
     @Autowired
     public AuthController(AuthService authService,
                           RegisterRequestValidator registerRequestValidator,
                           SecurityService securityService,
                           ResetPasswordService resetPasswordService,
-                          UserService userService) {
+                          UserService userService,
+                          ResetPasswordValidator resetPasswordValidator) {
         this.authService = authService;
         this.registerRequestValidator = registerRequestValidator;
         this.securityService = securityService;
         this.resetPasswordService = resetPasswordService;
         this.userService = userService;
+        this.resetPasswordValidator = resetPasswordValidator;
     }
 
     @InitBinder("registerRequest")
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(registerRequestValidator);
+    }
+
+    @InitBinder("passwordTokenDto")
+    protected void initResetPasswordBinder(WebDataBinder binder) {
+        binder.addValidators(resetPasswordValidator);
     }
 
     @PostMapping("/register")
@@ -111,7 +120,7 @@ public class AuthController {
     }
 
     @PostMapping("/savePassword")
-    public ResponseEntity<User> savePassword(final Locale locale, @RequestBody PasswordTokenDto passwordDto) {
+    public ResponseEntity<User> savePassword(@Valid @RequestBody PasswordTokenDto passwordDto) {
         System.out.println(passwordDto.getToken());
         String result = securityService.validatePasswordResetToken(passwordDto.getToken());
         if (result != null) {

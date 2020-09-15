@@ -10,10 +10,9 @@ export interface UserModel {
   billingAddress?: AddressModel;
   email: string;
   phoneNumber: string;
-  roles: Array<string>;
+  roles?: Array<string>;
   registered: Date;
-  active: boolean;
-  orderList: Array<OrderModel>;
+  orderList?: Array<OrderModel>;
 
 }
 

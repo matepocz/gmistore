@@ -6,11 +6,14 @@ import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.response.GenericResponse;
 import hu.progmasters.gmistore.service.AdminService;
 import hu.progmasters.gmistore.service.UserService;
+import hu.progmasters.gmistore.validator.UserEditValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,11 +24,20 @@ public class AdminController {
 
     AdminService adminService;
     UserService userService;
+    UserEditValidator userEditValidator;
 
     @Autowired
-    public AdminController(AdminService adminService,UserService userService) {
+    public AdminController(AdminService adminService,
+                           UserService userService,
+                           UserEditValidator userEditValidator) {
         this.adminService = adminService;
         this.userService = userService;
+        this.userEditValidator = userEditValidator;
+    }
+
+    @InitBinder("userEditableDetailsDto")
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(userEditValidator);
     }
 
     @GetMapping("users/{id}")
@@ -66,7 +78,7 @@ public class AdminController {
     }
 
     @PutMapping("/users")
-    ResponseEntity<Void> updateUserDetails(@RequestBody UserEditableDetailsDto user) {
+    ResponseEntity<Void> updateUserDetails(@RequestBody @Valid UserEditableDetailsDto user) {
         System.out.println(user);
         adminService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);

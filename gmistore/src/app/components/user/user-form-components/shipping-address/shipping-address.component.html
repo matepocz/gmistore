@@ -7,33 +7,62 @@
     <div fxLayout="column">
 
       <mat-form-field appearance="outline">
-        <mat-label>Város</mat-label>
+        <mat-label>Város*</mat-label>
         <input matInput formControlName="city">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('city').errors?.serverError">
+          {{userDataForm.get('shippingAddress').get('city').errors.serverError}}
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Utca</mat-label>
+        <mat-label>Utca*</mat-label>
         <input matInput formControlName="street">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('street').errors?.serverError">
+          {{userDataForm.get('shippingAddress').get('street').errors.serverError}}
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Házszám</mat-label>
+        <mat-label>Házszám*</mat-label>
         <input matInput formControlName="number">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('number').errors?.serverError">
+          {{userDataForm.get('shippingAddress').get('number').errors.serverError}}
+        </mat-error>
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('number').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Emelet</mat-label>
         <input matInput formControlName="floor">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('floor').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Iranyitószám</mat-label>
+        <mat-label>Ajtó</mat-label>
+        <input matInput formControlName="door">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('door').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Iranyitószám*</mat-label>
         <input matInput formControlName="postcode">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('postcode').errors?.serverError">
+          {{userDataForm.get('shippingAddress').get('postcode').errors.serverError}}
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Ország</mat-label>
+        <mat-label>Ország*</mat-label>
         <input matInput formControlName="country">
+        <mat-error *ngIf="userDataForm.get('shippingAddress').get('country').errors?.serverError">
+          {{userDataForm.get('shippingAddress').get('country').errors.serverError}}
+        </mat-error>
       </mat-form-field>
     </div>
   </mat-card>

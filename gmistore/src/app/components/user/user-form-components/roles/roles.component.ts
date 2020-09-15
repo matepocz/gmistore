@@ -38,7 +38,7 @@ export class RolesComponent implements OnInit {
       });
   }
 
-  private createRolesToSend(): string[] {
+  createRolesToSend = () => {
     return this.userDataForm.value.roles
       .map((role, index) => role ? this.roleOptions[index].name : null)
       .filter(role => role !== null);

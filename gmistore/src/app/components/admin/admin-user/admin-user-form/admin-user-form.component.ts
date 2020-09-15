@@ -19,7 +19,7 @@ export class AdminUserFormComponent implements OnInit {
   user: UserModel;
   loaded: boolean = false;
   roleOptions: Array<RolesInitModel>;
-  private toSend: any;
+  toSend: any;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
@@ -30,20 +30,20 @@ export class AdminUserFormComponent implements OnInit {
       shippingAddress: this.fb.group({
         city: [''],
         street: [''],
-        number: [''],
+        number: ['',Validators.pattern("^[0-9]*$")],
         floor: [''],
-        door: [''],
+        door: ['',Validators.pattern("^[0-9]*$")],
         country: [''],
-        postcode: ['']
+        postcode: ['',Validators.pattern("^[0-9]*$")]
       }),
       billingAddress: this.fb.group({
         city: [''],
         street: [''],
-        number: [''],
-        floor: [''],
-        door: [''],
+        number: ['',Validators.pattern("^[0-9]*$")],
+        floor: ['',Validators.pattern("^[0-9]*$")],
+        door: ['',Validators.pattern("^[0-9]*$")],
         country: [''],
-        postcode: ['']
+        postcode: ['',Validators.pattern("^[0-9]*$")]
       }),
       username: ['', Validators.required],
       firstName: ['', Validators.required],
@@ -95,13 +95,10 @@ export class AdminUserFormComponent implements OnInit {
   }
 
   private updateUser(data: UserEditableDetailsByAdmin) {
+    console.log(data)
     this.adminService.updateUser(data).subscribe(
       () => this.router.navigate(['/admin/user']),
       error => errorHandler(error, this.userForm),
     );
-  }
-
-  rolesToSend(roles: any) {
-    this.toSend = roles;
   }
 }

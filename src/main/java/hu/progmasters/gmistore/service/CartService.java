@@ -265,7 +265,10 @@ public class CartService {
      */
     public int getNumberOfItemsInCart(HttpSession session) {
         Cart actualCart = getActualCart(session);
-        return actualCart.getItems().size();
+        return actualCart.getItems()
+                .stream()
+                .mapToInt(CartItem::getCount)
+                .sum();
     }
 
     /**

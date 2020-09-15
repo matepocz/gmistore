@@ -33,6 +33,16 @@ export class CartComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.titleService.setTitle("Kosár - GMI Store")
     this.loading = true;
+    this.fetchCartData();
+
+    this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
+      (data) => {
+        this.shippingData = data;
+      }, (error) => console.log(error)
+    )
+  }
+
+  private fetchCartData() {
     this.cartSubscription = this.cartService.getCart().subscribe(
       (data) => {
         this.cart = data;
@@ -44,12 +54,6 @@ export class CartComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     );
-
-    this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
-      (data) => {
-        this.shippingData = data;
-      }, (error) => console.log(error)
-    )
   }
 
   refreshProductCount(id: number, count: string) {
@@ -58,7 +62,8 @@ export class CartComponent implements OnInit, OnDestroy {
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response) => {
         this.loading = false;
-        this.ngOnInit();
+        this.fetchCartData();
+        this.sideNavComponent.updateItemsInCart(0);
       }, (error) => {
         console.log(error);
       }, () => this.loading = false
@@ -70,7 +75,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
       (response) => {
         this.sideNavComponent.updateItemsInCart(0);
-        this.ngOnInit();
+        this.fetchCartData();
       }, (error) => {
         this.loading = false;
         console.log(error);
@@ -84,11 +89,11 @@ export class CartComponent implements OnInit, OnDestroy {
       (response) => {
       }, error => {
         console.log(error);
+        this.fetchCartData();
         this.loading = false;
       },
       () => {
         this.loading = false;
-        this.ngOnInit();
       }
     )
   }
@@ -96,7 +101,7 @@ export class CartComponent implements OnInit, OnDestroy {
   checkout() {
     this.loading = true;
     this.checkoutSub = this.cartService.canCheckout().subscribe(
-      (response) => {
+      (response: boolean) => {
         console.log(response);
         this.loading = false;
         if (response) {

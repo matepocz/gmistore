@@ -162,14 +162,13 @@ public class RatingService {
      * @return A boolean, true if successful, false otherwise
      */
     public boolean reportRating(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<Rating> ratingById = ratingRepository.findById(id);
-        if (ratingById.isPresent() && authentication != null && !authentication.getName().equals("anonymousUser")) {
+        if (ratingById.isPresent()) {
             ratingById.get().setReported(true);
-            LOGGER.info("Product rating reported by user, rating id: {}, username: {}", id, authentication.getName());
+            LOGGER.debug("Product rating reported, rating id: {}", id);
             return true;
         }
-        LOGGER.info("Product rating reported, but not found, or user not authenticated! rating id: {}", id);
+        LOGGER.info("Product rating reported, but not found, id: {}", id);
         return false;
     }
 }

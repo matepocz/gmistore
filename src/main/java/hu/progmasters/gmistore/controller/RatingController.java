@@ -61,7 +61,7 @@ public class RatingController {
     public ResponseEntity<Boolean> reportRating(@PathVariable("id") Long id) {
         boolean result = ratingService.reportRating(id);
         return result ?
-                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(true, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

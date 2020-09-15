@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
@@ -13,7 +13,7 @@ import {UserEditableDetailsByAdmin} from "../../../../models/userEditableDetails
   templateUrl: './admin-user-form.component.html',
   styleUrls: ['./admin-user-form.component.css']
 })
-export class AdminUserFormComponent implements OnInit {
+export class AdminUserFormComponent implements OnInit, AfterViewChecked {
   userForm: FormGroup;
   details: any[];
   user: UserModel;
@@ -24,7 +24,7 @@ export class AdminUserFormComponent implements OnInit {
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
               private adminService: AdminService,
-              private router: Router) {
+              private router: Router, private cdRef: ChangeDetectorRef) {
 
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -68,6 +68,10 @@ export class AdminUserFormComponent implements OnInit {
       },
       error => console.warn(error),
     );
+  }
+
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
   }
 
   getUserDetails(id) {

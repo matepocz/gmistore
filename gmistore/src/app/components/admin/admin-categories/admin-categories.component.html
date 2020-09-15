@@ -70,6 +70,22 @@
                 </mat-error>
               </mat-form-field>
 
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
+                <mat-label>Kategória ikon</mat-label>
+                <label>
+                  <input matInput placeholder="" formControlName="icon">
+                </label>
+                <mat-hint>Google (material.io) ikonjai-ból kiválasztva. Pl.: mobile_phone</mat-hint>
+                <mat-error
+                  *ngIf="subCategoryForm.get('icon').invalid && !subCategoryForm.get('icon').errors?.serverError">
+                  Túl rövid, vagy nem megfelelő név
+                </mat-error>
+
+                <mat-error *ngIf="subCategoryForm.get('icon').errors?.serverError">
+                  {{ subCategoryForm.get('icon').errors?.serverError }}
+                </mat-error>
+              </mat-form-field>
+
               <div fxFlex="100">
                 <mat-slide-toggle fxFlex="100" color="primary" formControlName="isActive"
                                   [style.margin-bottom]="'20px'"
@@ -92,7 +108,7 @@
 
             <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px" class="mt-15">
 
-              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="90" appearance="outline">
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
                 <mat-label>Fő kategória</mat-label>
                 <mat-select formControlName="mainCategoryKey" required>
                   <mat-option>--</mat-option>
@@ -109,6 +125,22 @@
                 </mat-error>
 
                 <mat-hint></mat-hint>
+              </mat-form-field>
+
+              <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">
+                <mat-label>Kategória ikon</mat-label>
+                <label>
+                  <input matInput placeholder="" formControlName="icon">
+                </label>
+                <mat-hint>Google (material.io) ikonjai-ból kiválasztva. Pl.: mobile_phone</mat-hint>
+                <mat-error
+                  *ngIf="subCategoryForm.get('icon').invalid && !subCategoryForm.get('icon').errors?.serverError">
+                  Túl rövid, vagy nem megfelelő név
+                </mat-error>
+
+                <mat-error *ngIf="subCategoryForm.get('icon').errors?.serverError">
+                  {{ subCategoryForm.get('icon').errors?.serverError }}
+                </mat-error>
               </mat-form-field>
 
               <mat-form-field fxFlex.lt-md="100" fxFlex.gt-sm="45" appearance="outline">

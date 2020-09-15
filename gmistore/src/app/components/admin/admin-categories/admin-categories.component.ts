@@ -28,6 +28,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
     displayName: [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+    icon: [null, Validators.compose([Validators.maxLength(50)])],
     isActive: [true],
   });
 
@@ -36,6 +37,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
     displayName: [null, Validators.compose(
       [Validators.required, Validators.minLength(3), Validators.maxLength(30)])],
+    icon: [null, Validators.compose([Validators.maxLength(50)])],
     isActive: [true],
     mainCategoryKey: [null]
   });

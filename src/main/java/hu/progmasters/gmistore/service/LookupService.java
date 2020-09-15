@@ -153,6 +153,7 @@ public class LookupService {
     private LookupEntity setCategoryValues(NewCategoryRequest newCategoryRequest) {
         LookupEntity newCategory = new LookupEntity();
         newCategory.setDomainType(DomainType.PRODUCT_CATEGORY);
+        newCategory.setCategoryIcon(newCategoryRequest.getIcon());
         newCategory.setLookupKey(newCategoryRequest.getKey().toLowerCase());
         newCategory.setDisplayName(newCategoryRequest.getDisplayName());
         newCategory.setDisplayFlag(newCategoryRequest.getIsActive());

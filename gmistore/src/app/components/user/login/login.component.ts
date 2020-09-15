@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (returnUrl) {
             this.router.navigateByUrl(returnUrl);
           } else {
-            this.router.navigate(['/product-list']);
+            this.router.navigate(['/']);
           }
         } else {
           this.loginForm.get('username').setErrors({badCredentials: true})

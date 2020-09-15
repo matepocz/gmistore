@@ -36,8 +36,18 @@ const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'register-success', component: RegisterSuccessComponent},
   {path: 'confirm-account', component: ConfirmAccountComponent},
-  {path: 'user/my-account', component: UserProfileComponent},
-  {path: 'user/edit', component: UserEditComponent},
+  {
+    path: 'user/my-account',
+    component: UserProfileComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
+  {
+    path: 'user/edit',
+    component: UserEditComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_ADMIN, RoleModel.ROLE_SELLER, RoleModel.ROLE_USER]}
+  },
   {
     path: 'add-product',
     component: ProductFormComponent,
@@ -52,10 +62,19 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {roles: [RoleModel.ROLE_ADMIN, RoleModel.ROLE_SELLER]}
   },
-  {path: 'add-review/:slug', component: AddProductReviewComponent},
+  {
+    path: 'add-review/:slug',
+    component: AddProductReviewComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
   {path: 'forbidden', component: ForbiddenComponent},
   {path: 'cart', component: CartComponent},
-  {path: 'checkout', component: CheckoutComponent},
+  {
+    path: 'checkout',
+    component: CheckoutComponent,
+    canActivate: [AuthGuard], data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
   {
     path: 'admin', component: AdminNavComponent,
     children: [

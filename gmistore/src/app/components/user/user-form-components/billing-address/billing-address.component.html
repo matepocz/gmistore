@@ -1,0 +1,69 @@
+<form [formGroup]="userDataForm">
+  <mat-card formGroupName="billingAddress" >
+    <mat-card-header>
+      <mat-card-title>Cím</mat-card-title>
+      <mat-card-subtitle>Számlázási</mat-card-subtitle>
+    </mat-card-header>
+    <div fxLayout="column">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Város*</mat-label>
+        <input matInput formControlName="city">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('city').errors?.serverError">
+          {{userDataForm.get('billingAddress').get('city').errors.serverError}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Utca*</mat-label>
+        <input matInput formControlName="street">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('street').errors?.serverError">
+          {{userDataForm.get('billingAddress').get('sreet').errors.serverError}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Házszám*</mat-label>
+        <input matInput formControlName="number">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('number').errors?.serverError">
+          {{userDataForm.get('billingAddress').get('number').errors.serverError}}
+        </mat-error>
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('number').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Emelet</mat-label>
+        <input matInput formControlName="floor">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('floor').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ajtó</mat-label>
+        <input matInput formControlName="door">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('door').invalid">
+          Csak számot tartalmazzon!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Iranyitószám*</mat-label>
+        <input matInput formControlName="postcode">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('postcode').errors?.serverError">
+          {{userDataForm.get('billingAddress').get('postcode').errors.serverError}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ország*</mat-label>
+        <input matInput formControlName="country">
+        <mat-error *ngIf="userDataForm.get('billingAddress').get('country').errors?.serverError">
+          {{userDataForm.get('billingAddress').get('country').errors.serverError}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </mat-card>
+</form>

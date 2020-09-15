@@ -3,8 +3,8 @@ export interface AddressModel {
   city: string,
   street: string,
   number: number,
-  floor: number,
-  door: number,
+  floor?: number,
+  door?: number,
   country: string,
-  postcode: string
+  postcode?: string
 }

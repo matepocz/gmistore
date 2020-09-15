@@ -38,25 +38,23 @@ public class CartController {
     }
 
     @PutMapping("/add-item")
-    public ResponseEntity<Void> addItem(
+    public ResponseEntity<Boolean> addItem(
             @RequestParam Long id, @RequestParam int count, HttpSession session) {
         boolean result = cartService.addProduct(id, count, session);
-        return result ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping("/refresh-product-count")
-    public ResponseEntity<Void> refreshProductCount(
+    public ResponseEntity<Boolean> refreshProductCount(
             @RequestParam Long id, @RequestParam int count, HttpSession session) {
-        cartService.updateProductCount(id, count, session);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean result = cartService.updateProductCount(id, count, session);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/remove-product")
-    public ResponseEntity<Void> removeProduct(@RequestParam Long id, HttpSession session) {
-        cartService.removeCartItem(id, session);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeProduct(@RequestParam Long id, HttpSession session) {
+        boolean result = cartService.removeCartItem(id, session);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/shipping-data")

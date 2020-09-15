@@ -35,6 +35,9 @@ public class LookupEntity {
     @Column(name = "order_sequence")
     private int orderSequence;
 
+    @Column(name = "category_icon")
+    private String categoryIcon;
+
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private LookupEntity parent;

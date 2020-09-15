@@ -15,12 +15,14 @@ public class MainCategoryDetails {
     private Long id;
     private String key;
     private String displayName;
+    private String icon;
     private List<ProductCategoryDetails> subCategories;
 
     public MainCategoryDetails(LookupEntity category, List<ProductCategoryDetails> subCategories) {
         this.id = category.getId();
         this.key = category.getLookupKey();
         this.displayName = category.getDisplayName();
+        this.icon = category.getCategoryIcon();
         this.subCategories = subCategories;
     }
 }

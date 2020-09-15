@@ -13,10 +13,12 @@ public class ProductCategoryDetails {
     private Long id;
     private String key;
     private String displayName;
+    private String icon;
 
     public ProductCategoryDetails(LookupEntity lookupEntity) {
         this.id = lookupEntity.getId();
         this.key = lookupEntity.getLookupKey();
         this.displayName = lookupEntity.getDisplayName();
+        this.icon = lookupEntity.getCategoryIcon();
     }
 }

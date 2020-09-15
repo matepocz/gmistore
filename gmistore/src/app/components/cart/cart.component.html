@@ -1,7 +1,7 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
-  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.lg="80"
-       fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
-    <div fxFlex.lt-md="100" fxFlex.gt-lg="60" fxFlex.lg="60" *ngIf="cart?.cartItems.length > 0">
+  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.gt-sm="80"
+       fxLayoutAlign.lt-md="center" fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
+    <div fxFlex.lt-lg="100" fxFlex.gt-md="60" *ngIf="cart?.cartItems.length > 0">
       <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
         <mat-card-header>
           <mat-card-title class="cart-header-text">
@@ -13,12 +13,12 @@
         <div class="cart-product-card" *ngFor="let item of cart?.cartItems" fxLayout="row wrap"
              fxLayoutAlign="space-between center" fxLayoutGap="10px">
 
-          <div class="" fxFlex.gt-sm="30" fxFlex.sm="100" fxLayout="row">
+          <div class="" fxFlex.gt-xs="30" fxFlex.xs="100" fxLayout="row">
             <img mat-card-image class="cart-product-preview-img" fxFlex="100" [src]="item.product.pictureUrl"
                  alt="product-picture">
           </div>
 
-          <div fxLayout="column" fxFlex.gt-md="60" fxFlex.sm="100">
+          <div fxLayout="column" fxFlex.gt-xs="60" fxFlex.xs="100">
 
             <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
               <mat-card-header fxLayout="column" fxFlex="75">
@@ -84,8 +84,8 @@
       </mat-card>
     </div>
 
-    <div fxFlex.md="100" fxFlex.lg="35" fxFlex.gt-lg="35" fxLayout="column" fxLayoutGap="10px"
-         *ngIf="cart?.cartItems.length > 0">
+    <div fxFlex.lt-lg="100" [ngStyle.lt-lg]="{'margin-top': '10px'}" fxFlex.gt-md="35" fxLayout="column"
+         fxLayoutGap="10px" *ngIf="cart?.cartItems.length > 0">
       <mat-card fxFlex="100" class="mat-elevation-z8">
         <mat-card-header>
           <mat-icon mat-card-avatar>local_shipping</mat-icon>
@@ -93,7 +93,7 @@
         </mat-card-header>
         <mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="currentShipping"
                          fxLayout="column" fxLayoutGap="10px" [(ngModel)]="currentShipping.method"
-                         (ngModelChange)="refreshSippingPrice()">
+                         (ngModelChange)="updateShippingMethod()">
           <mat-radio-button color="primary" *ngFor="let shipping of shippingData" [value]="shipping?.method"
                             class="delivery-radio-button" fxFlex="100">
             {{ shipping.method | titlecase }} ({{ shipping.days }} munkanap)

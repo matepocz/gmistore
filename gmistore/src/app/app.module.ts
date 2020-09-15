@@ -73,6 +73,8 @@ import {AdminCategoriesComponent} from './components/admin/admin-categories/admi
 import {MatTabsModule} from "@angular/material/tabs";
 import {PasswordResetComponent} from './components/user/password-reset/password-reset.component';
 import {NewPasswordComponent} from './components/user/password-reset/new-password/new-password.component';
+import {MatTreeModule} from "@angular/material/tree";
+import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.component';
 import { RolesComponent } from './components/user/user-form-components/roles/roles.component';
 import { ProfileComponent } from './components/user/user-form-components/profile/profile.component';
 
@@ -112,8 +114,9 @@ import { ProfileComponent } from './components/user/user-form-components/profile
     AdminCategoriesComponent,
     PasswordResetComponent,
     NewPasswordComponent,
+    MenuListItemComponent,
     RolesComponent,
-    ProfileComponent
+    ProfileComponent,
   ],
 
   imports: [
@@ -159,6 +162,7 @@ import { ProfileComponent } from './components/user/user-form-components/profile
     MatPaginatorModule,
     MatChipsModule,
     MatTabsModule,
+    MatTreeModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

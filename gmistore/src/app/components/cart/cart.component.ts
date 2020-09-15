@@ -6,6 +6,7 @@ import {ShippingMethodModel} from "../../models/shipping-method-model";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
 import {Router} from "@angular/router";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-cart',
@@ -19,6 +20,9 @@ export class CartComponent implements OnInit, OnDestroy {
   shippingData: ShippingMethodModel[];
   currentShipping: ShippingMethodModel = null;
 
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   cartSubscription: Subscription;
   shippingDataSubscription: Subscription;
   refreshSubscription: Subscription;
@@ -27,12 +31,23 @@ export class CartComponent implements OnInit, OnDestroy {
   checkoutSub: Subscription;
 
   constructor(private cartService: CartService, private titleService: Title,
-              private sideNavComponent: SideNavComponent, private router: Router) {
+              private sideNavComponent: SideNavComponent, private router: Router,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Kosár - GMI Store")
     this.loading = true;
+    this.fetchCartData();
+
+    this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
+      (data: Array<ShippingMethodModel>) => {
+        this.shippingData = data;
+      }, (error) => console.log(error)
+    )
+  }
+
+  private fetchCartData() {
     this.cartSubscription = this.cartService.getCart().subscribe(
       (data) => {
         this.cart = data;
@@ -44,23 +59,20 @@ export class CartComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     );
-
-    this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
-      (data) => {
-        this.shippingData = data;
-      }, (error) => console.log(error)
-    )
   }
 
   refreshProductCount(id: number, count: string) {
     console.log(id, count)
     this.loading = true;
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
-      (response) => {
+      (response: boolean) => {
+        this.fetchCartData();
+        this.openSnackBar("Mennyiség frissítve!");
+        this.sideNavComponent.updateItemsInCart(0);
         this.loading = false;
-        this.ngOnInit();
       }, (error) => {
         console.log(error);
+        this.openSnackBar("Valami hiba történt!");
       }, () => this.loading = false
     )
   }
@@ -68,43 +80,59 @@ export class CartComponent implements OnInit, OnDestroy {
   removeProduct(id: number) {
     this.loading = true;
     this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
-      (response) => {
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Termék törölve!");
+        }
+        this.fetchCartData();
         this.sideNavComponent.updateItemsInCart(0);
-        this.ngOnInit();
       }, (error) => {
         this.loading = false;
         console.log(error);
+        this.openSnackBar("Valami hiba történt!");
       }, () => this.loading = false
     )
   }
 
-  refreshSippingPrice() {
+  updateShippingMethod() {
     this.loading = true;
     this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
-      (response) => {
+      () => {
+        this.fetchCartData();
       }, error => {
         console.log(error);
         this.loading = false;
+        this.openSnackBar("Valami hiba történt!");
       },
       () => {
         this.loading = false;
-        this.ngOnInit();
+        this.openSnackBar("Szállítási mód frissítve!");
       }
     )
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
   }
 
   checkout() {
     this.loading = true;
     this.checkoutSub = this.cartService.canCheckout().subscribe(
-      (response) => {
-        console.log(response);
+      (response: boolean) => {
         this.loading = false;
         if (response) {
           this.router.navigate(['/checkout']);
+        } else {
+          this.openSnackBar("Valami hiba történt!");
         }
       }, (error) => {
         console.log(error);
         this.loading = false;
+        this.openSnackBar("Valami hiba történt!");
       }
     )
   }

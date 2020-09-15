@@ -73,6 +73,8 @@ import {AdminCategoriesComponent} from './components/admin/admin-categories/admi
 import {MatTabsModule} from "@angular/material/tabs";
 import {PasswordResetComponent} from './components/user/password-reset/password-reset.component';
 import {NewPasswordComponent} from './components/user/password-reset/new-password/new-password.component';
+import {MatTreeModule} from "@angular/material/tree";
+import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +111,8 @@ import {NewPasswordComponent} from './components/user/password-reset/new-passwor
     CheckoutComponent,
     AdminCategoriesComponent,
     PasswordResetComponent,
-    NewPasswordComponent
+    NewPasswordComponent,
+    MenuListItemComponent
   ],
 
   imports: [
@@ -155,6 +158,7 @@ import {NewPasswordComponent} from './components/user/password-reset/new-passwor
     MatPaginatorModule,
     MatChipsModule,
     MatTabsModule,
+    MatTreeModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

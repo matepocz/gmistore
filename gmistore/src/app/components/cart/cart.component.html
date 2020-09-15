@@ -93,7 +93,7 @@
         </mat-card-header>
         <mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="currentShipping"
                          fxLayout="column" fxLayoutGap="10px" [(ngModel)]="currentShipping.method"
-                         (ngModelChange)="refreshSippingPrice()">
+                         (ngModelChange)="updateShippingMethod()">
           <mat-radio-button color="primary" *ngFor="let shipping of shippingData" [value]="shipping?.method"
                             class="delivery-radio-button" fxFlex="100">
             {{ shipping.method | titlecase }} ({{ shipping.days }} munkanap)

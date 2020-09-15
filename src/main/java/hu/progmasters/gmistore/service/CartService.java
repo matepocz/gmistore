@@ -41,6 +41,7 @@ public class CartService {
 
     /**
      * Converts an actual Cart object to DTO
+     *
      * @param session The actual session object
      * @return A CartDto containing the required details
      */
@@ -60,8 +61,9 @@ public class CartService {
 
     /**
      * Attempts to place a product into a user's cart
-     * @param id The given Product's unique ID
-     * @param count The count of the given product
+     *
+     * @param id      The given Product's unique ID
+     * @param count   The count of the given product
      * @param session The actual session object
      * @return A boolean, true if successful, false otherwise
      */
@@ -72,16 +74,20 @@ public class CartService {
             Set<CartItem> items = actualCart.getItems();
             Product actualProduct = productById.get();
             for (CartItem item : items) {
-                if (item.getProduct().equals(actualProduct) &&
-                        actualProduct.getInventory().getQuantityAvailable() >= count) {
-                    item.setCount(item.getCount() + count);
-                    setItemsTotalPrice(actualCart);
-                    setCartsTotalPrice(actualCart);
-                    LOGGER.debug("Product count incremented!");
-                    return true;
+                if (item.getProduct().equals(actualProduct)) {
+                    if (actualProduct.getInventory().getQuantityAvailable() >= (count + item.getCount())) {
+                        item.setCount(item.getCount() + count);
+                        setItemsTotalPrice(actualCart);
+                        setCartsTotalPrice(actualCart);
+                        LOGGER.debug("Product count incremented!");
+                        return true;
+                    } else {
+                        LOGGER.debug("Not enough quantity available, product id: {}, count: {}", id, count);
+                        return false;
+                    }
                 }
             }
-            if (actualProduct.getInventory().getQuantityAvailable() >= count) {
+            if (actualProduct.getInventory().getQuantityAvailable() > count) {
                 items.add(createNewCartItem(count, actualProduct));
                 setInitialShippingMethod(actualCart);
                 setItemsTotalPrice(actualCart);
@@ -90,8 +96,10 @@ public class CartService {
                 LOGGER.debug("Product added to cart!");
                 return true;
             }
+            LOGGER.debug("Not enough quantity available, product id: {}, count: {}", id, count);
+        } else {
+            LOGGER.info("Product not found! id: {}", id);
         }
-        LOGGER.info("Product not found! id: {}", id);
         return false;
     }
 
@@ -116,6 +124,7 @@ public class CartService {
     /**
      * Fetch a Cart object for the actual user. If a user is authenticated the cart is "attached" to the user,
      * else the cart's unique ID is stored in the currently active session object.
+     *
      * @param session The actual session object
      * @return A Cart object
      */
@@ -199,17 +208,18 @@ public class CartService {
 
     /**
      * Attempts to update the given Product's counter in the actual Cart.
-     * @param id The given Product's unique ID
-     * @param count The desired product count
+     *
+     * @param id      The given Product's unique ID
+     * @param count   The desired product count
      * @param session The actual session object
      * @return The actual Cart object
      */
-    public Cart updateProductCount(Long id, int count, HttpSession session) {
+    public boolean updateProductCount(Long id, int count, HttpSession session) {
         Cart actualCart = getActualCart(session);
         Set<CartItem> items = actualCart.getItems();
         if (count == 0) {
             actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
-            return actualCart;
+            return false;
         }
         items.stream().filter(cartItem -> cartItem.getProduct().getId().equals(id) &&
                 cartItem.getProduct().getInventory().getQuantityAvailable() >= count)
@@ -219,24 +229,27 @@ public class CartService {
         setCartsTotalPrice(actualCart);
         cartRepository.save(actualCart);
         LOGGER.debug("Product count updated in cart, id: {}", actualCart.getId());
-        return actualCart;
+        return true;
     }
 
     /**
      * Removes a Product (CartItem with the details) and re-calculates the Cart's total price.
-     * @param id The given CartItem's unique ID
+     *
+     * @param id      The given CartItem's unique ID
      * @param session The actual session object
      */
-    public void removeCartItem(Long id, HttpSession session) {
+    public boolean removeCartItem(Long id, HttpSession session) {
         Cart actualCart = getActualCart(session);
         actualCart.getItems().removeIf((cartItem -> cartItem.getId().equals(id)));
         setItemsTotalPrice(actualCart);
         setCartsTotalPrice(actualCart);
         LOGGER.debug("Cart item removed from cart, id: {}", actualCart.getId());
+        return true;
     }
 
     /**
      * Remove a Cart from the database
+     *
      * @param id The given Cart's unique ID
      */
     public void deleteCart(Long id) {
@@ -245,7 +258,8 @@ public class CartService {
 
     /**
      * Attempts to update the Cart's shipping method
-     * @param method The required shipping method as a String
+     *
+     * @param method  The required shipping method as a String
      * @param session The current session object
      */
     public void updateShippingMethod(String method, HttpSession session) {
@@ -260,6 +274,7 @@ public class CartService {
 
     /**
      * Fetch the number of items in the user's cart
+     *
      * @param session The actual session object
      * @return int
      */
@@ -273,6 +288,7 @@ public class CartService {
 
     /**
      * Checks whether the user can checkout their current Cart
+     *
      * @param session The actual session object
      * @return A boolean, true if possible to checkout, false otherwise
      */

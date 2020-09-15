@@ -6,6 +6,7 @@ import {ShippingMethodModel} from "../../models/shipping-method-model";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
 import {Router} from "@angular/router";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-cart',
@@ -19,6 +20,9 @@ export class CartComponent implements OnInit, OnDestroy {
   shippingData: ShippingMethodModel[];
   currentShipping: ShippingMethodModel = null;
 
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   cartSubscription: Subscription;
   shippingDataSubscription: Subscription;
   refreshSubscription: Subscription;
@@ -27,7 +31,8 @@ export class CartComponent implements OnInit, OnDestroy {
   checkoutSub: Subscription;
 
   constructor(private cartService: CartService, private titleService: Title,
-              private sideNavComponent: SideNavComponent, private router: Router) {
+              private sideNavComponent: SideNavComponent, private router: Router,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -36,7 +41,7 @@ export class CartComponent implements OnInit, OnDestroy {
     this.fetchCartData();
 
     this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
-      (data) => {
+      (data: Array<ShippingMethodModel>) => {
         this.shippingData = data;
       }, (error) => console.log(error)
     )
@@ -60,12 +65,14 @@ export class CartComponent implements OnInit, OnDestroy {
     console.log(id, count)
     this.loading = true;
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
-      (response) => {
-        this.loading = false;
+      (response: boolean) => {
         this.fetchCartData();
+        this.openSnackBar("Mennyiség frissítve!");
         this.sideNavComponent.updateItemsInCart(0);
+        this.loading = false;
       }, (error) => {
         console.log(error);
+        this.openSnackBar("Valami hiba történt!");
       }, () => this.loading = false
     )
   }
@@ -73,43 +80,59 @@ export class CartComponent implements OnInit, OnDestroy {
   removeProduct(id: number) {
     this.loading = true;
     this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
-      (response) => {
-        this.sideNavComponent.updateItemsInCart(0);
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Termék törölve!");
+        }
         this.fetchCartData();
+        this.sideNavComponent.updateItemsInCart(0);
       }, (error) => {
         this.loading = false;
         console.log(error);
+        this.openSnackBar("Valami hiba történt!");
       }, () => this.loading = false
     )
   }
 
-  refreshSippingPrice() {
+  updateShippingMethod() {
     this.loading = true;
     this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
-      (response) => {
+      () => {
+        this.fetchCartData();
       }, error => {
         console.log(error);
-        this.fetchCartData();
         this.loading = false;
+        this.openSnackBar("Valami hiba történt!");
       },
       () => {
         this.loading = false;
+        this.openSnackBar("Szállítási mód frissítve!");
       }
     )
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
   }
 
   checkout() {
     this.loading = true;
     this.checkoutSub = this.cartService.canCheckout().subscribe(
       (response: boolean) => {
-        console.log(response);
         this.loading = false;
         if (response) {
           this.router.navigate(['/checkout']);
+        } else {
+          this.openSnackBar("Valami hiba történt!");
         }
       }, (error) => {
         console.log(error);
         this.loading = false;
+        this.openSnackBar("Valami hiba történt!");
       }
     )
   }

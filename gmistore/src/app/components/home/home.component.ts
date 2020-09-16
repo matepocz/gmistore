@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {OwlOptions} from 'ngx-owl-carousel-o';
 import {ProductService} from "../../service/product-service";
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -10,14 +11,12 @@ import {ProductService} from "../../service/product-service";
 })
 export class HomeComponent implements OnInit {
   customOptions: OwlOptions = {
-    center:true,
-    autoplay:true,
-    slideBy:2,
-    responsiveRefreshRate:200,
     loop: true,
+    autoplay: true,
+    responsiveRefreshRate: 200,
     margin: 20,
-    autoplayTimeout:3000,
-    autoWidth:true,
+    autoplayTimeout: 5000,
+    autoWidth: true,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: false,
@@ -27,18 +26,28 @@ export class HomeComponent implements OnInit {
     responsive: {
       0: {
         items: 2,
-        nav:false,
-        center:false,
+        center: false,
+        nav: false,
       },
       740: {
         items: 3,
-        nav:false,
-        center:false,
+        center: false,
+        nav: false,
       },
-      1281: {
+      1000: {
         items: 4,
-        nav:false,
-
+        center: false,
+        nav: false,
+      },
+      1200: {
+        items: 5,
+        center:false,
+        nav: false,
+      },
+      1500: {
+        items: 5,
+        center:false,
+        nav: false,
       }
     },
   }
@@ -47,7 +56,7 @@ export class HomeComponent implements OnInit {
   imageURLs = Array<string>();
   temp = Array<string>();
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private titleService: Title) {
     this.productService.getDiscountProductsProductURL().subscribe(
       (response) => {
         this.imageURLs = response;
@@ -69,7 +78,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.titleService.setTitle("Főoldal - GMI Store");
   }
 
 }

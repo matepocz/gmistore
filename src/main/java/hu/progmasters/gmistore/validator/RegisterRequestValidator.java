@@ -34,7 +34,8 @@ public class RegisterRequestValidator implements Validator {
         if (registerRequest.getEmail() == null || registerRequest.getEmail().length() <= 1) {
             errors.rejectValue("email", "user.email.empty");
         }
-        if (!registerRequest.getEmail().matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")) {
+        if (registerRequest.getEmail() == null ||
+                !registerRequest.getEmail().matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")) {
             errors.rejectValue("email", "user.email.invalid");
         }
         if (registerRequest.getPassword() == null || registerRequest.getPassword().length() <= 1) {

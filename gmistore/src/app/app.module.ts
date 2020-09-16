@@ -69,14 +69,14 @@ import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-f
 import {ShippingAddressComponent} from './components/user/user-form-components/shipping-address/shipping-address.component';
 import {BillingAddressComponent} from './components/user/user-form-components/billing-address/billing-address.component';
 import {MatChipsModule} from "@angular/material/chips";
-import {AdminCategoriesComponent} from './components/admin/admin-categories/admin-categories.component';
+import {AdminCategoriesComponent, DeleteDialog} from './components/admin/admin-categories/admin-categories.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {PasswordResetComponent} from './components/user/password-reset/password-reset.component';
 import {NewPasswordComponent} from './components/user/password-reset/new-password/new-password.component';
 import {MatTreeModule} from "@angular/material/tree";
 import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.component';
-import { RolesComponent } from './components/user/user-form-components/roles/roles.component';
-import { ProfileComponent } from './components/user/user-form-components/profile/profile.component';
+import {RolesComponent} from './components/user/user-form-components/roles/roles.component';
+import {ProfileComponent} from './components/user/user-form-components/profile/profile.component';
 import {CarouselModule} from 'ngx-owl-carousel-o';
 
 
@@ -120,6 +120,7 @@ import {CarouselModule} from 'ngx-owl-carousel-o';
     RolesComponent,
     ProfileComponent,
     NewPasswordComponent,
+    DeleteDialog,
   ],
 
   imports: [

@@ -26,11 +26,16 @@
       <button class="sm-btn" mat-flat-button fxHide.gt-md="true" color="primary" (click)="onSubmit()">Submit</button>
 
 
-      <div fxFlex.gt-sm="100" >
-        <mat-card [ngStyle]="{'margin': '15px'}">
-          <app-product-list *ngIf="orderItems" [products]="orderItems"
-          ></app-product-list>
-        </mat-card>
+      <div class="orders" fxFlex.gt-sm="100">
+
+        <button class="order-btn" color="primary" mat-fab (click)="openClose()" >
+          <mat-icon>filter_list</mat-icon>
+        </button>
+        <div [ngStyle]="{'margin': '15px'}"
+             *ngIf="show">
+          <app-product-card
+            [products]="orderedProducts"></app-product-card>
+        </div>
       </div>
     </div>
 

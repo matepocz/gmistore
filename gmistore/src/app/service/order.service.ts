@@ -6,6 +6,7 @@ import {CustomerDetailsModel} from "../models/customer-details.model";
 import {OrderRequestModel} from "../models/order-request.model";
 import {PaymentMethodDetailsModel} from "../models/payment-method-details.model";
 import {OrderModel} from "../models/order-model";
+import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,6 @@ export class OrderService {
   }
 
   getOrderItems() {
-    return this.httpClient.get<Array<OrderModel>>(this.ordersUrl + '/items');
+    return this.httpClient.get<Array<ProductOrderedListModel>>(this.ordersUrl + '/items');
   }
 }

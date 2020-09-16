@@ -2,8 +2,10 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
@@ -199,15 +201,34 @@ public class OrderService {
         return orderRepository.findAllByOrderListDetails();
     }
 
-    public Set<OrderItem> getAllProductsOrderedByUser() {
+    public Set<ProductListDetailDto> getAllProductsOrderedByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Set<OrderItem> allOrderedProductsByUser = orderRepository.findAllOrderedProductsByUser(authentication.getName());
+
         if (allOrderedProductsByUser != null) {
             LOGGER.debug("User order details found! username: {}", authentication.getName());
-            return allOrderedProductsByUser;
+            Set<ProductListDetailDto> products = allOrderedProductsByUser.stream()
+                    .map(this::mapOrderItemToProduct)
+                    .collect(Collectors.toSet());
+            return products;
         }
         LOGGER.info("User order details not found! username: {}", authentication.getName());
         return null;
+    }
+
+    private ProductListDetailDto mapOrderItemToProduct(OrderItem orderItem) {
+        ProductListDetailDto product = new ProductListDetailDto();
+        product.setId(orderItem.getId());
+        product.setName(orderItem.getProduct().getName());
+        product.setProductCode(orderItem.getProduct().getProductCode());
+        product.setFeatures(orderItem.getProduct().getFeatures());
+        product.setPictureUrl(orderItem.getProduct().getPictureUrl());
+        product.setPictures(orderItem.getProduct().getPictures());
+        product.setPrice(orderItem.getProduct().getPrice());
+        product.setDiscount(orderItem.getProduct().getDiscount());
+        product.setAverageRating(orderItem.getProduct().getAverageRating());
+        product.setOrderItemId(orderItem.getId());
+        return product;
     }
 
     private int generateRandomNumberForLetters() {

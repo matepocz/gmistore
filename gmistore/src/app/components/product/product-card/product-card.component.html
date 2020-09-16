@@ -1,20 +1,53 @@
-<div class="product-grid6">
-  <div class="product-image6">
-    <a href="#">
-      <img class="pic-1" src="http://bestjquery.com/tutorial/product-grid/demo10/images/img-1.jpg">
-    </a>
-  </div>
-  <div class="product-content">
-    <h3 class="title"><a href="#">Men's Shirt</a></h3>
-    <div class="price">$11.00
-      <span>$14.00</span>
+<div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
+  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.gt-sm="80"
+       fxLayoutAlign.lt-md="center" fxLayoutAlign="space-evenly start">
+    <div >
+      <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
+
+        <div class="cart-product-card" *ngFor="let item of products" fxLayout="row wrap"
+             fxLayoutAlign="space-between center" fxLayoutGap="10px">
+
+          <div class="" fxFlex.gt-xs="30" fxFlex.xs="100" fxLayout="row">
+            <img mat-card-image class="cart-product-preview-img" fxFlex="100" [src]="item.pictureUrl"
+                 alt="product-picture">
+          </div>
+
+          <div fxLayout="column" fxFlex.gt-xs="60" fxFlex.xs="100">
+
+            <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
+              <mat-card-header fxLayout="column" fxFlex="75">
+                <mat-card-title>{{ item.name }}</mat-card-title>
+                <mat-card-subtitle class="cart-product-text">Termék
+                  kód: {{ item.productCode }}</mat-card-subtitle>
+              </mat-card-header>
+            </div>
+
+            <div class="" fxFlex="100" fxLayout="row">
+              <mat-card-header *ngIf="item.discount">
+                <mat-card-title class="discounted-price">
+                  {{ (item.price / 100) * (100 - item.discount) |
+                  currency: 'HUF': 'symbol-narrow': '2.0' }}
+                </mat-card-title>
+                <mat-card-subtitle>
+                  <del>
+                    {{ item.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
+                  </del>
+                  ({{ item.discount }} %)
+                </mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-card-header *ngIf="!item.discount">
+                <mat-card-subtitle>
+                  {{ item.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
+                </mat-card-subtitle>
+              </mat-card-header>
+            </div>
+          </div>
+          <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
+        </div>
+      </mat-card>
     </div>
   </div>
-  <ul class="social">
-    <li><a href="" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
-    <li><a href="" data-tip="Add to Wishlist"><i class="fa fa-shopping-bag"></i></a></li>
-    <li><a href="" data-tip="Add to Cart"><i class="fa fa-shopping-cart"></i></a></li>
-  </ul>
 </div>
 
 

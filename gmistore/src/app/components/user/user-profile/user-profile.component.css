@@ -9,3 +9,9 @@
   width: 100%;
 }
 
+.order-btn {
+  bottom: 100px;
+  left: 50px;
+  margin: 20px;
+  position: fixed;
+}

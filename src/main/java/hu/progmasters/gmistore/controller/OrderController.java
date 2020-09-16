@@ -1,7 +1,9 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
@@ -52,9 +54,9 @@ public class OrderController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<Set<OrderItem>> getOrderItemsByUser() {
+    public ResponseEntity<Set<ProductListDetailDto>> getOrderItemsByUser() {
         LOGGER.debug("Customer details requested!");
-        Set<OrderItem> orderItems = orderService.getAllProductsOrderedByUser();
+        Set<ProductListDetailDto> orderItems = orderService.getAllProductsOrderedByUser();
         return orderItems != null ?
                 new ResponseEntity<>(orderItems, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

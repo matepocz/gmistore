@@ -1,3 +1,11 @@
 .footer{
   position: sticky;
 }
+/* sm display*/
+@media (max-width: 959px) {
+  .footer{
+    letter-spacing: 3px;
+    line-height: 2.5;
+    padding: 50px;
+  }
+}

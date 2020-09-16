@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ProductModel} from "../../../models/product-model";
 import {ProductService} from "../../../service/product-service";
 import {CartService} from "../../../service/cart-service";
@@ -21,7 +21,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
-  products: Array<ProductModel>;
+  @Input() products: Array<ProductModel>;
   minimumPrice: number = 1;
   maximumPrice: number = 1;
 

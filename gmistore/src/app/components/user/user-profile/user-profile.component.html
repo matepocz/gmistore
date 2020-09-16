@@ -1,28 +1,42 @@
 <form [formGroup]="userForm">
   <div fxLayoutAlign="center" [style.margin]="'2%'">
-    <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
+    <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
 
-      <mat-card class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100">
+      <div fxFlex.gt-sm="40" fxFlex.lt-lg="100">
+        <mat-card class="box">
 
-        <app-profile *ngIf="loaded"
-                     [userDataForm]="userForm"
-                     [data]="user">
-        </app-profile>
+          <app-profile *ngIf="loaded"
+                       [userDataForm]="userForm"
+                       [data]="user">
+          </app-profile>
 
-        <button class="desktop-btn" mat-flat-button fxHide.lt-md="true" color="primary" (click)="onSubmit()">
-          Submit
-        </button>
-      </mat-card>
+          <button class="desktop-btn" mat-flat-button fxHide.lt-lg="true" color="primary" (click)="onSubmit()">
+            Submit
+          </button>
+        </mat-card>
+      </div>
 
-      <div class="box" fxFlex.gt-sm="30" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
-        <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"
+      <div fxFlex.gt-sm="50" fxFlex.lt-lg="100" fxLayout="row wrap" fxLayoutGap="10px">
+        <app-shipping-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"
                               [userShipping]="user.shippingAddress"></app-shipping-address>
 
-        <app-billing-address *ngIf="loaded" [userDataForm]="userForm"
+        <app-billing-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"
                              [userBilling]="user.billingAddress"></app-billing-address>
       </div>
-      <button class="sm-btn" mat-flat-button fxHide.gt-sm="true" color="primary" (click)="onSubmit()">Submit
-      </button>
+      <button class="sm-btn" mat-flat-button fxHide.gt-md="true" color="primary" (click)="onSubmit()">Submit</button>
+
+
+      <div class="orders" fxFlex.gt-sm="100">
+
+        <button class="order-btn" color="primary" mat-fab (click)="openClose()" >
+          <mat-icon>filter_list</mat-icon>
+        </button>
+        <div [ngStyle]="{'margin': '15px'}"
+             *ngIf="show">
+          <app-product-card
+            [products]="orderedProducts"></app-product-card>
+        </div>
+      </div>
     </div>
 
   </div>

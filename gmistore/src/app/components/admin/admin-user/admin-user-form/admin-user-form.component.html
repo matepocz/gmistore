@@ -2,7 +2,6 @@
   <div fxLayoutAlign="center" [style.margin]="'2%'">
     <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
 
-      <div>
         <mat-card class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100">
 
           <app-profile *ngIf="loaded"
@@ -21,7 +20,6 @@
             Submit
           </button>
         </mat-card>
-      </div>
 
       <div class="box" fxFlex.gt-sm="30" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
         <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"

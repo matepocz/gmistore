@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from "../../../service/user.service";
 import {UserModel} from "../../../models/user-model";
 import {AddressModel} from "../../../models/address-model";
@@ -13,43 +13,50 @@ import {UserEditableDetailsByAdmin} from "../../../models/userEditableDetailsByA
 import {errorHandler} from "../../../utils/error-handler";
 import {SubSink} from "subsink";
 import {UserEditableDetailsByUser} from "../../../models/userEditableDetailsByUser";
+import {ProductModel} from "../../../models/product-model";
+import {OrderService} from "../../../service/order.service";
+import {ProductOrderedListModel} from "../../../models/product/productOrderedListModel";
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked{
+export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked {
   userForm: FormGroup;
   details: any[];
   user: UserModel;
   loaded: boolean = false;
   subs = new SubSink();
+  orderedProducts: Array<ProductOrderedListModel>;
+  show: boolean;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
               private adminService: AdminService,
+              private orderService: OrderService,
               private userService: UserService,
-              private router: Router, private cdRef: ChangeDetectorRef) {
+              private router: Router,
+              private cdRef: ChangeDetectorRef) {
 
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
         city: [''],
         street: [''],
-        number: ['',Validators.pattern("^[0-9]*$")],
+        number: ['', Validators.pattern("^[0-9]*$")],
         floor: [''],
-        door: ['',Validators.pattern("^[0-9]*$")],
+        door: ['', Validators.pattern("^[0-9]*$")],
         country: [''],
-        postcode: ['',Validators.pattern("^[0-9]*$")]
+        postcode: ['', Validators.pattern("^[0-9]*$")]
       }),
       billingAddress: this.fb.group({
         city: [''],
         street: [''],
-        number: ['',Validators.pattern("^[0-9]*$")],
-        floor: ['',Validators.pattern("^[0-9]*$")],
-        door: ['',Validators.pattern("^[0-9]*$")],
+        number: ['', Validators.pattern("^[0-9]*$")],
+        floor: ['', Validators.pattern("^[0-9]*$")],
+        door: ['', Validators.pattern("^[0-9]*$")],
         country: [''],
-        postcode: ['',Validators.pattern("^[0-9]*$")]
+        postcode: ['', Validators.pattern("^[0-9]*$")]
       }),
       username: ['', Validators.required],
       firstName: ['', Validators.required],
@@ -61,6 +68,7 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
 
   ngOnInit(): void {
     this.getUserDetails();
+    this.getOrderedProducts();
   }
 
   ngAfterViewChecked() {
@@ -72,7 +80,7 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
       data => {
         console.log(data);
         this.user = data;
-        this.sharingService.nextMessage(data);
+        // this.sharingService.nextMessage(data);
       },
       error => console.log(error),
       () => this.loaded = true
@@ -94,6 +102,16 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  private getOrderedProducts() {
+    this.subs.add(this.orderService.getOrderItems().subscribe(
+      (data) => this.orderedProducts = data
+    ));
+  }
+
+  openClose() {
+    this.show = !this.show;
   }
 }
 

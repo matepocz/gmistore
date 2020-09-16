@@ -29,4 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select new hu.progmasters.gmistore.dto.UserListDetailDto(u) from User u")
     List<UserListDetailDto> findAllUsersWithListDetails();
+
+
+
+
 }

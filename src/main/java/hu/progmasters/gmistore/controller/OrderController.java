@@ -1,7 +1,10 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
+import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -47,5 +51,14 @@ public class OrderController {
     public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderRequest orderRequest, HttpSession session) {
         orderService.createOrder(orderRequest, session);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/items")
+    public ResponseEntity<Set<ProductListDetailDto>> getOrderItemsByUser() {
+        LOGGER.debug("Customer details requested!");
+        Set<ProductListDetailDto> orderItems = orderService.getAllProductsOrderedByUser();
+        return orderItems != null ?
+                new ResponseEntity<>(orderItems, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

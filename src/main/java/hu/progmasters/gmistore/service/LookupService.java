@@ -5,14 +5,18 @@ import hu.progmasters.gmistore.dto.NewCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.enums.DomainType;
+import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.repository.LookupRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -165,5 +169,26 @@ public class LookupService {
             newCategory.setParent(parentCategory);
         }
         return newCategory;
+    }
+
+    /**
+     * Set the given category's display flag to false
+     *
+     * @param key The given category's unique key
+     * @return A boolean, true if successful, false otherwise
+     */
+    public boolean setCategoryInactive(String key) {
+        LookupEntity categoryByKey = getCategoryByKey(key);
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        boolean isAdmin =
+                authorities.stream().anyMatch(role -> role.getAuthority().equals(Role.ROLE_ADMIN.toString()));
+        if (isAdmin) {
+            categoryByKey.setDisplayFlag(false);
+            LOGGER.debug("Category set to inactive! category key: {}", key);
+            return true;
+        }
+        LOGGER.debug("Unauthorized category delete request! category: {}", key);
+        return false;
     }
 }

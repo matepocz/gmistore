@@ -48,7 +48,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
                 display: true
               }],
               yAxes: [{
-                display: true
+                display: true,
+                ticks: {min: 0}
               }],
             }
           }

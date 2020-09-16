@@ -50,6 +50,10 @@ export class AdminService {
     return this.httpClient.post<boolean>(this.lookupUrl + '/new-category', data);
   }
 
+  setCategoryInactive(key: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>(this.lookupUrl + '/category/' + key);
+  }
+
   updateUser(data: UserEditableDetailsByAdmin): Observable<any> {
     return this.httpClient.put(this.adminUrl + 'users', data);
   }

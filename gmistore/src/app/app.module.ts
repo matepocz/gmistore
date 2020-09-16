@@ -77,6 +77,8 @@ import {MatTreeModule} from "@angular/material/tree";
 import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.component';
 import { RolesComponent } from './components/user/user-form-components/roles/roles.component';
 import { ProfileComponent } from './components/user/user-form-components/profile/profile.component';
+import {CarouselModule} from 'ngx-owl-carousel-o';
+
 
 @NgModule({
   declarations: [
@@ -117,6 +119,7 @@ import { ProfileComponent } from './components/user/user-form-components/profile
     MenuListItemComponent,
     RolesComponent,
     ProfileComponent,
+    NewPasswordComponent,
   ],
 
   imports: [
@@ -163,6 +166,7 @@ import { ProfileComponent } from './components/user/user-form-components/profile
     MatChipsModule,
     MatTabsModule,
     MatTreeModule,
+    CarouselModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

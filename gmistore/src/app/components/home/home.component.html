@@ -1,45 +1,30 @@
 <div fxLayout="containerX" fxLayoutAlign="center center">
-  <div fxLayout="column" fxHide.lt-md="true" fxFlex.md="95" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="start"
+  <div fxLayout="column" fxFlex.xs="95" fxFlex.sm="95" fxFlex.md="80"  fxFlex.lg="80" fxLayoutAlign="start"
        fxLayoutGap="10px" [style.margin-top]="'10px'">
-    <mat-carousel class="carousel" fxFlex="100"
-                  timings="250ms ease-in"
-                  [autoplay]="true"
-                  interval="5000"
-                  color="accent"
-                  maxWidth="auto"
-                  maintainAspectRatio="true"
-                  slideHeight="'200%'"
-                  proportion="40"
-                  slides="5"
-                  [loop]="true"
-                  [hideArrows]="false"
-                  [hideIndicators]="false"
-                  [useKeyboard]="true"
-                  [useMouseWheel]="false"
-                  orientation="ltr">
-      <mat-carousel-slide *ngFor="let slide of slides" [image]="slide.image"></mat-carousel-slide>
-    </mat-carousel>
 
+    <div fxFlex="100"fxHide.lt-md="true" fxLayoutAlign="center center"><h2 >Akciós termékek</h2></div>
+    <owl-carousel-o  fxLayout="row" fxLayoutAlign="center center" [options]="customOptions">
+      <ng-container *ngFor="let image of temp">
+        <ng-template carouselSlide>
+          <mat-card class="example-card" fxFlex="100" fxLayoutAlign="center center">
+            <img mat-card-image src="{{image}}">
+          </mat-card>
+        </ng-template>
+      </ng-container>
+    </owl-carousel-o>
 
     <div fxFlex="100">
       <div fxLayout="column" fxLayoutAlign="center center">
-        <h1 fxFlex="100" class="">Cuccok A-Z-ig</h1>
+        <h1 fxFlex="100">Cuccok A-Z-ig</h1>
         <p>Használd a GMI STORE-t és válogass a rengeteg holmi között.
-          Eladnád a már nem használt dolgaidat! Nem gond! Irány a regisztráció és már tolhatod is fel őket
-          a GMI STORE piacára!
+          Eladnád a már nem használt dolgaidat! Nem gond! Irány a regisztráció és már tolhatod is fel őket a GMI STORE piacára!
         </p>
         <a mat-flat-button color="primary" routerLink="/register" role="button">Regisztráció</a>
       </div>
     </div>
-
     <div fxFlex="100">
-
     </div>
-
   </div>
-
-
-
 </div>
 
 

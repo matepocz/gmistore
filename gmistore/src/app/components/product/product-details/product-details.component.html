@@ -6,12 +6,15 @@
          fxLayoutGap="15px">
 
       <div fxFlex="100">
-        <img [src]="defaultPicture" fxFlexFill alt="main-image"/>
+        <pinch-zoom backgroundColor="white">
+          <img src="{{ defaultPicture }}" alt="{{ product.name}} image" aria-label="Product main image"/>
+        </pinch-zoom>
       </div>
 
       <div class="thumbnail-pictures-div" fxFlex="100" fxLayout="row" fxLayoutAlign="space-evenly center">
         <div *ngFor="let picture of product.pictures" class="preview-thumbnail" fxFlex="30">
-          <img mat-card-image class="preview-image" [src]="picture" (click)="changeDefaultImg(picture)"
+          <img mat-card-image class="preview-image" [ngClass]="{'pic-active': picture=== defaultPicture}"
+               [src]="picture" (click)="changeDefaultImg(picture)"
                alt="Thumbnail picture"/>
         </div>
       </div>
@@ -36,7 +39,7 @@
       </div>
 
       <div fxFlex="100" fxLayout="column" *ngIf="product?.features.length > 0">
-        <mat-panel-title>Főbb jellemzők: </mat-panel-title>
+        <mat-panel-title>Főbb jellemzők:</mat-panel-title>
         <ul>
           <li *ngFor="let feature of product.features">{{ feature }}</li>
         </ul>
@@ -95,7 +98,8 @@
           Kedvencekhez
         </button>
 
-        <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+        <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button"
+                [routerLink]="['/edit-product', slug]">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
@@ -126,7 +130,8 @@
 
       <mat-card-content fxFlex="100" *ngIf="!authenticatedUser">Termék értékeléséhez jelentkezz be</mat-card-content>
 
-      <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between" *ngIf="authenticatedUser && !ratedByCurrentUser">
+      <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between"
+           *ngIf="authenticatedUser && !ratedByCurrentUser">
         <div fxFlex="70" fxFlex.lt-sm="100" fxLayout="row wrap" fxLayoutAlign="start">
           <star-rating labelText="Értékeld ezt a terméket: " staticColor="ok" id="ratingInput"
                        (starClickChange)="navigateToRateProduct()"></star-rating>

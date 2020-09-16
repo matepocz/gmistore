@@ -80,6 +80,7 @@ import {ProfileComponent} from './components/user/user-form-components/profile/p
 import {CarouselModule} from 'ngx-owl-carousel-o';
 import {OrdersListComponent} from './components/admin/admin-orders/orders-list/orders-list.component';
 import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
+import {PinchZoomModule} from "ngx-pinch-zoom";
 
 
 @NgModule({
@@ -171,7 +172,8 @@ import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
     MatChipsModule,
     MatTabsModule,
     MatTreeModule,
-    CarouselModule
+    CarouselModule,
+    PinchZoomModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

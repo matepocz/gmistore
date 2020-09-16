@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,6 +91,7 @@ public class ProductService {
     public ProductDto getProductBySlug(String slug) {
         Product product = productRepository.findProductBySlug(slug)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
         return mapProductToProductDto(product);
     }
 
@@ -102,6 +104,21 @@ public class ProductService {
         List<Product> allProduct = productRepository.findAll();
         return allProduct.stream().map(this::mapProductToProductDto)
                 .filter(ProductDto::isActive).collect(Collectors.toList());
+    }
+
+    public List<String> getPictureOfProductsInOffer() {
+        List<Product> getDiscountProductURL = productRepository.findProductByAndDiscountOrderByDiscountAsc();
+
+        List<String> collect = new ArrayList<>();
+        for (Product product : getDiscountProductURL) {
+            String pictureUrl = product.getPictureUrl();
+            if (collect.size() < 10) {
+                collect.add(pictureUrl);
+            } else {
+                break;
+            }
+        }
+        return collect;
     }
 
     /**

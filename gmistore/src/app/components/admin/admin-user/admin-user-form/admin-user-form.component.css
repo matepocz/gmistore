@@ -5,6 +5,10 @@
   margin: 0 -16px;
 }
 
+.box {
+  margin-right:0 !important ;
+}
+
 .sm-btn {
   bottom: 5px;
   left: 0;
@@ -13,6 +17,3 @@
   width: 100%;
 }
 
-mat-card {
-  margin: 5px;
-}

@@ -1,10 +1,13 @@
 <mat-toolbar [color]="'primary'" class="footer">
-  <mat-toolbar-row>
-
-  </mat-toolbar-row>
-
-  <mat-toolbar-row fxLayout="row" fxLayoutAlign="center">
-    <mat-icon>copyright</mat-icon>
-    <span> GMI Store all rights reserved</span>
+  <mat-toolbar-row fxLayout.lt-md="column" fxLayout="row" fxLayoutAlign="space-evenly center">
+    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
+      <span fxLayout="row" fxLayoutAlign="center center"><mat-icon>copyright</mat-icon>GMI Store all rights reserved</span>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
+      <span routerLink="privacy" fxLayout="row" fxLayoutAlign="center center">Adatvédelmi tájékoztató<mat-icon>double_arrow</mat-icon></span>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
+      <span routerLink="cookies-privacy" fxLayout="row" fxLayoutAlign="center center">Süti tájékoztató<mat-icon>double_arrow</mat-icon></span>
+    </mat-toolbar-row>
   </mat-toolbar-row>
 </mat-toolbar>

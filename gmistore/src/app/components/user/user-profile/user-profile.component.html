@@ -1,50 +1,31 @@
-<div fxLayoutAlign="center" [style.margin-top]="'1%'">
-  <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
+<form [formGroup]="userForm">
+  <div fxLayoutAlign="center" [style.margin]="'2%'">
+    <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
 
-    <div fxFlex.gt-sm="90" fxLayoutGap="10px" >
-      <mat-card fxFlex.gt-sm="55" >
-        <mat-card-header>
-          <mat-card-title>Profile</mat-card-title>
-          <mat-card-subtitle>Details</mat-card-subtitle>
-        </mat-card-header>
-        <div *ngFor="let item of details; let i = index">
-          <mat-form-field fxFlexFill>
-            <mat-label>{{titles[i]}}</mat-label>
-            <input matInput type="text" readonly value="{{item}}">
-          </mat-form-field>
-        </div>
+      <mat-card class="box" fxFlex.gt-sm="50" fxFlex.lt-md="100">
+
+        <app-profile *ngIf="loaded"
+                     [userDataForm]="userForm"
+                     [data]="user">
+        </app-profile>
+
+        <button class="desktop-btn" mat-flat-button fxHide.lt-md="true" color="primary" (click)="onSubmit()">
+          Submit
+        </button>
       </mat-card>
 
-      <div fxFlex.gt-sm="45" >
-        <div fxLayout="column wrap" fxLayoutGap="10px">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Szállítási cím</mat-card-title>
-              <mat-card-subtitle>Details</mat-card-subtitle>
-            </mat-card-header>
-            <div *ngFor="let item of shippingAddress; let i = index">
-              <mat-form-field fxFlexFill>
-                <mat-label>{{address[i]}}</mat-label>
-                <input matInput type="text" readonly value="{{item}}">
-              </mat-form-field>
-            </div>
-          </mat-card>
+      <div class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
+        <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"
+                              [userShipping]="user.shippingAddress"></app-shipping-address>
 
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Számlázási cím</mat-card-title>
-              <mat-card-subtitle>Details</mat-card-subtitle>
-            </mat-card-header>
-            <div *ngFor="let item of billingAddress; let i = index">
-              <mat-form-field fxFlexFill>
-                <mat-label>{{address[i]}}</mat-label>
-                <input matInput type="text" readonly value="{{item}}">
-              </mat-form-field>
-            </div>
-          </mat-card>
-        </div>
+        <app-billing-address *ngIf="loaded" [userDataForm]="userForm"
+                             [userBilling]="user.billingAddress"></app-billing-address>
       </div>
+      <button class="sm-btn" mat-flat-button fxHide.gt-sm="true" color="primary" (click)="onSubmit()">Submit
+      </button>
     </div>
 
+  </div>
+</form>
 
 

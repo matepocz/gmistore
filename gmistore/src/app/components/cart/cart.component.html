@@ -1,7 +1,7 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
   <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.gt-sm="80"
        fxLayoutAlign.lt-md="center" fxLayoutAlign="space-evenly start" [ngClass]="{'loading': loading}">
-    <div fxFlex.lt-lg="100" fxFlex.gt-md="60" *ngIf="cart?.cartItems.length > 0">
+    <div fxFlex.lt-lg="100" fxFlex.gt-md="60" *ngIf="cart?.cartItems.length > 0" ngStyle.lt-lg="{'margin':0px}">
       <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
         <mat-card-header>
           <mat-card-title class="cart-header-text">
@@ -11,7 +11,7 @@
         </mat-card-header>
 
         <div class="cart-product-card" *ngFor="let item of cart?.cartItems" fxLayout="row wrap"
-             fxLayoutAlign="space-between center" fxLayoutGap="10px">
+             fxLayoutAlign="space-between center">
 
           <div class="" fxFlex.gt-xs="30" fxFlex.xs="100" fxLayout="row">
             <img mat-card-image class="cart-product-preview-img" fxFlex="100" [src]="item.product.pictureUrl"
@@ -44,20 +44,19 @@
 
               <mat-card-header *ngIf="item.product.discount">
                 <mat-card-title class="discounted-price">
-                  {{ (item.product.price / 100) * (100 - item.product.discount) |
-                  currency: 'HUF': 'symbol-narrow': '2.0' }}
+                  {{ (item.product.price / 100) * (100 - item.product.discount) | hufCurrency }}
                 </mat-card-title>
                 <mat-card-subtitle>
                   <del>
-                    {{ item.product.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
+                    {{ item.product.price | hufCurrency }}
                   </del>
-                  ({{ item.product.discount }} %)
+                  &nbsp;(-{{ item.product.discount }} %)
                 </mat-card-subtitle>
               </mat-card-header>
 
               <mat-card-header *ngIf="!item.product.discount">
                 <mat-card-subtitle>
-                  {{ item.product.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
+                  {{ item.product.price | hufCurrency }}
                 </mat-card-subtitle>
               </mat-card-header>
             </div>
@@ -97,7 +96,7 @@
           <mat-radio-button color="primary" *ngFor="let shipping of shippingData" [value]="shipping?.method"
                             class="delivery-radio-button" fxFlex="100">
             {{ shipping.method | titlecase }} ({{ shipping.days }} munkanap)
-            {{ shipping.cost | currency: 'HUF': 'symbol-narrow': '1.0'}}
+            {{ shipping.cost | hufCurrency }}
           </mat-radio-button>
 
         </mat-radio-group>
@@ -131,32 +130,32 @@
 
       <mat-card class="mat-elevation-z8 cart-calculates-section" fxFlex="100" *ngIf="cart?.cartItems.length > 0">
         <mat-card-header>
-          <mat-icon mat-card-avatar>euro</mat-icon>
+          <mat-icon mat-card-avatar>payment</mat-icon>
           <mat-card-title>Összesítés:</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
           <div fxLayout="row wrap" fxLayoutAlign="space-between space-between">
             <mat-card-title><small>Kosár összege:</small></mat-card-title>
-            <div>{{ cart?.itemsTotalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</div>
+            <div>{{ cart?.itemsTotalPrice | hufCurrency }}</div>
           </div>
           <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-card-title><small>Szállítás összege:</small></mat-card-title>
-            <div>{{ cart?.shippingMethod.cost | currency: 'HUF': 'symbol-narrow' : '1.0'}}</div>
+            <div>{{ cart?.shippingMethod.cost | hufCurrency}}</div>
           </div>
           <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
 
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-card-title><small>Végösszeg:</small></mat-card-title>
-            <mat-card-title class="cart-product-text">{{ cart?.totalPrice | currency: 'HUF': 'symbol-narrow' : '3.0'}}</mat-card-title>
+            <mat-card-title class="cart-product-text">{{ cart?.totalPrice | hufCurrency}}</mat-card-title>
           </div>
         </mat-card-content>
 
         <mat-card-actions fxLayoutAlign="center" [style.margin-bottom]="'10px'">
           <a mat-flat-button materialElevation [color]="'primary'" type="button" [disabled]="loading"
-          (click)="checkout()" aria-label="Checkout button">
+             (click)="checkout()" aria-label="Checkout button">
             <mat-icon>done</mat-icon>
             Véglegesítés
           </a>

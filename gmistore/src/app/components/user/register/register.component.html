@@ -39,7 +39,7 @@
           <mat-hint>Maximum 30 karakter</mat-hint>
           <mat-error *ngIf="registerForm.get('username').invalid &&
           !registerForm.get('username').errors?.serverError">
-            Vezetéknév <strong>szükséges</strong>, max. 100 karakter!
+            Felhasználónév <strong>szükséges</strong>, max. 100 karakter!
           </mat-error>
           <mat-error *ngIf="registerForm.get('username').errors?.usernameExists">
             Felhasználónév már létezik!

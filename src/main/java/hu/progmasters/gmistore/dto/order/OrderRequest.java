@@ -1,5 +1,6 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.order;
 
+import hu.progmasters.gmistore.dto.AddressDetails;
 import lombok.Getter;
 import lombok.Setter;
 

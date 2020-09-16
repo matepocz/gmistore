@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.order;
 
 import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.Product;

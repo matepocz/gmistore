@@ -2,10 +2,12 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.OrderRequest;
+import hu.progmasters.gmistore.dto.order.OrderListDto;
+import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
+import org.apache.catalina.LifecycleState;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -195,6 +194,10 @@ public class OrderService {
                 .collect(Collectors.joining("", "GMI", String.valueOf(generateRandomDigits())));
         Optional<Order> order = orderRepository.findOrderByUniqueId(generatedId);
         return order.isPresent() ? generateUniqueId() : generatedId;
+    }
+
+    public List<OrderListDto> getAllOrders() {
+        return orderRepository.findAllByOrderListDetails();
     }
 
     private int generateRandomNumberForLetters() {

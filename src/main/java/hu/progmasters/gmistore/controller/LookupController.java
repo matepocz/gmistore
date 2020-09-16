@@ -64,4 +64,10 @@ public class LookupController {
         boolean result = lookupService.createCategory(newCategoryRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @DeleteMapping("/category/{key}")
+    public ResponseEntity<Boolean> setCategoryInactive(@PathVariable("key") String key) {
+        boolean result = lookupService.setCategoryInactive(key);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

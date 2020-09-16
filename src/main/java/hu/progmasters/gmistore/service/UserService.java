@@ -27,18 +27,15 @@ public class UserService {
     private final SessionRegistry sessionRegistry;
     private final PasswordTokenRepository passwordTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final OrderService orderService;
 
     public UserService(PasswordEncoder passwordEncoder,
                        UserRepository userRepository,
-                       OrderService orderService,
                        SessionRegistry sessionRegistry,
                        PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
         this.passwordTokenRepository = passwordTokenRepository;
         this.passwordEncoder = passwordEncoder;
-        this.orderService = orderService;
     }
 
     public UserDto getUserData(String username) {

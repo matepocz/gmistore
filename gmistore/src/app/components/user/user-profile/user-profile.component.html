@@ -28,6 +28,8 @@
 
       <div fxFlex.gt-sm="100" >
         <mat-card [ngStyle]="{'margin': '15px'}">
+          <app-product-list *ngIf="orderItems" [products]="orderItems"
+          ></app-product-list>
         </mat-card>
       </div>
     </div>

@@ -13,6 +13,8 @@ import {UserEditableDetailsByAdmin} from "../../../models/userEditableDetailsByA
 import {errorHandler} from "../../../utils/error-handler";
 import {SubSink} from "subsink";
 import {UserEditableDetailsByUser} from "../../../models/userEditableDetailsByUser";
+import {ProductModel} from "../../../models/product-model";
+import {OrderService} from "../../../service/order.service";
 
 @Component({
   selector: 'app-user-profile',
@@ -25,10 +27,12 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
   user: UserModel;
   loaded: boolean = false;
   subs = new SubSink();
+  orderItems: Array<OrderModel>;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
               private adminService: AdminService,
+              private orderService: OrderService,
               private userService: UserService,
               private router: Router, private cdRef: ChangeDetectorRef) {
 
@@ -61,6 +65,9 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
 
   ngOnInit(): void {
     this.getUserDetails();
+    this.subs.add(this.orderService.getOrderItems().subscribe(
+      (data) => this.orderItems = data
+    ));
   }
 
   ngAfterViewChecked() {
@@ -72,7 +79,7 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
       data => {
         console.log(data);
         this.user = data;
-        this.sharingService.nextMessage(data);
+        // this.sharingService.nextMessage(data);
       },
       error => console.log(error),
       () => this.loaded = true

@@ -7,7 +7,6 @@ import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
-import org.apache.catalina.LifecycleState;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -198,6 +197,17 @@ public class OrderService {
 
     public List<OrderListDto> getAllOrders() {
         return orderRepository.findAllByOrderListDetails();
+    }
+
+    public Set<OrderItem> getAllProductsOrderedByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Set<OrderItem> allOrderedProductsByUser = orderRepository.findAllOrderedProductsByUser(authentication.getName());
+        if (allOrderedProductsByUser != null) {
+            LOGGER.debug("User order details found! username: {}", authentication.getName());
+            return allOrderedProductsByUser;
+        }
+        LOGGER.info("User order details not found! username: {}", authentication.getName());
+        return null;
     }
 
     private int generateRandomNumberForLetters() {

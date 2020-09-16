@@ -2,13 +2,10 @@
   bottom: 0;
   position: absolute;
   width: 100%;
-  margin: 0 -16px;
+  margin: -16px -16px;
 }
 
 .sm-btn {
   width: 100%;
 }
 
-.box {
-  margin-right: 0px !important;
-}

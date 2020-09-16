@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
+import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.PasswordTokenRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,22 +27,25 @@ public class UserService {
     private final SessionRegistry sessionRegistry;
     private final PasswordTokenRepository passwordTokenRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final OrderService orderService;
 
     public UserService(PasswordEncoder passwordEncoder,
                        UserRepository userRepository,
+                       OrderService orderService,
                        SessionRegistry sessionRegistry,
                        PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
         this.passwordTokenRepository = passwordTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.orderService = orderService;
     }
 
     public UserDto getUserData(String username) {
         System.out.println(sessionRegistry.getAllPrincipals());
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
         UserDto userDto = new UserDto(
                 user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
                 user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),

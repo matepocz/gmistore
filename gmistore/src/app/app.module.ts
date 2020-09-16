@@ -78,7 +78,9 @@ import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.
 import {RolesComponent} from './components/user/user-form-components/roles/roles.component';
 import {ProfileComponent} from './components/user/user-form-components/profile/profile.component';
 import {CarouselModule} from 'ngx-owl-carousel-o';
-import { OrdersListComponent } from './components/admin/admin-orders/orders-list/orders-list.component';
+import {OrdersListComponent} from './components/admin/admin-orders/orders-list/orders-list.component';
+import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
+
 
 @NgModule({
   declarations: [
@@ -121,7 +123,8 @@ import { OrdersListComponent } from './components/admin/admin-orders/orders-list
     ProfileComponent,
     NewPasswordComponent,
     DeleteDialog,
-    OrdersListComponent
+    OrdersListComponent,
+    HufCurrencyPipe,
   ],
 
   imports: [

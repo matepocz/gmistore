@@ -78,6 +78,11 @@ const routes: Routes = [
   {
     path: 'admin', component: AdminNavComponent,
     children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
       {path: 'categories', component: AdminCategoriesComponent},
       {path: 'dashboard', component: AdminDashboardComponent},
       {path: 'product', component: AdminProductComponent},
@@ -85,7 +90,7 @@ const routes: Routes = [
       {path: 'user/edit/:id', component: AdminUserFormComponent},
     ],
     canActivate: [AuthGuard],
-    data: {roles: RoleModel.ROLE_ADMIN}
+    data: {roles: RoleModel.ROLE_ADMIN},
   },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},

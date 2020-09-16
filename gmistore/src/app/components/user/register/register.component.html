@@ -36,10 +36,10 @@
         <mat-form-field class="form-full-width" appearance="outline">
           <mat-label>Felhasználónév</mat-label>
           <input matInput placeholder="" formControlName="username" required>
-          <mat-hint>Maximum 30 karakter</mat-hint>
+          <mat-hint>Minimum 5, maximum 30 karakter</mat-hint>
           <mat-error *ngIf="registerForm.get('username').invalid &&
           !registerForm.get('username').errors?.serverError">
-            Felhasználónév <strong>szükséges</strong>, max. 100 karakter!
+            Min. 5, max. 30 karakter!
           </mat-error>
           <mat-error *ngIf="registerForm.get('username').errors?.usernameExists">
             Felhasználónév már létezik!

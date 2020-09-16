@@ -33,13 +33,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm = this.formBuilder.group({
       firstName: [null,
         [Validators.required, Validators.minLength(3), Validators.maxLength(100),
-          Validators.nullValidator]],
+          Validators.pattern("^[-'a-zA-ZÀ-ÖØ-öø-ſ]+$"), Validators.nullValidator]],
       lastName: [null,
         [Validators.required, Validators.minLength(3), Validators.maxLength(100),
-          Validators.nullValidator]],
+          Validators.pattern("^[-'a-zA-ZÀ-ÖØ-öø-ſ]+$"), Validators.nullValidator]],
       username: [null,
         [Validators.required, Validators.minLength(5), Validators.maxLength(100),
-          Validators.nullValidator], [usernameValidator(this.authService)]],
+          Validators.pattern("^[a-z0-9_-]{5,30}$"), Validators.nullValidator],
+        [usernameValidator(this.authService)]],
       email: [null, Validators.compose(
         [Validators.required, Validators.email, Validators.maxLength(100)]),
         [emailValidator(this.authService)]],

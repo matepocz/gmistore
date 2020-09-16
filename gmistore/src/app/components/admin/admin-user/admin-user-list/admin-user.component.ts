@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription} from "rxjs";
 import {AdminService} from "../../../../service/admin.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -9,6 +8,7 @@ import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
 import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
 import {AuthService} from "../../../../service/auth-service";
+import {SubSink} from "subsink";
 
 @Component({
   selector: 'app-admin-user',
@@ -19,11 +19,11 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  displayedColumns: string[] = ['id', 'username', 'email', 'roles', 'mail','active', 'edit'];
-  subscription: Subscription;
+  displayedColumns: string[] = ['id', 'username', 'email', 'roles', 'mail', 'active', 'edit'];
   userData: Array<UserListDetailsModel>;
   dataSource: MatTableDataSource<UserListDetailsModel>;
   myVariableColor: any;
+  subs = new SubSink();
 
   constructor(private adminService: AdminService,
               private authService: AuthService,
@@ -35,7 +35,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   getAllUsers() {
-    this.subscription = this.adminService.getUserList().subscribe(
+    this.subs.add(this.adminService.getUserList().subscribe(
       (data) => this.userData = data,
       error => console.log(error),
       () => {
@@ -43,7 +43,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       }
-    );
+    ));
   }
 
   applyFilter(event: Event) {
@@ -56,11 +56,6 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   editUser(id: string) {
-    // let chosenUserData = this.userData.filter(u => u.id == id);
-    // this.adminService.getAccount(+id).subscribe(
-    //   (user: UserModel) => this.sharingService.nextMessage(user),
-    //   err=> console.log(err),
-    //   () =>  this.router.navigate(['/admin/user/edit',id])
     this.router.navigate(['/admin/user/edit', id])
   }
 
@@ -70,23 +65,21 @@ export class AdminUserComponent implements OnInit, OnDestroy {
       id: number = id;
     }();
 
-    (this.adminService.setUserActivity(userIsActiveData).subscribe(
+    this.subs.add(this.adminService.setUserActivity(userIsActiveData).subscribe(
       () => console.log("Activity" + value.checked),
       (err) => console.log(err)
     ));
   }
 
   sendResetPassword(email: string) {
-    (this.authService.sendResetMail(email).subscribe(
+    this.subs.add(this.authService.sendResetMail(email).subscribe(
       () => this.myVariableColor = 'green',
-        error => this.myVariableColor = 'red'
+      error => this.myVariableColor = 'red'
       )
     )
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subs.unsubscribe();
   }
 }

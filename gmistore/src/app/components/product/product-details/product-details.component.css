@@ -1,19 +1,28 @@
 .preview-image {
   max-height: 100px;
   max-width: 100px;
+  cursor: pointer;
+  padding: 2px;
 }
-.rating-bar-text{
+
+.preview-image:hover {
+  padding: 1px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.rating-bar-text {
   padding-top: 12px;
 }
 
-.rating-positive-icon{
+.rating-positive-icon {
   color: green;
 }
 
-.rating-negative-icon{
+.rating-negative-icon {
   color: red;
 }
 
-.rating-comment{
+.rating-comment {
   resize: none;
 }

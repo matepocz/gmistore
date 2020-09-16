@@ -12,6 +12,7 @@ import {AdminService} from "../../../service/admin.service";
 import {UserEditableDetailsByAdmin} from "../../../models/userEditableDetailsByAdmin";
 import {errorHandler} from "../../../utils/error-handler";
 import {SubSink} from "subsink";
+import {UserEditableDetailsByUser} from "../../../models/userEditableDetailsByUser";
 
 @Component({
   selector: 'app-user-profile',
@@ -23,13 +24,12 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
   details: any[];
   user: UserModel;
   loaded: boolean = false;
-  roleOptions: Array<RolesInitModel>;
-  toSend: any;
   subs = new SubSink();
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
               private adminService: AdminService,
+              private userService: UserService,
               private router: Router, private cdRef: ChangeDetectorRef) {
 
     this.userForm = this.fb.group({
@@ -56,36 +56,19 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
       lastName: ['', Validators.required],
       email: ['', Validators.required],
       phoneNumber: [''],
-      registered: ['', Validators.required],
-      active: ['', Validators.required],
-
     })
   }
 
-
   ngOnInit(): void {
-    this.subs.add(this.route.paramMap.subscribe(
-      paramMap => {
-        const editableId = paramMap.get('id');
-        if (editableId) {
-          this.getUserDetails(editableId);
-        }
-      },
-      error => console.warn(error),
-    ));
+    this.getUserDetails();
   }
 
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
 
-  getUserDetails(id) {
-    this.subs.add(this.adminService.getInitRoles().subscribe(
-      rolesData => {
-        this.roleOptions = rolesData
-      }))
-
-    this.adminService.getAccount(id).subscribe(
+  getUserDetails() {
+    this.subs.add(this.userService.getUser().subscribe(
       data => {
         console.log(data);
         this.user = data;
@@ -93,20 +76,18 @@ export class UserProfileComponent implements OnInit ,OnDestroy, AfterViewChecked
       },
       error => console.log(error),
       () => this.loaded = true
-    )
+    ));
   }
 
-  onSubmit(id:number) {
-    const data: UserEditableDetailsByAdmin = {...this.userForm.value};
-    data.roles = this.toSend;
-    data.id = id;
+  onSubmit() {
+    const data: UserEditableDetailsByUser = {...this.userForm.value};
     this.updateUser(data);
   }
 
-  private updateUser(data: UserEditableDetailsByAdmin) {
+  private updateUser(data: UserEditableDetailsByUser) {
     console.log(data)
-    this.subs.add(this.adminService.updateUser(data).subscribe(
-      () => this.router.navigate(['/admin/user']),
+    this.subs.add(this.userService.updateUser(data).subscribe(
+      () => this.router.navigate(['']),
       error => errorHandler(error, this.userForm),
     ));
   }

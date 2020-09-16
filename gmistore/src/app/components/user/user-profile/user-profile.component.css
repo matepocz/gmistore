@@ -6,13 +6,9 @@
 }
 
 .sm-btn {
-  bottom: 5px;
-  left: 0;
-  right: 0;
-  position: absolute;
   width: 100%;
 }
 
-mat-card {
-  margin: 5px;
+.box {
+  margin-right: 0px !important;
 }

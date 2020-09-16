@@ -3,7 +3,7 @@
     <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
 
 
-      <mat-card fxFlex.gt-sm="50" fxFlex.lt-md="100">
+      <mat-card class="box" fxFlex.gt-sm="50" fxFlex.lt-md="100">
 
         <app-profile *ngIf="loaded"
                      [userDataForm]="userForm"
@@ -22,7 +22,7 @@
         </button>
       </mat-card>
 
-      <div fxFlex.gt-sm="40" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
+      <div class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
         <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"
                               [userShipping]="user.shippingAddress"></app-shipping-address>
 

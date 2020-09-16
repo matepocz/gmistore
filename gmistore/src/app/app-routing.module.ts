@@ -21,6 +21,7 @@ import {AdminProductComponent} from "./components/admin/admin-product/admin-prod
 import {AdminUserComponent} from "./components/admin/admin-user/admin-user-list/admin-user.component";
 import {AdminNavComponent} from "./components/admin/admin-nav/admin-nav.component";
 import {AdminUserFormComponent} from "./components/admin/admin-user/admin-user-form/admin-user-form.component";
+import {OrdersListComponent} from "./components/admin/admin-orders/orders-list/orders-list.component";
 import {CheckoutComponent} from "./components/checkout/checkout.component";
 import {AuthGuard} from "./utils/auth.guard";
 import {RoleModel} from "./models/role.model";
@@ -88,6 +89,7 @@ const routes: Routes = [
       {path: 'product', component: AdminProductComponent},
       {path: 'user', component: AdminUserComponent},
       {path: 'user/edit/:id', component: AdminUserFormComponent},
+      {path: 'orders', component: OrdersListComponent},
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},

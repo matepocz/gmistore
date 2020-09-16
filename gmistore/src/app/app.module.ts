@@ -78,6 +78,7 @@ import {MenuListItemComponent} from './components/menu-list-item/menu-list-item.
 import { RolesComponent } from './components/user/user-form-components/roles/roles.component';
 import { ProfileComponent } from './components/user/user-form-components/profile/profile.component';
 import {CarouselModule} from 'ngx-owl-carousel-o';
+import { OrdersListComponent } from './components/admin/admin-orders/orders-list/orders-list.component';
 
 
 @NgModule({
@@ -120,6 +121,7 @@ import {CarouselModule} from 'ngx-owl-carousel-o';
     RolesComponent,
     ProfileComponent,
     NewPasswordComponent,
+    OrdersListComponent,
   ],
 
   imports: [

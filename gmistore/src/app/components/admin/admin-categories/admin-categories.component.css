@@ -1,0 +1,11 @@
+.main-category-title {
+  padding-top: 3px;
+}
+
+.category-delete-icon {
+  cursor: pointer;
+}
+
+.subcategory-title {
+  padding-left: 20px;
+}

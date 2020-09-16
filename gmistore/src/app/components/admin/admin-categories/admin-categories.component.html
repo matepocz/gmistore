@@ -3,25 +3,41 @@
             fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start">
 
     <mat-card-header fxFlex="100" class="mt-15">
-      <mat-card-title>Termék kategóriák</mat-card-title>
+      <mat-card-title>Aktív termék kategóriák</mat-card-title>
       <mat-icon mat-card-avatar>category</mat-icon>
     </mat-card-header>
 
-    <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
-    <div fxFlex.lt-md="100" fxFlex.md="40" fxFlex.gt-md="20" fxLayout="column" *ngFor="let mainCategory of categories">
-      <mat-card-content class="mat-body-strong">
-        {{ mainCategory.displayName }} ({{ mainCategory.subCategories.length }} termék kategória)
-      </mat-card-content>
+    <div fxFlex.lt-md="100" fxFlex.md="40" fxFlex.gt-md="20" fxLayoutAlign="space-evenly" fxLayout="column"
+         *ngFor="let mainCategory of categories">
+      <mat-card-header fxLayout="row wrap" fxLayoutAlign="space-between">
+        <mat-card-title class="main-category-title">
+          {{ mainCategory.displayName }}
+        </mat-card-title>
+        <span>
+          <mat-icon class="category-delete-icon" color="warn"
+                    (click)="openDialog(mainCategory.displayName, mainCategory.key)">
+          delete
+        </mat-icon>
+        </span>
+        <div fxFlex="100">
+          <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
+        </div>
+      </mat-card-header>
 
-      <div fxFlex="100" fxLayout="column" *ngFor="let subCategory of mainCategory.subCategories">
-        <ul>
-          <li>{{ subCategory.displayName }}</li>
-        </ul>
+      <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between" *ngFor="let subCategory of mainCategory.subCategories; let i = index">
+        <mat-card-subtitle class="subcategory-title">
+          {{ i + 1 }}. {{ subCategory.displayName }}
+        </mat-card-subtitle>
+        <span>
+          <mat-icon color="warn" class="category-delete-icon"
+                    (click)="openDialog(subCategory.displayName, subCategory.key)">
+              delete
+          </mat-icon>
+        </span>
       </div>
     </div>
 
-    <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
 
     <div fxFlex="100" fxLayout="column">
       <mat-card-header fxFlex="100" class="mt-15">

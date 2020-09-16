@@ -25,5 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<UserRegistrationDTO> findByRolesIn(@Param("role") Role role);
 
     @Query("select u from User u")
-    List<User> findAllUsersWithListDetails();
+    List<User> findAllUsersWithListDetails2();
+
+    @Query("select new hu.progmasters.gmistore.dto.UserListDetailDto(u) from User u")
+    List<UserListDetailDto> findAllUsersWithListDetails();
 }

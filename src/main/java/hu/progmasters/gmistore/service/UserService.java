@@ -49,9 +49,8 @@ public class UserService {
     }
 
     public List<UserListDetailDto> getUserList() {
-        List<User> allUsersWithListDetails = userRepository.findAllUsersWithListDetails();
-        return allUsersWithListDetails.stream().map(UserListDetailDto::new)
-                .collect(Collectors.toList());
+        return userRepository.findAllUsersWithListDetails();
+
     }
 
     public User getUserByUsername(String username) {

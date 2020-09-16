@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.OrderRequest;
+import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
 import org.slf4j.LoggerFactory;

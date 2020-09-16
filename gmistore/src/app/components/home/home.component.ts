@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {OwlOptions} from 'ngx-owl-carousel-o';
 import {ProductService} from "../../service/product-service";
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -55,7 +56,7 @@ export class HomeComponent implements OnInit {
   imageURLs = Array<string>();
   temp = Array<string>();
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private titleService: Title) {
     this.productService.getDiscountProductsProductURL().subscribe(
       (response) => {
         this.imageURLs = response;
@@ -77,7 +78,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.titleService.setTitle("Főoldal - GMI Store");
   }
 
 }

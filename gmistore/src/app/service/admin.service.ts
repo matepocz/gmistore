@@ -15,7 +15,7 @@ import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
   providedIn: 'root'
 })
 export class AdminService {
-  private adminUrl = environment.apiUrl + 'admin/';
+  private adminUrl = environment.apiUrl + 'api/admin/';
   private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {

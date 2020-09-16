@@ -10,36 +10,37 @@ import {RolesInitModel} from "../models/rolesInitModel";
 import {MainCategoryModel} from "../models/main-category.model";
 import {NewCategoryModel} from "../models/new-category.model";
 import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
+import {OrderListModel} from "../models/order/orderListModel";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-  private adminUrl = environment.apiUrl + 'api/admin/';
+  private adminUrl = environment.apiUrl + 'api/admin';
   private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
   }
 
   getUserRegistrationsCount(): Observable<UserRegistrationsCounterModel> {
-    return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + "registered");
+    return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + "/registered");
   }
 
   getAccount(id: number): Observable<UserModel> {
-    return this.httpClient.get<UserModel>(this.adminUrl + 'users/' + id);
+    return this.httpClient.get<UserModel>(this.adminUrl + '/users/' + id);
   }
 
   getUserList(): Observable<Array<UserListDetailsModel>> {
-    return this.httpClient.get<Array<UserListDetailsModel>>(this.adminUrl + 'users');
+    return this.httpClient.get<Array<UserListDetailsModel>>(this.adminUrl + '/users');
   }
 
   setUserActivity(userIsActiveData: UserIsActiveModel) {
     console.log(userIsActiveData)
-    return this.httpClient.put(this.adminUrl + 'users/active', userIsActiveData);
+    return this.httpClient.put(this.adminUrl + '/users/active', userIsActiveData);
   }
 
   getInitRoles(): Observable<RolesInitModel[]> {
-    return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + 'users/roles');
+    return this.httpClient.get<Array<RolesInitModel>>(this.adminUrl + '/users/roles');
   }
 
   getProductCategories(): Observable<Array<MainCategoryModel>> {
@@ -51,6 +52,10 @@ export class AdminService {
   }
 
   updateUser(data: UserEditableDetailsByAdmin): Observable<any> {
-    return this.httpClient.put(this.adminUrl + 'users', data);
+    return this.httpClient.put(this.adminUrl + '/users', data);
+  }
+
+  getOrders(): Observable<Array<OrderListModel>> {
+    return this.httpClient.get<Array<OrderListModel>>(this.adminUrl + '/orders');
   }
 }

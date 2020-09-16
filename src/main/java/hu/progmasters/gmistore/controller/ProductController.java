@@ -89,4 +89,10 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/get-discount-pictures")
+    public ResponseEntity<List<String>>getDiscountProductsPictureURL(){
+        List<String> pictureOfProductsInOffer = productService.getPictureOfProductsInOffer();
+        return new ResponseEntity<>(pictureOfProductsInOffer,HttpStatus.OK);
+    }
 }

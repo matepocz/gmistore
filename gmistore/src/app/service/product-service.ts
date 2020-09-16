@@ -50,4 +50,8 @@ export class ProductService {
 
     return await this.httpClient.post(this.imageUploadUrl, uploadData).toPromise();
   }
+
+  getDiscountProductsProductURL(): Observable<any>{
+    return this.httpClient.get(this.productsUrl +"/get-discount-pictures")
+  }
 }

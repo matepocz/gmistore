@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {UserModel} from "../../../../models/user-model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -7,19 +7,21 @@ import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
 import {errorHandler} from "../../../../utils/error-handler";
 import {UserEditableDetailsByAdmin} from "../../../../models/userEditableDetailsByAdmin";
+import {SubSink} from "subsink";
 
 @Component({
   selector: 'app-admin-user-form',
   templateUrl: './admin-user-form.component.html',
   styleUrls: ['./admin-user-form.component.css']
 })
-export class AdminUserFormComponent implements OnInit, AfterViewChecked {
+export class AdminUserFormComponent implements OnInit ,OnDestroy, AfterViewChecked {
   userForm: FormGroup;
   details: any[];
   user: UserModel;
   loaded: boolean = false;
   roleOptions: Array<RolesInitModel>;
   toSend: any;
+  subs = new SubSink();
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
@@ -59,7 +61,7 @@ export class AdminUserFormComponent implements OnInit, AfterViewChecked {
 
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(
+    this.subs.add(this.route.paramMap.subscribe(
       paramMap => {
         const editableId = paramMap.get('id');
         if (editableId) {
@@ -67,7 +69,7 @@ export class AdminUserFormComponent implements OnInit, AfterViewChecked {
         }
       },
       error => console.warn(error),
-    );
+    ));
   }
 
   ngAfterViewChecked() {
@@ -75,12 +77,12 @@ export class AdminUserFormComponent implements OnInit, AfterViewChecked {
   }
 
   getUserDetails(id) {
-    this.adminService.getInitRoles().subscribe(
+    this.subs.add(this.adminService.getInitRoles().subscribe(
       rolesData => {
         this.roleOptions = rolesData
-      })
+      }));
 
-    this.adminService.getAccount(id).subscribe(
+    this.subs.add(this.adminService.getAccount(id).subscribe(
       data => {
       console.log(data);
       this.user = data;
@@ -88,7 +90,7 @@ export class AdminUserFormComponent implements OnInit, AfterViewChecked {
     },
         error => console.log(error),
       () => this.loaded = true
-    )
+    ));
   }
 
   onSubmit(id:number) {
@@ -100,9 +102,14 @@ export class AdminUserFormComponent implements OnInit, AfterViewChecked {
 
   private updateUser(data: UserEditableDetailsByAdmin) {
     console.log(data)
-    this.adminService.updateUser(data).subscribe(
+    this.subs.add(this.adminService.updateUser(data).subscribe(
       () => this.router.navigate(['/admin/user']),
       error => errorHandler(error, this.userForm),
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 }
+

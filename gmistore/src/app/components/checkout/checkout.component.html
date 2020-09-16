@@ -275,7 +275,7 @@
               </p>
 
               <span fxFlex="30" fxLayoutAlign="end">
-              {{ item.product.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
+              {{ item.product.price | hufCurrency }}
             </span>
 
               <div fxFlex="100">
@@ -284,13 +284,22 @@
             </mat-card-content>
 
             <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">
+              <mat-card-subtitle>
+                Szállítási költség:
+              </mat-card-subtitle>
+              <span>
+                {{ cartDetails?.shippingMethod.cost | hufCurrency }}
+              </span>
+            </div>
+
+            <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">
               <mat-card-title>
                 Összesen:
               </mat-card-title>
 
               <span>
               <strong>
-                {{ cartDetails?.totalPrice | currency: 'HUF': 'symbol-narrow': '2.0'}}
+                {{ cartDetails?.totalPrice | hufCurrency }}
               </strong>
             </span>
             </div>

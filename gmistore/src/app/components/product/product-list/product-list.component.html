@@ -1,54 +1,54 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'1%'">
   <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start" fxLayoutGap="10px"
-  [ngClass]="{'loading': loading}">
+       [ngClass]="{'loading': loading}">
 
-<!--    <mat-card fxFlex="18" fxHide.lt-md class="options-panel mat-elevation-z5" fxLayout="row wrap"-->
-<!--              fxLayoutGap="10px" fxLayoutAlign="start start">-->
+    <!--    <mat-card fxFlex="18" fxHide.lt-md class="options-panel mat-elevation-z5" fxLayout="row wrap"-->
+    <!--              fxLayoutGap="10px" fxLayoutAlign="start start">-->
 
-<!--      <mat-card-header fxFlex="100">-->
-<!--        <mat-card-title>-->
-<!--          Szűrés:-->
-<!--        </mat-card-title>-->
-<!--      </mat-card-header>-->
-<!--      <mat-divider inset="true" class="divider-accent-colored"></mat-divider>-->
+    <!--      <mat-card-header fxFlex="100">-->
+    <!--        <mat-card-title>-->
+    <!--          Szűrés:-->
+    <!--        </mat-card-title>-->
+    <!--      </mat-card-header>-->
+    <!--      <mat-divider inset="true" class="divider-accent-colored"></mat-divider>-->
 
-<!--      <div fxFlex="100" fxLayout="row wrap">-->
-<!--        <mat-card-header fxFlex="100">-->
-<!--          <mat-card-subtitle>Minimum ár:</mat-card-subtitle>-->
-<!--        </mat-card-header>-->
+    <!--      <div fxFlex="100" fxLayout="row wrap">-->
+    <!--        <mat-card-header fxFlex="100">-->
+    <!--          <mat-card-subtitle>Minimum ár:</mat-card-subtitle>-->
+    <!--        </mat-card-header>-->
 
-<!--        <mat-slider min="1" color="primary" [max]="maximumPrice - 1" step="500" [(ngModel)]="minimumPrice" thumbLabel-->
-<!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMinimumPrice(minPrice)">-->
-<!--        </mat-slider>-->
+    <!--        <mat-slider min="1" color="primary" [max]="maximumPrice - 1" step="500" [(ngModel)]="minimumPrice" thumbLabel-->
+    <!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMinimumPrice(minPrice)">-->
+    <!--        </mat-slider>-->
 
-<!--        <mat-card-header fxFlex="100">-->
-<!--          <mat-card-subtitle>Maximum ár:</mat-card-subtitle>-->
-<!--        </mat-card-header>-->
+    <!--        <mat-card-header fxFlex="100">-->
+    <!--          <mat-card-subtitle>Maximum ár:</mat-card-subtitle>-->
+    <!--        </mat-card-header>-->
 
-<!--        <mat-slider min="2" color="primary" [max]="maximumPrice" step="500" [(ngModel)]="maximumPrice" thumbLabel-->
-<!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMaximumPrice(maxPrice)">-->
-<!--        </mat-slider>-->
-<!--        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">-->
-<!--          <mat-form-field appearance="outline" fxFlex="30">-->
-<!--            <mat-label>Min. ár</mat-label>-->
-<!--            <input matInput placeholder="" #minPrice formControlName="minimumPrice" [value]="minimumPrice.toString()">-->
-<!--          </mat-form-field>-->
+    <!--        <mat-slider min="2" color="primary" [max]="maximumPrice" step="500" [(ngModel)]="maximumPrice" thumbLabel-->
+    <!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMaximumPrice(maxPrice)">-->
+    <!--        </mat-slider>-->
+    <!--        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">-->
+    <!--          <mat-form-field appearance="outline" fxFlex="30">-->
+    <!--            <mat-label>Min. ár</mat-label>-->
+    <!--            <input matInput placeholder="" #minPrice formControlName="minimumPrice" [value]="minimumPrice.toString()">-->
+    <!--          </mat-form-field>-->
 
-<!--          <mat-form-field appearance="outline" fxFlex="30">-->
-<!--            <mat-label>Max. ár</mat-label>-->
-<!--            <input matInput placeholder="" #maxPrice formControlName="maximumPrice" [value]="maximumPrice.toString()">-->
-<!--          </mat-form-field>-->
+    <!--          <mat-form-field appearance="outline" fxFlex="30">-->
+    <!--            <mat-label>Max. ár</mat-label>-->
+    <!--            <input matInput placeholder="" #maxPrice formControlName="maximumPrice" [value]="maximumPrice.toString()">-->
+    <!--          </mat-form-field>-->
 
-<!--        </div>-->
-<!--      </div>-->
-<!--      <span class="spacer"></span>-->
-<!--      <div fxFlex="100" fxLayoutAlign="end">-->
-<!--        <button mat-button materialElevation color="primary">-->
-<!--          <mat-icon>filter_list</mat-icon>-->
-<!--          Szűrés-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </mat-card>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--      <span class="spacer"></span>-->
+    <!--      <div fxFlex="100" fxLayoutAlign="end">-->
+    <!--        <button mat-button materialElevation color="primary">-->
+    <!--          <mat-icon>filter_list</mat-icon>-->
+    <!--          Szűrés-->
+    <!--        </button>-->
+    <!--      </div>-->
+    <!--    </mat-card>-->
     <!--TODO to continue later, when there is more filter options become available-->
 
     <div fxFlex.gt-md="80" fxFlex.md="80" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
@@ -70,29 +70,33 @@
           <mat-card-content>
             <p> {{ product.description | slice: 0: 100 }}...</p>
           </mat-card-content>
-          <mat-card-header *ngIf="product.discount">
+
+          <mat-card-header *ngIf="product.discount; else noDiscountTemplate">
             <mat-card-title class="discounted-price">
               <p>
-                {{ calculateDiscountedPrice(product) | currency : 'HUF' : 'symbol-narrow' : '3.0-0' }}
+                {{ calculateDiscountedPrice(product) | hufCurrency }}
               </p>
             </mat-card-title>
             <mat-card-subtitle>
-              <del>{{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}</del>
-              ( {{ product.discount }}% )
+              <del>{{ product.price | hufCurrency }}</del>
+              &nbsp;(- {{ product.discount }}% )
             </mat-card-subtitle>
           </mat-card-header>
 
-          <mat-card-header>
-            <mat-card-title *ngIf="!product.discount">
-              <p><small>
-                {{ product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0'  }}
-              </small></p>
-            </mat-card-title>
-          </mat-card-header>
+          <ng-template #noDiscountTemplate>
+            <mat-card-header>
+              <mat-card-title>
+                <p><small>
+                  {{ product.price | hufCurrency }}
+                </small></p>
+              </mat-card-title>
+            </mat-card-header>
+          </ng-template>
 
-          <mat-card-subtitle *ngIf="product.quantityAvailable <= 0">Nincs raktáron
+          <mat-card-subtitle *ngIf="product.quantityAvailable <= 0">
+            Nincs raktáron
           </mat-card-subtitle>
-          <mat-card-actions fxLayoutAlign="end end" fxLayout="row">
+          <mat-card-actions class="product-card-actions" fxLayoutAlign="end end" fxLayout="row">
             <a mat-icon-button [routerLink]="['/product/', product.slug]" [color]="'primary'" matTooltip="Részletek"
                matTooltipPosition="above">
               <mat-icon>info</mat-icon>

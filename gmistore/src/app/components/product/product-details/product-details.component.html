@@ -49,23 +49,25 @@
         <mat-card-subtitle>Kiszállítás: akár 1 munkanapon belül</mat-card-subtitle>
         <mat-card-content>{{product.quantityAvailable}} raktáron</mat-card-content>
 
-        <mat-card-header *ngIf="product.discount == 0">
-          <mat-card-content>
-            {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}
-          </mat-card-content>
-        </mat-card-header>
-
-        <mat-card-header *ngIf="product.discount > 0">
+        <mat-card-header *ngIf="product.discount > 0; else noDiscountPriceTemplate">
           <mat-card-title class="discounted-price">
-            {{calculateDiscountedPrice() | currency :'HUF' : 'symbol-narrow' : '3.0' }}
+            {{calculateDiscountedPrice() | hufCurrency }}
           </mat-card-title>
           <mat-card-subtitle>
             <del>
-              {{product.price  | currency : 'HUF' : 'symbol-narrow' : '3.0' }}
+              {{product.price  | hufCurrency }}
             </del>
-            ({{ product.discount }} % )
+            &nbsp;(-{{ product.discount }} % )
           </mat-card-subtitle>
         </mat-card-header>
+
+        <ng-template #noDiscountPriceTemplate>
+          <mat-card-header>
+            <mat-card-content>
+              {{product.price  | hufCurrency }}
+            </mat-card-content>
+          </mat-card-header>
+        </ng-template>
 
         <mat-card-actions fxLayoutAlign="bottom start">
           <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">

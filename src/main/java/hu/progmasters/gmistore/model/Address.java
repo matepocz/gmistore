@@ -19,15 +19,12 @@ public class Address {
     @Column(name = "id")
     private long id;
 
-    @NotNull
     @Column(name = "city")
     private String city;
 
-    @NotNull
     @Column(name = "street")
     private String street;
 
-    @NotNull(message = "sssaas")
     @Column(name = "number")
     private Integer number;
 
@@ -37,11 +34,9 @@ public class Address {
     @Column(name = "door")
     private Integer door;
 
-    @NotNull
     @Column(name = "country")
     private String country;
 
-    @NotNull
     @Column(name = "postcode")
     private String postcode;
 }

@@ -30,42 +30,64 @@ public class UserEditValidator implements Validator {
         if (userDetails.getLastName() == null || userDetails.getUsername().length() <= 1) {
             errors.rejectValue("lastName", "user.lastName.invalid");
         }
-        if (userDetails.getPhoneNumber() == null
-                || userDetails.getPhoneNumber().length() <= 6
-                || !userDetails.getPhoneNumber().matches("[0-9]+")) {
-            errors.rejectValue("phoneNumber", "user.phoneNumber.invalid");
+
+        if (userDetails.getPhoneNumber() != null) {
+            if (userDetails.getPhoneNumber().length() <= 6
+                    || !userDetails.getPhoneNumber().matches("[0-9]+")) {
+                errors.rejectValue("phoneNumber", "user.phoneNumber.invalid");
+            }
         }
 
         //ShippingAddress
-        if (userDetails.getShippingAddress().getPostcode() == null
-                || userDetails.getShippingAddress().getPostcode().length() <= 1
-                || !userDetails.getShippingAddress().getPostcode().matches("[0-9]+")) {
-            errors.rejectValue("shippingAddress.postcode", "address.postcode.invalid");
+        if (userDetails.getShippingAddress().getPostcode() != null) {
+            if (userDetails.getShippingAddress().getPostcode().length() <= 3
+                    || !userDetails.getShippingAddress().getPostcode().matches("[0-9]+")) {
+                errors.rejectValue("shippingAddress.postcode", "address.postcode.invalid");
+            }
         }
 
-        if (userDetails.getShippingAddress().getNumber() == null
-                || userDetails.getShippingAddress().getNumber() < 1
-        ) {
-            errors.rejectValue("shippingAddress.number", "address.number.invalid");
+        if (userDetails.getShippingAddress().getNumber() != null) {
+            if (userDetails.getShippingAddress().getNumber() < 1
+                    || userDetails.getShippingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("shippingAddress.number", "address.number.invalid");
+            }
         }
 
-        if (userDetails.getShippingAddress().getCity() == null
-                || userDetails.getShippingAddress().getCity().length() <= 1
-        ) {
-            errors.rejectValue("shippingAddress.city", "address.city.empty");
+        if (userDetails.getShippingAddress().getDoor() != null) {
+            if (userDetails.getShippingAddress().getDoor() < 1
+                    || userDetails.getShippingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("shippingAddress.number", "address.number.invalid");
+            }
         }
 
-        if (userDetails.getShippingAddress().getCountry() == null
-                || userDetails.getShippingAddress().getCountry().length() <= 1
-        ) {
-            errors.rejectValue("shippingAddress.country", "address.country.empty");
+        if (userDetails.getShippingAddress().getFloor() != null) {
+            if (userDetails.getShippingAddress().getFloor() < 1
+                    || userDetails.getShippingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("shippingAddress.number", "address.number.invalid");
+            }
         }
 
-        if (userDetails.getShippingAddress().getStreet() == null
-                || userDetails.getShippingAddress().getStreet().length() <= 1
-        ) {
-            errors.rejectValue("shippingAddress.street", "address.street.empty");
+        if (userDetails.getShippingAddress().getCity() != null) {
+            if (userDetails.getShippingAddress().getCity().matches("[0-9]+")
+            ) {
+                errors.rejectValue("shippingAddress.city", "address.city.empty");
+            }
         }
+////
+////        if (userDetails.getShippingAddress().getCountry() == null
+////                || userDetails.getShippingAddress().getCountry().length() <= 1
+////        ) {
+////            errors.rejectValue("shippingAddress.country", "address.country.empty");
+////        }
+////
+////        if (userDetails.getShippingAddress().getStreet() == null
+////                || userDetails.getShippingAddress().getStreet().length() <= 1
+////        ) {
+////            errors.rejectValue("shippingAddress.street", "address.street.empty");
+////        }
 
 //        //BillingAddress
 //        if (userDetails.getBillingAddress().getPostcode() == null

@@ -2,7 +2,6 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.enums.Role;
-import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.PasswordTokenRepository;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +64,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with " + id + " not found!"));
     }
 
+    public User getUserByName(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with " + username + " not found!"));
+    }
+
     public List<RolesFormDto> getRoles() {
         List<RolesFormDto> roles = new ArrayList<>();
         for (Role value : Role.values()) {
@@ -77,14 +80,25 @@ public class UserService {
     public void updateUserById(UserEditableDetailsDto user) {
         System.out.println(user.getId());
         User userById = getUserById(user.getId());
-        userById.setBillingAddress(user.getBillingAddress());
-        userById.setFirstName(user.getFirstName());
-        userById.setLastName(user.getLastName());
-        userById.setPhoneNumber(user.getPhoneNumber());
-        userById.setUsername(user.getUsername());
-        userById.setShippingAddress(user.getShippingAddress());
-        userById.setRoles(user.getRoles().stream().map(Role::valueOf).collect(Collectors.toList()));
-        userRepository.save(userById);
+        updateUser(user, userById);
+    }
+
+    public void updateUserByName(UserEditableDetailsDto user) {
+        User userByUsername = getUserByUsername(user.getUsername());
+        updateUser(user, userByUsername);
+    }
+
+    private void updateUser(UserEditableDetailsDto user, User userToEdit) {
+        userToEdit.setBillingAddress(user.getBillingAddress());
+        userToEdit.setFirstName(user.getFirstName());
+        userToEdit.setLastName(user.getLastName());
+        userToEdit.setPhoneNumber(user.getPhoneNumber());
+        userToEdit.setUsername(user.getUsername());
+        userToEdit.setShippingAddress(user.getShippingAddress());
+        if (user.getRoles() != null) {
+            userToEdit.setRoles(user.getRoles().stream().map(Role::valueOf).collect(Collectors.toList()));
+        }
+        userRepository.save(userToEdit);
     }
 
     public User findUserByEmail(String userEmail) {

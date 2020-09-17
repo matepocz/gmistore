@@ -24,7 +24,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Házszám*</mat-label>
-        <input matInput formControlName="number">
+        <input type="number" matInput formControlName="number">
         <mat-error *ngIf="userDataForm.get('billingAddress').get('number').errors?.serverError">
           {{userDataForm.get('billingAddress').get('number').errors.serverError}}
         </mat-error>
@@ -35,7 +35,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Emelet</mat-label>
-        <input matInput formControlName="floor">
+        <input type="number" matInput formControlName="floor">
         <mat-error *ngIf="userDataForm.get('billingAddress').get('floor').invalid">
           Csak számot tartalmazzon!
         </mat-error>
@@ -43,7 +43,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Ajtó</mat-label>
-        <input matInput formControlName="door">
+        <input type="number" matInput formControlName="door">
         <mat-error *ngIf="userDataForm.get('billingAddress').get('door').invalid">
           Csak számot tartalmazzon!
         </mat-error>
@@ -51,7 +51,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Iranyitószám*</mat-label>
-        <input matInput formControlName="postcode">
+        <input type="number" matInput formControlName="postcode">
         <mat-error *ngIf="userDataForm.get('billingAddress').get('postcode').errors?.serverError">
           {{userDataForm.get('billingAddress').get('postcode').errors.serverError}}
         </mat-error>

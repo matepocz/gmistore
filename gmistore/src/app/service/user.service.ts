@@ -4,7 +4,6 @@ import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 import {UserModel} from "../models/user-model";
 import {UserEditableDetailsByUser} from "../models/userEditableDetailsByUser";
-import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 
 
 @Injectable({
@@ -12,7 +11,6 @@ import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
 })
 export class UserService {
   apiUrl = environment.apiUrl + 'api/';
-  private adminUrl = environment.apiUrl + 'admin/';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -30,7 +28,7 @@ export class UserService {
   }
 
   updateUser(data: UserEditableDetailsByUser): Observable<any> {
-    return this.httpClient.put(this.adminUrl + 'users', data);
+    return this.httpClient.put(this.apiUrl + 'user/edit', data);
   }
 }
 

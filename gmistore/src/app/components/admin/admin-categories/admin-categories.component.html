@@ -61,7 +61,7 @@
                 <mat-hint>Pl.: smart_tech</mat-hint>
                 <mat-error
                   *ngIf="mainCategoryForm.get('key').invalid && !mainCategoryForm.get('key').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="mainCategoryForm.get('key').errors?.serverError">
@@ -78,7 +78,7 @@
                 <mat-hint>Pl.: Okos kütyük</mat-hint>
                 <mat-error *ngIf="mainCategoryForm.get('displayName').invalid &&
                 !mainCategoryForm.get('displayName').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="mainCategoryForm.get('displayName').errors?.serverError">
@@ -94,7 +94,7 @@
                 <mat-hint>Google (material.io) ikonjai-ból kiválasztva. Pl.: mobile_phone</mat-hint>
                 <mat-error
                   *ngIf="subCategoryForm.get('icon').invalid && !subCategoryForm.get('icon').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="subCategoryForm.get('icon').errors?.serverError">
@@ -151,7 +151,7 @@
                 <mat-hint>Google (material.io) ikonjai-ból kiválasztva. Pl.: mobile_phone</mat-hint>
                 <mat-error
                   *ngIf="subCategoryForm.get('icon').invalid && !subCategoryForm.get('icon').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="subCategoryForm.get('icon').errors?.serverError">
@@ -168,7 +168,7 @@
                 <mat-hint>Pl.: mobile_phone</mat-hint>
                 <mat-error
                   *ngIf="subCategoryForm.get('key').invalid && !subCategoryForm.get('key').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="subCategoryForm.get('key').errors?.serverError">
@@ -185,7 +185,7 @@
                 <mat-hint>Pl.: Telefon</mat-hint>
                 <mat-error *ngIf="subCategoryForm.get('displayName').invalid &&
                 !subCategoryForm.get('displayName').errors?.serverError">
-                  Túl rövid, vagy nem megfelelő név
+                  Min. 3, max. 30 karakter!
                 </mat-error>
 
                 <mat-error *ngIf="subCategoryForm.get('displayName').errors?.serverError">

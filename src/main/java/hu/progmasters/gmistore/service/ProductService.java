@@ -42,15 +42,16 @@ public class ProductService {
     }
 
     /**
-     * Saves a product to the database
-     *
-     * @param productDto A ProductDto
+     * Save a Product to the database
+     * @param productDto The DTO containing the details
+     * @return The actual saved Product object
      */
-    public void addProduct(ProductDto productDto) {
+    public Product addProduct(ProductDto productDto) {
         Product product = mapProductDtoToProduct(productDto);
-        productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
         inventoryService.saveInventory(product, productDto.getQuantityAvailable());
-        LOGGER.debug("Product has been added! name: {}", product.getName());
+        LOGGER.debug("Product saved, id: {}", savedProduct.getId());
+        return savedProduct;
     }
 
     private Product mapProductDtoToProduct(ProductDto productDto) {

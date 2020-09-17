@@ -1,1 +1,20 @@
-<p>confirm-account works!</p>
+<div class="login-wrapper" fxLayout="column" fxLayoutAlign="center center">
+
+  <mat-card class="box mat-elevation-z5">
+    <mat-card-header [style.margin-bottom]="'2%'">
+      <mat-card-subtitle><h1>Sikeres regisztráció</h1></mat-card-subtitle>
+    </mat-card-header>
+
+    <form class="login-form">
+      <mat-card-content fxLayoutAlign="center center">
+        <h3 >Innentől nincs is más dolgod, mintsem bejelentkezni a lenti gombra kattintva és már teheted is a cuccokat a kosaradba.</h3>
+      </mat-card-content>
+
+      <div fxLayout="column" fxLayoutAlign="space-evenly center" >
+        <button mat-stroked-button color="primary" class="btn-block" [routerLink]="['/login']" fxLayoutAlign="center center">Bejelentkezés</button>
+      </div>
+    </form>
+  </mat-card>
+
+</div>
+

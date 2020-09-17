@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 import {PaymentMethodDetailsModel} from "../../models/payment-method-details.model";
 import {errorHandler} from "../../utils/error-handler";
 import {AddressModel} from "../../models/address-model";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-checkout',
@@ -20,6 +21,9 @@ import {AddressModel} from "../../models/address-model";
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
+
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   loading: boolean = true;
   authenticatedUser: boolean;
@@ -41,7 +45,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private authService: AuthService, private orderService: OrderService,
-              private titleService: Title, private sideNav: SideNavComponent, private router: Router) {
+              private titleService: Title, private sideNav: SideNavComponent, private router: Router,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -168,6 +173,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.createOrderSub = this.orderService.createOrder(this.orderRequest).subscribe(
       (response) => {
         console.log(response);
+        this.openSnackBar("Sikeres vásárlás!");
       }, (error) => {
         console.log(error);
         errorHandler(error, this.detailsForm);
@@ -178,6 +184,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     )
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
   }
 
   ngOnDestroy() {

@@ -207,10 +207,9 @@ public class OrderService {
 
         if (allOrderedProductsByUser != null) {
             LOGGER.debug("User order details found! username: {}", authentication.getName());
-            Set<ProductListDetailDto> products = allOrderedProductsByUser.stream()
+            return allOrderedProductsByUser.stream()
                     .map(this::mapOrderItemToProduct)
                     .collect(Collectors.toSet());
-            return products;
         }
         LOGGER.info("User order details not found! username: {}", authentication.getName());
         return null;
@@ -227,7 +226,7 @@ public class OrderService {
         product.setPrice(orderItem.getProduct().getPrice());
         product.setDiscount(orderItem.getProduct().getDiscount());
         product.setAverageRating(orderItem.getProduct().getAverageRating());
-        product.setOrderItemId(orderItem.getId());
+        product.setOrderItemId(orderRepository.findOrderId(orderItem.getId()));
         return product;
     }
 

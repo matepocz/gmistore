@@ -18,5 +18,5 @@ public class ProductListDetailDto {
     private Double price;
     private int discount;
     private double averageRating;
-    private Long orderItemId;
+    private String orderItemId;
 }

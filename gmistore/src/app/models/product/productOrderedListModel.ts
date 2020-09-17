@@ -8,5 +8,5 @@ export interface ProductOrderedListModel {
   price: number;
   discount: number;
   averageRating: number;
-  orderItemId: number;
+  orderItemId: string;
 }

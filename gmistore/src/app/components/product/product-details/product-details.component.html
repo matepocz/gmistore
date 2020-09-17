@@ -27,14 +27,19 @@
         <mat-card-subtitle>Vásárlói vélemények: {{ratings?.length}}</mat-card-subtitle>
 
         <star-rating [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
-                     [readOnly]="true" staticColor="ok">
+                     [readOnly]="true"  staticColor="ok">
         </star-rating>
 
-        <mat-card-content>
-          <p>Termék azonosító: {{product.productCode}}</p>
-          <p>Kategória: {{product.subCategory.displayName}}</p>
-          <p>{{product.warrantyMonths}} hónap garancia</p>
-          <p>{{product.quantitySold}} eladott darab</p>
+        <mat-card-content fxLayout="row wrap">
+          <p fxFlex="100">Termék azonosító: {{product.productCode}}</p>
+          <p>Kategória: &nbsp;</p>
+          <span>
+            <a [routerLink]="['/product-list']" [queryParams]="{category: product.subCategory.key}">
+            {{ product.subCategory.displayName}}
+          </a>
+          </span>
+          <p fxFlex="100">{{product.warrantyMonths}} hónap garancia</p>
+          <p fxFlex="100">{{product.quantitySold}} eladott darab</p>
         </mat-card-content>
       </div>
 
@@ -235,15 +240,15 @@
             <star-rating [readOnly]="true" staticColor="ok" [rating]="rating.actualRating"></star-rating>
           </div>
 
-          <div fxFlex="5" class="mt-15">
+          <div fxFlex="5" fxFlex.lt-md="10" class="mt-15">
             <mat-icon class="rating-positive-icon">add</mat-icon>
           </div>
-          <mat-card-content class="mt-15" fxFlex="95">{{ rating.positiveComment }}</mat-card-content>
+          <mat-card-content class="mt-15" fxFlex="95" fxFlex.lt-md="90">{{ rating.positiveComment }}</mat-card-content>
 
-          <div fxFlex="5">
+          <div fxFlex="5" fxFlex.lt-md="10">
             <mat-icon class="rating-negative-icon">remove</mat-icon>
           </div>
-          <mat-card-content fxFlex="95">{{ rating.negativeComment }}</mat-card-content>
+          <mat-card-content fxFlex="95" fxFlex.lt-md="90">{{ rating.negativeComment }}</mat-card-content>
           <mat-card-actions>
             <button mat-icon-button color="primary" [disabled]="loading"
                     (click)="voteRating(rating.id)">

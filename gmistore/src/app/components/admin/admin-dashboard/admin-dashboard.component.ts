@@ -53,11 +53,20 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
                   maxTicksLimit: 7
                 }
               }],
+              scaleLabel: {
+                labelString: 'dátum',
+                display: true,
+              },
               yAxes: [{
                 display: true,
                 ticks: {
-                  min: 0,
-                }
+                  beginAtZero: true,
+                  maxTicksLimit: 10
+                },
+                scaleLabel: {
+                  labelString: 'vásárlók száma',
+                  display: true,
+                },
               }],
             }
           }

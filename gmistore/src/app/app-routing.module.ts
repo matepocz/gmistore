@@ -28,6 +28,7 @@ import {RoleModel} from "./models/role.model";
 import {AdminCategoriesComponent} from "./components/admin/admin-categories/admin-categories.component";
 import {PasswordResetComponent} from "./components/user/password-reset/password-reset.component";
 import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
+import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -90,6 +91,7 @@ const routes: Routes = [
       {path: 'user', component: AdminUserComponent},
       {path: 'user/edit/:id', component: AdminUserFormComponent},
       {path: 'orders', component: OrdersListComponent},
+      {path: 'orders/edit/:id', component: OrdersFormComponent},
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},

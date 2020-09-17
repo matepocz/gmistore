@@ -81,6 +81,7 @@ import {CarouselModule} from 'ngx-owl-carousel-o';
 import {OrdersListComponent} from './components/admin/admin-orders/orders-list/orders-list.component';
 import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
 import {PinchZoomModule} from "ngx-pinch-zoom";
+import { OrdersFormComponent } from './components/admin/admin-orders/orders-form/orders-form.component';
 
 
 @NgModule({
@@ -126,6 +127,7 @@ import {PinchZoomModule} from "ngx-pinch-zoom";
     DeleteDialog,
     OrdersListComponent,
     HufCurrencyPipe,
+    OrdersFormComponent,
   ],
 
   imports: [

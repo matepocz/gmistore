@@ -9,7 +9,7 @@
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
       <td mat-cell *matCellDef="let row">
-        <a href ng-click="editOrder(row.generatedUniqueId)">{{row.generatedUniqueId}}</a> </td>
+        <a [href]="editOrder(row.generatedUniqueId)">{{row.generatedUniqueId}}</a> </td>
     </ng-container>
 
 

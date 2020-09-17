@@ -57,7 +57,7 @@ export class OrdersListComponent implements OnInit {
   }
 
   editOrder(id: string) {
-    this.router.navigate(['/admin/orders/edit', id])
+    this.router.navigate(['admin/orders/edit', id])
   }
 
   ngOnDestroy() {

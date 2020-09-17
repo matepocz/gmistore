@@ -40,16 +40,24 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             ]
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             legend: {
               display: false
             },
             scales: {
               xAxes: [{
-                display: true
+                display: true,
+                ticks: {
+                  autoSkip: true,
+                  maxTicksLimit: 7
+                }
               }],
               yAxes: [{
                 display: true,
-                ticks: {min: 0}
+                ticks: {
+                  min: 0,
+                }
               }],
             }
           }

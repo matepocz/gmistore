@@ -1,4 +1,4 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UserService} from "../../../service/user.service";
 import {UserModel} from "../../../models/user-model";
 import {AddressModel} from "../../../models/address-model";
@@ -23,6 +23,7 @@ import {ProductOrderedListModel} from "../../../models/product/productOrderedLis
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild("orders") prop: ElementRef
   userForm: FormGroup;
   details: any[];
   user: UserModel;
@@ -37,7 +38,8 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
               private orderService: OrderService,
               private userService: UserService,
               private router: Router,
-              private cdRef: ChangeDetectorRef) {
+              private cdRef: ChangeDetectorRef,
+              private el: ElementRef) {
 
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -112,6 +114,8 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
 
   openClose() {
     this.show = !this.show;
+    this.prop.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    ;
   }
 }
 

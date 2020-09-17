@@ -44,7 +44,7 @@ public class AdminService {
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {
-        Map<String, Integer> userDates = new HashMap<>();
+        Map<String, Integer> userDates = new TreeMap<>();
         List<UserRegistrationDTO> sellerRegistrations = getUserRegistrations(userRole);
 
         for (UserRegistrationDTO sellerRegistration : sellerRegistrations) {

@@ -1,12 +1,11 @@
 
-.dashboard-card {
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
-}
-
-
 .dashboard-card-content {
-  text-align: center;
+
+}
+.dashboard-card-registered {
+  overflow-x: scroll;
+}
+#registered-users {
+  height: 300px;
+  min-width: 360px;
 }

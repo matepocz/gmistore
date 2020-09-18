@@ -1,6 +1,5 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'1%'">
-  <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start" fxLayoutGap="10px"
-       [ngClass]="{'loading': loading}">
+  <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start" fxLayoutGap="10px">
 
     <!--    <mat-card fxFlex="18" fxHide.lt-md class="options-panel mat-elevation-z5" fxLayout="row wrap"-->
     <!--              fxLayoutGap="10px" fxLayoutAlign="start start">-->
@@ -52,18 +51,20 @@
     <!--TODO to continue later, when there is more filter options become available-->
 
     <div fxFlex.gt-md="80" fxFlex.md="80" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
-      <mat-card class="product-card" fxFlex.lt-md="47" fxFlex.md="30" fxFlex.gt-md="19"
+      <mat-card class="product-card" fxFlex.lt-md="47" fxFlex.md="30" fxFlex.gt-md="20"
                 materialElevation *ngFor="let product of products">
         <div fxFlexFill fxLayoutAlign="center" fxLayout="column">
-          <a [routerLink]="['/product/', product.slug]">
+          <a [routerLink]="['/product', product.slug]">
             <img class="product-card-image" mat-card-image [src]="product.pictureUrl" alt="{{ product.name }} image"
-                 [style.margin-top]="'5px'">
+                 [style.margin-top]="'5px'" [ngClass.lt-xl]="{'image-xs': true}" [ngClass.xl]="{'image-xl': true}">
           </a>
           <span class="spacer"></span>
-          <mat-card-title>{{ product.name | slice: 0: 20 }}</mat-card-title>
-          <mat-card-subtitle></mat-card-subtitle>
+          <div fxLayoutAlign="center">
+            <mat-card-title><small>{{ product.name | slice: 0: 20 }}</small></mat-card-title>
+          </div>
 
-          <star-rating fxFlex="65" [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
+          <star-rating fxFlex="65" [starType]="'svg'" [showHalfStars]="true"
+                       [rating]="product.averageRating"
                        [readOnly]="true" staticColor="ok">
           </star-rating>
 
@@ -71,7 +72,7 @@
             <p> {{ product.description | slice: 0: 100 }}...</p>
           </mat-card-content>
 
-          <mat-card-header *ngIf="product.discount; else noDiscountTemplate">
+          <mat-card-header *ngIf="product.discount; else noDiscountTemplate" fxLayoutAlign="center">
             <mat-card-title class="discounted-price">
               <p>
                 {{ calculateDiscountedPrice(product) | hufCurrency }}
@@ -84,7 +85,7 @@
           </mat-card-header>
 
           <ng-template #noDiscountTemplate>
-            <mat-card-header>
+            <mat-card-header fxLayoutAlign="center">
               <mat-card-title>
                 <p><small>
                   {{ product.price | hufCurrency }}

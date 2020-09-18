@@ -7,6 +7,9 @@ import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
 import {Router} from "@angular/router";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import {SpinnerService} from "../../service/spinner-service.service";
+import {MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-cart',
@@ -16,6 +19,7 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
 export class CartComponent implements OnInit, OnDestroy {
 
   loading = false;
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   cart: CartModel;
   shippingData: ShippingMethodModel[];
   currentShipping: ShippingMethodModel = null;
@@ -32,14 +36,12 @@ export class CartComponent implements OnInit, OnDestroy {
 
   constructor(private cartService: CartService, private titleService: Title,
               private sideNavComponent: SideNavComponent, private router: Router,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar, private spinnerService: SpinnerService) {
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Kosár - GMI Store")
-    this.loading = true;
     this.fetchCartData();
-
     this.shippingDataSubscription = this.cartService.getShippingData().subscribe(
       (data: Array<ShippingMethodModel>) => {
         this.shippingData = data;
@@ -54,31 +56,30 @@ export class CartComponent implements OnInit, OnDestroy {
         this.currentShipping = data.shippingMethod;
       }, (error) => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }, () => {
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }
     );
   }
 
   refreshProductCount(id: number, count: string) {
-    console.log(id, count)
-    this.loading = true;
+    this.spinner = this.spinnerService.start("Egy pillanat...");
     this.refreshSubscription = this.cartService.refreshProductCount(id, +count).subscribe(
       (response: boolean) => {
         this.fetchCartData();
         this.openSnackBar("Mennyiség frissítve!");
         this.sideNavComponent.updateItemsInCart(0);
-        this.loading = false;
       }, (error) => {
         console.log(error);
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
-      }, () => this.loading = false
+      }, () => this.spinnerService.stop(this.spinner)
     )
   }
 
   removeProduct(id: number) {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.removeProductSubscription = this.cartService.removeProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
@@ -87,25 +88,25 @@ export class CartComponent implements OnInit, OnDestroy {
         this.fetchCartData();
         this.sideNavComponent.updateItemsInCart(0);
       }, (error) => {
-        this.loading = false;
         console.log(error);
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
-      }, () => this.loading = false
+      }, () => this.spinnerService.stop(this.spinner)
     )
   }
 
   updateShippingMethod() {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.refreshShippingSubscription = this.cartService.updateShippingMethod(this.currentShipping.method).subscribe(
       () => {
         this.fetchCartData();
       }, error => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       },
       () => {
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Szállítási mód frissítve!");
       }
     )
@@ -120,7 +121,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   checkout() {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.checkoutSub = this.cartService.canCheckout().subscribe(
       (response: boolean) => {
         this.loading = false;
@@ -129,9 +130,10 @@ export class CartComponent implements OnInit, OnDestroy {
         } else {
           this.openSnackBar("Valami hiba történt!");
         }
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
     )

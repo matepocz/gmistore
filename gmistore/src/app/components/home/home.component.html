@@ -2,7 +2,7 @@
   <div fxLayout="column" fxFlex.xs="95" fxFlex.sm="95" fxFlex.md="80"  fxFlex.lg="80" fxFlex.gt-lg="80" fxLayoutAlign="start"
        fxLayoutGap="10px" [style.margin-top]="'10px'">
 
-    <div fxFlex="100"fxHide.lt-md="true" fxLayoutAlign="center center"><h2 >Akciós termékek</h2></div>
+    <div fxFlex="100" fxHide.lt-md="true" fxLayoutAlign="center center"><h2 >Akciós termékek</h2></div>
     <owl-carousel-o  fxLayout="row" fxLayoutAlign="center center" [options]="customOptions">
       <ng-container *ngFor="let image of temp">
         <ng-template carouselSlide>
@@ -19,7 +19,6 @@
         <p>Használd a GMI STORE-t és válogass a rengeteg holmi között.
           Eladnád a már nem használt dolgaidat! Nem gond! Irány a regisztráció és már tolhatod is fel őket a GMI STORE piacára!
         </p>
-        <a mat-flat-button color="primary" routerLink="/register" role="button">Regisztráció</a>
       </div>
     </div>
     <div fxFlex="100">

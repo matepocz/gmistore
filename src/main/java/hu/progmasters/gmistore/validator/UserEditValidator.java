@@ -76,48 +76,44 @@ public class UserEditValidator implements Validator {
                 errors.rejectValue("shippingAddress.city", "address.city.empty");
             }
         }
-////
-////        if (userDetails.getShippingAddress().getCountry() == null
-////                || userDetails.getShippingAddress().getCountry().length() <= 1
-////        ) {
-////            errors.rejectValue("shippingAddress.country", "address.country.empty");
-////        }
-////
-////        if (userDetails.getShippingAddress().getStreet() == null
-////                || userDetails.getShippingAddress().getStreet().length() <= 1
-////        ) {
-////            errors.rejectValue("shippingAddress.street", "address.street.empty");
-////        }
 
-//        //BillingAddress
-//        if (userDetails.getBillingAddress().getPostcode() == null
-//                || userDetails.getBillingAddress().getPostcode().length() <= 1
-//                || !userDetails.getBillingAddress().getPostcode().matches("[0-9]+")) {
-//            errors.rejectValue("billingAddress.postcode", "address.postcode.invalid");
-//        }
-//
-//        if (userDetails.getBillingAddress().getNumber() == null
-//                || userDetails.getBillingAddress().getNumber() < 1
-//        ) {
-//            errors.rejectValue("billingAddress.number", "address.number.invalid");
-//        }
-//
-//        if (userDetails.getBillingAddress().getCity() == null
-//                || userDetails.getBillingAddress().getCity().length() <= 1
-//        ) {
-//            errors.rejectValue("billingAddress.city", "address.city.empty");
-//        }
-//
-//        if (userDetails.getBillingAddress().getCountry() == null
-//                || userDetails.getBillingAddress().getCountry().length() <= 1
-//        ) {
-//            errors.rejectValue("billingAddress.country", "address.country.empty");
-//        }
-//
-//        if (userDetails.getBillingAddress().getStreet() == null
-//                || userDetails.getBillingAddress().getStreet().length() <= 1
-//        ) {
-//            errors.rejectValue("billingAddress.street", "address.street.empty");
-//        }
+        //Billing address
+        if (userDetails.getBillingAddress().getPostcode() != null) {
+            if (userDetails.getBillingAddress().getPostcode().length() <= 3
+                    || !userDetails.getBillingAddress().getPostcode().matches("[0-9]+")) {
+                errors.rejectValue("billingAddress.postcode", "address.postcode.invalid");
+            }
+        }
+
+        if (userDetails.getBillingAddress().getNumber() != null) {
+            if (userDetails.getBillingAddress().getNumber() < 1
+                    || userDetails.getBillingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("billingAddress.number", "address.number.invalid");
+            }
+        }
+
+        if (userDetails.getBillingAddress().getDoor() != null) {
+            if (userDetails.getBillingAddress().getDoor() < 1
+                    || userDetails.getBillingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("billingAddress.number", "address.number.invalid");
+            }
+        }
+
+        if (userDetails.getBillingAddress().getFloor() != null) {
+            if (userDetails.getBillingAddress().getFloor() < 1
+                    || userDetails.getBillingAddress().getNumber() > 99999999
+            ) {
+                errors.rejectValue("billingAddress.number", "address.number.invalid");
+            }
+        }
+
+        if (userDetails.getBillingAddress().getCity() != null) {
+            if (userDetails.getBillingAddress().getCity().matches("[0-9]+")
+            ) {
+                errors.rejectValue("billingAddress.city", "address.city.empty");
+            }
+        }
     }
 }

@@ -7,6 +7,9 @@ import {NewCategoryModel} from "../../../models/new-category.model";
 import {errorHandler} from "../../../utils/error-handler";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
+import {SpinnerService} from "../../../service/spinner-service.service";
+import {Title} from "@angular/platform-browser";
 
 export interface DialogData {
   name: string;
@@ -39,6 +42,8 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
 
   @ViewChild(FormGroupDirective) categoryForm: FormGroupDirective;
 
+  spinner: MatDialogRef<LoadingSpinnerComponent>;
+
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
@@ -70,31 +75,38 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
   createSubCategorySub: Subscription;
 
   constructor(private adminService: AdminService, private formBuilder: FormBuilder,
-              private snackBar: MatSnackBar, public dialog: MatDialog) {
+              private snackBar: MatSnackBar, public dialog: MatDialog,
+              private spinnerService: SpinnerService, private titleService: Title) {
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle("Kategóriák kezelése - GMI Store");
     this.fetchCategories();
   }
 
   fetchCategories() {
+    this.spinner = this.spinnerService.start();
     this.categoriesSub = this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
+        this.spinnerService.stop(this.spinner);
         console.log(error);
       }
     )
   }
 
   onMainCategorySubmit() {
+    this.spinner = this.spinnerService.start();
     this.newCategoryModel = this.mainCategoryForm.value;
     this.newCategoryModel.isSubCategory = false;
     this.createMainCategorySub = this.adminService.createNewProductCategory(this.newCategoryModel).subscribe(
       (response: boolean) => {
+        this.spinnerService.stop(this.spinner);
         if (response) {
-          this.openSnackBar("Kategória hozzáadva!");
           this.fetchCategories();
+          this.openSnackBar("Kategória hozzáadva!");
           this.categoryForm.resetForm();
         } else {
           this.openSnackBar("Valami hiba történt!");
@@ -102,16 +114,19 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       }, (error) => {
         console.log(error);
         errorHandler(error, this.mainCategoryForm);
+        this.spinnerService.stop(this.spinner);
       }
     )
   }
 
   onSubCategorySubmit() {
+    this.spinner = this.spinnerService.start();
     this.newCategoryModel = this.subCategoryForm.value;
     this.newCategoryModel.isSubCategory = true;
     this.createSubCategorySub = this.adminService.createNewProductCategory(this.newCategoryModel).subscribe(
       (response: boolean) => {
         if (response) {
+          this.spinnerService.stop(this.spinner);
           this.openSnackBar("Kategória hozzáadva!");
           this.fetchCategories();
           this.categoryForm.resetForm();
@@ -121,13 +136,16 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
       }, (error) => {
         errorHandler(error, this.subCategoryForm);
         console.log(error);
+        this.spinnerService.stop(this.spinner);
       }
     )
   }
 
   setCategoryInactive(key: string) {
+    this.spinner = this.spinnerService.start();
     this.adminService.setCategoryInactive(key).subscribe(
       (response) => {
+        this.spinnerService.stop(this.spinner);
         if (response) {
           this.openSnackBar("Kategória inaktív!")
           this.fetchCategories();
@@ -136,6 +154,7 @@ export class AdminCategoriesComponent implements OnInit, OnDestroy {
         }
       }, () => {
         this.openSnackBar("Valami hiba történt!");
+        this.spinnerService.stop(this.spinner);
       }
     )
   }

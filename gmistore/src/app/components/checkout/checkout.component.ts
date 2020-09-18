@@ -14,6 +14,9 @@ import {PaymentMethodDetailsModel} from "../../models/payment-method-details.mod
 import {errorHandler} from "../../utils/error-handler";
 import {AddressModel} from "../../models/address-model";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import {MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../loading-spinner/loading-spinner.component";
+import {SpinnerService} from "../../service/spinner-service.service";
 
 @Component({
   selector: 'app-checkout',
@@ -25,7 +28,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
-  loading: boolean = true;
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   authenticatedUser: boolean;
 
   cartDetails: CartModel;
@@ -46,7 +49,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private authService: AuthService, private orderService: OrderService,
               private titleService: Title, private sideNav: SideNavComponent, private router: Router,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar, private spinnerService: SpinnerService) {
   }
 
   ngOnInit(): void {
@@ -57,14 +60,15 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       (response) => {
         this.cartDetails = response;
         if (this.cartDetails.cartItems.length <= 0) {
+          this.spinnerService.stop(this.spinner);
           this.router.navigate(['/cart']);
         }
       }, (error) => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       },
       () => {
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }
     );
 
@@ -151,6 +155,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   copyShippingDetails() {
+    this.spinner = this.spinnerService.start();
     this.billingAddressForm.patchValue({
       id: this.shippingAddressForm.get('id').value,
       city: this.shippingAddressForm.get('city').value,
@@ -161,10 +166,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       country: this.shippingAddressForm.get('country').value,
       postcode: this.shippingAddressForm.get('postcode').value,
     });
+    this.spinnerService.stop(this.spinner);
   }
 
   onSubmit() {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.orderRequest = this.detailsForm.value;
     this.orderRequest.shippingAddress = this.shippingAddressForm.value;
     this.orderRequest.billingAddress = this.billingAddressForm.value;
@@ -177,11 +183,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }, (error) => {
         console.log(error);
         errorHandler(error, this.detailsForm);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       },
       () => {
         this.sideNav.updateItemsInCart(0);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }
     )
   }

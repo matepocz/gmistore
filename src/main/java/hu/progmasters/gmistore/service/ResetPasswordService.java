@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,9 @@ import java.util.UUID;
 
 @Service
 public class ResetPasswordService {
+
+    @Value("${client-url}")
+    private String clientUrl;
 
     private final UserService userService;
     private final EmailSenderService emailSenderService;
@@ -32,7 +36,7 @@ public class ResetPasswordService {
     }
 
     private String getAppUrl() {
-        return "http://localhost:4200/";
+        return clientUrl;
     }
 
     private SimpleMailMessage constructResetTokenEmail(

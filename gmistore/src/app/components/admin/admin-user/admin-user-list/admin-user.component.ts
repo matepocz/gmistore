@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AdminService} from "../../../../service/admin.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -84,19 +84,22 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     ));
   }
 
-  sendResetPassword(email: string) {
-    this.subs.add(this.authService.sendResetMail(email).subscribe(
-      () => this.myVariableColor = 'green',
-      error => this.myVariableColor = 'red'
-      )
-    )
-  }
+  // sendResetPassword(email: string) {
+  //   this.subs.add(this.authService.sendResetMail(email).subscribe(
+  //     () => this.myVariableColor = 'green',
+  //     error => this.myVariableColor = 'red'
+  //     )
+  //   )
+  // }
 
   setupTable = () => {
     if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') { // only display internalId on larger screens
       let displayedColumns = this.displayedColumns;
-      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(id|email|roles)$/)); // remove 'internalId'
+      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(email|roles)$/)); // remove 'internalId'
       console.log(this.displayedColumns)
+    }
+    else if (!this.displayedColumns.includes("roles" || "email " || "id")) {
+      this.displayedColumns.unshift("email","roles");
     }
 };
 

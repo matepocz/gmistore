@@ -1,1 +1,23 @@
-<p>orders-form works!</p>
+<mat-toolbar [ngStyle]="{'height' : 'auto'}">
+
+    <mat-card-header [ngStyle]="{'margin': '15px'}">
+      <mat-card-title> Order</mat-card-title>
+      <mat-card-subtitle>from</mat-card-subtitle>
+    </mat-card-header>
+
+</mat-toolbar>
+<div fxLayout="row" fxLayoutAlign="center" >
+  <mat-card class="basic-container">
+    <mat-tab-group>
+      <mat-tab label="Rendelési adatok">
+        <p>Rendelési adatok works</p>
+      </mat-tab>
+      <mat-tab label="Termékek">
+        <p>Termékek works</p>
+      </mat-tab>
+      <mat-tab label="Számla">
+        <p>Számla works</p>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>

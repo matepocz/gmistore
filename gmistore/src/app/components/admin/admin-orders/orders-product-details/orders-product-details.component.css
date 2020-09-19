@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+}
+
+mat-card-header {
+  margin-top: 20px;
+}
+
+.container-address:hover {
+  cursor: pointer;
+}
+
+.dropdown-button {
+
+}
+
+.aligned-with-icon {
+  position: relative;
+  top: -4px;
+  margin-left: 10px; /* optional */
+}
+
+.container-address {
+  width: 90%;
+  margin: 15px;
+  border-radius: 8px;
+}

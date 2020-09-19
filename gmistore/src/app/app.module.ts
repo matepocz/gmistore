@@ -82,6 +82,8 @@ import {OrdersListComponent} from './components/admin/admin-orders/orders-list/o
 import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
 import {PinchZoomModule} from "ngx-pinch-zoom";
 import { OrdersFormComponent } from './components/admin/admin-orders/orders-form/orders-form.component';
+import { OrdersProductDetailsComponent } from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
+import { OrdersProductListComponent } from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
 
 
 @NgModule({
@@ -128,6 +130,8 @@ import { OrdersFormComponent } from './components/admin/admin-orders/orders-form
     OrdersListComponent,
     HufCurrencyPipe,
     OrdersFormComponent,
+    OrdersProductDetailsComponent,
+    OrdersProductListComponent,
   ],
 
   imports: [

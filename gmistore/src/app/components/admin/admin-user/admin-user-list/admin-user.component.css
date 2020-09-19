@@ -1,5 +1,6 @@
 table {
   width: 100%;
+
 }
 
 .mat-form-field {
@@ -10,3 +11,10 @@ table {
 td, th {
   width: 25%;
 }
+td {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

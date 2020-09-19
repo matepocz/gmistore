@@ -9,6 +9,8 @@ import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
 import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
 import {AuthService} from "../../../../service/auth-service";
 import {SubSink} from "subsink";
+import {MediaChange, MediaObserver} from "@angular/flex-layout";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-admin-user',
@@ -24,10 +26,21 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<UserListDetailsModel>;
   myVariableColor: any;
   subs = new SubSink();
+  currentScreenWidth: string = '';
+  flexMediaWatcher: Subscription;
+  // ... other variables
 
   constructor(private adminService: AdminService,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private mediaObserver: MediaObserver) {
+
+    this.flexMediaWatcher = mediaObserver.media$.subscribe((change: MediaChange) => {
+      if (change.mqAlias !== this.currentScreenWidth) {
+        this.currentScreenWidth = change.mqAlias;
+        this.setupTable();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -79,7 +92,16 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     )
   }
 
+  setupTable = () => {
+    if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') { // only display internalId on larger screens
+      let displayedColumns = this.displayedColumns;
+      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(id|email|roles)$/)); // remove 'internalId'
+      console.log(this.displayedColumns)
+    }
+};
+
   ngOnDestroy() {
     this.subs.unsubscribe();
+
   }
 }

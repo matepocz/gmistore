@@ -58,6 +58,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.spinner = this.spinnerService.start();
       this.productsSubscription = this.productService.getProductsByCategory(this.category).subscribe(
         (response: Array<ProductModel>) => {
+          console.log(response);
           this.products = response;
           this.setMinAndMaxPrices();
           this.spinnerService.stop(this.spinner);

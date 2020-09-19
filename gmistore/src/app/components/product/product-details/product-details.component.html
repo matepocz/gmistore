@@ -58,7 +58,7 @@
         <mat-card-content>{{product.quantityAvailable}} raktáron</mat-card-content>
 
         <mat-card-header *ngIf="product.discount > 0; else noDiscountPriceTemplate">
-          <mat-card-title class="discounted-price">
+          <mat-card-title class="text-red">
             {{calculateDiscountedPrice() | hufCurrency }}
           </mat-card-title>
           <mat-card-subtitle>
@@ -212,7 +212,7 @@
       </div>
     </div>
 
-    <div class="mt-15" fxFlex="100" fxLayout="column" fxLayoutGap="15px" [ngClass]="{'loading': loading}">
+    <div class="mt-15" fxFlex="100" fxLayout="column" fxLayoutGap="15px">
       <div *ngFor="let rating of ratings" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
 
         <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
@@ -250,8 +250,7 @@
           </div>
           <mat-card-content fxFlex="95" fxFlex.lt-md="90">{{ rating.negativeComment }}</mat-card-content>
           <mat-card-actions>
-            <button mat-icon-button color="primary" [disabled]="loading"
-                    (click)="voteRating(rating.id)">
+            <button mat-icon-button color="primary" (click)="voteRating(rating.id)">
               <mat-icon>thumb_up</mat-icon>
             </button>
 

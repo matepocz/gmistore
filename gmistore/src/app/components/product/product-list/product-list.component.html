@@ -54,49 +54,62 @@
       <mat-card class="product-card" fxFlex.lt-md="47" fxFlex.md="30" fxFlex.gt-md="20"
                 materialElevation *ngFor="let product of products">
         <div fxFlexFill fxLayoutAlign="center" fxLayout="column">
+          <ng-template [ngIf]="product.discount > 0">
+            <div class="discounted-product-badge">
+              <p class="discounted-product-text">
+                - {{ product.discount}} <span>%</span>
+              </p>
+            </div>
+          </ng-template>
           <a [routerLink]="['/product', product.slug]">
             <img class="product-card-image" mat-card-image [src]="product.pictureUrl" alt="{{ product.name }} image"
                  [style.margin-top]="'5px'" [ngClass.lt-xl]="{'image-xs': true}" [ngClass.xl]="{'image-xl': true}">
           </a>
-          <span class="spacer"></span>
-          <div fxLayoutAlign="center">
-            <mat-card-title><small>{{ product.name | slice: 0: 20 }}</small></mat-card-title>
+          <div fxLayoutAlign="center" class="product-title-div">
+            <mat-card-title class="product-title">{{ product.name | slice: 0: 40 }}</mat-card-title>
           </div>
 
-          <star-rating fxFlex="65" [starType]="'svg'" [showHalfStars]="true"
+          <star-rating [starType]="'svg'" [showHalfStars]="true"
                        [rating]="product.averageRating"
                        [readOnly]="true" staticColor="ok">
           </star-rating>
 
-          <mat-card-content>
-            <p> {{ product.description | slice: 0: 100 }}...</p>
-          </mat-card-content>
+          <div fxFlex="100" fxLayout="column" fxLayoutAlign="space-between">
+            <div fxLayoutAlign="start center" fxLayout="column">
+              <mat-card-subtitle fxFlex="100"
+                                 class="text-green" *ngIf="product.quantityAvailable > 0; else notInStock">
+                {{ product.quantityAvailable }} raktáron
+              </mat-card-subtitle>
 
-          <mat-card-header *ngIf="product.discount; else noDiscountTemplate" fxLayoutAlign="center">
-            <mat-card-title class="discounted-price">
-              <p>
+              <ng-template #notInStock>
+                <mat-card-subtitle fxFlex="100">
+                  Nincs raktáron
+                </mat-card-subtitle>
+              </ng-template>
+            </div>
+            <span class="spacer"></span>
+
+            <div fxFlex="100" *ngIf="product.discount; else noDiscountTemplate" fxLayoutAlign="center center"
+                 fxLayout="column">
+              <mat-card-subtitle fxFlex="100">
+                <del>{{ product.price | hufCurrency }}</del>
+                &nbsp;(- {{ product.discount }}% )
+              </mat-card-subtitle>
+
+              <mat-card-title class="text-red product-price" fxFlex="100">
                 {{ calculateDiscountedPrice(product) | hufCurrency }}
-              </p>
-            </mat-card-title>
-            <mat-card-subtitle>
-              <del>{{ product.price | hufCurrency }}</del>
-              &nbsp;(- {{ product.discount }}% )
-            </mat-card-subtitle>
-          </mat-card-header>
+              </mat-card-title>
+            </div>
+          </div>
 
           <ng-template #noDiscountTemplate>
             <mat-card-header fxLayoutAlign="center">
-              <mat-card-title>
-                <p><small>
-                  {{ product.price | hufCurrency }}
-                </small></p>
+              <mat-card-title class="text-red product-price" fxFlex="100">
+                {{ product.price | hufCurrency }}
               </mat-card-title>
             </mat-card-header>
           </ng-template>
 
-          <mat-card-subtitle *ngIf="product.quantityAvailable <= 0">
-            Nincs raktáron
-          </mat-card-subtitle>
           <mat-card-actions class="product-card-actions" fxLayoutAlign="end end" fxLayout="row">
             <a mat-icon-button [routerLink]="['/product/', product.slug]" [color]="'primary'" matTooltip="Részletek"
                matTooltipPosition="above">

@@ -1,7 +1,6 @@
 <div class="containerX" fxLayoutAlign="center">
   <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
-            fxFlex.lt-md="100" fxFlex.gt-md="60" fxFlex.md="70" fxLayoutAlign="space-between"
-            [ngClass]="{'loading': loading}">
+            fxFlex.lt-md="100" fxFlex.gt-md="60" fxFlex.md="70" fxLayoutAlign="space-between">
 
     <form name="form" [formGroup]="productForm" (ngSubmit)="onSubmit()" fxFlex="100" fxLayout="column">
 
@@ -214,7 +213,8 @@
           Küldés
         </button>
 
-        <a mat-flat-button color="primary" [style.margin-left]="'10px'" [disabled]="loading">
+        <a mat-flat-button color="primary" [style.margin-left]="'10px'" [disabled]="loading"
+        (click)="navigateBack()">
           <mat-icon>arrow_back</mat-icon>
           Vissza
         </a>

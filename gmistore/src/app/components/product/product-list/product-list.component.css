@@ -2,10 +2,20 @@
   width: 13rem;
   margin: 1%;
 }
+
 .options-panel {
   margin-top: 10px;
   height: 625px;
 }
-.product-card-actions{
+
+.product-card-actions {
   margin-bottom: 0;
+}
+
+.image-xs {
+  height: 180px !important;
+}
+
+.image-xl {
+  height: 230px !important;
 }

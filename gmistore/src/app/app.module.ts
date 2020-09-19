@@ -81,7 +81,9 @@ import {CarouselModule} from 'ngx-owl-carousel-o';
 import {OrdersListComponent} from './components/admin/admin-orders/orders-list/orders-list.component';
 import {HufCurrencyPipe} from "./utils/huf.currency.pipe";
 import {PinchZoomModule} from "ngx-pinch-zoom";
-import { OrdersFormComponent } from './components/admin/admin-orders/orders-form/orders-form.component';
+import {OrdersFormComponent} from './components/admin/admin-orders/orders-form/orders-form.component';
+import {LoadingSpinnerComponent} from './components/loading-spinner/loading-spinner.component';
+import {SpinnerService} from "./service/spinner-service.service";
 import { OrdersProductDetailsComponent } from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
 import { OrdersProductListComponent } from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
 
@@ -132,6 +134,7 @@ import { OrdersProductListComponent } from './components/admin/admin-orders/orde
     OrdersFormComponent,
     OrdersProductDetailsComponent,
     OrdersProductListComponent,
+    LoadingSpinnerComponent,
   ],
 
   imports: [
@@ -183,6 +186,7 @@ import { OrdersProductListComponent } from './components/admin/admin-orders/orde
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    SpinnerService,
     Title,
   ],
   bootstrap: [AppComponent]

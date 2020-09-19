@@ -7,15 +7,18 @@ import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition}
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {ActivatedRoute} from "@angular/router";
+import {SpinnerService} from "../../../service/spinner-service.service";
+import {MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css']
+  styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  loading: boolean = false;
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   category: string;
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
@@ -27,37 +30,41 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   productsSubscription: Subscription;
   addToCartSubscription: Subscription;
+  paramsSubscription: Subscription;
 
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
-              private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute) {
+              private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
+              private spinnerService: SpinnerService) {
     this.products = new Array<ProductModel>();
   }
 
   ngOnInit(): void {
-    this.loading = true;
     this.titleService.setTitle("Termékek - GMI Store");
-    this.activatedRoute.queryParamMap.subscribe(
+    this.paramsSubscription = this.activatedRoute.queryParamMap.subscribe(
       (params) => {
+        this.spinnerService.stop(this.spinner);
         this.category = params.get('category');
         this.fetchProductsByCategory();
-        this.loading = false;
       }, (error) => {
         console.log(error);
-        this.loading = false;
+      }, () => {
       }
     );
   }
 
   private fetchProductsByCategory() {
     if (this.category) {
-      this.loading = true;
+      this.spinner = this.spinnerService.start();
       this.productsSubscription = this.productService.getProductsByCategory(this.category).subscribe(
         (response: Array<ProductModel>) => {
           this.products = response;
-          console.log(response);
           this.setMinAndMaxPrices();
-        }, error => console.log(error)
+          this.spinnerService.stop(this.spinner);
+        }, error => {
+          console.log(error)
+          this.spinnerService.stop(this.spinner);
+        }
       )
     }
   }
@@ -81,6 +88,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   addToCart(id: number) {
+    this.spinner = this.spinnerService.start();
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
       (response) => {
         if (response) {
@@ -89,8 +97,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
         } else {
           this.openSnackBar("A kért mennyiség nincs készleten!");
         }
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
     )
@@ -121,6 +131,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.productsSubscription.unsubscribe();
+    this.paramsSubscription.unsubscribe();
     if (this.addToCartSubscription) {
       this.addToCartSubscription.unsubscribe();
     }

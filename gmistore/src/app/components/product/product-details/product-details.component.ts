@@ -12,6 +12,9 @@ import {Subscription} from "rxjs";
 import {RatingService} from "../../../service/rating.service";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {HttpErrorResponse} from "@angular/common/http";
+import {MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
+import {SpinnerService} from "../../../service/spinner-service.service";
 
 @Component({
   selector: 'app-product-details',
@@ -20,7 +23,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
 
-  loading = false;
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
 
   slug: string;
   product: ProductModel;
@@ -63,36 +66,41 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
               private cartService: CartService, private authService: AuthService,
               private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
               private titleService: Title, private ratingService: RatingService,
-              private sideNavComponent: SideNavComponent) {
+              private sideNavComponent: SideNavComponent, private spinnerService: SpinnerService) {
   }
 
   ngOnInit(): void {
-    this.loading = true;
     this.isAdminSub = this.authService.isAdmin.subscribe(
       (response) => {
         this.isAdmin = response;
-      }, error => console.log(error)
+      }, (error) => {
+        this.spinnerService.stop(this.spinner);
+        console.log(error);
+      }
     );
 
     this.isSellerSub = this.authService.isSeller.subscribe(
       (response) => {
         this.isSeller = response;
-      }, error => console.log(error)
+      }, (error) => {
+        this.spinnerService.stop(this.spinner);
+        console.log(error);
+      }
     );
 
     this.currentUsername = this.authService.currentUsername;
     this.slug = this.route.snapshot.params['slug'];
 
     this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
-      data => {
+      (data: ProductModel) => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
       }, (error: HttpErrorResponse) => {
+        this.spinnerService.stop(this.spinner);
         if (error.error.details === 'Product not found') {
           this.router.navigate(['/not-found'])
         }
       },
-
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
       }
@@ -100,9 +108,10 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
     this.ratingSubscription = this.ratingService.getRatingsByProductSlug(this.slug)
       .subscribe(
-        (data) => {
+        (data: Array<RatingModel>) => {
           this.ratings = data;
         }, (error) => {
+          this.spinnerService.stop(this.spinner);
           console.log(error);
         },
         () => {
@@ -113,9 +122,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
           this.threeStarPercentage = this.calculateRatingPercentage(this.threeStars);
           this.twoStarPercentage = this.calculateRatingPercentage(this.twoStars);
           this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
+          this.spinnerService.stop(this.spinner);
         }
       );
-    this.loading = false;
   }
 
   changeDefaultImg(picture: string): void {
@@ -127,6 +136,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   addToCart(id: number) {
+    this.spinner = this.spinnerService.start();
     this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
@@ -135,8 +145,10 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.openSnackBar("A kért mennyiség nincs készleten!");
         }
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
     )
@@ -193,6 +205,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeRating(id: number) {
+    this.spinner = this.spinnerService.start();
     this.removeRatingSubscription = this.ratingService.removeRating(id).subscribe(
       (response) => {
         if (response === true) {
@@ -200,7 +213,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.openSnackBar("Nincs jogosultságod a művelethez!");
         }
-      }, error => console.log(error)
+        this.spinnerService.stop(this.spinner);
+      }, (error) => {
+        this.spinnerService.stop(this.spinner);
+        console.log(error);
+      }
     )
   }
 
@@ -213,7 +230,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    console.log(actualRating);
     if (!actualRating.voters.includes(username)) {
       this.upVoteRating(id, actualRating);
     } else if (actualRating.voters.includes(username)) {
@@ -222,48 +238,51 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   private upVoteRating(id: number, rating: RatingModel) {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.ratingVoteSub = this.ratingService.upVoteRating(id).subscribe(
       () => {
         rating.upVotes++;
         rating.voters.push(this.authService.currentUsername);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }
     );
   }
 
   private removeUpVoteRating(id: number, rating: RatingModel) {
-    this.loading = true;
+    this.spinner = this.spinnerService.start();
     this.ratingVoteSub = this.ratingService.removeUpVoteRating(id).subscribe(
       () => {
         let username = this.authService.currentUsername;
         let indexOfUsername = 0;
-        rating.voters.forEach((name) => {
+        rating.voters.forEach((name: string) => {
           if (name === username) {
             rating.upVotes--;
             rating.voters.splice(indexOfUsername, 1);
           }
           indexOfUsername++;
         });
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
-        this.loading = false;
+        this.spinnerService.stop(this.spinner);
       }
     );
   }
 
   reportRating(id: number) {
+    this.spinner = this.spinnerService.start();
     this.reportSub = this.ratingService.reportRating(id).subscribe(
       (response) => {
         if (response) {
           this.openSnackBar("Jelentés sikeres!");
         }
+        this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
+        this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
     )

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -10,6 +11,11 @@ export class OrdersProductDetailsComponent implements OnInit {
   displayedColumns = ['name','email','phone'];
   openB = false;
   openS = false;
+  form: FormGroup;
+  foods: any;
+  foodControl: any;
+  carControl: any;
+  cars: any;
 
   constructor() { }
 

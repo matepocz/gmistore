@@ -28,32 +28,40 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 <div class="container-address">
-  <mat-card>
-    <mat-card-header class="dropdown-button" (click)="dropdown('shipping')">
-      <mat-card-subtitle class="cart-header-text">
-        Szállítási cím
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content *ngIf="openS">
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-    </mat-card-content>
-  </mat-card>
-  <mat-card>
-    <mat-card-header class="dropdown-button" (click)="dropdown('billing')">
-      <mat-card-subtitle class="cart-header-text">
-        Számlázási cím
-      </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content *ngIf="openB">
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-      <p>sdsds</p>d
-    </mat-card-content>
-  </mat-card>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="dropdown-button">
+        <mat-panel-title class="cart-header-text">
+          Szállítási cím
+        </mat-panel-title>
+        <mat-panel-description>
+          Szállítási adatok
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <p>content</p>
+      </div>
+      <mat-action-row>
+        <button mat-button>Mentés</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header class="dropdown-button">
+        <mat-panel-title class="cart-header-text">
+          Számlázási cím
+        </mat-panel-title>
+        <mat-panel-description>
+          Számlázási adatok
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <p>content</p>
+      </div>
+      <mat-action-row>
+        <button mat-button>Mentés</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
 
 <mat-card-header>
@@ -85,6 +93,33 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+
+<!--<div>-->
+<!--<form [formGroup]="form">-->
+<!--  <h4>mat-select</h4>-->
+<!--  <mat-form-field appearance="fill">-->
+<!--    <mat-label>Favorite Food</mat-label>-->
+<!--    <mat-select [formControl]="" name="food">-->
+<!--      <mat-option>None</mat-option>-->
+<!--      <mat-option *ngFor="let food of foods" [value]="food.value">-->
+<!--        {{food.viewValue}}-->
+<!--      </mat-option>-->
+<!--    </mat-select>-->
+<!--  </mat-form-field>-->
+<!--  <p>Selected: {{foodControl.value}}</p>-->
+<!--  <h4>Native select</h4>-->
+<!--  <mat-form-field appearance="fill">-->
+<!--    <mat-label>Favorite Car</mat-label>-->
+<!--    <select matNativeControl [formControl]="carControl" name="car">-->
+<!--      <option value="">None</option>-->
+<!--      <option *ngFor="let car of cars" [value]="car.value">-->
+<!--        {{car.viewValue}}-->
+<!--      </option>-->
+<!--    </select>-->
+<!--  </mat-form-field>-->
+<!--  <p>Selected: {{carControl.value}}</p>-->
+<!--</form>-->
+<!--</div>-->
 
 <mat-card-header>
   <mat-card-title class="cart-header-text">

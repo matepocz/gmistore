@@ -6,14 +6,6 @@ mat-card-header {
   margin-top: 20px;
 }
 
-.container-address:hover {
-  cursor: pointer;
-}
-
-.dropdown-button {
-
-}
-
 .aligned-with-icon {
   position: relative;
   top: -4px;
@@ -21,7 +13,6 @@ mat-card-header {
 }
 
 .container-address {
-  width: 90%;
   margin: 15px;
-  border-radius: 8px;
+
 }

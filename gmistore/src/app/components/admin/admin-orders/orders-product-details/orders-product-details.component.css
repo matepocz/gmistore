@@ -14,5 +14,8 @@ mat-card-header {
 
 .container-address {
   margin: 15px;
+}
 
+agm-map {
+  height: 300px;
 }

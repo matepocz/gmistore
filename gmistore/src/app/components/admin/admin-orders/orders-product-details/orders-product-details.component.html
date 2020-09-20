@@ -39,7 +39,26 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div>
-        <p>content</p>
+
+        <div fxFlex fxFlexAlign="center"
+             class="autocomplete-container"
+             [ngStyle.xs]="{'min-width.%': 100}"
+             [ngStyle.sm]="{'width.%': 70}">
+
+          <form [formGroup]="addressFormGroup">
+            <mat-search-google-maps-autocomplete formControlName="address"
+                                                 appearance="outline"
+                                                 country="hu"
+                                                 (onGermanAddressMapped)="onGermanAddressMapped($event)">
+            </mat-search-google-maps-autocomplete>
+
+          </form>
+          <div fxFlex>
+            <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom">
+              <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+            </agm-map>
+          </div>
+        </div>
       </div>
       <mat-action-row>
         <button mat-button>Mentés</button>

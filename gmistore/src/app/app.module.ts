@@ -86,7 +86,8 @@ import {LoadingSpinnerComponent} from './components/loading-spinner/loading-spin
 import {SpinnerService} from "./service/spinner-service.service";
 import { OrdersProductDetailsComponent } from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
 import { OrdersProductListComponent } from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
-
+import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -183,6 +184,11 @@ import { OrdersProductListComponent } from './components/admin/admin-orders/orde
     MatTreeModule,
     CarouselModule,
     PinchZoomModule,
+    MatGoogleMapsAutocompleteModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCD8X8kXuT8RqnwwLM6Uvic-lFfF2en6dk',
+      libraries: ['places']
+    })
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

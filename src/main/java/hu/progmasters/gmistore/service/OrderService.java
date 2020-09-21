@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -242,6 +243,10 @@ public class OrderService {
         product.setAverageRating(orderItem.getProduct().getAverageRating());
         product.setOrderItemId(orderRepository.findOrderId(orderItem.getId()));
         return product;
+    }
+
+    public Stream<String> getStatusOptions() {
+        return lookupService.getAllStatusOptions().stream().map(LookupEntity::getDisplayName);
     }
 
     private int generateRandomNumberForLetters() {

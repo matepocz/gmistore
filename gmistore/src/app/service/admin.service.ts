@@ -62,4 +62,8 @@ export class AdminService {
   getOrders(): Observable<Array<OrderListModel>> {
     return this.httpClient.get<Array<OrderListModel>>(this.adminUrl + '/orders');
   }
+
+  getStatusOptions(): Observable<Array<string>>  {
+    return this.httpClient.get<Array<string>>(this.adminUrl + '/orders/orderOptions');
+  }
 }

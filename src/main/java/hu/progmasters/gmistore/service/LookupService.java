@@ -45,6 +45,7 @@ public class LookupService {
                 .orElseThrow(() -> new EntityNotFoundException("Payment method not found!"));
     }
 
+
     /**
      * Fetch all the payment methods
      *
@@ -67,6 +68,10 @@ public class LookupService {
     public LookupEntity getOrderStatusByKey(String key) {
         return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key)
                 .orElseThrow(() -> new EntityNotFoundException("Order status not found!"));
+    }
+
+    public List<LookupEntity> getAllStatusOptions() {
+        return lookupRepository.findByDomainType(DomainType.ORDER_STATUS);
     }
 
     /**

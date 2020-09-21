@@ -5,7 +5,6 @@ import {Observable} from "rxjs";
 import {CustomerDetailsModel} from "../models/customer-details.model";
 import {OrderRequestModel} from "../models/order-request.model";
 import {PaymentMethodDetailsModel} from "../models/payment-method-details.model";
-import {OrderModel} from "../models/order-model";
 import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
 
 @Injectable({
@@ -33,5 +32,9 @@ export class OrderService {
 
   getOrderItems() {
     return this.httpClient.get<Array<ProductOrderedListModel>>(this.ordersUrl + '/items');
+  }
+
+  getStatusOptions(): Observable<Array<string>>  {
+    return this.httpClient.get<Array<string>>(this.ordersUrl + '/orderOptions');
   }
 }

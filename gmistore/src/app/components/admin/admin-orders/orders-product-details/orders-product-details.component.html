@@ -129,7 +129,6 @@
     </div>
   </mat-card-title>
 </mat-card-header>
-
 <table mat-table [dataSource]="dataSource">
 
   <ng-container matColumnDef="name">
@@ -178,3 +177,14 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+
+<mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="paymentMethods"
+                 fxLayout="column" fxLayoutGap="10px" [(ngModel)]="paymentMethod">
+  <mat-radio-button color="primary" *ngFor="let shipping of paymentMethods" [value]="shipping"
+                    class="delivery-radio-button" fxFlex="100">
+    {{ shipping }}
+
+    method:
+    {{ paymentMethod }}
+  </mat-radio-button>
+</mat-radio-group>

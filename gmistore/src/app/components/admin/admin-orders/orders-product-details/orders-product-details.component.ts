@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup} from "@angular/forms";
+import {Title} from "@angular/platform-browser";
+import {AdminService} from "../../../../service/admin.service";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -9,24 +11,25 @@ import {FormGroup} from "@angular/forms";
 export class OrdersProductDetailsComponent implements OnInit {
   dataSource: any;
   displayedColumns = ['name','email','phone'];
-  openB = false;
-  openS = false;
   form: FormGroup;
-  foods: any;
-  foodControl: any;
-  carControl: any;
-  cars: any;
+  paymentMethods: string[] =  ['any', 'asdasd', 'asdsa'];
+  paymentMethod: string;
+  private statusOptions: Array<string>;
 
-  constructor() { }
+  constructor(private titleService: Title,
+              private adminService: AdminService) { }
 
   ngOnInit(): void {
+    this.titleService.setTitle("Megrendelés - GMI Store")
+    this.fetchOrderDetailsData();
+    this.adminService.getStatusOptions().subscribe(
+      (data: Array<string>) => {
+        this.statusOptions = data;
+      }, (error) => console.log(error)
+    )
   }
 
-  dropdown(choice:string) {
-    if (choice === 'shipping') {
-      this.openS = !this.openS;
-    } else {
-      this.openB = !this.openB;
-    }
+  private fetchOrderDetailsData() {
+
   }
 }

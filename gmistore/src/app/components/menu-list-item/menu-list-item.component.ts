@@ -34,7 +34,14 @@ export class MenuListItemComponent implements OnInit {
 
   onItemSelected(item: MainCategoryModel) {
     if (!item.subCategories || !item.subCategories.length) {
-      this.router.navigate(['/product-list'], {queryParams: {category: item.key}});
+      this.router.navigate(['/product-list'],
+        {
+          queryParams: {
+            category: item.key,
+            pageSize: 10,
+            pageIndex: 0
+          }
+        });
       this.sideNav.closeNav();
     }
     if (item.subCategories && item.subCategories.length) {

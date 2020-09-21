@@ -2,7 +2,6 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.ProductDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
@@ -171,9 +170,24 @@ public class OrderService {
         order.setExpectedDeliveryDate(actualCart.getExpectedDeliveryDate());
         order.setOrderedAt(LocalDateTime.now());
         order.setTotalPrice(actualCart.getTotalPrice());
+        order.setShippingMethod(actualCart.getShippingMethod());
+        order.setDeliveryAddress(setOrderAddress(userByUsername.getShippingAddress()));
+        order.setInvoiceAddress(setOrderAddress(userByUsername.getBillingAddress()));
         order.setUser(userByUsername);
         order.setUniqueId(generateUniqueId());
         return order;
+    }
+
+    private Address setOrderAddress(Address address) {
+        Address orderAddress = new Address();
+        orderAddress.setCity(address.getCity());
+        orderAddress.setStreet(address.getStreet());
+        orderAddress.setNumber(address.getNumber());
+        orderAddress.setFloor(address.getFloor());
+        orderAddress.setDoor(address.getDoor());
+        orderAddress.setPostcode(address.getPostcode());
+        orderAddress.setCountry(address.getCountry());
+        return orderAddress;
     }
 
     private void saveOrderItems(Cart actualCart, Order order) {

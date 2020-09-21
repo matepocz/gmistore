@@ -37,13 +37,19 @@ public class Order implements Serializable {
     private Set<OrderItem> items = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "delivery_mode", referencedColumnName = "id")
-    private LookupEntity deliveryMode;
+    @JoinColumn(name = "shipping_method", referencedColumnName = "id")
+    private ShippingMethod shippingMethod;
 
     @ManyToOne
     @JoinColumn(name = "payment_method", referencedColumnName = "id")
     @NotNull
     private LookupEntity paymentMethod;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Address.class)
+    private Address deliveryAddress;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Address.class)
+    private Address invoiceAddress;
 
     @Column(name = "delivery_cost")
     @NotNull

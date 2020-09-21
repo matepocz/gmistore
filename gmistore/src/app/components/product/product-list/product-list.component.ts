@@ -10,6 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-product-list',
@@ -19,6 +20,11 @@ import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.com
 export class ProductListComponent implements OnInit, OnDestroy {
 
   @Input() products: Array<ProductModel>;
+
+  filterForm: FormGroup = this.fb.group({
+    minimumPrice: [null],
+    maximumPrice: [null]
+  });
 
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
@@ -39,7 +45,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
-              private spinnerService: SpinnerService) {
+              private spinnerService: SpinnerService, private fb: FormBuilder) {
     this.products = new Array<ProductModel>();
   }
 

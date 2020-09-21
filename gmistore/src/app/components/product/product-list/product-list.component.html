@@ -1,57 +1,104 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'1%'">
-  <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="start" fxLayoutGap="10px">
+  <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="space-evenly start">
 
-    <!--    <mat-card fxFlex="18" fxHide.lt-md class="options-panel mat-elevation-z5" fxLayout="row wrap"-->
-    <!--              fxLayoutGap="10px" fxLayoutAlign="start start">-->
+    <div fxFlex.gt-md="17" fxFlex.md="20" fxHide.lt-md fxLayout="column" fxLayoutGap="10px">
+      <mat-card class="mat-elevation-z8" fxFlex="100">
 
-    <!--      <mat-card-header fxFlex="100">-->
-    <!--        <mat-card-title>-->
-    <!--          Szűrés:-->
-    <!--        </mat-card-title>-->
-    <!--      </mat-card-header>-->
-    <!--      <mat-divider inset="true" class="divider-accent-colored"></mat-divider>-->
+        <div fxLayout="column" fxLayoutAlign="start">
+          <mat-panel-title class="mb-10"><strong>Elérhetőség</strong></mat-panel-title>
+          <mat-checkbox>Raktáron</mat-checkbox>
+          <mat-checkbox>Nincs raktáron</mat-checkbox>
+          <mat-checkbox>Akciós</mat-checkbox>
 
-    <!--      <div fxFlex="100" fxLayout="row wrap">-->
-    <!--        <mat-card-header fxFlex="100">-->
-    <!--          <mat-card-subtitle>Minimum ár:</mat-card-subtitle>-->
-    <!--        </mat-card-header>-->
+          <div fxFlex="100">
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
+          </div>
 
-    <!--        <mat-slider min="1" color="primary" [max]="maximumPrice - 1" step="500" [(ngModel)]="minimumPrice" thumbLabel-->
-    <!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMinimumPrice(minPrice)">-->
-    <!--        </mat-slider>-->
+          <div fxFlex="100" fxLayout="column" class="mb-15">
+            <mat-panel-title><strong>Ár</strong></mat-panel-title>
+            <mat-slider class="mb-10" min="1" color="primary" [max]="maxPrice - 1" step="500" [(ngModel)]="minimumPrice"
+                        thumbLabel name="Minimum ár" fxFlex="100" [displayWith]="formatLabel"
+                        (change)="updateMinimumPrice(minPriceElement)">
+            </mat-slider>
 
-    <!--        <mat-card-header fxFlex="100">-->
-    <!--          <mat-card-subtitle>Maximum ár:</mat-card-subtitle>-->
-    <!--        </mat-card-header>-->
+            <mat-slider class="mt-15 mb-10" [min]="minimumPrice + 1" color="primary" [max]="maxPrice" step="500"
+                        [(ngModel)]="maximumPrice" (change)="updateMaximumPrice(maxPriceElement)"
+                        thumbLabel fxFlex="100" [displayWith]="formatLabel">
+            </mat-slider>
 
-    <!--        <mat-slider min="2" color="primary" [max]="maximumPrice" step="500" [(ngModel)]="maximumPrice" thumbLabel-->
-    <!--                    fxFlex="100" [displayWith]="formatLabel" (change)="updateMaximumPrice(maxPrice)">-->
-    <!--        </mat-slider>-->
-    <!--        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between">-->
-    <!--          <mat-form-field appearance="outline" fxFlex="30">-->
-    <!--            <mat-label>Min. ár</mat-label>-->
-    <!--            <input matInput placeholder="" #minPrice formControlName="minimumPrice" [value]="minimumPrice.toString()">-->
-    <!--          </mat-form-field>-->
+            <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between" class="mt-15">
 
-    <!--          <mat-form-field appearance="outline" fxFlex="30">-->
-    <!--            <mat-label>Max. ár</mat-label>-->
-    <!--            <input matInput placeholder="" #maxPrice formControlName="maximumPrice" [value]="maximumPrice.toString()">-->
-    <!--          </mat-form-field>-->
+              <mat-form-field appearance="outline" fxFlex="45">
+                <mat-label>Min. ár</mat-label>
+                <input matInput placeholder="" #minPriceElement formControlName="minimumPrice"
+                       [value]="minimumPrice.toString()">
+              </mat-form-field>
 
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--      <span class="spacer"></span>-->
-    <!--      <div fxFlex="100" fxLayoutAlign="end">-->
-    <!--        <button mat-button materialElevation color="primary">-->
-    <!--          <mat-icon>filter_list</mat-icon>-->
-    <!--          Szűrés-->
-    <!--        </button>-->
-    <!--      </div>-->
-    <!--    </mat-card>-->
-    <!--TODO to continue later, when there is more filter options become available-->
+              <mat-form-field appearance="outline" fxFlex="45">
+                <mat-label>Max. ár</mat-label>
+                <input matInput placeholder="" #maxPriceElement formControlName="maximumPrice"
+                       [value]="maximumPrice.toString()">
+              </mat-form-field>
+            </div>
+          </div>
 
-    <div fxFlex.gt-md="80" fxFlex.md="80" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
-      <mat-card class="product-card" fxFlex.lt-md="47" fxFlex.md="30" fxFlex.gt-md="20"
+          <div fxFlex="100">
+            <mat-divider class="divider-primary-colored"></mat-divider>
+          </div>
+
+          <div class="mt-15" fxLayout="column">
+            <p fxFlex="100" class="mb-10"><strong>Értékelés</strong></p>
+
+            <mat-checkbox class="rating-checkbox">
+              <star-rating [readOnly]="true" [rating]="5" staticColor="ok">
+              </star-rating>
+            </mat-checkbox>
+
+            <mat-checkbox class="rating-checkbox">
+              <star-rating [readOnly]="true" [rating]="4" staticColor="ok">
+              </star-rating>
+            </mat-checkbox>
+
+            <mat-checkbox class="rating-checkbox">
+              <star-rating [readOnly]="true" [rating]="3" staticColor="ok">
+              </star-rating>
+            </mat-checkbox>
+
+            <mat-checkbox class="rating-checkbox">
+              <star-rating [readOnly]="true" [rating]="2" staticColor="ok">
+              </star-rating>
+            </mat-checkbox>
+
+            <mat-checkbox class="rating-checkbox">
+              <star-rating [readOnly]="true" [rating]="1" staticColor="ok">
+              </star-rating>
+            </mat-checkbox>
+
+          </div>
+        </div>
+
+        <div class="mt-15" fxLayoutAlign="end end">
+          <button mat-flat-button materialElevation [color]="'primary'">
+            <mat-icon>done</mat-icon>
+            Szűrés
+          </button>
+        </div>
+      </mat-card>
+
+
+    </div>
+
+    <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
+      <div fxLayout="column" fxFlex="99" fxLayoutAlign="center">
+        <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100">
+          {{ products?.length }} termék
+        </mat-card>
+
+
+      </div>
+
+
+      <mat-card class="product-card" fxFlex.xs="47" fxFlex.sm="31" fxFlex.md="31" fxFlex.gt-md="19"
                 materialElevation *ngFor="let product of products">
         <div fxFlexFill fxLayoutAlign="center" fxLayout="column">
           <ng-template [ngIf]="product.discount > 0">
@@ -66,7 +113,7 @@
                  [style.margin-top]="'5px'" [ngClass.lt-xl]="{'image-xs': true}" [ngClass.xl]="{'image-xl': true}">
           </a>
           <div fxLayoutAlign="center" class="product-title-div">
-            <mat-card-title class="product-title">{{ product.name | slice: 0: 40 }}</mat-card-title>
+            <mat-card-title class="product-title">{{ product.name | slice: 0: 35 }}</mat-card-title>
           </div>
 
           <star-rating [starType]="'svg'" [showHalfStars]="true"
@@ -116,12 +163,12 @@
               <mat-icon>info</mat-icon>
             </a>
             <span class="spacer"></span>
-            <button mat-icon-button *ngIf="product.quantityAvailable > 0" (click)="addToCart(product.id)"
-                    [color]="'primary'">
+            <button mat-icon-button matTooltip="Kosárba" matTooltipPosition="above" *ngIf="product.quantityAvailable > 0"
+                    (click)="addToCart(product.id)" [color]="'primary'">
               <mat-icon>add_shopping_cart</mat-icon>
             </button>
 
-            <button mat-icon-button [color]="'primary'">
+            <button mat-icon-button matTooltip="Kedvencekhez" matTooltipPosition="above" [color]="'primary'">
               <mat-icon>favorite</mat-icon>
             </button>
           </mat-card-actions>

@@ -1,11 +1,6 @@
 .product-card {
   width: 13rem;
-  margin: 1%;
-}
-
-.options-panel {
-  margin-top: 10px;
-  height: 625px;
+  margin: 5px;
 }
 
 .product-card-actions {
@@ -21,7 +16,7 @@
 }
 .product-title {
   font-size: 17px;
-  text-justify-trim: center;
+  text-align: center;
 }
 .product-title-div {
   height: 45px;
@@ -46,4 +41,11 @@
   padding-top: 5px;
   margin-bottom: 5px;
   line-height: 20px;
+}
+.list-header-panel {
+  margin-left: 3px;
+}
+
+.rating-checkbox {
+  margin-bottom: 3px;
 }

@@ -18,13 +18,17 @@ import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.com
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
-  category: string;
+  @Input() products: Array<ProductModel>;
 
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
-  @Input() products: Array<ProductModel>;
+  category: string;
+
+  minPrice: number;
+  maxPrice: number;
+
   minimumPrice: number = 1;
   maximumPrice: number = 1;
 
@@ -58,7 +62,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.spinner = this.spinnerService.start();
       this.productsSubscription = this.productService.getProductsByCategory(this.category).subscribe(
         (response: Array<ProductModel>) => {
-          console.log(response);
           this.products = response;
           this.setMinAndMaxPrices();
           this.spinnerService.stop(this.spinner);
@@ -72,12 +75,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   setMinAndMaxPrices() {
     this.products.forEach(
-      (product) => {
+      (product: ProductModel) => {
         if (product.price > this.maximumPrice) {
           this.maximumPrice = product.price;
+          this.maxPrice = product.price;
         }
         if (product.price < this.minimumPrice) {
           this.minimumPrice = product.price;
+          this.minPrice = product.price;
         }
       }
     );
@@ -115,9 +120,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateMinimumPrice(minPrice: HTMLInputElement) {
-    minPrice.value = this.minimumPrice.toString();
-  }
 
   formatLabel(value: number) {
     if (value >= 1000) {
@@ -126,8 +128,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  updateMaximumPrice(maxPrice: HTMLInputElement) {
-    maxPrice.value = this.maximumPrice.toString();
+  updateMinimumPrice(minPriceElement: HTMLInputElement) {
+    minPriceElement.value = this.minimumPrice.toString();
+  }
+
+  updateMaximumPrice(maxPriceElement: HTMLInputElement) {
+    maxPriceElement.value = this.maximumPrice.toString();
   }
 
   ngOnDestroy() {

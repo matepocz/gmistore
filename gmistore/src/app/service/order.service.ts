@@ -39,7 +39,7 @@ export class OrderService {
     return this.httpClient.get<Array<string>>(this.ordersUrl + '/statusOptions');
   }
 
-  getOrderDetails(id:string): Observable<OrderDetails> {
+  fetchOrderDetails(id:string): Observable<OrderDetails> {
     return this.httpClient.get<OrderDetails>(this.ordersUrl + '/' + id);
   }
 }

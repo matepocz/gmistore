@@ -1,201 +1,177 @@
-<mat-card-header>
-  <mat-card-title class="cart-header-text">
-    <div>
-      <mat-icon>person</mat-icon>
-      <span class="aligned-with-icon">Vásárló</span>
+<div *ngIf="loaded">
+  <mat-card-header>
+    <mat-card-title class="cart-header-text">
+      <div>
+        <mat-icon>person</mat-icon>
+        <span class="aligned-with-icon">Vásárló</span>
+      </div>
+    </mat-card-title>
+  </mat-card-header>
+
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Név</th>
+      <td mat-cell *matCellDef="let element"> {{element.user.firstName}} {{element.user.lastName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> E-mail</th>
+      <td mat-cell *matCellDef="let element"> {{element.user?.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
+      <td mat-cell *matCellDef="let element"> {{element.user?.phoneNumber}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+  </table>
+
+  <div class="container-address">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header class="dropdown-button">
+          <mat-panel-title class="cart-header-text">
+            Szállítási cím
+          </mat-panel-title>
+          <mat-panel-description>
+            Szállítási adatok
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div>
+          <app-shipping-address  *ngIf="loaded"
+            [userDataForm]="orderShippingAddressForm"
+            [userShipping]="orderDetailsData.deliveryAddress"
+          ></app-shipping-address>
+        </div>
+        <mat-action-row>
+          <button mat-button>Mentés</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header class="dropdown-button">
+          <mat-panel-title class="cart-header-text">
+            Számlázási cím
+          </mat-panel-title>
+          <mat-panel-description>
+            Számlázási adatok
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div>
+          <app-billing-address *ngIf="loaded"
+            [userDataForm]="orderBillingAddressForm"
+            [userBilling]="orderDetailsData.invoiceAddress"
+          ></app-billing-address>
+        </div>
+        <mat-action-row>
+          <button mat-button>Mentés</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <mat-card-header>
+    <mat-card-title class="cart-header-text">
+      <div>
+        <mat-icon>rule</mat-icon>
+        <span class="aligned-with-icon">Státusz</span>
+      </div>
+    </mat-card-title>
+  </mat-card-header>
+
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Állapot</th>
+      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orderedAt">
+      <th mat-header-cell *matHeaderCellDef>A megrendelés dátuma</th>
+      <td mat-cell *matCellDef="let element"> {{element.orderedAt}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnStatus"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnStatus;"></tr>
+  </table>
+
+  <!--<mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="statusOptions"-->
+  <!--                 fxLayout="column" fxLayoutGap="10px" [(ngModel)]="statusOption">-->
+  <!--  <mat-radio-button color="primary" *ngFor="let status of statusOptions" [value]="status"-->
+  <!--                    class="delivery-radio-button" fxFlex="100">-->
+  <!--    {{ status }}-->
+  <!--  </mat-radio-button>-->
+  <!--</mat-radio-group>-->
+
+  <form [formGroup]="statusForm" [ngStyle]="{'margin':'15px'}">
+    <div fxFlex>
+      <mat-form-field appearance="outline">
+
+        <mat-label>Status</mat-label>
+
+        <mat-select [ngStyle]="{'width':'90%'}">
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let status of statusOptions" [value]="statusValue">
+            {{status}}
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field>
+      <button [ngStyle]="{'height':'40px', 'margin':'14px'}" mat-flat-button color="primary">asdsadad</button>
     </div>
-  </mat-card-title>
-</mat-card-header>
+  </form>
 
-<table mat-table [dataSource]="dataSource">
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Név</th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> E-mail</th>
-    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
-    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-<div class="container-address">
-  <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header class="dropdown-button">
-        <mat-panel-title class="cart-header-text">
-          Szállítási cím
-        </mat-panel-title>
-        <mat-panel-description>
-          Szállítási adatok
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+  <mat-card-header>
+    <mat-card-title class="cart-header-text">
       <div>
-        <p>content</p>
+        <mat-icon>money</mat-icon>
+        <span class="aligned-with-icon">Fizetendő</span>
       </div>
-      <mat-action-row>
-        <button mat-button>Mentés</button>
-      </mat-action-row>
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header class="dropdown-button">
-        <mat-panel-title class="cart-header-text">
-          Számlázási cím
-        </mat-panel-title>
-        <mat-panel-description>
-          Számlázási adatok
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+    </mat-card-title>
+  </mat-card-header>
+
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="paymentMethod">
+      <th mat-header-cell *matHeaderCellDef> Fizetás módja</th>
+      <td mat-cell *matCellDef="let element"> {{element.paymentMethod}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalPrice">
+      <th mat-header-cell *matHeaderCellDef> Teljes összeg</th>
+      <td mat-cell *matCellDef="let element"> {{element.totalPrice}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsPayment"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsPayment;"></tr>
+
+  </table>
+  <mat-card-header>
+    <mat-card-title class="cart-header-text">
       <div>
-        <p>content</p>
+        <mat-icon>local_shipping</mat-icon>
+        <span class="aligned-with-icon">Szállítás</span>
       </div>
-      <mat-action-row>
-        <button mat-button>Mentés</button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
+    </mat-card-title>
+  </mat-card-header>
+
+  <table mat-table [dataSource]="dataSource">>
+
+    <ng-container matColumnDef="method">
+      <th mat-header-cell *matHeaderCellDef> Method</th>
+      <td mat-cell *matCellDef="let element"> {{element.shippingMethod.method}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="days">
+      <th mat-header-cell *matHeaderCellDef> Days</th>
+      <td mat-cell *matCellDef="let element"> {{element.shippingMethod.days}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cost">
+      <th mat-header-cell *matHeaderCellDef> Cost</th>
+      <td mat-cell *matCellDef="let element"> {{element.shippingMethod.cost}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsShipping"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsShipping;"></tr>
+  </table>
 </div>
-
-<mat-card-header>
-  <mat-card-title class="cart-header-text">
-    <div>
-      <mat-icon>rule</mat-icon>
-      <span class="aligned-with-icon">Státusz</span>
-    </div>
-  </mat-card-title>
-</mat-card-header>
-
-<table mat-table [dataSource]="dataSource">
-
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Név</th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> E-mail</th>
-    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
-    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="statusOptions"
-                 fxLayout="column" fxLayoutGap="10px" [(ngModel)]="statusOption">
-  <mat-radio-button color="primary" *ngFor="let status of statusOptions" [value]="status"
-                    class="delivery-radio-button" fxFlex="100">
-    {{ status }}
-  </mat-radio-button>
-</mat-radio-group>
-
-<form [formGroup]="form">
-  <h4>mat-select</h4>
-  <mat-form-field appearance="fill">
-    <mat-label>Status</mat-label>
-    <mat-select >
-      <mat-option>None</mat-option>
-      <mat-option *ngFor="let status of statusOptions" [value]="statusValue">
-        {{status}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <p>Selected: </p>
-</form>
-
-<!--<div>-->
-<!--<form [formGroup]="form">-->
-<!--  <h4>mat-select</h4>-->
-<!--  <mat-form-field appearance="fill">-->
-<!--    <mat-label>Favorite Food</mat-label>-->
-<!--    <mat-select [formControl]="" name="food">-->
-<!--      <mat-option>None</mat-option>-->
-<!--      <mat-option *ngFor="let food of foods" [value]="food.value">-->
-<!--        {{food.viewValue}}-->
-<!--      </mat-option>-->
-<!--    </mat-select>-->
-<!--  </mat-form-field>-->
-<!--  <p>Selected: {{foodControl.value}}</p>-->
-<!--  <h4>Native select</h4>-->
-<!--  <mat-form-field appearance="fill">-->
-<!--    <mat-label>Favorite Car</mat-label>-->
-<!--    <select matNativeControl [formControl]="carControl" name="car">-->
-<!--      <option value="">None</option>-->
-<!--      <option *ngFor="let car of cars" [value]="car.value">-->
-<!--        {{car.viewValue}}-->
-<!--      </option>-->
-<!--    </select>-->
-<!--  </mat-form-field>-->
-<!--  <p>Selected: {{carControl.value}}</p>-->
-<!--</form>-->
-<!--</div>-->
-
-<mat-card-header>
-  <mat-card-title class="cart-header-text">
-    <div>
-      <mat-icon>money</mat-icon>
-      <span class="aligned-with-icon">Fizetendő</span>
-    </div>
-  </mat-card-title>
-</mat-card-header>
-<table mat-table [dataSource]="dataSource">
-
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Név</th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> E-mail</th>
-    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
-    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-card-header>
-  <mat-card-title class="cart-header-text">
-    <div>
-      <mat-icon>local_shipping</mat-icon>
-      <span class="aligned-with-icon">Szállítás</span>
-    </div>
-  </mat-card-title>
-</mat-card-header>
-
-<table mat-table [dataSource]="dataSource">
-
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Név</th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> E-mail</th>
-    <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
-    <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>

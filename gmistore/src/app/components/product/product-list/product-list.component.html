@@ -43,7 +43,7 @@
           </div>
 
           <div fxFlex="100">
-            <mat-divider class="divider-primary-colored"></mat-divider>
+            <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
           </div>
 
           <div class="mt-15" fxLayout="column">
@@ -112,7 +112,7 @@
                  [style.margin-top]="'5px'" [ngClass.lt-xl]="{'image-xs': true}" [ngClass.xl]="{'image-xl': true}">
           </a>
           <div fxLayoutAlign="center" class="product-title-div">
-            <mat-card-title class="product-title">{{ product.name | slice: 0: 35 }}</mat-card-title>
+            <mat-card-title class="product-title">{{ product.name }}</mat-card-title>
           </div>
 
           <star-rating [starType]="'svg'" [showHalfStars]="true"

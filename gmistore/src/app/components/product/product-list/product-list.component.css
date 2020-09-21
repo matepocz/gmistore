@@ -17,6 +17,9 @@
 .product-title {
   font-size: 17px;
   text-align: center;
+  white-space: pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .product-title-div {
   height: 45px;

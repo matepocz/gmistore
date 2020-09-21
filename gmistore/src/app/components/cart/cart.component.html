@@ -43,7 +43,7 @@
             <div class="" fxFlex="100" fxLayout="row">
 
               <mat-card-header *ngIf="item.product.discount">
-                <mat-card-title class="discounted-price">
+                <mat-card-title class="text-red">
                   {{ (item.product.price / 100) * (100 - item.product.discount) | hufCurrency }}
                 </mat-card-title>
                 <mat-card-subtitle>

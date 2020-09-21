@@ -10,6 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-product-list',
@@ -18,13 +19,22 @@ import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.com
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
-  category: string;
+  @Input() products: Array<ProductModel>;
 
+  filterForm: FormGroup = this.fb.group({
+    minimumPrice: [null],
+    maximumPrice: [null]
+  });
+
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
-  @Input() products: Array<ProductModel>;
+  category: string;
+
+  minPrice: number;
+  maxPrice: number;
+
   minimumPrice: number = 1;
   maximumPrice: number = 1;
 
@@ -35,7 +45,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
-              private spinnerService: SpinnerService) {
+              private spinnerService: SpinnerService, private fb: FormBuilder) {
     this.products = new Array<ProductModel>();
   }
 
@@ -71,12 +81,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   setMinAndMaxPrices() {
     this.products.forEach(
-      (product) => {
+      (product: ProductModel) => {
         if (product.price > this.maximumPrice) {
           this.maximumPrice = product.price;
+          this.maxPrice = product.price;
         }
         if (product.price < this.minimumPrice) {
           this.minimumPrice = product.price;
+          this.minPrice = product.price;
         }
       }
     );
@@ -114,9 +126,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateMinimumPrice(minPrice: HTMLInputElement) {
-    minPrice.value = this.minimumPrice.toString();
-  }
 
   formatLabel(value: number) {
     if (value >= 1000) {
@@ -125,8 +134,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  updateMaximumPrice(maxPrice: HTMLInputElement) {
-    maxPrice.value = this.maximumPrice.toString();
+  updateMinimumPrice(minPriceElement: HTMLInputElement) {
+    minPriceElement.value = this.minimumPrice.toString();
+  }
+
+  updateMaximumPrice(maxPriceElement: HTMLInputElement) {
+    maxPriceElement.value = this.maximumPrice.toString();
   }
 
   ngOnDestroy() {

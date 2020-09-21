@@ -25,8 +25,12 @@ body {
   margin-bottom: 7px !important;
 }
 
-.discounted-price {
+.text-red {
   color: red;
+}
+
+.text-green {
+  color: green;
 }
 
 .containerX {
@@ -43,6 +47,9 @@ body {
 
 .mt-10 {
   margin-top: 10px;
+}
+.mb-10 {
+  margin-bottom: 10px;
 }
 
 .loading {

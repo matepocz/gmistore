@@ -1,11 +1,6 @@
 .product-card {
   width: 13rem;
-  margin: 1%;
-}
-
-.options-panel {
-  margin-top: 10px;
-  height: 625px;
+  margin: 5px;
 }
 
 .product-card-actions {
@@ -18,4 +13,39 @@
 
 .image-xl {
   height: 230px !important;
+}
+.product-title {
+  font-size: 17px;
+  text-align: center;
+}
+.product-title-div {
+  height: 45px;
+}
+
+.product-price {
+  font-size: 17px;
+}
+
+.discounted-product-badge {
+  position: absolute;
+  top: 10px;
+  width: 65px;
+  background-color: #ffcf02;
+  color: black;
+  left: -6px;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.discounted-product-text {
+  padding-top: 5px;
+  margin-bottom: 5px;
+  line-height: 20px;
+}
+.list-header-panel {
+  margin-left: 3px;
+}
+
+.rating-checkbox {
+  margin-bottom: 3px;
 }

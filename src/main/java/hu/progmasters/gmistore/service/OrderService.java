@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
@@ -255,5 +256,9 @@ public class OrderService {
 
     private int generateRandomDigits() {
         return ThreadLocalRandom.current().nextInt(100000, 1000000);
+    }
+
+    public OrderDto getOrderDetailsByUniqueId() {
+        return null;
     }
 }

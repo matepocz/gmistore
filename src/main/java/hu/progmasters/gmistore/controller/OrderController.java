@@ -1,11 +1,9 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
-import hu.progmasters.gmistore.model.LookupEntity;
-import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.service.LookupService;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -30,15 +27,12 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderRequestValidator orderRequestValidator;
-    private final LookupService lookupService;
 
     @Autowired
     public OrderController(OrderService orderService,
-                           OrderRequestValidator orderRequestValidator,
-                           LookupService lookupService) {
+                           OrderRequestValidator orderRequestValidator) {
         this.orderService = orderService;
         this.orderRequestValidator = orderRequestValidator;
-        this.lookupService = lookupService;
     }
 
     @InitBinder("orderRequest")
@@ -75,6 +69,14 @@ public class OrderController {
         Stream<String> orderItems = orderService.getStatusOptions();
         return orderItems != null ?
                 new ResponseEntity<>(orderItems, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/statusOptions")
+    public ResponseEntity<OrderDto> getOrderDetails() {
+        OrderDto order = orderService.getOrderDetailsByUniqueId();
+        return order != null ?
+                new ResponseEntity<>(order, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

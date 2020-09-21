@@ -2,25 +2,23 @@ package hu.progmasters.gmistore.dto.order;
 
 import hu.progmasters.gmistore.dto.CartItemDto;
 import hu.progmasters.gmistore.enums.OrderStatus;
-import hu.progmasters.gmistore.model.Address;
-import hu.progmasters.gmistore.model.Product;
-import hu.progmasters.gmistore.model.User;
+import hu.progmasters.gmistore.model.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class OrderDto {
-    private Long generatedUniqueId;
+    private String generatedUniqueId;
     private String status;
-    private List<CartItemDto> items;
-    private String shippingMethod;
-    private String deliveryMode;
+    private Set<OrderItem> items;
+    private ShippingMethod shippingMethod;
     private String paymentMethod;
     private Address deliveryAddress;
     private Address  invoiceAddress;
@@ -30,4 +28,20 @@ public class OrderDto {
     private LocalDateTime expectedDeliveryDate;
     private LocalDateTime deliveredAt;
     private OrderUserDetailsDto user;
+
+    public OrderDto(Order order) {
+        this.generatedUniqueId = order.getUniqueId();
+        this.status = order.getStatus().getDisplayName();
+        this.items = order.getItems();
+        this.shippingMethod = order.getShippingMethod();
+        this.paymentMethod = order.getPaymentMethod().getDisplayName();
+        this.deliveryAddress = order.getDeliveryAddress();
+        this.invoiceAddress = order.getInvoiceAddress();
+        this.deliveryCost = order.getDeliveryCost();
+        this.totalPrice = order.getTotalPrice();
+        this.orderedAt = order.getOrderedAt();
+        this.expectedDeliveryDate = order.getExpectedDeliveryDate();
+        this.deliveredAt = order.getDeliveredAt();
+        this.user = new OrderUserDetailsDto(order.getUser());
+    }
 }

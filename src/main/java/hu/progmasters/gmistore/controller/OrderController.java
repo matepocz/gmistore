@@ -72,9 +72,9 @@ public class OrderController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/statusOptions")
-    public ResponseEntity<OrderDto> getOrderDetails() {
-        OrderDto order = orderService.getOrderDetailsByUniqueId();
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> getOrderDetails(@PathVariable String id) {
+        OrderDto order = orderService.getOrderDetailsByUniqueId(id);
         return order != null ?
                 new ResponseEntity<>(order, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

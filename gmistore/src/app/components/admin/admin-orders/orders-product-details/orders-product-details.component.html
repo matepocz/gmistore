@@ -94,6 +94,28 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
+<mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="statusOptions"
+                 fxLayout="column" fxLayoutGap="10px" [(ngModel)]="statusOption">
+  <mat-radio-button color="primary" *ngFor="let status of statusOptions" [value]="status"
+                    class="delivery-radio-button" fxFlex="100">
+    {{ status }}
+  </mat-radio-button>
+</mat-radio-group>
+
+<form [formGroup]="form">
+  <h4>mat-select</h4>
+  <mat-form-field appearance="fill">
+    <mat-label>Status</mat-label>
+    <mat-select >
+      <mat-option>None</mat-option>
+      <mat-option *ngFor="let status of statusOptions" [value]="statusValue">
+        {{status}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <p>Selected: </p>
+</form>
+
 <!--<div>-->
 <!--<form [formGroup]="form">-->
 <!--  <h4>mat-select</h4>-->
@@ -177,14 +199,3 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-
-<mat-radio-group aria-labelledby="delivery-options" class="delivery-radio-group" *ngIf="paymentMethods"
-                 fxLayout="column" fxLayoutGap="10px" [(ngModel)]="paymentMethod">
-  <mat-radio-button color="primary" *ngFor="let shipping of paymentMethods" [value]="shipping"
-                    class="delivery-radio-button" fxFlex="100">
-    {{ shipping }}
-
-    method:
-    {{ paymentMethod }}
-  </mat-radio-button>
-</mat-radio-group>

@@ -1,6 +1,6 @@
 import {OrderItemModel} from "./orderItemModel";
 import {AddressModel} from "../address-model";
-import {UserModel} from "../user-model";
+import {OrderUserDetailsModel} from "./orderUserDetailsModel";
 
 export interface OrderDetails {
   generatedUniqueId: string;
@@ -16,5 +16,5 @@ export interface OrderDetails {
   orderedAt: Date;
   expectedDeliveryDate: Date;
   deliveredAt: Date;
-  user: UserModel;
+  user: OrderUserDetailsModel;
 }

@@ -2,14 +2,14 @@ import {Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {UserRegistrationsCounterModel} from "../models/UserRegistrationsCounterModel";
-import {UserModel} from "../models/user-model";
-import {UserIsActiveModel} from "../models/userIsActiveModel";
-import {UserListDetailsModel} from "../models/UserListDetailsModel";
+import {UserRegistrationsCounterModel} from "../models/user/UserRegistrationsCounterModel";
+import {UserModel} from "../models/user/user-model";
+import {UserIsActiveModel} from "../models/user/userIsActiveModel";
+import {UserListDetailsModel} from "../models/user/UserListDetailsModel";
 import {RolesInitModel} from "../models/rolesInitModel";
 import {MainCategoryModel} from "../models/main-category.model";
 import {NewCategoryModel} from "../models/new-category.model";
-import {UserEditableDetailsByAdmin} from "../models/userEditableDetailsByAdmin";
+import {UserEditableDetailsByAdmin} from "../models/user/userEditableDetailsByAdmin";
 import {OrderListModel} from "../models/order/orderListModel";
 
 @Injectable({

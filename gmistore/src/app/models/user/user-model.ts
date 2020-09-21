@@ -1,5 +1,5 @@
-import {OrderModel} from "./order-model";
-import {AddressModel} from "./address-model";
+import {OrderModel} from "../order/order-model";
+import {AddressModel} from "../address-model";
 
 export interface UserModel {
   id: number;

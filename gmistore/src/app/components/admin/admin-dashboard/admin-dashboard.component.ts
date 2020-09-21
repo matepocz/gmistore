@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Chart} from "chart.js";
 import {AdminService} from "../../../service/admin.service";
-import {UserRegistrationsCounterModel} from "../../../models/UserRegistrationsCounterModel";
+import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrationsCounterModel";
 import {Subscription} from "rxjs";
 
 @Component({

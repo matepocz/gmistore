@@ -1,12 +1,12 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {UserModel} from "../../../../models/user-model";
+import {UserModel} from "../../../../models/user/user-model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../../service/admin.service";
 import {SharingService} from "../../../../service/sharing.service";
 import {RolesInitModel} from "../../../../models/rolesInitModel";
 import {errorHandler} from "../../../../utils/error-handler";
-import {UserEditableDetailsByAdmin} from "../../../../models/userEditableDetailsByAdmin";
+import {UserEditableDetailsByAdmin} from "../../../../models/user/userEditableDetailsByAdmin";
 import {SubSink} from "subsink";
 
 @Component({

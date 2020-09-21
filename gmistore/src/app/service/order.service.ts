@@ -3,9 +3,10 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 import {CustomerDetailsModel} from "../models/customer-details.model";
-import {OrderRequestModel} from "../models/order-request.model";
+import {OrderRequestModel} from "../models/order/order-request.model";
 import {PaymentMethodDetailsModel} from "../models/payment-method-details.model";
 import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
+import {OrderDetails} from "../models/order/orderDetails";
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,10 @@ export class OrderService {
   }
 
   getStatusOptions(): Observable<Array<string>>  {
-    return this.httpClient.get<Array<string>>(this.ordersUrl + '/orderOptions');
+    return this.httpClient.get<Array<string>>(this.ordersUrl + '/statusOptions');
+  }
+
+  getOrderDetails(id:string): Observable<OrderDetails> {
+    return this.httpClient.get<OrderDetails>(this.ordersUrl + '/' + id);
   }
 }

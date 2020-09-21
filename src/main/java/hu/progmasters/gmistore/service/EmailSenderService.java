@@ -1,5 +1,7 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.model.EmailFromUser;
+import hu.progmasters.gmistore.repository.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,4 +22,6 @@ public class EmailSenderService {
     public void sendEmail(SimpleMailMessage email) {
         javaMailSender.send(email);
     }
+
+
 }

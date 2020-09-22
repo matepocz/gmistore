@@ -10,9 +10,10 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
+import {ProductFilterOptions} from "../../../models/product/product-filter-options";
 
 @Component({
   selector: 'app-product-list',
@@ -24,10 +25,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
   @Input() products: Array<ProductModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  filterForm: FormGroup = this.fb.group({
-    minimumPrice: [null],
-    maximumPrice: [null]
-  });
+  chooseAbleRatings: Array<number> = [5, 4, 3, 2, 1];
+
+  notInStock: boolean = false;
+  nonDiscounted: boolean = false;
+  discounted: boolean = false;
+  minPrice: number = 1;
+  maxPrice: number = 1;
+  minimumPrice: number = 1;
+  maximumPrice: number = 1;
+  lowestRating: number = 0;
+  filterOptions: ProductFilterOptions = new ProductFilterOptions();
+  filtering: boolean = false;
 
   numberOfProducts = 0;
   pageIndex: number = 0;
@@ -40,12 +49,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   category: string;
   categoryDisplayName: string;
-
-  minPrice: number = 1;
-  maxPrice: number = 1;
-
-  minimumPrice: number = 1;
-  maximumPrice: number = 1;
 
   productsSubscription: Subscription;
   addToCartSubscription: Subscription;
@@ -67,7 +70,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.category = params.get('category');
         this.pageIndex = Number(params.get('pageIndex'));
         this.pageSize = Number(params.get('pageSize'));
-        this.fetchProductsByCategory();
+        if (this.filtering && this.category) {
+          this.fetchProductsByCategory(this.filterOptions);
+        } else {
+          this.fetchProductsByCategory();
+        }
       }, (error) => {
         console.log(error);
       }, () => {
@@ -75,11 +82,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fetchProductsByCategory() {
+  private fetchProductsByCategory(filterOptions?: ProductFilterOptions) {
     if (this.category) {
       this.spinner = this.spinnerService.start();
       this.productsSubscription = this.productService.getProductsByCategory(
-        this.category, this.pageIndex, this.pageSize
+        this.category, this.pageIndex, this.pageSize, filterOptions
       )
         .subscribe(
           (response: PagedProductListModel) => {
@@ -117,9 +124,51 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,
       queryParams: {
+        filter: this.filtering,
         category: this.category,
         pageIndex: this.pageIndex,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+      }
+    });
+  }
+
+  filterProducts() {
+    this.filtering = true;
+    this.setFilterOptions();
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
+        category: this.category,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      }
+    });
+    this.fetchProductsByCategory(this.filterOptions);
+  }
+
+  private setFilterOptions() {
+    this.filterOptions.notInStock = this.notInStock;
+    this.filterOptions.nonDiscounted = this.nonDiscounted;
+    this.filterOptions.discounted = this.discounted;
+    this.filterOptions.minPrice = this.minimumPrice;
+    this.filterOptions.maxPrice = this.maximumPrice;
+    this.filterOptions.lowestRating = this.lowestRating;
+  }
+
+  removeFilters() {
+    this.filtering = false;
+    this.notInStock = false;
+    this.nonDiscounted = false;
+    this.discounted = false;
+    this.lowestRating = 0;
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
+        category: this.category,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
       }
     });
   }
@@ -171,15 +220,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
     maxPriceElement.value = this.maximumPrice.toString();
   }
 
+  detectChanges() {
+    this.cdRef.detectChanges();
+  }
+
   ngOnDestroy() {
-    this.productsSubscription.unsubscribe();
+    if (this.productsSubscription) {
+      this.productsSubscription.unsubscribe();
+    }
     this.paramsSubscription.unsubscribe();
     if (this.addToCartSubscription) {
       this.addToCartSubscription.unsubscribe();
     }
-  }
-
-  detectChanges() {
-    this.cdRef.detectChanges();
   }
 }

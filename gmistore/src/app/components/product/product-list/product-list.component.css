@@ -49,3 +49,8 @@
 .rating-checkbox {
   margin-bottom: 3px;
 }
+
+.remove-filters {
+  color: red;
+  cursor: pointer;
+}

@@ -73,7 +73,7 @@ public class UserEditValidator implements Validator {
         if (userDetails.getShippingAddress().getCity() != null) {
             if (userDetails.getShippingAddress().getCity().matches("[0-9]+")
             ) {
-                errors.rejectValue("shippingAddress.city", "address.city.empty");
+                errors.rejectValue("shippingAddress.city", "address.city.invalid");
             }
         }
 
@@ -112,7 +112,7 @@ public class UserEditValidator implements Validator {
         if (userDetails.getBillingAddress().getCity() != null) {
             if (userDetails.getBillingAddress().getCity().matches("[0-9]+")
             ) {
-                errors.rejectValue("billingAddress.city", "address.city.empty");
+                errors.rejectValue("billingAddress.city", "address.city.invalid");
             }
         }
     }

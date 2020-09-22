@@ -6,6 +6,7 @@ import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.service.OrderService;
+import hu.progmasters.gmistore.validator.AddressValidator;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,15 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderRequestValidator orderRequestValidator;
+    private final AddressValidator addressValidator;
 
     @Autowired
     public OrderController(OrderService orderService,
+                           AddressValidator addressValidator,
                            OrderRequestValidator orderRequestValidator) {
         this.orderService = orderService;
         this.orderRequestValidator = orderRequestValidator;
+        this.addressValidator = addressValidator;
     }
 
     @InitBinder("orderRequest")
@@ -82,14 +86,14 @@ public class OrderController {
 
     @PutMapping("/address/delivery/{id}")
     public ResponseEntity<Void> updateDeliveryAddress(@PathVariable String id,
-                                              @RequestBody AddressDetails addressDetails) {
+                                                      @RequestBody @Valid AddressDetails addressDetails) {
         orderService.updateDeliveryAddress(id, addressDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/address/invoice/{id}")
     public ResponseEntity<Void> updateInvoiceAddress(@PathVariable String id,
-                                              @RequestBody AddressDetails addressDetails) {
+                                                     @RequestBody @Valid AddressDetails addressDetails) {
         orderService.updateInvoiceAddress(id, addressDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }

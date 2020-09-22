@@ -3,6 +3,7 @@ package hu.progmasters.gmistore.service;
 import com.github.slugify.Slugify;
 import hu.progmasters.gmistore.dto.ProductCategoryDetails;
 import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
@@ -12,6 +13,9 @@ import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,7 @@ public class ProductService {
 
     /**
      * Save a Product to the database
+     *
      * @param productDto The DTO containing the details
      * @return The actual saved Product object
      */
@@ -128,13 +133,21 @@ public class ProductService {
      * @param category The given category
      * @return A List of ProductDto
      */
-    public List<ProductDto> getActiveProductsByCategory(String category) {
+    public PagedProductList getActiveProductsByCategory(String category, Integer page, Integer size) {
         LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
-        List<Product> productsBySubCategory = productRepository.findProductsBySubCategory(categoryByKey);
-        return productsBySubCategory.stream()
-                .filter(Product::isActive)
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productsBySubCategory = productRepository.findProductsBySubCategory(categoryByKey, pageable);
+        PagedProductList productList = new PagedProductList();
+        productList.setProducts(productsBySubCategory
+                .stream()
                 .map(this::mapProductToProductDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
+        productList.setCategoryDisplayName(categoryByKey.getDisplayName());
+        productList.setTotalElements(productsBySubCategory.getTotalElements());
+        productList.setTotalPages(productsBySubCategory.getTotalPages());
+
+        return productList;
     }
 
     /**

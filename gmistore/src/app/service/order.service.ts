@@ -45,10 +45,10 @@ export class OrderService {
   }
 
   updateInvoiceAddress(id:string, data: AddressModel) {
-    return this.httpClient.put(this.ordersUrl + "/address/delivery/" + id, data);
+    return this.httpClient.put(this.ordersUrl + "/address/invoice" + id, data);
   }
   updateDeliveryAddress(id:string, data: AddressModel) {
-    return this.httpClient.put(this.ordersUrl + "/address/invoice/" + id, data);
+    return this.httpClient.put(this.ordersUrl + "/address/delivery/" + id, data);
   }
 
 }

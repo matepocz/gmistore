@@ -8,6 +8,8 @@ import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.AddressValidator;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/orders")
+@Slf4j
 public class OrderController {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(OrderController.class);

@@ -98,13 +98,14 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSubmitAddress(id: string) {
-    const data: AddressModel = this.orderShippingAddressForm.value;
-    if (data[0] == "shippingAddress") {
-      this.updateDeliveryAddress(id, data)
-    }else {
-      this.updateInvoiceAddress(id,data)
+    const data = this.orderShippingAddressForm.value;
+    if (data.shippingAddress) {
+      console.log(data.shippingAddress)
+      this.updateDeliveryAddress(id, data.shippingAddress)
+    } else if (data.billingAddress) {
+      this.updateInvoiceAddress(id, data.billingAddress)
+    }
   }
-}
 
   private updateInvoiceAddress(id: string, data: AddressModel) {
     this.subs.add(this.orderService.updateInvoiceAddress(id, data).subscribe(

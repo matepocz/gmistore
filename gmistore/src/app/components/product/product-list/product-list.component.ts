@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ProductModel} from "../../../models/product-model";
 import {ProductService} from "../../../service/product-service";
 import {CartService} from "../../../service/cart-service";
@@ -29,8 +29,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     maximumPrice: [null]
   });
 
-  init = false;
-
   numberOfProducts = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
@@ -57,7 +55,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
               private snackBar: MatSnackBar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService, private fb: FormBuilder,
-              private router: Router) {
+              private router: Router, private cdRef: ChangeDetectorRef) {
     this.products = new Array<ProductModel>();
   }
 
@@ -85,7 +83,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
       )
         .subscribe(
           (response: PagedProductListModel) => {
-            this.init = true;
             this.products = response.products;
             this.categoryDisplayName = response.categoryDisplayName;
             this.numberOfProducts = response.totalElements;
@@ -125,7 +122,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
         pageSize: this.pageSize
       }
     });
-    this.init = false;
   }
 
   calculateDiscountedPrice(product: ProductModel): number {
@@ -181,5 +177,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if (this.addToCartSubscription) {
       this.addToCartSubscription.unsubscribe();
     }
+  }
+
+  detectChanges() {
+    this.cdRef.detectChanges();
   }
 }

@@ -86,7 +86,7 @@ import {LoadingSpinnerComponent} from './components/loading-spinner/loading-spin
 import {SpinnerService} from "./service/spinner-service.service";
 import {OrdersProductDetailsComponent} from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
 import {OrdersProductListComponent} from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
-import {HunMatPaginatorIntl} from "./utils/HunMatPaginatorIntl";
+import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 
 
 @NgModule({

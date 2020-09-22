@@ -7,6 +7,8 @@ import {OrderDetails} from "../../../../models/order/orderDetails";
 import {ActivatedRoute} from "@angular/router";
 import {SubSink} from "subsink";
 import {MatTableDataSource} from "@angular/material/table";
+import {AddressModel} from "../../../../models/address-model";
+import {errorHandler} from "../../../../utils/error-handler";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -93,6 +95,29 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
           console.log(dataSource)
         }
       ));
+  }
+
+  onSubmitAddress(id: string) {
+    const data: AddressModel = this.orderShippingAddressForm.value;
+    if (data[0] == "shippingAddress") {
+      this.updateDeliveryAddress(id, data)
+    }else {
+      this.updateInvoiceAddress(id,data)
+  }
+}
+
+  private updateInvoiceAddress(id: string, data: AddressModel) {
+    this.subs.add(this.orderService.updateInvoiceAddress(id, data).subscribe(
+      () => console.log(data),
+      error => errorHandler(error, this.orderBillingAddressForm),
+    ));
+  }
+
+  private updateDeliveryAddress(id: string, data: AddressModel) {
+    this.subs.add(this.orderService.updateDeliveryAddress(id, data).subscribe(
+      () => console.log(data),
+      error => errorHandler(error, this.orderBillingAddressForm),
+    ));
   }
 
   ngOnDestroy() {

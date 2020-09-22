@@ -1,10 +1,10 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
 import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
-import hu.progmasters.gmistore.service.LookupService;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
 import org.slf4j.LoggerFactory;
@@ -78,5 +78,19 @@ public class OrderController {
         return order != null ?
                 new ResponseEntity<>(order, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/address/delivery/{id}")
+    public ResponseEntity<Void> updateDeliveryAddress(@PathVariable String id,
+                                              @RequestBody AddressDetails addressDetails) {
+        orderService.updateDeliveryAddress(id, addressDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/address/invoice/{id}")
+    public ResponseEntity<Void> updateInvoiceAddress(@PathVariable String id,
+                                              @RequestBody AddressDetails addressDetails) {
+        orderService.updateInvoiceAddress(id, addressDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

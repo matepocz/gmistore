@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -264,5 +263,31 @@ public class OrderService {
                 .orElseThrow(() ->
                         new NoSuchElementException("No order found with id  + id "));
         return new OrderDto(order);
+    }
+
+    public void updateDeliveryAddress(String id, AddressDetails addressDetails) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            Address deliveryAddress = orderByUniqueId.get().getDeliveryAddress();
+            updateOrderAddress(addressDetails, deliveryAddress);
+        }
+    }
+
+    public void updateInvoiceAddress(String id, AddressDetails addressDetails) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            Address invoiceAddress = orderByUniqueId.get().getInvoiceAddress();
+            updateOrderAddress(addressDetails, invoiceAddress);
+        }
+    }
+
+    private void updateOrderAddress(AddressDetails addressDetails, Address address) {
+        address.setCity(addressDetails.getCity());
+        address.setCountry(addressDetails.getCountry());
+        address.setDoor(addressDetails.getDoor());
+        address.setFloor(addressDetails.getFloor());
+        address.setNumber(addressDetails.getNumber());
+        address.setPostcode(addressDetails.getPostcode());
+        address.setStreet(addressDetails.getStreet());
     }
 }

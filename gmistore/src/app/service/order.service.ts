@@ -7,6 +7,7 @@ import {OrderRequestModel} from "../models/order/order-request.model";
 import {PaymentMethodDetailsModel} from "../models/payment-method-details.model";
 import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
 import {OrderDetails} from "../models/order/orderDetails";
+import {AddressModel} from "../models/address-model";
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,19 @@ export class OrderService {
     return this.httpClient.get<Array<ProductOrderedListModel>>(this.ordersUrl + '/items');
   }
 
-  getStatusOptions(): Observable<Array<string>>  {
+  getStatusOptions(): Observable<Array<string>> {
     return this.httpClient.get<Array<string>>(this.ordersUrl + '/statusOptions');
   }
 
-  fetchOrderDetails(id:string): Observable<OrderDetails> {
+  fetchOrderDetails(id: string): Observable<OrderDetails> {
     return this.httpClient.get<OrderDetails>(this.ordersUrl + '/' + id);
   }
+
+  updateInvoiceAddress(id:string, data: AddressModel) {
+    return this.httpClient.put(this.ordersUrl + "/address/delivery/" + id, data);
+  }
+  updateDeliveryAddress(id:string, data: AddressModel) {
+    return this.httpClient.put(this.ordersUrl + "/address/invoice/" + id, data);
+  }
+
 }

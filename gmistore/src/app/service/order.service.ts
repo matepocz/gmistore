@@ -51,4 +51,8 @@ export class OrderService {
     return this.httpClient.put(this.ordersUrl + "/address/delivery/" + id, data);
   }
 
+  updateOrderStatus(id:string, status: string) {
+    console.log(status)
+    return this.httpClient.put(this.ordersUrl + "/status/" + id, status);
+  }
 }

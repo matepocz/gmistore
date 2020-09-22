@@ -109,9 +109,10 @@
 
         <mat-label>Status</mat-label>
 
-        <mat-select [ngStyle]="{'width':'90%'}">
+        <mat-select [ngStyle]="{'width':'90%'}" formControlName="status"
+                    *ngIf="orderDetailsData" [(ngModel)]="val" (selectionChange)="changeStatus($event)" >
           <mat-option>None</mat-option>
-          <mat-option *ngFor="let status of statusOptions" [value]="statusValue">
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
             {{status}}
           </mat-option>
         </mat-select>

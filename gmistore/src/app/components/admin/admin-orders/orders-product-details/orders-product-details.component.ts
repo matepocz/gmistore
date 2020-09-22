@@ -9,6 +9,7 @@ import {SubSink} from "subsink";
 import {MatTableDataSource} from "@angular/material/table";
 import {AddressModel} from "../../../../models/address-model";
 import {errorHandler} from "../../../../utils/error-handler";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -30,6 +31,8 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   orderShippingAddressForm: FormGroup;
   orderBillingAddressForm: FormGroup;
   statusForm: FormGroup;
+  val: any;
+  private id: string;
 
   constructor(private titleService: Title,
               private adminService: AdminService,
@@ -65,6 +68,10 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
       }),
     });
 
+    this.statusForm = this.fb.group({
+      status: [''],
+    });
+
     this.subs.add(this.orderService.getStatusOptions().subscribe(
       (data: Array<string>) => {
         this.statusOptions = data;
@@ -74,6 +81,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     this.subs.add(this.activatedRoute.paramMap.subscribe(
       paramMap => {
         const editableId: string = paramMap.get('id');
+        this.id = editableId;
         if (editableId) {
           this.fetchOrderDetailsData(editableId);
         }
@@ -83,18 +91,18 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   fetchOrderDetailsData(id: string) {
-    this.subs.add(
-      this.orderService.fetchOrderDetails(id).subscribe(
-        (data) => {
-          this.orderDetailsData = data;
-        }, (error) => console.log(error),
-        () => {
-          let dataSource = [this.orderDetailsData];
-          this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
-          this.loaded = true;
-          console.log(dataSource)
-        }
-      ));
+    this.subs.add(this.orderService.fetchOrderDetails(id).subscribe(
+      (data) => {
+        this.orderDetailsData = data;
+        this.val = data.status;
+      }, (error) => console.log(error),
+      () => {
+        let dataSource = [this.orderDetailsData];
+        this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
+        this.loaded = true;
+        console.log(dataSource)
+      }
+    ));
   }
 
   onSubmitAddress(id: string) {
@@ -121,7 +129,15 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     ));
   }
 
+  changeStatus($event: MatSelectChange) {
+    this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
+      () => console.log("message has been sent")
+      )
+    )
+  }
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 }

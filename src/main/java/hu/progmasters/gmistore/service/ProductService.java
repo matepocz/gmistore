@@ -1,9 +1,9 @@
 package hu.progmasters.gmistore.service;
 
 import com.github.slugify.Slugify;
+import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
 import hu.progmasters.gmistore.dto.product.ProductDto;
-import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
@@ -317,6 +317,7 @@ public class ProductService {
                 return true;
             }
         }
+        LOGGER.warn("Product delete request, but product not found! id: {}", id);
         return false;
     }
 

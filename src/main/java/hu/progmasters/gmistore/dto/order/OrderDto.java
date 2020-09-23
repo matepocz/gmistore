@@ -47,7 +47,7 @@ public class OrderDto {
 
     private Set<OrderStatusDetailsDto> getAllStatuses(Order order) {
         return order.getOrderStatusList().stream()
-                .map(a -> new OrderStatusDetailsDto(a.toString(),a.getStatus().getDisplayName(),a.getDate()))
+                .map(a -> new OrderStatusDetailsDto(a.getStatus().toString(),a.getStatus().getDisplayName(),a.getDate()))
                 .collect(Collectors.toSet());
     }
 }

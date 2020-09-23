@@ -7,7 +7,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-confirm-delete-dialog',
+  selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.html',
 })
 export class ConfirmDialog implements OnInit {

@@ -8,7 +8,7 @@ import {CustomerDetailsModel} from "../../models/customer-details.model";
 import {CartModel} from "../../models/cart-model";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../side-nav/side-nav.component";
-import {OrderRequestModel} from "../../models/order-request.model";
+import {OrderRequestModel} from "../../models/order/order-request.model";
 import {Router} from "@angular/router";
 import {PaymentMethodDetailsModel} from "../../models/payment-method-details.model";
 import {errorHandler} from "../../utils/error-handler";

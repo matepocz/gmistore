@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductInCartDetails {
-
     private Long id;
     private String name;
     private String productCode;
@@ -16,5 +15,4 @@ public class ProductInCartDetails {
     private Integer discount;
     private Integer warrantyMonths;
     private Integer quantityAvailable;
-
 }

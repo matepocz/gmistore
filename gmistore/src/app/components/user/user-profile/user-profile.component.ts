@@ -1,19 +1,13 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UserService} from "../../../service/user.service";
-import {UserModel} from "../../../models/user-model";
-import {AddressModel} from "../../../models/address-model";
-import {HttpClient} from "@angular/common/http";
+import {UserModel} from "../../../models/user/user-model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {OrderModel} from "../../../models/order-model";
-import {RolesInitModel} from "../../../models/rolesInitModel";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SharingService} from "../../../service/sharing.service";
 import {AdminService} from "../../../service/admin.service";
-import {UserEditableDetailsByAdmin} from "../../../models/userEditableDetailsByAdmin";
 import {errorHandler} from "../../../utils/error-handler";
 import {SubSink} from "subsink";
-import {UserEditableDetailsByUser} from "../../../models/userEditableDetailsByUser";
-import {ProductModel} from "../../../models/product-model";
+import {UserEditableDetailsByUser} from "../../../models/user/userEditableDetailsByUser";
 import {OrderService} from "../../../service/order.service";
 import {ProductOrderedListModel} from "../../../models/product/productOrderedListModel";
 
@@ -38,8 +32,7 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
               private orderService: OrderService,
               private userService: UserService,
               private router: Router,
-              private cdRef: ChangeDetectorRef,
-              private el: ElementRef) {
+              private cdRef: ChangeDetectorRef) {
 
     this.userForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -115,7 +108,6 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
   openClose() {
     this.show = !this.show;
     this.prop.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    ;
   }
 }
 

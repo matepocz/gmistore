@@ -3,10 +3,12 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 import {CustomerDetailsModel} from "../models/customer-details.model";
-import {OrderRequestModel} from "../models/order-request.model";
+import {OrderRequestModel} from "../models/order/order-request.model";
 import {PaymentMethodDetailsModel} from "../models/payment-method-details.model";
-import {OrderModel} from "../models/order-model";
 import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
+import {OrderDetails} from "../models/order/orderDetails";
+import {AddressModel} from "../models/address-model";
+import {OrderStatusOptionsModel} from "../models/order/orderStatusOptionsModel";
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +35,25 @@ export class OrderService {
 
   getOrderItems() {
     return this.httpClient.get<Array<ProductOrderedListModel>>(this.ordersUrl + '/items');
+  }
+
+  getStatusOptions(): Observable<Array<OrderStatusOptionsModel>> {
+    return this.httpClient.get<Array<OrderStatusOptionsModel>>(this.ordersUrl + '/statusOptions');
+  }
+
+  fetchOrderDetails(id: string): Observable<OrderDetails> {
+    return this.httpClient.get<OrderDetails>(this.ordersUrl + '/' + id);
+  }
+
+  updateInvoiceAddress(id:string, data: AddressModel) {
+    return this.httpClient.put(this.ordersUrl + "/address/invoice" + id, data);
+  }
+  updateDeliveryAddress(id:string, data: AddressModel) {
+    return this.httpClient.put(this.ordersUrl + "/address/delivery/" + id, data);
+  }
+
+  updateOrderStatus(id:string, status: string) {
+    console.log(status)
+    return this.httpClient.put(this.ordersUrl + "/status/" + id, status);
   }
 }

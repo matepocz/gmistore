@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class OrderListDto {
         this.generatedUniqueId = order.getUniqueId();
         this.username = order.getUser().getUsername();
         this.date = order.getOrderedAt();
-        this.status = order.getStatus().toString();
+        this.status = order.getStatus().getDisplayName();
         this.totalPrice = order.getTotalPrice();
     }
 
@@ -38,10 +39,6 @@ public class OrderListDto {
     }
 
     private String getStatusEnum(OrderStatus status) {
-        if (status == null) {
-            return OrderStatus.ORDERED.getDisplayName();
-        }
-        return status.toString();
+        return Objects.requireNonNullElse(status, OrderStatus.ORDERED).getDisplayName();
     }
-
 }

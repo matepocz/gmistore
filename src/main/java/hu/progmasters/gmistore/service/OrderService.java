@@ -378,10 +378,12 @@ public class OrderService {
     public void updateStatus(String id, String status) {
         Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
         if (orderByUniqueId.isPresent()) {
-            List<OrderStatusHistory> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            Order order = orderByUniqueId.get();
+            List<OrderStatusHistory> orderStatusList = order.getOrderStatusList();
             OrderStatusHistory orderStatusHistory = new OrderStatusHistory(OrderStatus.valueOf(status));
             orderStatusHistoryRepository.save(orderStatusHistory);
             orderStatusList.add(orderStatusHistory);
+            order.setStatus(OrderStatus.valueOf(status));
         }
     }
 }

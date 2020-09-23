@@ -11,9 +11,9 @@
         </pinch-zoom>
       </div>
 
-      <div class="thumbnail-pictures-div" fxFlex="100" fxLayout="row" fxLayoutAlign="space-evenly center">
-        <div *ngFor="let picture of product.pictures" class="preview-thumbnail" fxFlex="30">
-          <img mat-card-image class="preview-image" [ngClass]="{'pic-active': picture=== defaultPicture}"
+      <div class="thumbnail-pictures-div">
+        <div *ngFor="let picture of product.pictures" class="preview-thumbnail">
+          <img class="preview-image" [ngClass]="{'pic-active': picture === defaultPicture}"
                [src]="picture" (click)="changeDefaultImg(picture)"
                alt="Thumbnail picture"/>
         </div>

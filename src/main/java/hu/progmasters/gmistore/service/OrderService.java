@@ -120,7 +120,8 @@ public class OrderService {
         updateCustomerAddresses(orderRequest, userByUsername);
         Order order = setOrderDetails(actualCart, userByUsername);
         order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
-        order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.ORDERED));
+        OrderStatusHistory newOrderStatus = new OrderStatusHistory(OrderStatus.ORDERED);
+        order.getOrderStatusList().add(newOrderStatus);
         setPaymentStatusForOrder(order);
         saveOrderItems(actualCart, order);
         orderRepository.save(order);

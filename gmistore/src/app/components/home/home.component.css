@@ -5,15 +5,35 @@ owl-carousel-o{
 }
 
 .example-card {
+  /*background-color: #ffcf02;*/
   max-width: 400px;
-  min-height: 345px;
+  min-height: 420px;
+  padding: 25px 16px;
 }
-.mat-card-image{
-  margin: 0;
+
+
+.separator{
+  /*background-color: chartreuse;*/
+  height: 20px;
+  margin-bottom: 0;
 }
-.owl-stage{
-  margin: 30px;
+/*.mat-card-image{*/
+/*  max-width: 300px;*/
+/*  max-height: 250px;*/
+/*  margin: 0 auto;*/
+/*}*/
+.card-title{
+  /*background-color: coral;*/
+  margin-top: 20px;
+
 }
+
+.mat-card-subtitle{
+  /*background-color: cyan;*/
+  margin: 0 auto;
+  font-size: 15px;
+}
+
 
 .mat-display-3 {
   margin: 10px auto;

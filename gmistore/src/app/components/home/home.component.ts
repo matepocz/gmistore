@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 export class HomeComponent implements OnInit {
   customOptions: OwlOptions = {
     loop: true,
-    autoplay: true,
+    autoplay: false,
     responsiveRefreshRate: 200,
     margin: 20,
     autoplayTimeout: 5000,

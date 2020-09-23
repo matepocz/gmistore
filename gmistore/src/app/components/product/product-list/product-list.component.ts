@@ -10,7 +10,7 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
@@ -26,6 +26,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   chooseAbleRatings: Array<number> = [5, 4, 3, 2, 1];
+
+  priceForm: FormGroup = this.fb.group({
+    minimumPrice: [1],
+    maximumPrice: [0]
+  })
 
   notInStock: boolean = false;
   nonDiscounted: boolean = false;
@@ -109,10 +114,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
         if (product.price > this.maximumPrice) {
           this.maximumPrice = product.price;
           this.maxPrice = product.price;
-        }
-        if (product.price < this.minimumPrice) {
-          this.minimumPrice = product.price;
-          this.minPrice = product.price;
+          this.priceForm.patchValue({
+            maximumPrice: product.price
+          })
         }
       }
     );
@@ -218,6 +222,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   updateMaximumPrice(maxPriceElement: HTMLInputElement) {
     maxPriceElement.value = this.maximumPrice.toString();
+  }
+
+  updateMinimumPriceSlider(value: string) {
+    this.minimumPrice = Number(value);
+  }
+
+  updateMaximumPriceSlider(value: string) {
+    this.maximumPrice = Number(value);
   }
 
   detectChanges() {

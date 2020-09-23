@@ -19,13 +19,29 @@
             <mat-panel-title><strong>Ár</strong></mat-panel-title>
             <mat-slider class="mb-10" min="1" color="primary" [max]="maxPrice - 1" step="500" [(ngModel)]="minimumPrice"
                         thumbLabel name="Minimum ár" fxFlex="100" [displayWith]="formatLabel"
-                        matTooltip="Minimum ár" matTooltipPosition="above">
+                        matTooltip="Minimum ár" matTooltipPosition="above"
+                        (ngModelChange)="updateMinimumPrice(minPriceElement)">
             </mat-slider>
 
             <mat-slider class="mt-15 mb-10" [min]="minimumPrice + 1" color="primary" [max]="maxPrice" step="500"
                         [(ngModel)]="maximumPrice" matTooltip="Maximum ár" matTooltipPosition="above"
-                        thumbLabel fxFlex="100" [displayWith]="formatLabel">
+                        thumbLabel fxFlex="100" [displayWith]="formatLabel"
+                        (ngModelChange)="updateMaximumPrice(maxPriceElement)"
+            >
             </mat-slider>
+          </div>
+          <div [formGroup]="priceForm" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
+            <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
+              <mat-label>Minimum ár</mat-label>
+              <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
+                     matInput placeholder="" formControlName="minimumPrice">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
+              <mat-label>Maximum ár</mat-label>
+              <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
+                     matInput placeholder="" formControlName="maximumPrice">
+            </mat-form-field>
           </div>
 
           <div fxFlex="100">
@@ -88,7 +104,7 @@
             <mat-card-title class="product-title">{{ product.name | slice: 0: 35 }}</mat-card-title>
           </div>
 
-          <star-rating [starType]="'svg'" [showHalfStars]="true"
+          <star-rating [starType]="'svg'" [showHalfStars]="true" class="star-ratings-section"
                        [rating]="product.averageRating"
                        [readOnly]="true" staticColor="ok">
           </star-rating>

@@ -196,6 +196,8 @@ public class ProductService {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("discount"), 0));
             } else if (discounted != null && discounted) {
                 predicates.add(criteriaBuilder.greaterThan(root.get("discount"), 0));
+            } else if (nonDiscounted != null && nonDiscounted) {
+                predicates.add(criteriaBuilder.lessThan(root.get("discount"), 1));
             }
 
             Boolean notInStock = productFilterOptions.getNotInStock();
@@ -209,6 +211,7 @@ public class ProductService {
                     productFilterOptions.getLowestRating()));
             predicates.add(criteriaBuilder.between(
                     root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice()));
+
             return criteriaBuilder.and(predicates.toArray(new javax.persistence.criteria.Predicate[predicates.size()]));
         };
     }

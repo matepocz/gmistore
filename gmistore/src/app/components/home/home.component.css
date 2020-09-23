@@ -11,6 +11,9 @@ owl-carousel-o{
 .mat-card-image{
   margin: 0;
 }
+.owl-stage{
+  margin: 30px;
+}
 
 .mat-display-3 {
   margin: 10px auto;

@@ -4,10 +4,11 @@
 
     <div fxFlex="100" fxHide.lt-md="true" fxLayoutAlign="center center"><h2 >Akciós termékek</h2></div>
     <owl-carousel-o  fxLayout="row" fxLayoutAlign="center center" [options]="customOptions">
-      <ng-container *ngFor="let image of temp">
+      <ng-container *ngFor="let product of products">
         <ng-template carouselSlide>
-          <mat-card class="example-card mat-elevation-z8 mt-15 mb-15" fxFlex="100" fxLayoutAlign="center center">
-            <img mat-card-image src="{{image}}">
+          <mat-card class="example-card mat-elevation-z8 mt-15 mb-15" fxFlex="100" fxLayout="column" fxLayoutAlign="center center" (click)="navigateToProduct(product.slug)">
+            <img mat-card-image src="{{product.pictureUrl}}">
+            <mat-card-subtitle>{{product.name}}</mat-card-subtitle>
           </mat-card>
         </ng-template>
       </ng-container>

@@ -112,14 +112,14 @@ public class ProductService {
                 .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
-    public List<String> getPictureOfProductsInOffer() {
-        List<Product> getDiscountProductURL = productRepository.findProductByAndDiscountOrderByDiscountAsc();
+    public List<ProductDto> getProductInOffer() {
+        List<Product> getDiscountProduct = productRepository.findProductByAndDiscountOrderByDiscountAsc();
 
-        List<String> collect = new ArrayList<>();
-        for (Product product : getDiscountProductURL) {
-            String pictureUrl = product.getPictureUrl();
+        List<ProductDto> collect = new ArrayList<>();
+        for (Product product : getDiscountProduct) {
             if (collect.size() < 10) {
-                collect.add(pictureUrl);
+                ProductDto productDto = mapProductToProductDto(product);
+                collect.add(productDto);
             } else {
                 break;
             }

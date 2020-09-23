@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {OwlOptions} from 'ngx-owl-carousel-o';
 import {ProductService} from "../../service/product-service";
 import {Title} from "@angular/platform-browser";
+import {ProductModel} from "../../models/product-model";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -17,10 +19,10 @@ export class HomeComponent implements OnInit {
     margin: 20,
     autoplayTimeout: 5000,
     autoWidth: true,
-    mouseDrag: true,
+    mouseDrag: false,
     touchDrag: true,
     pullDrag: false,
-    dots: false,
+    dots: true,
     navSpeed: 700,
     navText: ['', ''],
     responsive: {
@@ -53,31 +55,26 @@ export class HomeComponent implements OnInit {
   }
 
 
-  imageURLs = Array<string>();
-  temp = Array<string>();
+  products: Array<ProductModel>;
 
-  constructor(private productService: ProductService, private titleService: Title) {
-    this.productService.getDiscountProductsProductURL().subscribe(
+  constructor(private productService: ProductService, private titleService: Title,private router:Router) {
+    this.productService.getDiscountProducts().subscribe(
       (response) => {
-        this.imageURLs = response;
-
-        // console.log(this.imageURLs);
+        this.products = response;
+        console.log(this.products);
       }, error => {
         // console.log(error);
       }, () => {
-        for (let i = 0; i < this.imageURLs.length; i++) {
-          if (this.imageURLs[i].includes("?")) {
-            let count = this.imageURLs[i].indexOf("?");
-            this.temp.push(this.imageURLs[i].substring(0, count));
-          } else {
-            this.temp.push(this.imageURLs[i]);
-          }
-        }
+
       }
     );
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Főoldal - GMI Store");
+  }
+
+  navigateToProduct(slug: string) {
+    this.router.navigate(['/product/'+slug]);
   }
 }

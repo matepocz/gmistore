@@ -210,7 +210,15 @@ public class OrderService {
 
     private Product addItemProduct(Product product) {
         Product itemProduct = new Product();
-        return product;
+        itemProduct.setName(product.getName());
+        itemProduct.setProductCode(product.getProductCode());
+        itemProduct.setFeatures(product.getFeatures());
+        itemProduct.setPictureUrl(product.getPictureUrl());
+        itemProduct.setPictures(product.getPictures());
+        itemProduct.setPrice(product.getPrice());
+        itemProduct.setDiscount(product.getDiscount());
+        itemProduct.setAverageRating(product.getAverageRating());
+        return itemProduct;
     }
 
     private String generateUniqueId() {

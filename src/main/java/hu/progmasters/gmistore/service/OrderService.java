@@ -11,6 +11,7 @@ import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
+import hu.progmasters.gmistore.repository.OrderStatusHistoryRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -37,15 +38,18 @@ public class OrderService {
     private final CartService cartService;
     private final LookupService lookupService;
     private final InventoryService inventoryService;
+    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService, InventoryService inventoryService) {
+                        LookupService lookupService, InventoryService inventoryService,OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
         this.lookupService = lookupService;
         this.inventoryService = inventoryService;
+        this.orderStatusHistoryRepository = orderStatusHistoryRepository;
+
     }
 
     /**
@@ -317,8 +321,10 @@ public class OrderService {
     public void updateStatus(String id, String status) {
         Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
         if (orderByUniqueId.isPresent()) {
-            List<OrderStatus> orderStatusList = orderByUniqueId.get().getOrderStatusList();
-            orderStatusList.add(OrderStatus.valueOf(status));
+            List<OrderStatusHistory> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            OrderStatusHistory orderStatusHistory = new OrderStatusHistory(OrderStatus.valueOf(status));
+            orderStatusHistoryRepository.save(orderStatusHistory);
+            orderStatusList.add(orderStatusHistory);
         }
     }
 }

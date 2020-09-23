@@ -36,9 +36,8 @@ public class Order implements Serializable {
     @NotNull
     private LookupEntity status;
 
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = OrderStatus.class, fetch = FetchType.EAGER)
-    private List<OrderStatus> orderStatusList = new ArrayList<>();
+    @ManyToMany
+    private List<OrderStatusHistory> orderStatusList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_item", referencedColumnName = "id")

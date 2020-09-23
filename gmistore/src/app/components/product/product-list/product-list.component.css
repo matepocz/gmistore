@@ -49,3 +49,12 @@
 .rating-checkbox {
   margin-bottom: 3px;
 }
+
+.star-ratings-section {
+  margin-top: 12px;
+}
+
+.remove-filters {
+  color: red;
+  cursor: pointer;
+}

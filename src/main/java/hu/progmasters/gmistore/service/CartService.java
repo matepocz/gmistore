@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -51,7 +53,8 @@ public class CartService {
         cartDto.setId(actualCart.getId());
         cartDto.setCartItems(actualCart.getItems().stream()
                 .map(CartItemDto::new)
-                .collect(java.util.stream.Collectors.toSet()));
+                .sorted(new CartItemComparator())
+                .collect(Collectors.toCollection(LinkedHashSet::new)));
         cartDto.setShippingMethod(new ShippingMethodItem(actualCart.getShippingMethod()));
         cartDto.setItemsTotalPrice(actualCart.getItemsTotalPrice());
         cartDto.setTotalPrice(actualCart.getTotalPrice());

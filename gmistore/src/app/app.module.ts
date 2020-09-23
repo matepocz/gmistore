@@ -89,7 +89,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {SatDatepickerModule, SatNativeDateModule} from "saturn-datepicker";
 import {OrdersProductDetailsComponent} from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
 import {OrdersProductListComponent} from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
-import {HunMatPaginatorIntl} from "./utils/HunMatPaginatorIntl";
+import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 
 @NgModule({
   declarations: [

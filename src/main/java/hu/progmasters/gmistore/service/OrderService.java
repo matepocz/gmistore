@@ -122,6 +122,7 @@ public class OrderService {
         order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
         OrderStatusHistory newOrderStatus = new OrderStatusHistory(OrderStatus.ORDERED);
         order.getOrderStatusList().add(newOrderStatus);
+        order.setStatus(newOrderStatus.getStatus());
         setPaymentStatusForOrder(order);
         saveOrderItems(actualCart, order);
         orderRepository.save(order);

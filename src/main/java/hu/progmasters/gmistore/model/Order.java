@@ -32,7 +32,10 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "order_status", referencedColumnName = "id")
-    private LookupEntity status;
+    private LookupEntity statusLookup;
+
+    @Enumerated
+    private OrderStatus status;
 
     @ManyToMany(cascade = CascadeType.ALL, targetEntity = OrderStatusHistory.class)
     private List<OrderStatusHistory> orderStatusList = new ArrayList<>();

@@ -20,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "o.uniqueId," +
             "o.user.username," +
             "o.orderedAt," +
-            "o.status.displayName," +
+            "o.status," +
             "o.totalPrice) from Order as o")
     List<OrderListDto> findAllByOrderListDetails();
 

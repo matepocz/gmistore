@@ -8,6 +8,7 @@ import {PaymentMethodDetailsModel} from "../models/payment-method-details.model"
 import {ProductOrderedListModel} from "../models/product/productOrderedListModel";
 import {OrderDetails} from "../models/order/orderDetails";
 import {AddressModel} from "../models/address-model";
+import {OrderStatusOptionsModel} from "../models/order/orderStatusOptionsModel";
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +37,8 @@ export class OrderService {
     return this.httpClient.get<Array<ProductOrderedListModel>>(this.ordersUrl + '/items');
   }
 
-  getStatusOptions(): Observable<Array<string>> {
-    return this.httpClient.get<Array<string>>(this.ordersUrl + '/statusOptions');
+  getStatusOptions(): Observable<Array<OrderStatusOptionsModel>> {
+    return this.httpClient.get<Array<OrderStatusOptionsModel>>(this.ordersUrl + '/statusOptions');
   }
 
   fetchOrderDetails(id: string): Observable<OrderDetails> {

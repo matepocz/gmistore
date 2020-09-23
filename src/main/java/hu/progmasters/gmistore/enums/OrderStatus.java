@@ -2,16 +2,21 @@ package hu.progmasters.gmistore.enums;
 
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 public enum OrderStatus {
     UNPROCESSED("Unprocessed"),
-    PROCESSED("Processed"),
+    PROCESSED("Megerősítve"),
     UNDER_DELIVERY("Under delivery"),
-    DELIVERED("Delivered");
+    DELIVERED("Kiszállítva");
 
     @Getter
-    private String displayName;
+    private final String displayName;
+    @Getter
+    private final LocalDateTime statusDate;
 
     OrderStatus(String displayName) {
         this.displayName = displayName;
+        this.statusDate = LocalDateTime.now();
     }
 }

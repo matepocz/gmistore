@@ -5,8 +5,10 @@ import hu.progmasters.gmistore.dto.CustomerDetails;
 import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
+import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
 import org.slf4j.LoggerFactory;
@@ -242,12 +244,19 @@ public class OrderService {
         product.setPrice(orderItem.getProduct().getPrice());
         product.setDiscount(orderItem.getProduct().getDiscount());
         product.setAverageRating(orderItem.getProduct().getAverageRating());
-        product.setOrderItemId(orderRepository.findOrderId(orderItem.getId()));
+        product.setOrderItemId(orderRepository.findOrderIdByItemId(orderItem.getId()));
         return product;
     }
 
     public Stream<String> getStatusOptions() {
         return lookupService.getAllStatusOptions().stream().map(LookupEntity::getDisplayName);
+    }
+
+    public Set<OrderStatusOptionsDto> getOrderStatusEnumOptions() {
+        return Arrays
+                .stream(OrderStatus.values())
+                .map(status -> new OrderStatusOptionsDto(status.toString(), status.getDisplayName()))
+                .collect(Collectors.toSet());
     }
 
     private int generateRandomNumberForLetters() {
@@ -289,5 +298,13 @@ public class OrderService {
         address.setNumber(addressDetails.getNumber());
         address.setPostcode(addressDetails.getPostcode());
         address.setStreet(addressDetails.getStreet());
+    }
+
+    public void updateStatus(String id, String status) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            List<OrderStatus> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            orderStatusList.add(OrderStatus.valueOf(status));
+        }
     }
 }

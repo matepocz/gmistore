@@ -110,10 +110,10 @@
         <mat-label>Status</mat-label>
 
         <mat-select [ngStyle]="{'width':'90%'}" formControlName="status"
-                    *ngIf="orderDetailsData" [(ngModel)]="val" (selectionChange)="changeStatus($event)" >
+                    *ngIf="orderDetailsData" [(ngModel)]="val[val.length]" (selectionChange)="changeStatus($event)" >
           <mat-option>None</mat-option>
-          <mat-option *ngFor="let status of statusOptions" [value]="status">
-            {{status}}
+          <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+            {{status.displayName}}
           </mat-option>
         </mat-select>
 

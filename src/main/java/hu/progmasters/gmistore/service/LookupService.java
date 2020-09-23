@@ -196,4 +196,8 @@ public class LookupService {
         LOGGER.debug("Unauthorized category delete request! category: {}", key);
         return false;
     }
+
+    public LookupEntity getLookupByDisplayName(String name){
+        return lookupRepository.findLookupEntityByDisplayName(name);
+    }
 }

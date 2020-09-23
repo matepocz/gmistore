@@ -4,6 +4,7 @@ import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
 import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.AddressValidator;
@@ -72,8 +73,8 @@ public class OrderController {
     }
 
     @GetMapping("/statusOptions")
-    public ResponseEntity<Stream<String>> getStatusOptions() {
-        Stream<String> orderItems = orderService.getStatusOptions();
+    public ResponseEntity<Set<OrderStatusOptionsDto>> getStatusOptions() {
+        Set<OrderStatusOptionsDto> orderItems = orderService.getOrderStatusEnumOptions();
         return orderItems != null ?
                 new ResponseEntity<>(orderItems, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -98,6 +99,13 @@ public class OrderController {
     public ResponseEntity<Void> updateInvoiceAddress(@PathVariable String id,
                                                      @RequestBody @Valid AddressDetails addressDetails) {
         orderService.updateInvoiceAddress(id, addressDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<Void> updateStatus(@PathVariable String id,
+                                             @RequestBody String status) {
+        orderService.updateStatus(id, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

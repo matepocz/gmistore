@@ -10,6 +10,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {AddressModel} from "../../../../models/address-model";
 import {errorHandler} from "../../../../utils/error-handler";
 import {MatSelectChange} from "@angular/material/select";
+import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptionsModel";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -21,7 +22,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   displayedColumnsShipping = ['method', 'days', 'cost'];
   displayedColumnsPayment = ['paymentMethod', 'totalPrice'];
   displayedColumnStatus = ['status', 'orderedAt'];
-  statusOptions: Array<string>;
+  statusOptions: Array<OrderStatusOptionsModel>;
   statusOption: string;
   statusValue: string = "Megs";
   subs: SubSink = new SubSink();
@@ -31,7 +32,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   orderShippingAddressForm: FormGroup;
   orderBillingAddressForm: FormGroup;
   statusForm: FormGroup;
-  val: any;
+  val: string[];
   private id: string;
 
   constructor(private titleService: Title,
@@ -73,7 +74,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.subs.add(this.orderService.getStatusOptions().subscribe(
-      (data: Array<string>) => {
+      (data: Array<OrderStatusOptionsModel>) => {
         this.statusOptions = data;
       }, (error) => console.log(error)
     ));
@@ -94,7 +95,8 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     this.subs.add(this.orderService.fetchOrderDetails(id).subscribe(
       (data) => {
         this.orderDetailsData = data;
-        this.val = data.status;
+        this.val = data.status.map(s => s.value);
+        console.log(this.val);
       }, (error) => console.log(error),
       () => {
         let dataSource = [this.orderDetailsData];

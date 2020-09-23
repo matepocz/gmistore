@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Set<OrderItem> findAllOrderedProductsByUser(@Param("name") String username);
 
     @Query("select o.uniqueId from Order as o join o.items as i where i.id=:item_id")
-    String findOrderId(@Param("item_id") Long id);
+    String findOrderIdByItemId(@Param("item_id") Long id);
 
     //    @Query("select new hu.progmasters.gmistore.dto.order.OrderListDto(o) from Order as o")
 //    List<OrderListDto> findAllByOrderListDetails();

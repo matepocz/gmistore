@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class OrderDto {
     private String generatedUniqueId;
-    private String status;
+    private Set<OrderStatusDetailsDto> status;
     private Set<OrderItemListDetailsDto> items;
     private ShippingMethod shippingMethod;
     private String paymentMethod;
@@ -31,7 +31,7 @@ public class OrderDto {
 
     public OrderDto(Order order) {
         this.generatedUniqueId = order.getUniqueId();
-        this.status = order.getStatus().getDisplayName();
+        this.status = getAllStatuses(order);
         this.items = order.getItems().stream().map(OrderItemListDetailsDto::new).collect(Collectors.toSet());
         this.shippingMethod = order.getShippingMethod();
         this.paymentMethod = order.getPaymentMethod().getDisplayName();
@@ -43,5 +43,11 @@ public class OrderDto {
         this.expectedDeliveryDate = order.getExpectedDeliveryDate();
         this.deliveredAt = order.getDeliveredAt();
         this.user = new OrderUserDetailsDto(order.getUser());
+    }
+
+    private Set<OrderStatusDetailsDto> getAllStatuses(Order order) {
+        return order.getOrderStatusList().stream()
+                .map(a -> new OrderStatusDetailsDto(a.toString(),a.getDisplayName(),a.getStatusDate()))
+                .collect(Collectors.toSet());
     }
 }

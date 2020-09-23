@@ -28,6 +28,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   subs: SubSink = new SubSink();
   orderDetailsData: OrderDetails;
   dataSource: MatTableDataSource<OrderDetails>;
+  statusDataSource: MatTableDataSource<OrderStatusOptionsModel>;
   loaded: boolean = false;
   orderShippingAddressForm: FormGroup;
   orderBillingAddressForm: FormGroup;
@@ -101,6 +102,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
       () => {
         let dataSource = [this.orderDetailsData];
         this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
+        this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(dataSource[0].status);
         this.loaded = true;
         console.log(dataSource)
       }
@@ -132,10 +134,13 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   changeStatus($event: MatSelectChange) {
+    if($event.value) {
     this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
-      () => console.log("message has been sent")
+      () => console.log("message has been sent"),
+      error => {console.log(error)},
+      () => this.fetchOrderDetailsData(this.id)
       )
-    )
+    )}
   }
 
   ngOnDestroy() {

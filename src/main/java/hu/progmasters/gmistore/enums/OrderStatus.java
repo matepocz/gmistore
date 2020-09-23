@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.enums;
 
 import lombok.Getter;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 public enum OrderStatus {

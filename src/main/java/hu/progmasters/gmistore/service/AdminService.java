@@ -1,6 +1,9 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.*;
+import hu.progmasters.gmistore.dto.user.UserDto;
+import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
+import hu.progmasters.gmistore.dto.user.UserIsActiveDto;
+import hu.progmasters.gmistore.dto.user.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;

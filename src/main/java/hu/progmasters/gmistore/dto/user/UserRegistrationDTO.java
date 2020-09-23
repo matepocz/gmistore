@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.user;
 
 import java.time.LocalDateTime;
 

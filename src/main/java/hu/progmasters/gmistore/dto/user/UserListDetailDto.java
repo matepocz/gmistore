@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import hu.progmasters.gmistore.enums.Role;

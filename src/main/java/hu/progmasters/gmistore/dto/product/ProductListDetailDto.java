@@ -1,7 +1,5 @@
 package hu.progmasters.gmistore.dto.product;
 
-import hu.progmasters.gmistore.dto.ProductCategoryDetails;
-import hu.progmasters.gmistore.model.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 

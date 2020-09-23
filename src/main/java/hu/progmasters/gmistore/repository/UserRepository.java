@@ -1,10 +1,9 @@
 package hu.progmasters.gmistore.repository;
 
-import hu.progmasters.gmistore.dto.UserListDetailDto;
-import hu.progmasters.gmistore.dto.UserRegistrationDTO;
+import hu.progmasters.gmistore.dto.user.UserListDetailDto;
+import hu.progmasters.gmistore.dto.user.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,13 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserById(@Param("id") Long id);
     Optional<User> findUserByUsername(String username);
 
-    @Query("select new hu.progmasters.gmistore.dto.UserRegistrationDTO( u.id,u.registered ) from User u join u.roles as r where r in :role ")
+    @Query("select new hu.progmasters.gmistore.dto.user.UserRegistrationDTO( u.id,u.registered ) from User u join u.roles as r where r in :role ")
     List<UserRegistrationDTO> findByRolesIn(@Param("role") Role role);
 
     @Query("select u from User u")
     List<User> findAllUsersWithListDetails2();
 
-    @Query("select new hu.progmasters.gmistore.dto.UserListDetailDto(u) from User u")
+    @Query("select new hu.progmasters.gmistore.dto.user.UserListDetailDto(u) from User u")
     List<UserListDetailDto> findAllUsersWithListDetails();
 
 

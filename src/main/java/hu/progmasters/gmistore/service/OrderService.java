@@ -11,6 +11,7 @@ import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
+import hu.progmasters.gmistore.repository.OrderStatusHistoryRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -40,17 +41,20 @@ public class OrderService {
     private final LookupService lookupService;
     private final InventoryService inventoryService;
     private final EmailSenderService emailSenderService;
+    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
                         LookupService lookupService, InventoryService inventoryService,
-                        EmailSenderService emailSenderService) {
+                        EmailSenderService emailSenderService, OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
         this.lookupService = lookupService;
         this.inventoryService = inventoryService;
         this.emailSenderService = emailSenderService;
+        this.orderStatusHistoryRepository = orderStatusHistoryRepository;
+
     }
 
     /**
@@ -116,7 +120,8 @@ public class OrderService {
         updateCustomerAddresses(orderRequest, userByUsername);
         Order order = setOrderDetails(actualCart, userByUsername);
         order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
-        order.setStatus(lookupService.getOrderStatusByKey("CONFIRMED"));
+        order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.ORDERED));
+        setPaymentStatusForOrder(order);
         saveOrderItems(actualCart, order);
         orderRepository.save(order);
         inventoryService.updateAvailableAndSoldQuantities(actualCart.getItems());
@@ -124,6 +129,14 @@ public class OrderService {
         buildAndSendOrderConfirmationEmail(order);
         LOGGER.info("New Order, unique id: {}, username: {}", order.getUniqueId(), userByUsername.getUsername());
         return true;
+    }
+
+    private void setPaymentStatusForOrder(Order order) {
+        if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("CASH"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.WAITING_PAYMENT));
+        } else if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("BANK_CARD"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.PAYMENT_SUCCESS));
+        }
     }
 
     private void updateCustomerAddresses(OrderRequest orderRequest, User user) {
@@ -363,8 +376,10 @@ public class OrderService {
     public void updateStatus(String id, String status) {
         Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
         if (orderByUniqueId.isPresent()) {
-            List<OrderStatus> orderStatusList = orderByUniqueId.get().getOrderStatusList();
-            orderStatusList.add(OrderStatus.valueOf(status));
+            List<OrderStatusHistory> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            OrderStatusHistory orderStatusHistory = new OrderStatusHistory(OrderStatus.valueOf(status));
+            orderStatusHistoryRepository.save(orderStatusHistory);
+            orderStatusList.add(orderStatusHistory);
         }
     }
 }

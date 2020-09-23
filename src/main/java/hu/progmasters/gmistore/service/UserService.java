@@ -1,6 +1,9 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.*;
+import hu.progmasters.gmistore.dto.user.UserDto;
+import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
+import hu.progmasters.gmistore.dto.user.UserListDetailDto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.User;
@@ -41,16 +44,14 @@ public class UserService {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-        UserDto userDto = new UserDto(
+        return new UserDto(
                 user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
                 user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
                 user.isActive(), user.getOrderList());
-        return userDto;
     }
 
     public List<UserListDetailDto> getUserList() {
         return userRepository.findAllUsersWithListDetails();
-
     }
 
     public User getUserByUsername(String username) {

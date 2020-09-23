@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.product;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

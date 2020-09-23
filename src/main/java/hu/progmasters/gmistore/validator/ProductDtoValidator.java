@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.validator;
 
 
-import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;

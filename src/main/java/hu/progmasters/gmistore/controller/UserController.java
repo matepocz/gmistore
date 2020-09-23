@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.user.UserDto;
 import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
 import hu.progmasters.gmistore.service.UserService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
@@ -42,5 +45,17 @@ public class UserController {
     public ResponseEntity<Void> updateUserDetails(@RequestBody @Valid UserEditableDetailsDto user) {
         userService.updateUserByName(user);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/my-favorite-products")
+    public ResponseEntity<Set<ProductDto>> getFavoriteProducts(Principal principal) {
+        Set<ProductDto> favoriteProducts = userService.getFavoriteProducts(principal);
+        return new ResponseEntity<>(favoriteProducts, HttpStatus.OK);
+    }
+
+    @GetMapping("/count-of-favorite-products")
+    public ResponseEntity<Integer> getCountOfFavoriteProducts(Principal principal) {
+        int result = userService.getCountOfFavoriteProducts(principal);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

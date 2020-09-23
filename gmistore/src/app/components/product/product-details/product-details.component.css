@@ -3,17 +3,22 @@
   max-width: 100px;
   cursor: pointer;
   padding: 2px;
+  margin-bottom: 8px;
+  margin-right: 3px;
 }
+
 .preview-image:hover {
   padding: 1px;
   border: 1px solid #673ab7;
   border-radius: 5px;
 }
-.pic-active{
+
+.pic-active {
   padding: 1px;
   border: 1px solid #673ab7;
   border-radius: 5px;
 }
+
 .rating-bar-text {
   padding-top: 12px;
 }
@@ -25,9 +30,30 @@
 .rating-negative-icon {
   color: red;
 }
+
 .rating-comment {
   resize: none;
 }
+
 .thumbnail-pictures-div {
-  padding-top: 5px;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: scroll;
+  white-space: nowrap;
+  overflow-y: hidden;
+  height: 150px;
+  scroll-behavior: auto;
+}
+
+::-webkit-scrollbar {
+  -webkit-overflow-scrolling: touch;
+  width: 0;
+  display: none;
+  overflow: -moz-scrollbars-none;
+  background: transparent;
+}
+
+.preview-thumbnail {
+  display: inline-block;
+  margin-right: 8px !important;
+  padding-bottom: 5px;
 }

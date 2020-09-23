@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
-import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.product.PagedProductList;
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
@@ -89,10 +89,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id) {
         boolean result = productService.deleteProduct(id);
         return result ?
-                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(true, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

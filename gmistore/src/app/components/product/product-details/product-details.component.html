@@ -11,9 +11,9 @@
         </pinch-zoom>
       </div>
 
-      <div class="thumbnail-pictures-div" fxFlex="100" fxLayout="row" fxLayoutAlign="space-evenly center">
-        <div *ngFor="let picture of product.pictures" class="preview-thumbnail" fxFlex="30">
-          <img mat-card-image class="preview-image" [ngClass]="{'pic-active': picture=== defaultPicture}"
+      <div class="thumbnail-pictures-div">
+        <div *ngFor="let picture of product.pictures" class="preview-thumbnail">
+          <img class="preview-image" [ngClass]="{'pic-active': picture === defaultPicture}"
                [src]="picture" (click)="changeDefaultImg(picture)"
                alt="Thumbnail picture"/>
         </div>
@@ -27,14 +27,15 @@
         <mat-card-subtitle>Vásárlói vélemények: {{ratings?.length}}</mat-card-subtitle>
 
         <star-rating [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
-                     [readOnly]="true"  staticColor="ok">
+                     [readOnly]="true" staticColor="ok">
         </star-rating>
 
         <mat-card-content fxLayout="row wrap">
           <p fxFlex="100">Termék azonosító: {{product.productCode}}</p>
           <p>Kategória: &nbsp;</p>
           <span>
-            <a [routerLink]="['/product-list']" [queryParams]="{category: product.subCategory.key}">
+            <a [routerLink]="['/product-list']"
+               [queryParams]="{category: product.subCategory.key, pageIndex: 0, pageSize: 10}">
             {{ product.subCategory.displayName}}
           </a>
           </span>
@@ -78,35 +79,37 @@
         </ng-template>
 
         <mat-card-actions fxLayoutAlign="bottom start">
-          <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">
+          <button *ngIf="product.active && product.quantityAvailable > 0" mat-button [color]="'primary'"
+                  type="button" (click)="addToCart(product.id)">
             <mat-icon>add_shopping_cart</mat-icon>
             Kosárba
           </button>
 
-          <button mat-button [color]="'primary'" type="button">
-            <mat-icon>favorite</mat-icon>
-            Kedvencekhez
-          </button>
+          <ng-container *ngTemplateOutlet="buttonsTemplate"></ng-container>
 
-          <a *ngIf="isAdmin" mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
-            <mat-icon>edit</mat-icon>
-          </a>
         </mat-card-actions>
       </div>
 
-      <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
-        <span class="spacer"></span>
-        <mat-card-title>Nincs raktáron</mat-card-title>
-
+      <ng-template #buttonsTemplate>
         <button mat-button [color]="'primary'" type="button">
           <mat-icon>favorite</mat-icon>
           Kedvencekhez
         </button>
-
         <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button"
-                [routerLink]="['/edit-product', slug]">
+                [routerLink]="['/edit-product', slug]" [ngStyle]="{'margin-right': '5px'}">
           <mat-icon>edit</mat-icon>
         </button>
+        <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'"
+                type="button" (click)="openDeleteProductDialog(product.id, product.name)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </ng-template>
+
+      <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
+        <span class="spacer"></span>
+        <mat-card-title>Nincs raktáron</mat-card-title>
+        <ng-container *ngTemplateOutlet="buttonsTemplate"></ng-container>
+
       </div>
     </div>
 

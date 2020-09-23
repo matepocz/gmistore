@@ -1,8 +1,10 @@
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {CdkTextareaAutosize} from "@angular/cdk/text-field";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {EmailSendingService} from "../../service/email-sending.service";
 import {errorHandler} from "../../utils/error-handler";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+
 
 @Component({
   selector: 'app-footer',
@@ -11,18 +13,32 @@ import {errorHandler} from "../../utils/error-handler";
 })
 
 export class FooterComponent implements OnInit {
-  contactForm:FormGroup;
+  contactForm: FormGroup;
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
-  constructor(private _ngZone: NgZone, private formBuilder: FormBuilder, private emailService: EmailSendingService) {
+  constructor(private _ngZone: NgZone,
+              private formBuilder: FormBuilder,
+              private emailService: EmailSendingService,
+              private snackBar: MatSnackBar) {
   }
 
+  @ViewChild(FormGroupDirective) messageForm: FormGroupDirective;
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
 
   ngOnInit(): void {
     this.contactForm = this.formBuilder.group({
-      email: [null,[Validators.required, Validators.email]],
-      subject: [null, [Validators.required]],
-      message: [null, [Validators.minLength(5), Validators.maxLength(200)]]
+      email: [null, [Validators.required, Validators.email]],
+      subject: [null, [Validators.required], Validators.minLength(3), Validators.maxLength(30)],
+      message: [null, [Validators.minLength(3), Validators.maxLength(1000)]]
+    });
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000,
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
     });
   }
 
@@ -34,7 +50,8 @@ export class FooterComponent implements OnInit {
       }, error => {
         errorHandler(error, this.contactForm);
       }, () => {
-
+        this.messageForm.resetForm();
+        this.openSnackBar('Az üzenet sikeresen elküldve');
       });
   }
 

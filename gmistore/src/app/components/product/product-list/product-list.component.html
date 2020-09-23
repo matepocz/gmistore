@@ -150,6 +150,12 @@
                matTooltipPosition="above">
               <mat-icon>info</mat-icon>
             </a>
+            <a mat-icon-button [color]="'warn'" matTooltip="Törlés"
+               *ngIf="isAdmin || product.addedBy === currentUsername"
+               (click)="openDeleteProductDialog(product.id, product.name)">
+              <mat-icon>delete</mat-icon>
+            </a>
+
             <span class="spacer"></span>
             <button mat-icon-button matTooltip="Kosárba" matTooltipPosition="above"
                     *ngIf="product.quantityAvailable > 0"

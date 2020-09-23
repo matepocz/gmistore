@@ -8,12 +8,14 @@ import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
+import {AuthService} from "../../../service/auth-service";
+import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-product-list',
@@ -55,20 +57,32 @@ export class ProductListComponent implements OnInit, OnDestroy {
   category: string;
   categoryDisplayName: string;
 
+  isAdmin: boolean = false;
+  currentUsername: string = null;
+
   productsSubscription: Subscription;
   addToCartSubscription: Subscription;
   paramsSubscription: Subscription;
+  adminSub: Subscription;
 
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService, private fb: FormBuilder,
-              private router: Router, private cdRef: ChangeDetectorRef) {
+              private router: Router, private cdRef: ChangeDetectorRef, private authService: AuthService,
+              private dialog: MatDialog) {
     this.products = new Array<ProductModel>();
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Termékek - GMI Store");
+    this.adminSub = this.authService.isAdmin.subscribe(
+      (response) => {
+        this.isAdmin = response;
+      }, error => console.log(error)
+    );
+    this.currentUsername = this.authService.currentUsername;
+
     this.paramsSubscription = this.activatedRoute.queryParamMap.subscribe(
       (params: ParamMap) => {
         this.spinnerService.stop(this.spinner);
@@ -97,6 +111,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           (response: PagedProductListModel) => {
             this.products = response.products;
             this.categoryDisplayName = response.categoryDisplayName;
+            this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
             this.numberOfProducts = response.totalElements;
             this.setMinAndMaxPrices();
             this.spinnerService.stop(this.spinner);
@@ -230,6 +245,36 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   updateMaximumPriceSlider(value: string) {
     this.maximumPrice = Number(value);
+  }
+
+  openDeleteProductDialog(productId: number, productName?: string) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '250px',
+      data: {
+        message: 'Biztosan törölni szeretnéd?',
+        name: productName
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteProduct(productId);
+      }
+    });
+  }
+
+  deleteProduct(id: number) {
+    this.productService.deleteProduct(id).subscribe(
+      (response) => {
+        if (response) {
+          if (this.filtering) {
+            this.fetchProductsByCategory(this.filterOptions);
+          } else {
+            this.fetchProductsByCategory();
+          }
+        }
+      }, error => console.log(error)
+    )
   }
 
   detectChanges() {

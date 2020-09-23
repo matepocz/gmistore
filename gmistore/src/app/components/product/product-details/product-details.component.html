@@ -34,7 +34,8 @@
           <p fxFlex="100">Termék azonosító: {{product.productCode}}</p>
           <p>Kategória: &nbsp;</p>
           <span>
-            <a [routerLink]="['/product-list']" [queryParams]="{category: product.subCategory.key}">
+            <a [routerLink]="['/product-list']"
+               [queryParams]="{category: product.subCategory.key, pageIndex: 0, pageSize: 10}">
             {{ product.subCategory.displayName}}
           </a>
           </span>

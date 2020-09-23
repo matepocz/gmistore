@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import hu.progmasters.gmistore.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,10 +32,12 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "order_status", referencedColumnName = "id")
-    @NotNull
-    private LookupEntity status;
+    private LookupEntity statusLookup;
 
-    @ManyToMany
+    @Enumerated
+    private OrderStatus status;
+
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = OrderStatusHistory.class)
     private List<OrderStatusHistory> orderStatusList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -44,6 +46,7 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "shipping_method", referencedColumnName = "id")
+    @JsonIgnore
     private ShippingMethod shippingMethod;
 
     @ManyToOne
@@ -67,7 +70,7 @@ public class Order implements Serializable {
     @Min(value = 0, message = "Items total price cannot be negative number")
     private Double itemsTotalPrice;
 
-    @Column(name = "total_price")
+    @Column(name = "total_price",columnDefinition = "double default 0.0")
     @NotNull
     @Min(value = 0, message = "Total price cannot be negative number")
     private Double totalPrice;

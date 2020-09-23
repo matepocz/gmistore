@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrderListDto {
     private String generatedUniqueId;
     private String username;
@@ -25,7 +25,23 @@ public class OrderListDto {
         this.generatedUniqueId = order.getUniqueId();
         this.username = order.getUser().getUsername();
         this.date = order.getOrderedAt();
-        this.status = order.getStatus().getDisplayName();
+        this.status = order.getStatus().toString();
         this.totalPrice = order.getTotalPrice();
     }
+
+    public OrderListDto(String generatedUniqueId, String username, LocalDateTime date, OrderStatus status, Double totalPrice) {
+        this.generatedUniqueId = generatedUniqueId;
+        this.username = username;
+        this.date = date;
+        this.status = getStatusEnum(status);
+        this.totalPrice = totalPrice;
+    }
+
+    private String getStatusEnum(OrderStatus status) {
+        if (status == null) {
+            return OrderStatus.ORDERED.getDisplayName();
+        }
+        return status.toString();
+    }
+
 }

@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import hu.progmasters.gmistore.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,6 +43,7 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "shipping_method", referencedColumnName = "id")
+    @JsonIgnore
     private ShippingMethod shippingMethod;
 
     @ManyToOne

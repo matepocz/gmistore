@@ -111,6 +111,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           (response: PagedProductListModel) => {
             this.products = response.products;
             this.categoryDisplayName = response.categoryDisplayName;
+            this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
             this.numberOfProducts = response.totalElements;
             this.setMinAndMaxPrices();
             this.spinnerService.stop(this.spinner);

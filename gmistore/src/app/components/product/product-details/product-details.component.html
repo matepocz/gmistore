@@ -27,7 +27,7 @@
         <mat-card-subtitle>Vásárlói vélemények: {{ratings?.length}}</mat-card-subtitle>
 
         <star-rating [starType]="'svg'" [showHalfStars]="true" [rating]="product.averageRating"
-                     [readOnly]="true"  staticColor="ok">
+                     [readOnly]="true" staticColor="ok">
         </star-rating>
 
         <mat-card-content fxLayout="row wrap">
@@ -84,39 +84,31 @@
             Kosárba
           </button>
 
-          <button mat-button [color]="'primary'" type="button">
-            <mat-icon>favorite</mat-icon>
-            Kedvencekhez
-          </button>
+          <ng-container *ngTemplateOutlet="buttonsTemplate"></ng-container>
 
-          <a [ngStyle]="{'padding-right': '4px'}" *ngIf="isAdmin || product.addedBy === currentUsername"
-             mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
-            <mat-icon>edit</mat-icon>
-          </a>
-          <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'"
-                  type="button" (click)="openDeleteProductDialog(product.id, product.name)">
-            <mat-icon>delete</mat-icon>
-          </button>
         </mat-card-actions>
       </div>
 
-      <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
-        <span class="spacer"></span>
-        <mat-card-title>Nincs raktáron</mat-card-title>
-
+      <ng-template #buttonsTemplate>
         <button mat-button [color]="'primary'" type="button">
           <mat-icon>favorite</mat-icon>
           Kedvencekhez
         </button>
-
         <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button"
-                [routerLink]="['/edit-product', slug]">
+                [routerLink]="['/edit-product', slug]" [ngStyle]="{'margin-right': '5px'}">
           <mat-icon>edit</mat-icon>
         </button>
         <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'"
                 type="button" (click)="openDeleteProductDialog(product.id, product.name)">
           <mat-icon>delete</mat-icon>
         </button>
+      </ng-template>
+
+      <div fxLayout="column" fxFlex="100" *ngIf="product.quantityAvailable == 0" fxLayoutAlign="bottom start">
+        <span class="spacer"></span>
+        <mat-card-title>Nincs raktáron</mat-card-title>
+        <ng-container *ngTemplateOutlet="buttonsTemplate"></ng-container>
+
       </div>
     </div>
 

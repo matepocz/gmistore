@@ -3,7 +3,7 @@ package hu.progmasters.gmistore.controller;
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
 import hu.progmasters.gmistore.dto.NewCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
-import hu.progmasters.gmistore.dto.ProductCategoryDetails;
+import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
 import hu.progmasters.gmistore.service.LookupService;
 import hu.progmasters.gmistore.validator.NewCategoryRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;

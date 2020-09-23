@@ -1,7 +1,7 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.ProductCategoryDetails;
-import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.model.Inventory;
 import hu.progmasters.gmistore.model.LookupEntity;

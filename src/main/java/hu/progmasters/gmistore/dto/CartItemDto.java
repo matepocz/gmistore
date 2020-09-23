@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.dto;
 
+import hu.progmasters.gmistore.dto.product.ProductInCartDetails;
 import hu.progmasters.gmistore.model.CartItem;
 import hu.progmasters.gmistore.model.Product;
 import lombok.Getter;

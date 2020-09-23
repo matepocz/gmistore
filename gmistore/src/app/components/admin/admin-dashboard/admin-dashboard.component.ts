@@ -124,4 +124,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       console.log("out of range")
     }
   }
+
+  static dateParser() {
+
+  }
 }

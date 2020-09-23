@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
 import {AdminService} from "../../../../service/admin.service";
@@ -11,6 +11,8 @@ import {AddressModel} from "../../../../models/address-model";
 import {errorHandler} from "../../../../utils/error-handler";
 import {MatSelectChange} from "@angular/material/select";
 import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptionsModel";
+import {MatSort} from "@angular/material/sort";
+import {parseDate} from "../../../../utils/dateParser";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -18,23 +20,28 @@ import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptio
   styleUrls: ['./orders-product-details.component.css']
 })
 export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+
+  subs: SubSink = new SubSink();
+  loaded: boolean = false;
+  private id: string;
+  val: string[];
+
   displayedColumns = ['name', 'email', 'phone'];
   displayedColumnsShipping = ['method', 'days', 'cost'];
   displayedColumnsPayment = ['paymentMethod', 'totalPrice'];
   displayedColumnStatus = ['status', 'orderedAt'];
+
   statusOptions: Array<OrderStatusOptionsModel>;
-  statusOption: string;
-  statusValue: string = "Megs";
-  subs: SubSink = new SubSink();
   orderDetailsData: OrderDetails;
   dataSource: MatTableDataSource<OrderDetails>;
   statusDataSource: MatTableDataSource<OrderStatusOptionsModel>;
-  loaded: boolean = false;
+
   orderShippingAddressForm: FormGroup;
   orderBillingAddressForm: FormGroup;
   statusForm: FormGroup;
-  val: string[];
-  private id: string;
+
+  dateParse = (date: Date) => (parseDate(new Date(date)));
 
   constructor(private titleService: Title,
               private adminService: AdminService,
@@ -102,9 +109,13 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
       () => {
         let dataSource = [this.orderDetailsData];
         this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
-        this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(dataSource[0].status);
+
+        let status = dataSource[0].status.sort(
+          (a: OrderStatusOptionsModel, b: OrderStatusOptionsModel) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(status);
         this.loaded = true;
-        console.log(dataSource)
       }
     ));
   }
@@ -134,17 +145,23 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   changeStatus($event: MatSelectChange) {
-    if($event.value) {
-    this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
-      () => console.log("message has been sent"),
-      error => {console.log(error)},
-      () => this.fetchOrderDetailsData(this.id)
+    if ($event.value) {
+      this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
+        () => console.log("message has been sent"),
+        error => {
+          console.log(error)
+        },
+        () => this.fetchOrderDetailsData(this.id)
+        )
       )
-    )}
+    }
   }
+
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 
 }

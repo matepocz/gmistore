@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.dto;
 
+import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
 import hu.progmasters.gmistore.model.LookupEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

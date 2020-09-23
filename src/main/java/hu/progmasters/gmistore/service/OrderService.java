@@ -11,8 +11,10 @@ import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
+import hu.progmasters.gmistore.repository.OrderStatusHistoryRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -37,15 +40,21 @@ public class OrderService {
     private final CartService cartService;
     private final LookupService lookupService;
     private final InventoryService inventoryService;
+    private final EmailSenderService emailSenderService;
+    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService, InventoryService inventoryService) {
+                        LookupService lookupService, InventoryService inventoryService,
+                        EmailSenderService emailSenderService, OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
         this.lookupService = lookupService;
         this.inventoryService = inventoryService;
+        this.emailSenderService = emailSenderService;
+        this.orderStatusHistoryRepository = orderStatusHistoryRepository;
+
     }
 
     /**
@@ -111,13 +120,23 @@ public class OrderService {
         updateCustomerAddresses(orderRequest, userByUsername);
         Order order = setOrderDetails(actualCart, userByUsername);
         order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
-        order.setStatus(lookupService.getOrderStatusByKey("CONFIRMED"));
+        order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.ORDERED));
+        setPaymentStatusForOrder(order);
         saveOrderItems(actualCart, order);
         orderRepository.save(order);
         inventoryService.updateAvailableAndSoldQuantities(actualCart.getItems());
         cartService.deleteCart(actualCart.getId());
+        buildAndSendOrderConfirmationEmail(order);
         LOGGER.info("New Order, unique id: {}, username: {}", order.getUniqueId(), userByUsername.getUsername());
         return true;
+    }
+
+    private void setPaymentStatusForOrder(Order order) {
+        if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("CASH"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.WAITING_PAYMENT));
+        } else if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("BANK_CARD"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.PAYMENT_SUCCESS));
+        }
     }
 
     private void updateCustomerAddresses(OrderRequest orderRequest, User user) {
@@ -173,6 +192,7 @@ public class OrderService {
         order.setDeliveryCost(actualCart.getShippingMethod().getCost());
         order.setExpectedDeliveryDate(actualCart.getExpectedDeliveryDate());
         order.setOrderedAt(LocalDateTime.now());
+        order.setItemsTotalPrice(actualCart.getItemsTotalPrice());
         order.setTotalPrice(actualCart.getTotalPrice());
         order.setShippingMethod(actualCart.getShippingMethod());
         order.setDeliveryAddress(setOrderAddress(userByUsername.getShippingAddress()));
@@ -192,6 +212,45 @@ public class OrderService {
         orderAddress.setPostcode(address.getPostcode());
         orderAddress.setCountry(address.getCountry());
         return orderAddress;
+    }
+
+    private void buildAndSendOrderConfirmationEmail(Order order) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(order.getUser().getEmail());
+        mailMessage.setSubject("Rendelés részletező (" + order.getUniqueId() + ")");
+        mailMessage.setFrom("gmistarter@gmail.com");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Köszönjük a rendelést!" + "\n\n");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String orderedAt = order.getOrderedAt().format(formatter);
+        String expectedDelivery = order.getExpectedDeliveryDate().format(formatter);
+        expectedDelivery = expectedDelivery.substring(0, expectedDelivery.indexOf(' '));
+        stringBuilder.append("Rendelés rögzítésének ideje: ").append(orderedAt).append("\n");
+        stringBuilder.append("Várható szállítás dátuma: ").append(expectedDelivery).append("\n\n");
+        stringBuilder.append("Rendelés részletei: \n");
+
+        order.getItems().forEach(item -> stringBuilder
+                .append(item.getQuantity())
+                .append(" x ")
+                .append(item.getProduct().getName())
+                .append("  ")
+                .append(item.getPrice())
+                .append(" Ft /db \n"));
+
+        stringBuilder.append("\n");
+        stringBuilder.append("Szállítási cim: \n");
+        stringBuilder.append(order.getDeliveryAddress().toString()).append("\n\n");
+        stringBuilder.append("Számlázási cím: \n");
+        stringBuilder.append(order.getInvoiceAddress().toString()).append("\n");
+        stringBuilder.append("\nTermékek összege: ").append(order.getItemsTotalPrice().intValue()).append(" Ft \n");
+        stringBuilder.append("Szállítás költsége: ").append(order.getDeliveryCost().intValue()).append(" Ft \n");
+        stringBuilder.append("Fizetendő végösszeg: ").append(order.getTotalPrice().intValue()).append(" Ft \n \n");
+
+        stringBuilder.append("GMI Store team");
+
+        mailMessage.setText(stringBuilder.toString());
+        emailSenderService.sendEmail(mailMessage);
     }
 
     private void saveOrderItems(Cart actualCart, Order order) {
@@ -317,8 +376,10 @@ public class OrderService {
     public void updateStatus(String id, String status) {
         Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
         if (orderByUniqueId.isPresent()) {
-            List<OrderStatus> orderStatusList = orderByUniqueId.get().getOrderStatusList();
-            orderStatusList.add(OrderStatus.valueOf(status));
+            List<OrderStatusHistory> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            OrderStatusHistory orderStatusHistory = new OrderStatusHistory(OrderStatus.valueOf(status));
+            orderStatusHistoryRepository.save(orderStatusHistory);
+            orderStatusList.add(orderStatusHistory);
         }
     }
 }

@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.product;
 
 import hu.progmasters.gmistore.model.LookupEntity;
 import lombok.Getter;

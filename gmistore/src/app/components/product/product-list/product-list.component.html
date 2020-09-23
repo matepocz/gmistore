@@ -17,7 +17,7 @@
 
           <div fxFlex="100" fxLayout="column" class="mb-15">
             <mat-panel-title><strong>Ár</strong></mat-panel-title>
-            <mat-slider class="mb-10" min="1" color="primary" [max]="maxPrice - 1" step="500" [(ngModel)]="minimumPrice"
+            <mat-slider class="mb-10" min="1" color="primary" [max]="maximumPrice - 1" step="500" [(ngModel)]="minimumPrice"
                         thumbLabel name="Minimum ár" fxFlex="100" [displayWith]="formatLabel"
                         matTooltip="Minimum ár" matTooltipPosition="above"
                         (ngModelChange)="updateMinimumPrice(minPriceElement)">
@@ -34,13 +34,13 @@
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Minimum ár</mat-label>
               <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
-                     matInput placeholder="" formControlName="minimumPrice">
+                     matInput placeholder="" formControlName="minimumPrice" [min]="minPrice" [max]="maxPrice - 1">
             </mat-form-field>
 
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Maximum ár</mat-label>
               <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
-                     matInput placeholder="" formControlName="maximumPrice">
+                     matInput placeholder="" formControlName="maximumPrice" [min]="minimumPrice + 1" [max]="maxPrice">
             </mat-form-field>
           </div>
 

@@ -19,10 +19,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (localStorage.getItem('isView') !== 'true') {
       setTimeout(() => {
-          this.openDialog();
-          this.isView = 'true';
+        this.openDialog();
+        this.isView = 'true';
       }, 2000);
-      localStorage.setItem('isView','true');
+      localStorage.setItem('isView', 'true');
     }
 
   }
@@ -30,5 +30,4 @@ export class AppComponent implements OnInit {
   openDialog() {
     this.dialog.open(GdprDialogComponent);
   }
-
 }

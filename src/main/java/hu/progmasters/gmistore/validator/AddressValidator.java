@@ -1,10 +1,6 @@
 package hu.progmasters.gmistore.validator;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
-import hu.progmasters.gmistore.dto.NewCategoryRequest;
-import hu.progmasters.gmistore.dto.UserEditableDetailsDto;
-import hu.progmasters.gmistore.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

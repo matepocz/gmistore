@@ -21,13 +21,13 @@ public class EmailValidator implements Validator {
         String email = emailCreating.getEmail();
         if (email == null || email.isEmpty()) {
             errors.rejectValue("email", "email.empty");
-        }if(!email.matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")){
-            errors.rejectValue("email","email.invalid");
+        } else if (!email.matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")) {
+            errors.rejectValue("email", "email.invalid");
         }
 
         String subject = emailCreating.getSubject();
-        if(subject == null || subject.isEmpty()){
-            errors.rejectValue("subject","subject.is-empty");
+        if (subject == null || subject.isEmpty()) {
+            errors.rejectValue("subject", "subject.is-empty");
         }
     }
 }

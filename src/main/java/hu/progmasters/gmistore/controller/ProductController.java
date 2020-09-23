@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,12 @@ public class ProductController {
     }
 
     @GetMapping("/by-category/{category}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable("category") String category) {
-        List<ProductDto> products = productService.getActiveProductsByCategory(category);
+    public ResponseEntity<PagedProductList> getProductsByCategory(
+            @PathVariable("category") String category, @RequestParam(value = "size") String size,
+            @RequestParam(name = "page", defaultValue = "0", required = false) String page) {
+        PagedProductList products = productService
+                .getActiveProductsByCategory(
+                        category, Integer.parseInt(page), Integer.parseInt(size));
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

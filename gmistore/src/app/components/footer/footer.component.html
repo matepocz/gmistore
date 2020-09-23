@@ -56,17 +56,15 @@
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Email cím:</mat-label>
             <input matInput fxFlexAlign="start" formControlName="email" name="email" required>
-            <mat-error *ngIf="contactForm.get('email').invalid">Az email mező kötelező!</mat-error>
-            <mat-error
-              *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}</mat-error>
+            <mat-error *ngIf="contactForm.get('email').invalid && !contactForm.get('email').errors?.serverError">Az email mező kötelező!</mat-error>
+            <mat-error *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}</mat-error>
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Tárgy:</mat-label>
             <input matInput fxFlexAlign="start" formControlName="subject" name="subject" required>
-            <mat-error *ngIf="contactForm.get('email').invalid">Az tárgy mező kötelező!</mat-error>
-            <mat-error
-              *ngIf="contactForm.get('subject').errors?.serverError">{{contactForm.get('subject').errors?.serverError}}</mat-error>
+            <mat-error *ngIf="contactForm.get('subject').invalid && !contactForm.get('subject').errors?.serverError">Az tárgy mező kötelező!</mat-error>
+            <mat-error *ngIf="contactForm.get('subject').errors?.serverError">{{contactForm.get('subject').errors?.serverError}}</mat-error>
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
@@ -79,8 +77,10 @@
                       formControlName="message"
                       name="message"
                       type="text"
+                      required
             ></textarea>
-            <mat-error *ngIf="contactForm.get('message').invalid">A mező kitöltése kötelező</mat-error>
+            <mat-error *ngIf="contactForm.get('message').invalid && !contactForm.get('message').errors?.serverError">A mező kitöltése kötelező</mat-error>
+            <mat-error *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}</mat-error>
           </mat-form-field>
           <button class="footer-form-btn" mat-raised-button type="submit" color="primary"
                   [disabled]="contactForm.invalid">Üzenet küldése

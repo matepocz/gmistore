@@ -64,4 +64,8 @@ export class ProductService {
   getDiscountProducts(): Observable<Array<ProductModel>> {
     return this.httpClient.get<Array<ProductModel>>(this.productsUrl + "/get-discount-product")
   }
+
+  deleteProduct(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(this.productsUrl + '/' + id);
+  }
 }

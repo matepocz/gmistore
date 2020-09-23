@@ -2,7 +2,6 @@ package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import hu.progmasters.gmistore.enums.OrderStatus;
-import hu.progmasters.gmistore.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -63,6 +62,11 @@ public class Order implements Serializable {
     @NotNull
     @Min(value = 0, message = "Delivery cost cannot be negative number")
     private Double deliveryCost;
+
+    @Column(name = "items_total_price")
+    @NotNull
+    @Min(value = 0, message = "Items total price cannot be negative number")
+    private Double itemsTotalPrice;
 
     @Column(name = "total_price")
     @NotNull

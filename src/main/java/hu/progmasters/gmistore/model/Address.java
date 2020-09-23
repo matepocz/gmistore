@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor
@@ -39,4 +38,20 @@ public class Address {
 
     @Column(name = "postcode")
     private String postcode;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(city).append(", ").append(street).append(" út/utca ").append(number).append("\n");
+        if (floor != null && floor != 0) {
+            sb.append(floor).append(" em. ");
+        }
+        if (door != null && door != 0) {
+            sb.append(door).append(" ajtó. \n");
+        }
+        sb.append(country).append("\n");
+        sb.append(postcode);
+
+        return sb.toString();
+    }
 }

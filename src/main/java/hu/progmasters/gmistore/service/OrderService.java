@@ -198,9 +198,8 @@ public class OrderService {
         Set<OrderItem> orderItems = new HashSet<>();
         for (CartItem item : actualCart.getItems()) {
             OrderItem orderItem = new OrderItem();
-//            orderItem.setProduct(item.getProduct());
-            //TODO
-            orderItem.setProduct(addItemProduct(item.getProduct()));
+            orderItem.setProduct(item.getProduct());
+//          orderItem.setProduct(addItemProduct(item.getProduct()));
             orderItem.setQuantity(item.getCount());
             orderItem.setPrice(item.getProduct().getPrice());
             orderItems.add(orderItem);

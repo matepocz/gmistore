@@ -3,6 +3,7 @@ import {Chart} from "chart.js";
 import {AdminService} from "../../../service/admin.service";
 import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrationsCounterModel";
 import {Subscription} from "rxjs";
+import {MatCalendar} from "@angular/material/datepicker";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,16 +15,23 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   chart: Chart;
   chartData: UserRegistrationsCounterModel;
   subscription: Subscription;
+  selectedDate: any;
+  minDate: Date;
+  maxDate: Date;
 
   constructor(private adminService: AdminService) {
   }
 
+  @ViewChild(MatCalendar) _datePicker: MatCalendar<Date>
+
+
   ngOnInit(): void {
-   this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
+    this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
       (data: UserRegistrationsCounterModel) => {
         this.chartData = data;
 
-      }, error => { console.log(error)
+      }, error => {
+        console.log(error)
       },
       () => {
         this.chart = new Chart(this.chartRef.nativeElement, {
@@ -100,9 +108,20 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return colors;
   }
 
+
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+  }
+
+  inlineRangeChange($event: any) {
+    if (
+      //30 days
+      $event.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.end.getTime()) {
+      console.log("in range")
+    } else {
+      console.log("out of range")
     }
   }
 }

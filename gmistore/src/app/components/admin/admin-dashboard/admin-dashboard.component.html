@@ -1,4 +1,25 @@
+
+<mat-expansion-panel >
+  <mat-expansion-panel-header class="dropdown-button" [ngStyle]="{'margin':'20px'}">
+    <mat-panel-title class="cart-header-text">
+      Dátum kiválasztása
+    </mat-panel-title>
+    <mat-panel-description>
+      Legfeljebb 30 napos intervallum.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <div>
+    <sat-calendar [rangeMode]="true"
+                  (dateRangesChange)="inlineRangeChange($event)"
+                  [selected]="selectedDate"
+                  [minDate]="minDate"
+                  [maxDate]="maxDate">
+    </sat-calendar>
+  </div>
+</mat-expansion-panel>
 <div class="grid-container">
+
+
   <mat-progress-bar mode="indeterminate" *ngIf="!chartData"></mat-progress-bar>
   <div class="dashboard-card-content" fxLayout="row wrap" fxLayoutAlign="center">
     <mat-card class="dashboard-card-registered" fxFlex.gt-sm="90">
@@ -12,3 +33,5 @@
     </mat-card>
   </div>
 </div>
+<mat-date-range-picker></mat-date-range-picker>
+

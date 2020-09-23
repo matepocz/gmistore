@@ -1,12 +1,12 @@
-import {Component, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AdminService} from "../../../../service/admin.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
-import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
+import {UserIsActiveModel} from "../../../../models/user/userIsActiveModel";
+import {UserListDetailsModel} from "../../../../models/user/UserListDetailsModel";
 import {AuthService} from "../../../../service/auth-service";
 import {SubSink} from "subsink";
 import {MediaChange, MediaObserver} from "@angular/flex-layout";

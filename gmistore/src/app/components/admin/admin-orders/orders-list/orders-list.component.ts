@@ -1,14 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {UserListDetailsModel} from "../../../../models/UserListDetailsModel";
 import {MatTableDataSource} from "@angular/material/table";
-import {SubSink} from "subsink";
 import {AdminService} from "../../../../service/admin.service";
 import {AuthService} from "../../../../service/auth-service";
 import {Router} from "@angular/router";
-import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {UserIsActiveModel} from "../../../../models/userIsActiveModel";
 import {OrderListModel} from "../../../../models/order/orderListModel";
 import {Subscription} from "rxjs";
 

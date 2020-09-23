@@ -31,6 +31,7 @@
     "ngx-owl-carousel-o": "^4.0.0",
     "ngx-pinch-zoom": "^2.4.4",
     "rxjs": "~6.5.5",
+    "saturn-datepicker": "^8.0.5",
     "subsink": "^1.0.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

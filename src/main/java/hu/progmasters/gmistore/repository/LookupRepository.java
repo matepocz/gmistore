@@ -15,6 +15,8 @@ public interface LookupRepository extends JpaRepository<LookupEntity, Long> {
             "ORDER BY l.orderSequence, l.displayName")
     List<LookupEntity> findByDomainType(DomainType domainType);
 
+    LookupEntity findLookupEntityByDisplayName(String name);
+
     @Query("SELECT l FROM LookupEntity l WHERE l.domainType = :domainType AND l.lookupKey = :lookupKey")
     Optional<LookupEntity> findByDomainTypeAndLookupKey(DomainType domainType, String lookupKey);
 

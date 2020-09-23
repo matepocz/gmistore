@@ -5,6 +5,7 @@ import {ProductModel} from "../models/product-model";
 import {environment} from "../../environments/environment";
 import {ProductCategoryModel} from "../models/product-category.model";
 import {PagedProductListModel} from "../models/product/paged-product-list.model";
+import {ProductFilterOptions} from "../models/product/product-filter-options";
 
 @Injectable({
   providedIn: 'root'
@@ -29,14 +30,16 @@ export class ProductService {
     return this.httpClient.get<ProductModel[]>(this.productsUrl);
   }
 
-  getProductsByCategory(category: string, page: number, size: number): Observable<PagedProductListModel> {
+  getProductsByCategory(
+    category: string, page: number, size: number, filterOptions?: ProductFilterOptions
+  ): Observable<PagedProductListModel> {
     let params = {
+      filter: filterOptions ? "true" : "false",
       size: size.toString(),
       page: page.toString()
     }
-    return this.httpClient.get<PagedProductListModel>(
-      this.productsUrl + '/by-category/' + category,
-      {params: params});
+    return this.httpClient.post<PagedProductListModel>(
+      this.productsUrl + '/by-category/' + category, filterOptions,{params: params});
   }
 
   getMainProductCategories(): Observable<Array<ProductCategoryModel>> {

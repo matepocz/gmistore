@@ -17,6 +17,9 @@
 .product-title {
   font-size: 17px;
   text-align: center;
+  white-space: pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .product-title-div {
   height: 45px;
@@ -48,4 +51,13 @@
 
 .rating-checkbox {
   margin-bottom: 3px;
+}
+
+.star-ratings-section {
+  margin-top: 12px;
+}
+
+.remove-filters {
+  color: red;
+  cursor: pointer;
 }

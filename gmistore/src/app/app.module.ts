@@ -90,7 +90,7 @@ import {SatDatepickerModule, SatNativeDateModule} from "saturn-datepicker";
 import {OrdersProductDetailsComponent} from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
 import {OrdersProductListComponent} from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
 import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
-import {ConfirmDeleteDialogComponent} from './components/confirm-delete-dialog/confirm-delete-dialog.component';
+import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
 
 @NgModule({
   declarations: [
@@ -139,7 +139,7 @@ import {ConfirmDeleteDialogComponent} from './components/confirm-delete-dialog/c
     OrdersProductDetailsComponent,
     OrdersProductListComponent,
     LoadingSpinnerComponent,
-    ConfirmDeleteDialogComponent,
+    ConfirmDialog,
   ],
 
     imports: [

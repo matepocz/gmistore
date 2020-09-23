@@ -1,15 +1,19 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DialogData} from "../admin/admin-categories/admin-categories.component";
+
+export interface DialogData {
+  message?: string,
+  name?: string
+}
 
 @Component({
   selector: 'app-confirm-delete-dialog',
-  templateUrl: './confirm-delete-dialog.component.html',
+  templateUrl: './confirm-dialog.html',
 })
-export class ConfirmDeleteDialogComponent implements OnInit {
+export class ConfirmDialog implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDeleteDialogComponent>,
+    public dialogRef: MatDialogRef<ConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data?: DialogData) {
   }
 

@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Megerősítés szükséges</h1>
 <div mat-dialog-content>
-  <p>Biztosan törölni szeretnéd?</p>
+  <p>{{ data?.message}}</p>
   <p>{{ data?.name }}</p>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()" cdkfocusinitial>Vissza</button>
-  <button mat-button [mat-dialog-close]="true">Törlés</button>
+  <button mat-button [mat-dialog-close]="true">Megerősítés</button>
 </div>

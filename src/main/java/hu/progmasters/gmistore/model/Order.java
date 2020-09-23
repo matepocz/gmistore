@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import hu.progmasters.gmistore.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 

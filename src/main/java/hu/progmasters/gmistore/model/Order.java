@@ -1,6 +1,8 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import hu.progmasters.gmistore.enums.OrderStatus;
+import hu.progmasters.gmistore.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,6 +35,10 @@ public class Order implements Serializable {
     @JoinColumn(name = "order_status", referencedColumnName = "id")
     @NotNull
     private LookupEntity status;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = OrderStatus.class, fetch = FetchType.EAGER)
+    private List<OrderStatus> orderStatusList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_item", referencedColumnName = "id")

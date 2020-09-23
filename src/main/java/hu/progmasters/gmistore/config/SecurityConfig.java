@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/products/inactive").hasAnyRole(ROLE_ADMIN)
+//                .antMatchers(HttpMethod.GET, "/api/orders/**").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.POST, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole(ROLE_ADMIN)
@@ -77,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
                 .and().httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
+        http.sessionManagement().maximumSessions(3).sessionRegistry(sessionRegistry());
     }
 
     @Bean

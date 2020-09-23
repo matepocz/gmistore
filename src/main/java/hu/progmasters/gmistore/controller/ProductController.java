@@ -1,6 +1,8 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.PagedProductList;
+import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +46,21 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/by-category/{category}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable("category") String category) {
-        List<ProductDto> products = productService.getActiveProductsByCategory(category);
+    @PostMapping("/by-category/{category}")
+    public ResponseEntity<PagedProductList> getProductsByCategory(
+            @PathVariable("category") String category, @RequestParam(value = "size") String size,
+            @RequestParam(name = "page", defaultValue = "0", required = false) String page,
+            @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
+            @RequestBody(required = false) ProductFilterOptions filterOptions
+    ) {
+        PagedProductList products;
+        if (filter){
+            products = productService.getFilteredProducts(
+                    category, page, size, filterOptions);
+        } else {
+            products = productService.getActiveProductsByCategory(
+                    category, Integer.parseInt(page), Integer.parseInt(size));
+        }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -60,7 +74,7 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProduct(@PathVariable String slug) {
         ProductDto product = productService.getProductBySlug(slug);
         return product != null ?
-                new ResponseEntity<>(product, HttpStatus.OK):
+                new ResponseEntity<>(product, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -91,8 +105,8 @@ public class ProductController {
     }
 
     @GetMapping("/get-discount-pictures")
-    public ResponseEntity<List<String>>getDiscountProductsPictureURL(){
+    public ResponseEntity<List<String>> getDiscountProductsPictureURL() {
         List<String> pictureOfProductsInOffer = productService.getPictureOfProductsInOffer();
-        return new ResponseEntity<>(pictureOfProductsInOffer,HttpStatus.OK);
+        return new ResponseEntity<>(pictureOfProductsInOffer, HttpStatus.OK);
     }
 }

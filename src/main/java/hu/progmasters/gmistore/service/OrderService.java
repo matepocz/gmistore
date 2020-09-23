@@ -2,10 +2,13 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
+import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
+import hu.progmasters.gmistore.enums.OrderStatus;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.OrderRepository;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -195,11 +199,25 @@ public class OrderService {
         for (CartItem item : actualCart.getItems()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(item.getProduct());
+//          orderItem.setProduct(addItemProduct(item.getProduct()));
             orderItem.setQuantity(item.getCount());
             orderItem.setPrice(item.getProduct().getPrice());
             orderItems.add(orderItem);
         }
         order.setItems(orderItems);
+    }
+
+    private Product addItemProduct(Product product) {
+        Product itemProduct = new Product();
+        itemProduct.setName(product.getName());
+        itemProduct.setProductCode(product.getProductCode());
+        itemProduct.setFeatures(product.getFeatures());
+        itemProduct.setPictureUrl(product.getPictureUrl());
+        itemProduct.setPictures(product.getPictures());
+        itemProduct.setPrice(product.getPrice());
+        itemProduct.setDiscount(product.getDiscount());
+        itemProduct.setAverageRating(product.getAverageRating());
+        return itemProduct;
     }
 
     private String generateUniqueId() {
@@ -240,8 +258,19 @@ public class OrderService {
         product.setPrice(orderItem.getProduct().getPrice());
         product.setDiscount(orderItem.getProduct().getDiscount());
         product.setAverageRating(orderItem.getProduct().getAverageRating());
-        product.setOrderItemId(orderRepository.findOrderId(orderItem.getId()));
+        product.setOrderItemId(orderRepository.findOrderIdByItemId(orderItem.getId()));
         return product;
+    }
+
+    public Stream<String> getStatusOptions() {
+        return lookupService.getAllStatusOptions().stream().map(LookupEntity::getDisplayName);
+    }
+
+    public Set<OrderStatusOptionsDto> getOrderStatusEnumOptions() {
+        return Arrays
+                .stream(OrderStatus.values())
+                .map(status -> new OrderStatusOptionsDto(status.toString(), status.getDisplayName()))
+                .collect(Collectors.toSet());
     }
 
     private int generateRandomNumberForLetters() {
@@ -250,5 +279,46 @@ public class OrderService {
 
     private int generateRandomDigits() {
         return ThreadLocalRandom.current().nextInt(100000, 1000000);
+    }
+
+    public OrderDto getOrderDetailsByUniqueId(String id) {
+        Order order = orderRepository.findOrderByUniqueId(id)
+                .orElseThrow(() ->
+                        new NoSuchElementException("No order found with id  + id "));
+        return new OrderDto(order);
+    }
+
+    public void updateDeliveryAddress(String id, AddressDetails addressDetails) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            Address deliveryAddress = orderByUniqueId.get().getDeliveryAddress();
+            updateOrderAddress(addressDetails, deliveryAddress);
+        }
+    }
+
+    public void updateInvoiceAddress(String id, AddressDetails addressDetails) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            Address invoiceAddress = orderByUniqueId.get().getInvoiceAddress();
+            updateOrderAddress(addressDetails, invoiceAddress);
+        }
+    }
+
+    private void updateOrderAddress(AddressDetails addressDetails, Address address) {
+        address.setCity(addressDetails.getCity());
+        address.setCountry(addressDetails.getCountry());
+        address.setDoor(addressDetails.getDoor());
+        address.setFloor(addressDetails.getFloor());
+        address.setNumber(addressDetails.getNumber());
+        address.setPostcode(addressDetails.getPostcode());
+        address.setStreet(addressDetails.getStreet());
+    }
+
+    public void updateStatus(String id, String status) {
+        Optional<Order> orderByUniqueId = orderRepository.findOrderByUniqueId(id);
+        if (orderByUniqueId.isPresent()) {
+            List<OrderStatus> orderStatusList = orderByUniqueId.get().getOrderStatusList();
+            orderStatusList.add(OrderStatus.valueOf(status));
+        }
     }
 }

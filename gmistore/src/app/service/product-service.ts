@@ -4,6 +4,8 @@ import {Observable} from 'rxjs';
 import {ProductModel} from "../models/product-model";
 import {environment} from "../../environments/environment";
 import {ProductCategoryModel} from "../models/product-category.model";
+import {PagedProductListModel} from "../models/product/paged-product-list.model";
+import {ProductFilterOptions} from "../models/product/product-filter-options";
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +30,16 @@ export class ProductService {
     return this.httpClient.get<ProductModel[]>(this.productsUrl);
   }
 
-  getProductsByCategory(category: string): Observable<Array<ProductModel>> {
-    return this.httpClient.get<Array<ProductModel>>(this.productsUrl + '/by-category/' + category);
+  getProductsByCategory(
+    category: string, page: number, size: number, filterOptions?: ProductFilterOptions
+  ): Observable<PagedProductListModel> {
+    let params = {
+      filter: filterOptions ? "true" : "false",
+      size: size.toString(),
+      page: page.toString()
+    }
+    return this.httpClient.post<PagedProductListModel>(
+      this.productsUrl + '/by-category/' + category, filterOptions,{params: params});
   }
 
   getMainProductCategories(): Observable<Array<ProductCategoryModel>> {
@@ -51,7 +61,7 @@ export class ProductService {
     return await this.httpClient.post(this.imageUploadUrl, uploadData).toPromise();
   }
 
-  getDiscountProductsProductURL(): Observable<any>{
-    return this.httpClient.get(this.productsUrl +"/get-discount-pictures")
+  getDiscountProductsProductURL(): Observable<any> {
+    return this.httpClient.get(this.productsUrl + "/get-discount-pictures")
   }
 }

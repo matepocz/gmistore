@@ -64,7 +64,7 @@ import {AdminUserComponent} from './components/admin/admin-user/admin-user-list/
 import {ChartsModule} from 'ng2-charts';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
-import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
 import {AdminUserFormComponent} from './components/admin/admin-user/admin-user-form/admin-user-form.component';
 import {ShippingAddressComponent} from './components/user/user-form-components/shipping-address/shipping-address.component';
 import {BillingAddressComponent} from './components/user/user-form-components/billing-address/billing-address.component';
@@ -84,9 +84,12 @@ import {PinchZoomModule} from "ngx-pinch-zoom";
 import {OrdersFormComponent} from './components/admin/admin-orders/orders-form/orders-form.component';
 import {LoadingSpinnerComponent} from './components/loading-spinner/loading-spinner.component';
 import {SpinnerService} from "./service/spinner-service.service";
-import { OrdersProductDetailsComponent } from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
-import { OrdersProductListComponent } from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
-
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import {SatDatepickerModule, SatNativeDateModule} from "saturn-datepicker";
+import {OrdersProductDetailsComponent} from './components/admin/admin-orders/orders-product-details/orders-product-details.component';
+import {OrdersProductListComponent} from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
+import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 
 @NgModule({
   declarations: [
@@ -137,57 +140,66 @@ import { OrdersProductListComponent } from './components/admin/admin-orders/orde
     LoadingSpinnerComponent,
   ],
 
-  imports: [
-    FormsModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    Ng2Webstorage.forRoot(),
-    HttpClientModule,
-    StarRatingModule.forRoot(),
-    MatInputModule,
-    MatIconModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatBadgeModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCardModule,
-    FlexLayoutModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatProgressSpinnerModule,
-    MatExpansionModule,
-    MatSliderModule,
-    MatProgressBarModule,
-    MatCheckboxModule,
-    MatGridListModule,
-    MatMenuModule,
-    DragDropModule,
-    MatCarouselModule.forRoot(),
-    MatDialogModule,
-    MatMenuModule,
-    MatStepperModule,
-    ChartsModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatChipsModule,
-    MatTabsModule,
-    MatTreeModule,
-    CarouselModule,
-    PinchZoomModule,
-  ],
+    imports: [
+        FormsModule,
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        Ng2Webstorage.forRoot(),
+        HttpClientModule,
+        StarRatingModule.forRoot(),
+        MatInputModule,
+        MatIconModule,
+        LayoutModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatBadgeModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatCardModule,
+        FlexLayoutModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatProgressSpinnerModule,
+        MatExpansionModule,
+        MatSliderModule,
+        MatProgressBarModule,
+        MatCheckboxModule,
+        MatGridListModule,
+        MatMenuModule,
+        DragDropModule,
+        MatCarouselModule.forRoot(),
+        MatDialogModule,
+        MatMenuModule,
+        MatStepperModule,
+        ChartsModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatChipsModule,
+        MatTabsModule,
+        MatTreeModule,
+        CarouselModule,
+        PinchZoomModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        SatDatepickerModule,
+        SatNativeDateModule
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: MatPaginatorIntl, useClass: HunMatPaginatorIntl},
     SpinnerService,
     Title,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    SatDatepickerModule,
+    SatNativeDateModule
   ],
   bootstrap: [AppComponent]
 })

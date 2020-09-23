@@ -56,7 +56,12 @@
           <mat-menu #level2="matMenu">
             <ng-template matMenuContent let-data="data">
               <ng-template ngFor let-item [ngForOf]="data">
-                <button mat-menu-item [routerLink]="['/product-list']" [queryParams]="{category: item.key}">
+                <button mat-menu-item [routerLink]="['/product-list']"
+                        [queryParams]="{
+                        category: item.key,
+                        pageSize: 10,
+                        pageIndex: 0
+                        }">
                   <mat-icon>{{ item.icon }}</mat-icon>
                   {{ item.displayName }}
                 </button>

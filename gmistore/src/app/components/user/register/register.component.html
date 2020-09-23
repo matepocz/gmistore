@@ -50,7 +50,10 @@
           <mat-label>Email</mat-label>
           <input matInput placeholder="" formControlName="email" required>
           <mat-icon matSuffix>mail</mat-icon>
-          <mat-hint>Valós email címet adj meg!</mat-hint>
+          <mat-error *ngIf="registerForm.get('email').invalid &&
+          !registerForm.get('email').errors?.serverError">
+            Valós email címet adj meg!
+          </mat-error>
 
           <mat-error *ngIf="registerForm.get('email').errors?.emailTaken">
             Email cím már használatban van!

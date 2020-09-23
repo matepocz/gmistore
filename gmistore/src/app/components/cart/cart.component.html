@@ -103,7 +103,7 @@
 
         <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
         <mat-card-subtitle [style.margin-top]="'10px'">Várható szállítás*:</mat-card-subtitle>
-        <mat-card-content>{{cart?.expectedDeliveryDate | date: 'MMMM d EEEE'}}</mat-card-content>
+        <mat-card-content *ngIf="expectedDeliveryDate">{{ expectedDeliveryDate | titlecase }}</mat-card-content>
         <mat-card-subtitle [style.margin-top]="'10px'">
           * 14:00 után leadott rendelések a következő munkanapon kerülnek feldolgozásra.
         </mat-card-subtitle>

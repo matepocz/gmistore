@@ -35,6 +35,7 @@ export class SideNavComponent implements OnInit {
   isAdminSub: Subscription;
   isSellerSub: Subscription;
   categoriesSub: Subscription;
+  favoriteItemsSub: Subscription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -97,7 +98,18 @@ export class SideNavComponent implements OnInit {
 
   updateItemsInCart(timeout: number) {
     setTimeout(() => {
-        this.cartService.getNumberOfItemsInCart().subscribe(
+        this.itemsInCartSubscription = this.cartService.getNumberOfItemsInCart().subscribe(
+          (response) => {
+            this.itemsInCart = response;
+          }
+        );
+      },
+      timeout * 1000);
+  }
+
+  updateFavoriteItems(timeout: number) {
+    setTimeout(() => {
+        this.favoriteItemsSub = this.cartService.getNumberOfItemsInCart().subscribe(
           (response) => {
             this.itemsInCart = response;
           }
@@ -122,6 +134,7 @@ export class SideNavComponent implements OnInit {
   ngOnDestroy(): void {
     this.cartSubscription.unsubscribe();
     this.itemsInCartSubscription.unsubscribe();
+    this.favoriteItemsSub.unsubscribe();
     this.isAdminSub.unsubscribe();
     this.isSellerSub.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);

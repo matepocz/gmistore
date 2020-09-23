@@ -1,11 +1,14 @@
 package hu.progmasters.gmistore.service;
 
-import hu.progmasters.gmistore.dto.*;
+import hu.progmasters.gmistore.dto.RolesFormDto;
+import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.user.UserDto;
 import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
 import hu.progmasters.gmistore.dto.user.UserListDetailDto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.PasswordResetToken;
+import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.PasswordTokenRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
@@ -15,9 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,5 +126,44 @@ public class UserService {
 //        PasswordResetToken byTokenByUser = passwordTokenRepository.findPasswordResetTokenByUser(user);
         passwordTokenRepository.deleteByUser(user);
         userRepository.save(user);
+    }
+
+    public Set<ProductDto> getFavoriteProducts(Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        if (userByUsername.isPresent()) {
+            return userByUsername.get().getFavoriteProducts()
+                    .stream()
+                    .map(this::mapProductToProductDto)
+                    .collect(Collectors.toSet());
+        }
+        throw new UsernameNotFoundException("User not found");
+    }
+
+    private ProductDto mapProductToProductDto(Product product) {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setName(product.getName());
+        productDto.setProductCode(product.getProductCode());
+        productDto.setSlug(product.getSlug());
+        productDto.setDescription(product.getDescription());
+        productDto.setMainCategory(new ProductCategoryDetails(product.getMainCategory()));
+        productDto.setSubCategory(new ProductCategoryDetails(product.getSubCategory()));
+        productDto.setFeatures(product.getFeatures());
+        productDto.setPictureUrl(product.getPictureUrl());
+        productDto.setPictures(product.getPictures());
+        productDto.setPrice(product.getPrice());
+        productDto.setDiscount(product.getDiscount());
+        productDto.setWarrantyMonths(product.getWarrantyMonths());
+        productDto.setQuantityAvailable(product.getInventory().getQuantityAvailable());
+        productDto.setQuantitySold(product.getInventory().getQuantitySold());
+        productDto.setAverageRating(product.getAverageRating());
+        productDto.setActive(product.isActive());
+        productDto.setAddedBy(product.getAddedBy());
+        return productDto;
+    }
+
+    public int getCountOfFavoriteProducts(Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        return userByUsername.map(user -> user.getFavoriteProducts().size()).orElse(0);
     }
 }

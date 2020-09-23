@@ -42,7 +42,7 @@ public class OrderService {
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService, InventoryService inventoryService,OrderStatusHistoryRepository orderStatusHistoryRepository) {
+                        LookupService lookupService, InventoryService inventoryService, OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
@@ -115,13 +115,22 @@ public class OrderService {
         updateCustomerAddresses(orderRequest, userByUsername);
         Order order = setOrderDetails(actualCart, userByUsername);
         order.setPaymentMethod(lookupService.getPaymentMethodByKey(orderRequest.getPaymentMethod()));
-        order.setStatus(lookupService.getOrderStatusByKey("CONFIRMED"));
+        order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.ORDERED));
+        setPaymentStatusForOrder(order);
         saveOrderItems(actualCart, order);
         orderRepository.save(order);
         inventoryService.updateAvailableAndSoldQuantities(actualCart.getItems());
         cartService.deleteCart(actualCart.getId());
         LOGGER.info("New Order, unique id: {}, username: {}", order.getUniqueId(), userByUsername.getUsername());
         return true;
+    }
+
+    private void setPaymentStatusForOrder(Order order) {
+        if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("CASH"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.WAITING_PAYMENT));
+        } else if (order.getPaymentMethod().equals(lookupService.getPaymentMethodByKey("BANK_CARD"))) {
+            order.getOrderStatusList().add(new OrderStatusHistory(OrderStatus.PAYMENT_SUCCESS));
+        }
     }
 
     private void updateCustomerAddresses(OrderRequest orderRequest, User user) {

@@ -14,7 +14,7 @@ import {Router} from "@angular/router";
 export class HomeComponent implements OnInit {
   customOptions: OwlOptions = {
     loop: true,
-    autoplay: false,
+    autoplay: true,
     responsiveRefreshRate: 200,
     margin: 20,
     autoplayTimeout: 5000,
@@ -24,12 +24,13 @@ export class HomeComponent implements OnInit {
     pullDrag: false,
     dots: true,
     navSpeed: 700,
-    navText: ['', ''],
+    navText: ['<<', '>>'],
     responsive: {
       0: {
         items: 2,
         center: false,
-        nav: false,
+        nav: true,
+        dots: false
       },
       740: {
         items: 3,
@@ -50,6 +51,7 @@ export class HomeComponent implements OnInit {
         items: 5,
         center: false,
         nav: false,
+        mouseDrag: true,
       }
     },
   }
@@ -61,9 +63,7 @@ export class HomeComponent implements OnInit {
     this.productService.getDiscountProducts().subscribe(
       (response) => {
         this.products = response;
-        console.log(this.products);
       }, error => {
-        // console.log(error);
       }, () => {
 
       }

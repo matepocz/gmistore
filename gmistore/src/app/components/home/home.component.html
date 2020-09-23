@@ -1,29 +1,31 @@
 <div fxLayout="containerX" fxLayoutAlign="center center">
-  <div fxLayout="column" fxFlex.xs="95" fxFlex.sm="95" fxFlex.md="80"  fxFlex.lg="80" fxFlex.gt-lg="80" fxLayoutAlign="start"
+  <div fxLayout="column" fxFlex.xs="95" fxFlex.sm="95" fxFlex.md="80" fxFlex.lg="80" fxFlex.gt-lg="80"
+       fxLayoutAlign="start"
        fxLayoutGap="10px" [style.margin-top]="'10px'">
-
-    <div fxFlex="100" fxHide.lt-md="true" fxLayoutAlign="center center"><h2 >Akciós termékek</h2></div>
-    <owl-carousel-o  fxLayout="row" fxLayoutAlign="center center" [options]="customOptions">
+    <div fxFlex="100" fxLayoutAlign="center center"><h2>Akciós termékek</h2></div>
+    <owl-carousel-o fxLayout="row" fxLayoutAlign="center center" [options]="customOptions">
       <ng-container *ngFor="let product of products" class="owl-stage">
         <ng-template carouselSlide>
-          <mat-card class="example-card mat-elevation-z8 mt-15 mb-15" fxFlex="100" fxLayout="column" fxLayoutAlign="space-between center" (click)="navigateToProduct(product.slug)">
-            <img mat-card-image src="{{product.pictureUrl}}">
-<!--            <div class="separator"></div>-->
-            <div class="card-title" fxLayout="column" fxLayoutAlign="space-between center">
-              <mat-card-subtitle class="mat-card-subtitle">{{product.name}}</mat-card-subtitle>
-              <del class="card-title">{{ product.price | hufCurrency }}</del>
-              Kedvezmény: - {{ product.discount }}%
+          <mat-card class="card mat-elevation-z8 mt-15 mb-15" fxFlex="100" fxLayout="column"
+                    fxLayoutAlign="space-between center" (click)="navigateToProduct(product.slug)">
+            <div class="image">
+              <img src="{{product.pictureUrl}}">
+            </div>
+            <div class="mat-card-content" fxLayout="column" fxLayoutAlign="space-between center">
+              <mat-card-title>{{product.name}}</mat-card-title>
+              <del class="product-title">{{ product.price | hufCurrency }}</del>
+              <mat-card-subtitle>Kedvezmény: - {{ product.discount }}%</mat-card-subtitle>
             </div>
           </mat-card>
         </ng-template>
       </ng-container>
     </owl-carousel-o>
-
     <div fxFlex="100">
       <div fxLayout="column" fxLayoutAlign="center center">
         <h1 fxFlex="100">Cuccok A-Z-ig</h1>
         <p>Használd a GMI STORE-t és válogass a rengeteg holmi között.
-          Eladnád a már nem használt dolgaidat! Nem gond! Irány a regisztráció és már tolhatod is fel őket a GMI STORE piacára!
+          Eladnád a már nem használt dolgaidat! Nem gond! Irány a regisztráció és már tolhatod is fel őket a GMI STORE
+          piacára!
         </p>
       </div>
     </div>

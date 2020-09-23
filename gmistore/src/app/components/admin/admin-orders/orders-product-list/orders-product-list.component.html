@@ -1,17 +1,27 @@
 <table mat-table [dataSource]="dataSource">
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Név</th>
-    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  <ng-container matColumnDef="pic">
+    <th mat-header-cell *matHeaderCellDef>Kép</th>
+    <td mat-cell *matCellDef="let element">
+      <img
+        [ngStyle]="{'height': '100px','margin': '10px'}"
+        src="{{element.product.pictureUrl}}"
+        alt="Product picture"
+      ></td>
   </ng-container>
 
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> E-mail</th>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Név</th>
+    <td mat-cell *matCellDef="let element"> {{element.product.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef>Mennyiség</th>
     <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="phone">
-    <th mat-header-cell *matHeaderCellDef> Telefonszám</th>
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef>Ár</th>
     <td mat-cell *matCellDef="let element"> {{element.price}} </td>
   </ng-container>
 

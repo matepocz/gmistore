@@ -4,6 +4,7 @@ import com.github.slugify.Slugify;
 import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
 import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.product.PagedProductList;
+import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
@@ -16,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -128,26 +131,89 @@ public class ProductService {
     }
 
     /**
-     * Fetch all active products where subcategory equals to given category
+     * Fetch all active products by the given subcategory
      *
-     * @param category The given category
-     * @return A List of ProductDto
+     * @param category The given subcategory
+     * @param page     The index of the requested page
+     * @param size     The size of the requested page
+     * @return A PageProductList DTO, that contains a List of ProductDto
      */
     public PagedProductList getActiveProductsByCategory(String category, Integer page, Integer size) {
         LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productsBySubCategory = productRepository.findProductsBySubCategory(categoryByKey, pageable);
+        Page<Product> productsBySubCategory =
+                productRepository.findProductsBySubCategory(
+                        categoryByKey, pageable
+                );
+        return createPageProductListResponse(categoryByKey, productsBySubCategory);
+    }
+
+    /**
+     * Fetch all products by the given filter options
+     *
+     * @param category      The given subcategory
+     * @param page          The index of the requested page
+     * @param size          The size of the requested page
+     * @param filterOptions A DTO containing the filter options
+     * @return A PagedProductList DTO, that contains a List of ProductDto
+     */
+    public PagedProductList getFilteredProducts(
+            String category, String page, String size, ProductFilterOptions filterOptions) {
+        LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
+        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Page<Product> products = productRepository.findAll(
+                buildFilterSpecification(categoryByKey, filterOptions), pageable);
+        return createPageProductListResponse(categoryByKey, products);
+    }
+
+    private PagedProductList createPageProductListResponse(LookupEntity categoryByKey, Page<Product> products) {
         PagedProductList productList = new PagedProductList();
-        productList.setProducts(productsBySubCategory
+        productList.setProducts(products
                 .stream()
                 .map(this::mapProductToProductDto)
                 .collect(Collectors.toList())
         );
         productList.setCategoryDisplayName(categoryByKey.getDisplayName());
-        productList.setTotalElements(productsBySubCategory.getTotalElements());
-        productList.setTotalPages(productsBySubCategory.getTotalPages());
-
+        productList.setTotalElements(products.getTotalElements());
+        productList.setTotalPages(products.getTotalPages());
         return productList;
+    }
+
+    /**
+     * Builds a specification for the filter query
+     *
+     * @param category             The subcategory where the products belongs to
+     * @param productFilterOptions A DTO containing the required filters
+     * @return A Specification
+     */
+    Specification<Product> buildFilterSpecification(LookupEntity category, ProductFilterOptions productFilterOptions) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Boolean discounted = productFilterOptions.getDiscounted();
+            Boolean nonDiscounted = productFilterOptions.getNonDiscounted();
+            if (discounted != null && discounted && nonDiscounted != null && nonDiscounted) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("discount"), 0));
+            } else if (discounted != null && discounted) {
+                predicates.add(criteriaBuilder.greaterThan(root.get("discount"), 0));
+            } else if (nonDiscounted != null && nonDiscounted) {
+                predicates.add(criteriaBuilder.lessThan(root.get("discount"), 1));
+            }
+
+            Boolean notInStock = productFilterOptions.getNotInStock();
+            if (notInStock != null && !notInStock) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("inventory").get("quantityAvailable"), 1));
+            }
+
+            predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("averageRating"),
+                    productFilterOptions.getLowestRating()));
+            predicates.add(criteriaBuilder.between(
+                    root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice()));
+
+            return criteriaBuilder.and(predicates.toArray(new javax.persistence.criteria.Predicate[predicates.size()]));
+        };
     }
 
     /**

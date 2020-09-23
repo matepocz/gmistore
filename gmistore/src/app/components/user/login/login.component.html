@@ -20,9 +20,9 @@
         <mat-form-field class="form-full-width" appearance="outline">
           <mat-label>Jelszó</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" placeholder="" formControlName="password">
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          <button type="button" mat-icon-button matSuffix [attr.aria-label]="'Hide password'"
                   [attr.aria-pressed]="hide">
-            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-icon (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
           <mat-hint></mat-hint>
         </mat-form-field>

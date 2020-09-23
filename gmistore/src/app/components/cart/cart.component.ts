@@ -23,6 +23,7 @@ export class CartComponent implements OnInit, OnDestroy {
   cart: CartModel;
   shippingData: ShippingMethodModel[];
   currentShipping: ShippingMethodModel = null;
+  expectedDeliveryDate: string;
 
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -54,6 +55,7 @@ export class CartComponent implements OnInit, OnDestroy {
       (data) => {
         this.cart = data;
         this.currentShipping = data.shippingMethod;
+        this.formatExpectedDeliveryDate(data.expectedDeliveryDate);
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
@@ -61,6 +63,13 @@ export class CartComponent implements OnInit, OnDestroy {
         this.spinnerService.stop(this.spinner);
       }
     );
+  }
+
+  private formatExpectedDeliveryDate(date: Date) {
+    let dateString = new Intl.DateTimeFormat('hu-HU',
+      {month: 'long', day: '2-digit', weekday: 'long'})
+      .format(new Date(date)).toString();
+    this.expectedDeliveryDate = dateString.replace(',', ' (') + ' )';
   }
 
   refreshProductCount(id: number, count: string) {

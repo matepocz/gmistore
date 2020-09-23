@@ -10,7 +10,7 @@ export class HunMatPaginatorIntl extends MatPaginatorIntl {
   }
 
   getAndInitTranslations() {
-    this.itemsPerPageLabel = "Termékek oldalanként:";
+    this.itemsPerPageLabel = "Oldalanként:";
     this.nextPageLabel = "Következő";
     this.previousPageLabel = "Előző";
     this.changes.next();

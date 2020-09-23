@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {OrderDetails} from "../../../../models/order/orderDetails";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-orders-product-list',
@@ -6,12 +8,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./orders-product-list.component.css']
 })
 export class OrdersProductListComponent implements OnInit {
-  dataSource: any;
+  @Input() orderDetailsInput: OrderDetails;
+  dataSource: MatTableDataSource<any>;
   displayedColumns = ['name','email','phone'];
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
+    let dataSource = this.orderDetailsInput.items;
+    console.log(dataSource);
+    this.dataSource = new MatTableDataSource<any>(dataSource);
   }
 
 }

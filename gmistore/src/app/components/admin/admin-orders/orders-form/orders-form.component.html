@@ -1,19 +1,23 @@
 <mat-toolbar [ngStyle]="{'height' : 'auto'}">
 
-    <mat-card-header [ngStyle]="{'margin': '15px'}">
-      <mat-card-title>Megrendlés: {{id}}</mat-card-title>
-      <mat-card-subtitle>A megrendelés adatai</mat-card-subtitle>
-    </mat-card-header>
+  <mat-card-header [ngStyle]="{'margin': '15px'}">
+    <mat-card-title>Megrendlés: {{id}}</mat-card-title>
+    <mat-card-subtitle>A megrendelés adatai</mat-card-subtitle>
+  </mat-card-header>
 
 </mat-toolbar>
 <div fxLayout="row" fxLayoutAlign="center">
   <mat-card class="basic-container">
     <mat-tab-group>
-      <mat-tab label="Rendelési adatok"  >
-        <app-orders-product-details></app-orders-product-details>
+      <mat-tab label="Rendelési adatok">
+        <app-orders-product-details *ngIf="orderDetailsData"
+                                    [id] = id
+                                    [orderDetailsInput]="orderDetailsData"></app-orders-product-details>
       </mat-tab>
       <mat-tab label="Termékek">
-        <app-orders-product-list></app-orders-product-list>
+        <app-orders-product-list *ngIf="orderDetailsData"
+                                 [id] = id
+                                 [orderDetailsInput]="orderDetailsData"></app-orders-product-list>
       </mat-tab>
       <mat-tab label="Számla">
         <p>Számla works</p>

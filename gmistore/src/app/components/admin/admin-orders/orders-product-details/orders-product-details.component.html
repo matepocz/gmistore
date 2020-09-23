@@ -41,11 +41,11 @@
         <div>
           <app-shipping-address  *ngIf="loaded"
             [userDataForm]="orderShippingAddressForm"
-            [userShipping]="orderDetailsData.deliveryAddress"
+            [userShipping]="orderDetailsInput.deliveryAddress"
           ></app-shipping-address>
         </div>
         <mat-action-row>
-          <button (click)="onSubmitAddress(orderDetailsData.generatedUniqueId)" mat-button>Mentés</button>
+          <button (click)="onSubmitAddress(orderDetailsInput.generatedUniqueId)" mat-button>Mentés</button>
         </mat-action-row>
       </mat-expansion-panel>
       <mat-expansion-panel>
@@ -60,7 +60,7 @@
         <div>
           <app-billing-address *ngIf="loaded"
             [userDataForm]="orderBillingAddressForm"
-            [userBilling]="orderDetailsData.invoiceAddress"
+            [userBilling]="orderDetailsInput.invoiceAddress"
           ></app-billing-address>
         </div>
         <mat-action-row>
@@ -110,7 +110,7 @@
         <mat-label>Status</mat-label>
 
         <mat-select [ngStyle]="{'width':'90%'}" formControlName="status"
-                    *ngIf="orderDetailsData" [(ngModel)]="val[val.length-1]" (selectionChange)="changeStatus($event)" >
+                    *ngIf="orderDetailsInput" [(ngModel)]="val[val.length-1]" (selectionChange)="changeStatus($event)" >
           <mat-option>None</mat-option>
           <mat-option *ngFor="let status of statusOptions" [value]="status.value">
             {{status.displayName}}

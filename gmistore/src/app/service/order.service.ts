@@ -42,6 +42,7 @@ export class OrderService {
   }
 
   fetchOrderDetails(id: string): Observable<OrderDetails> {
+    console.log(id)
     return this.httpClient.get<OrderDetails>(this.ordersUrl + '/' + id);
   }
 

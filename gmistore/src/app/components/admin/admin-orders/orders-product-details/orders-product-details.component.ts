@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
 import {AdminService} from "../../../../service/admin.service";
@@ -11,7 +11,6 @@ import {AddressModel} from "../../../../models/address-model";
 import {errorHandler} from "../../../../utils/error-handler";
 import {MatSelectChange} from "@angular/material/select";
 import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptionsModel";
-import {MatSort} from "@angular/material/sort";
 import {parseDate} from "../../../../utils/dateParser";
 
 @Component({
@@ -20,12 +19,13 @@ import {parseDate} from "../../../../utils/dateParser";
   styleUrls: ['./orders-product-details.component.css']
 })
 export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @Input() id: string;
+  @Input() orderDetailsInput: OrderDetails;
 
   subs: SubSink = new SubSink();
   loaded: boolean = false;
-  private id: string;
   val: string[];
+
 
   displayedColumns = ['name', 'email', 'phone'];
   displayedColumnsShipping = ['method', 'days', 'cost'];
@@ -33,7 +33,6 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   displayedColumnStatus = ['status', 'orderedAt'];
 
   statusOptions: Array<OrderStatusOptionsModel>;
-  orderDetailsData: OrderDetails;
   dataSource: MatTableDataSource<OrderDetails>;
   statusDataSource: MatTableDataSource<OrderStatusOptionsModel>;
 
@@ -87,36 +86,28 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
       }, (error) => console.log(error)
     ));
 
-    this.subs.add(this.activatedRoute.paramMap.subscribe(
-      paramMap => {
-        const editableId: string = paramMap.get('id');
-        this.id = editableId;
-        if (editableId) {
-          this.fetchOrderDetailsData(editableId);
-        }
-      },
-      error => console.warn(error),
-    ));
+    this.setOrderDetailsData();
   }
 
-  fetchOrderDetailsData(id: string) {
+  setOrderDetailsData() {
+    this.val = this.orderDetailsInput.status.map(s => s.value);
+    let dataSource = [this.orderDetailsInput];
+    this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
+
+    let status = dataSource[0].status.sort(
+      (a: OrderStatusOptionsModel, b: OrderStatusOptionsModel) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(status);
+    this.loaded = true;
+  }
+
+  fetchOrderDetailsData(id) {
     this.subs.add(this.orderService.fetchOrderDetails(id).subscribe(
       (data) => {
-        this.orderDetailsData = data;
-        this.val = data.status.map(s => s.value);
-        console.log(this.val);
+        this.orderDetailsInput = data;
       }, (error) => console.log(error),
-      () => {
-        let dataSource = [this.orderDetailsData];
-        this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
-
-        let status = dataSource[0].status.sort(
-          (a: OrderStatusOptionsModel, b: OrderStatusOptionsModel) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime());
-
-        this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(status);
-        this.loaded = true;
-      }
+      () => this.setOrderDetailsData()
     ));
   }
 
@@ -151,13 +142,12 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
         error => {
           console.log(error)
         },
+        // () => this.fetchOrderDetailsData(this.id)
         () => this.fetchOrderDetailsData(this.id)
         )
       )
     }
   }
-
-
 
   ngOnDestroy() {
     this.subs.unsubscribe();

@@ -12,9 +12,10 @@ import {Subscription} from "rxjs";
 import {RatingService} from "../../../service/rating.service";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {HttpErrorResponse} from "@angular/common/http";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 import {SpinnerService} from "../../../service/spinner-service.service";
+import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-product-details',
@@ -66,7 +67,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
               private cartService: CartService, private authService: AuthService,
               private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
               private titleService: Title, private ratingService: RatingService,
-              private sideNavComponent: SideNavComponent, private spinnerService: SpinnerService) {
+              private sideNavComponent: SideNavComponent, private spinnerService: SpinnerService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -78,6 +80,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     );
+    this.currentUsername = this.authService.currentUsername;
 
     this.isSellerSub = this.authService.isSeller.subscribe(
       (response) => {
@@ -88,7 +91,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.currentUsername = this.authService.currentUsername;
     this.slug = this.route.snapshot.params['slug'];
 
     this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
@@ -284,6 +286,35 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         console.log(error);
         this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
+      }
+    )
+  }
+
+  openDeleteProductDialog(productId: number, productName?: string) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '250px',
+      data: {
+        message: 'Biztosan törölni szeretnéd?',
+        name: productName
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteProduct(productId);
+      }
+    });
+  }
+
+  deleteProduct(id: number) {
+    this.productService.deleteProduct(id).subscribe(
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Termék törölve!");
+        }
+      }, (error) => {
+        this.openSnackBar("Valami hiba történt, vagy nincs jogosultságod!");
+        console.log(error);
       }
     )
   }

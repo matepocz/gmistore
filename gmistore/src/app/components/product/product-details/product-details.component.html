@@ -78,7 +78,8 @@
         </ng-template>
 
         <mat-card-actions fxLayoutAlign="bottom start">
-          <button mat-button [color]="'primary'" type="button" (click)="addToCart(product.id)">
+          <button *ngIf="product.active && product.quantityAvailable > 0" mat-button [color]="'primary'"
+                  type="button" (click)="addToCart(product.id)">
             <mat-icon>add_shopping_cart</mat-icon>
             Kosárba
           </button>
@@ -88,9 +89,14 @@
             Kedvencekhez
           </button>
 
-          <a *ngIf="isAdmin" mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
+          <a [ngStyle]="{'padding-right': '4px'}" *ngIf="isAdmin || product.addedBy === currentUsername"
+             mat-mini-fab [color]="'warn'" type="button" [routerLink]="['/edit-product', slug]">
             <mat-icon>edit</mat-icon>
           </a>
+          <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'"
+                  type="button" (click)="openDeleteProductDialog(product.id, product.name)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </mat-card-actions>
       </div>
 
@@ -106,6 +112,10 @@
         <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'" type="button"
                 [routerLink]="['/edit-product', slug]">
           <mat-icon>edit</mat-icon>
+        </button>
+        <button *ngIf="isAdmin || product.addedBy === currentUsername" mat-mini-fab [color]="'warn'"
+                type="button" (click)="openDeleteProductDialog(product.id, product.name)">
+          <mat-icon>delete</mat-icon>
         </button>
       </div>
     </div>

@@ -15,7 +15,7 @@ import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
 import {AuthService} from "../../../service/auth-service";
-import {ConfirmDeleteDialogComponent} from "../../confirm-delete-dialog/confirm-delete-dialog.component";
+import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 
 @Component({
   selector: 'app-product-list',
@@ -247,9 +247,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   openDeleteProductDialog(productId: number, productName?: string) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '250px',
-      data: {name: productName}
+      data: {
+        message: 'Biztosan törölni szeretnéd?',
+        name: productName
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

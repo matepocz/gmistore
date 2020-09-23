@@ -27,6 +27,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("SELECT p FROM Product p WHERE p.subCategory = :category AND p.active = true")
     Page<Product> findProductsBySubCategory(LookupEntity category, Pageable pageable);
 
-    @Query(value = "select p from Product p where p.discount>0 and p.active=true order by p.discount asc")
+    @Query(value = "select p from Product p where p.discount>0 and p.active=true order by p.discount desc")
     List<Product> findProductByAndDiscountOrderByDiscountAsc();
 }

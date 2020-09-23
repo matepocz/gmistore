@@ -1,6 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
-import hu.progmasters.gmistore.dto.ProductDto;
+import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;

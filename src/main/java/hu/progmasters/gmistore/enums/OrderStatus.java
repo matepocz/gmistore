@@ -3,10 +3,11 @@ package hu.progmasters.gmistore.enums;
 import lombok.Getter;
 
 public enum OrderStatus {
-    UNPROCESSED("Unprocessed"),
-    PROCESSED("Megerősítve"),
-    UNDER_DELIVERY("Under delivery"),
-    DELIVERED("Kiszállítva");
+    ORDERED("Megrendelve"),
+    UNDER_DELIVERY("Kiszállítás alatt"),
+    DELIVERED("Kiszállítva"),
+    WAITING_PAYMENT("Fizetésre vár"),
+    PAYMENT_SUCCESS("Kifizetve");
 
     @Getter
     private final String displayName;

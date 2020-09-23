@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class OrderStatusDetailsDto {
     private String displayName;
     private String value;
-    @JsonFormat(pattern = "YYYY.MMM dd - HH:mm")
     private LocalDateTime date;
 
     public OrderStatusDetailsDto( String value,String displayName, LocalDateTime date) {

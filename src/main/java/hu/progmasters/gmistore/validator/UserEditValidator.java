@@ -1,6 +1,6 @@
 package hu.progmasters.gmistore.validator;
 
-import hu.progmasters.gmistore.dto.UserEditableDetailsDto;
+import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

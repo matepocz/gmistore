@@ -12,6 +12,7 @@ import {errorHandler} from "../../../../utils/error-handler";
 import {MatSelectChange} from "@angular/material/select";
 import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptionsModel";
 import {MatSort} from "@angular/material/sort";
+import {parseDate} from "../../../../utils/dateParser";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -39,6 +40,8 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   orderShippingAddressForm: FormGroup;
   orderBillingAddressForm: FormGroup;
   statusForm: FormGroup;
+
+  dateParse = (date: Date) => (parseDate(new Date(date)));
 
   constructor(private titleService: Title,
               private adminService: AdminService,
@@ -106,13 +109,13 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
       () => {
         let dataSource = [this.orderDetailsData];
         this.dataSource = new MatTableDataSource<OrderDetails>(dataSource);
-        let status = dataSource[0].status.sort((a, b) =>
-          new Date(a.date).getTime() - new Date(b.date).getTime());
-        console.log(status)
+
+        let status = dataSource[0].status.sort(
+          (a: OrderStatusOptionsModel, b: OrderStatusOptionsModel) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime());
+
         this.statusDataSource = new MatTableDataSource<OrderStatusOptionsModel>(status);
-        this.statusDataSource.sort = this.sort;
         this.loaded = true;
-        console.log(dataSource)
       }
     ));
   }
@@ -154,8 +157,11 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 
 }

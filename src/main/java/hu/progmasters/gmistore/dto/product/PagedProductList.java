@@ -1,6 +1,5 @@
 package hu.progmasters.gmistore.dto.product;
 
-import hu.progmasters.gmistore.dto.ProductDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

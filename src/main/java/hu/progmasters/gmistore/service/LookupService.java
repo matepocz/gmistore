@@ -3,7 +3,7 @@ package hu.progmasters.gmistore.service;
 import hu.progmasters.gmistore.dto.MainCategoryDetails;
 import hu.progmasters.gmistore.dto.NewCategoryRequest;
 import hu.progmasters.gmistore.dto.PaymentMethodDetails;
-import hu.progmasters.gmistore.dto.ProductCategoryDetails;
+import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
 import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.LookupEntity;

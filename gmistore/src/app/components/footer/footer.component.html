@@ -1,16 +1,102 @@
-<mat-toolbar [color]="'primary'" class="footer">
-  <mat-toolbar-row fxLayout.lt-md="column" fxLayout="row" fxLayoutAlign="space-evenly center">
-    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
-      <span fxLayout="row" fxLayoutAlign="center center"><mat-icon>copyright</mat-icon>GMI Store all rights reserved</span>
-    </mat-toolbar-row>
-    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
-      <span routerLink="privacy" fxLayout="row" fxLayoutAlign="center center">Adatvédelmi tájékoztató<mat-icon>double_arrow</mat-icon></span>
-    </mat-toolbar-row>
-    <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
-      <span routerLink="cookies-privacy" fxLayout="row" fxLayoutAlign="center center">Süti tájékoztató<mat-icon>double_arrow</mat-icon></span>
-    </mat-toolbar-row>
-  </mat-toolbar-row>
-  <!--TODO make a nice footer ? -->
-  <mat-toolbar-row fxLayout="column" fxLayoutAlign="center center">
-  </mat-toolbar-row>
-</mat-toolbar>
+<div fxLayout="column">
+  <div fxFlex="100" class="footer" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center"
+       fxFlexAlign.lt-md="center">
+    <div class="sections" fxFlex="80" fxFlexAlign.lt-md="center" fxLayout="row" fxLayout.lt-md="column"
+         fxLayoutGap="50px" fxLayoutGap.lt-md="50px">
+      <div fxFlex="33" fxLayout="column" fxLayout.lt-md="column" fxLayoutAlign.lt-md="space-around center"
+           fxLayoutAlign="start center" fxFlexAlign.lt-md="center">
+        <h1 mat-display-3 class="about-header" fxFlexAlign="start" fxFlexAlign.lt-md="center">Rólunk</h1>
+        <p class="about-content">
+          Mi az GMI Store-nál nap, mint nap azon dolgozunk, hogy olyan online vásárlási élményt nyújtsunk, amellyel Te,
+          kedves vásárló, mindig gyorsan, kényelmesen megkapod, amit szeretnél! Széles termékkínálatunkkal, és
+          szaküzleteinkkel a számodra legjobb módon szolgáljuk ki igényeidet, hogy Te mindig biztos lehess abban: jól
+          döntöttél.
+          <br>
+          Arra törekszünk, hogy folyamatosan szélesedő kínálatunkkal minden vásárlónk számára a lehető legkedvezőbb
+          feltételekkel és a tőlünk telhető legkényelmesebb szolgáltatásokkal biztosítsuk termékeinket.
+        </p>
+        <div class="social-icons" fxLayout="row" fxFlexAlign="stretch" fxLayoutAlign="space-evenly center">
+          <a href="#">
+            <span class="icon facebook-icon"></span>
+          </a>
+          <a href="#">
+            <span class="icon twitter-icon"></span>
+          </a>
+          <a href="#">
+            <span class="icon youtube-icon"></span>
+          </a>
+          <a href="#">
+            <span class="icon instagram-icon"></span>
+          </a>
+        </div>
+      </div>
+      <span class="divider-span"><mat-divider class="divider" fxLayout="row"
+                                              fxLayoutAlign="center center"></mat-divider></span>
+      <div fxFlex="33" fxLayout="column" fxLayoutAlign.lt-md="space-between center" fxLayoutAlign="start center">
+        <h1 mat-display-3 class="footer-header" fxFlexAlign="start" fxFlexAlign.lt-md="center">Jogi nyilatkozat</h1>
+        <div fxFlex="100" class="privacy-links" fxLayout="column" fxLayoutAlign.lt-md="center center"
+             fxLayoutAlign="start start">
+          <a routerLink="privacy" fxLayoutAlign="center center">Adatvédelmi tájékoztató
+            <mat-icon>double_arrow</mat-icon>
+          </a>
+          <a routerLink="cookies-privacy" fxLayoutAlign="center center">Süti tájékoztató
+            <mat-icon>double_arrow</mat-icon>
+          </a>
+        </div>
+      </div>
+      <span class="divider-span"><mat-divider class="divider" fxLayout="row"
+                                              fxLayoutAlign="center center"></mat-divider></span>
+      <div fxFlex="33" fxLayout="column" fxLayout.lt-md="column" fxLayoutAlign.lt-md="space-between center"
+           fxLayoutAlign="start center">
+        <h1 mat-display-3 class="footer-form-header" fxFlexAlign="start" fxFlexAlign.lt-md="center">Üzenj nekünk</h1>
+        <form [formGroup]="contactForm" (ngSubmit)="submitContactForm()" fxFlex="100" class="mat-card" fxLayout="column"
+              fxLayout.lt-md="column" fxFlexAlign="stretch"
+              fxLayoutAlign.lt-md="space-between center" fxLayoutAlign="space-evenly center">
+
+          <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
+            <mat-label>Email cím:</mat-label>
+            <input matInput fxFlexAlign="start" formControlName="email" name="email" required>
+            <mat-error *ngIf="contactForm.get('email').invalid">Az email mező kötelező!</mat-error>
+            <mat-error
+              *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
+            <mat-label>Tárgy:</mat-label>
+            <input matInput fxFlexAlign="start" formControlName="subject" name="subject" required>
+            <mat-error *ngIf="contactForm.get('email').invalid">Az tárgy mező kötelező!</mat-error>
+            <mat-error
+              *ngIf="contactForm.get('subject').errors?.serverError">{{contactForm.get('subject').errors?.serverError}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
+            <mat-label>Üzenet:</mat-label>
+            <textarea matInput fxFlexAlign="start"
+                      cdkTextareaAutosize
+                      #autosize="cdkTextareaAutosize"
+                      cdkAutosizeMinRows="5"
+                      cdkAutosizeMaxRows="7"
+                      formControlName="message"
+                      name="message"
+                      type="text"
+            ></textarea>
+            <mat-error *ngIf="contactForm.get('message').invalid">A mező kitöltése kötelező</mat-error>
+          </mat-form-field>
+          <button class="footer-form-btn" mat-raised-button type="submit" color="primary"
+                  [disabled]="contactForm.invalid">Üzenet küldése
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <span class="divider-span"><mat-divider class="divider" fxLayout="row"
+                                          fxLayoutAlign="center center"></mat-divider></span>
+
+
+  <div class="copyrigth footer" fxLayout="row" fxLayoutAlign="center center">
+    <span fxLayout="row" fxLayoutAlign="center center"><mat-icon>copyright</mat-icon>GMI Store All rights reserved</span>
+  </div>
+</div>

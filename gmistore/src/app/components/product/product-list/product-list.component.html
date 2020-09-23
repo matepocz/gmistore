@@ -2,7 +2,7 @@
   <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="space-evenly start">
 
     <div fxFlex.gt-md="17" fxFlex.md="20" fxHide.lt-md fxLayout="column" fxLayoutGap="10px">
-      <mat-card class="mat-elevation-z8" fxFlex="100">
+      <mat-card class="mat-elevation-z8" fxFlex="100" *ngIf="products?.length > 0">
 
         <div fxLayout="column" fxLayoutAlign="start">
           <mat-panel-title class="mb-10"><strong>Elérhetőség</strong></mat-panel-title>
@@ -90,8 +90,9 @@
 
     <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
       <div fxLayout="column" fxFlex="99" fxLayoutAlign="center" *ngIf="products?.length > 0">
-        <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100">
-          {{ products?.length }} termék
+        <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100" fxLayout="row wrap">
+          <p fxFlex="45">{{ categoryDisplayName }}</p>
+          <p fxFlex="45">{{ products?.length }} termék</p>
         </mat-card>
 
 
@@ -174,6 +175,14 @@
 
         </div>
       </mat-card>
+
+      <mat-card class="mat-elevation-z8" fxFlex="98" *ngIf="products?.length > 0">
+        <mat-paginator #paginator [length]="numberOfProducts" [color]="'primary'" (focusin)="detectChanges()"
+                       [pageSize]="pageSize" (page)="paginationEventHandler($event)"
+                       [pageSizeOptions]="pageSizeOptions">
+        </mat-paginator>
+      </mat-card>
+
     </div>
   </div>
 </div>

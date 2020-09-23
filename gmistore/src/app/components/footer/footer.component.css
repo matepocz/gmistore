@@ -1,11 +1,150 @@
 .footer{
   position: sticky;
+  background-color: #673ab7;
+  /*color: white;*/
+
+  /*background-color: yellow;*/
 }
-/* sm display*/
-@media (max-width: 959px) {
-  .footer{
-    letter-spacing: 3px;
-    line-height: 2.5;
-    padding: 50px;
+
+
+.footer-header{
+  /*margin-top: 25px;*/
+  /*background-color: aquamarine;*/
+  color:white ;
+}
+
+.about-header{
+  color: white;
+}
+
+.about-content{
+  width: 100%;
+  color: white;
+}
+
+.footer-text{
+  /*background-color: lime;*/
+  width: 100%;
+  color: white;
+}
+
+.footer a{
+  text-decoration: none;
+  cursor: pointer;
+  color: white;
+}
+
+.sections{
+  margin: 25px;
+}
+
+.social-icons{
+
+  /*background-color: dodgerblue;*/
+}
+
+.privacy-links{
+  width: 100%;
+  color: white;
+}
+
+/* FORM */
+.footer-form-header{
+  color:white;
+}
+
+.copyrigth{
+  /*background-color: #ffcdd2;*/
+  color:white;
+  padding-bottom: 20px;
+}
+
+.footer-form {
+  width: 80%;
+}
+
+.footer-form-btn{
+  width: 80%;
+}
+
+
+mat-form-field{
+  width: 70%;
+
+}
+
+.divider{
+  height: 1px;
+  text-align: center;
+  background-color: white;
+  margin: 10px auto;
+  width: 80%;
+}
+
+.divider-span{
+  background-color: #673ab7;
+}
+
+/*.mat-divider{*/
+/*  max-width: 80%;*/
+/*  height: 5px;*/
+/*  background-color: red;*/
+/*  text-align: center;*/
+/*}*/
+
+
+
+
+
+/* ICONS */
+.icon{
+  height: 50px;
+  width: 50px;
+  display: flex;
+}
+.social-icons span:hover{
+  z-index: 100;
+  transition: all 500ms ease-in;
+  transform: scale(1.2);
+}
+
+.facebook-icon{
+  background: url("src/assets/images/social-icons/facebook.png");
+}
+.twitter-icon{
+  background: url("src/assets/images/social-icons/twitter.png");
+}
+.youtube-icon{
+  background: url("src/assets/images/social-icons/youtube.png");
+}
+.instagram-icon{
+  background: url("src/assets/images/social-icons/instagram.png");
+}
+
+
+/* MEDIA QUERIES */
+
+
+@media only screen and (max-width: 600px) {
+  .footer-header {
+    margin: 20px 0;
+  }
+
+  .about-content{
+    text-align: center;
+  }
+
+  .social-icons{
+    margin-top: 20px;
+  }
+
+  .icon{
+    height: 50px;
+    width: 50px;
+    display: flex;
+  }
+
+  h1{
+    font-size: 35px;
   }
 }

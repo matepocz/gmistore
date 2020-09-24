@@ -16,6 +16,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
+import {UserService} from "../../../service/user.service";
 
 @Component({
   selector: 'app-product-details',
@@ -54,46 +55,39 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   twoStarPercentage = 0;
   oneStarPercentage = 0;
 
-  productSubscription: Subscription;
-  addToCartSubscription: Subscription;
-  ratingSubscription: Subscription;
-  removeRatingSubscription: Subscription;
-  ratingVoteSub: Subscription;
-  reportSub: Subscription;
-  isAdminSub: Subscription;
-  isSellerSub: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
               private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
               private titleService: Title, private ratingService: RatingService,
               private sideNavComponent: SideNavComponent, private spinnerService: SpinnerService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog, private userService: UserService) {
   }
 
   ngOnInit(): void {
-    this.isAdminSub = this.authService.isAdmin.subscribe(
+    this.subscriptions.add(this.authService.isAdmin.subscribe(
       (response) => {
         this.isAdmin = response;
       }, (error) => {
         this.spinnerService.stop(this.spinner);
         console.log(error);
       }
-    );
+    ));
     this.currentUsername = this.authService.currentUsername;
 
-    this.isSellerSub = this.authService.isSeller.subscribe(
+    this.subscriptions.add(this.authService.isSeller.subscribe(
       (response) => {
         this.isSeller = response;
       }, (error) => {
         this.spinnerService.stop(this.spinner);
         console.log(error);
       }
-    );
+    ));
 
     this.slug = this.route.snapshot.params['slug'];
 
-    this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
+    this.subscriptions.add(this.productService.getProductBySlug(this.slug).subscribe(
       (data: ProductModel) => {
         this.product = data;
         this.defaultPicture = data.pictureUrl;
@@ -106,9 +100,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       () => {
         this.titleService.setTitle(this.product.name + " - GMI Store")
       }
-    );
+    ));
 
-    this.ratingSubscription = this.ratingService.getRatingsByProductSlug(this.slug)
+    this.subscriptions.add(this.ratingService.getRatingsByProductSlug(this.slug)
       .subscribe(
         (data: Array<RatingModel>) => {
           this.ratings = data;
@@ -126,7 +120,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
           this.oneStarPercentage = this.calculateRatingPercentage(this.oneStar);
           this.spinnerService.stop(this.spinner);
         }
-      );
+      ));
   }
 
   changeDefaultImg(picture: string): void {
@@ -139,7 +133,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   addToCart(id: number) {
     this.spinner = this.spinnerService.start();
-    this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
+    this.subscriptions.add(this.cartService.addProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
           this.openSnackBar("A termék a kosárba került!");
@@ -153,7 +147,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
-    )
+    ));
   }
 
   openSnackBar(message: string) {
@@ -208,7 +202,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   removeRating(id: number) {
     this.spinner = this.spinnerService.start();
-    this.removeRatingSubscription = this.ratingService.removeRating(id).subscribe(
+    this.subscriptions.add(this.ratingService.removeRating(id).subscribe(
       (response) => {
         if (response === true) {
           this.openSnackBar("Értékelés törölve!");
@@ -220,7 +214,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         this.spinnerService.stop(this.spinner);
         console.log(error);
       }
-    )
+    ));
   }
 
   voteRating(id: number) {
@@ -241,7 +235,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   private upVoteRating(id: number, rating: RatingModel) {
     this.spinner = this.spinnerService.start();
-    this.ratingVoteSub = this.ratingService.upVoteRating(id).subscribe(
+    this.subscriptions.add(this.ratingService.upVoteRating(id).subscribe(
       () => {
         rating.upVotes++;
         rating.voters.push(this.authService.currentUsername);
@@ -250,12 +244,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         console.log(error);
         this.spinnerService.stop(this.spinner);
       }
-    );
+    ));
   }
 
   private removeUpVoteRating(id: number, rating: RatingModel) {
     this.spinner = this.spinnerService.start();
-    this.ratingVoteSub = this.ratingService.removeUpVoteRating(id).subscribe(
+    this.subscriptions.add(this.ratingService.removeUpVoteRating(id).subscribe(
       () => {
         let username = this.authService.currentUsername;
         let indexOfUsername = 0;
@@ -271,12 +265,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         console.log(error);
         this.spinnerService.stop(this.spinner);
       }
-    );
+    ));
   }
 
   reportRating(id: number) {
     this.spinner = this.spinnerService.start();
-    this.reportSub = this.ratingService.reportRating(id).subscribe(
+    this.subscriptions.add(this.ratingService.reportRating(id).subscribe(
       (response) => {
         if (response) {
           this.openSnackBar("Jelentés sikeres!");
@@ -287,7 +281,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         this.spinnerService.stop(this.spinner);
         this.openSnackBar("Valami hiba történt!");
       }
-    )
+    ));
   }
 
   openDeleteProductDialog(productId: number, productName?: string) {
@@ -307,34 +301,39 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(id: number) {
-    this.productService.deleteProduct(id).subscribe(
+    this.subscriptions.add(this.productService.deleteProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
           this.openSnackBar("Termék törölve!");
+        } else {
+          this.openSnackBar("Nincs jogosultságod!");
         }
       }, (error) => {
-        this.openSnackBar("Valami hiba történt, vagy nincs jogosultságod!");
+        this.openSnackBar("Valami hiba történt");
         console.log(error);
       }
-    )
+    ));
+  }
+
+  addProductToFavorites(id: number) {
+    this.spinner = this.spinnerService.start();
+    this.subscriptions.add(this.userService.addProductToFavorites(id).subscribe(
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Termék hozzáadva a kedvencekhez.");
+        } else {
+          this.openSnackBar("Valami hiba történt!");
+        }
+        this.sideNavComponent.updateFavoriteItems(0);
+        this.spinnerService.stop(this.spinner);
+      }, (error) => {
+        this.openSnackBar("Valami hiba történt!");
+        this.spinnerService.stop(this.spinner);
+      }
+    ));
   }
 
   ngOnDestroy() {
-    this.productSubscription.unsubscribe();
-    this.isAdminSub.unsubscribe();
-    this.isSellerSub.unsubscribe();
-    if (this.addToCartSubscription) {
-      this.addToCartSubscription.unsubscribe();
-    }
-    this.ratingSubscription.unsubscribe();
-    if (this.removeRatingSubscription) {
-      this.removeRatingSubscription.unsubscribe();
-    }
-    if (this.ratingVoteSub) {
-      this.ratingVoteSub.unsubscribe();
-    }
-    if (this.reportSub) {
-      this.reportSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

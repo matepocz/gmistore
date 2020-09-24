@@ -9,7 +9,6 @@ import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
-import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -315,6 +316,10 @@ public class ProductService {
                 product.setActive(false);
                 LOGGER.debug("Product has been set to inactive Id : {}", id);
                 return true;
+            } else {
+                LOGGER.warn("Unauthorized product delete request, id: {}, username: {}",
+                        id, SecurityContextHolder.getContext().getAuthentication().getName());
+                return false;
             }
         }
         LOGGER.warn("Product delete request, but product not found! id: {}", id);
@@ -322,15 +327,14 @@ public class ProductService {
     }
 
     private boolean isAuthorized(String productAddedBy) {
-        String authenticatedUsername = productAddedBy;
         boolean isAdmin = false;
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())){
+                isAdmin = true;
+            }
         }
-        Optional<User> userByUsername = userRepository.findUserByUsername(productAddedBy);
-        if (userByUsername.isPresent()) {
-            isAdmin = userByUsername.get().getRoles().contains(Role.ROLE_ADMIN);
-        }
+        String authenticatedUsername = authentication.getName();
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 }

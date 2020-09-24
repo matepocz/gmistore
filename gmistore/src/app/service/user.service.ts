@@ -11,6 +11,7 @@ import {UserEditableDetailsByUser} from "../models/user/userEditableDetailsByUse
 })
 export class UserService {
   apiUrl = environment.apiUrl + 'api/';
+  userUrl = environment.apiUrl + 'api/user';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -23,12 +24,20 @@ export class UserService {
     return this.httpClient.get(this.apiUrl + 'user/loggedUsers');
   }
 
-  storeLocalCart() {
-
-  }
-
   updateUser(data: UserEditableDetailsByUser): Observable<any> {
     return this.httpClient.put(this.apiUrl + 'user/edit', data);
+  }
+
+  getCountOfFavoriteProducts(): Observable<number> {
+    return this.httpClient.get<number>(this.userUrl + '/count-of-favorite-products');
+  }
+
+  addProductToFavorites(id: number): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.userUrl + '/favorite-product/' + id, {});
+  }
+
+  removeProductFromFavorites(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(this.userUrl + '/favorite-product/' + id);
   }
 }
 

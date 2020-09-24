@@ -91,7 +91,7 @@
       </div>
 
       <ng-template #buttonsTemplate>
-        <button mat-button [color]="'primary'" type="button">
+        <button mat-button [color]="'primary'" type="button" (click)="addProductToFavorites(product.id)">
           <mat-icon>favorite</mat-icon>
           Kedvencekhez
         </button>

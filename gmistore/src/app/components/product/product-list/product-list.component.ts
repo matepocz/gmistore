@@ -16,6 +16,7 @@ import {PagedProductListModel} from "../../../models/product/paged-product-list.
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
 import {AuthService} from "../../../service/auth-service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
+import {UserService} from "../../../service/user.service";
 
 @Component({
   selector: 'app-product-list',
@@ -64,13 +65,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
   addToCartSubscription: Subscription;
   paramsSubscription: Subscription;
   adminSub: Subscription;
+  favoriteSub: Subscription;
 
   constructor(private productService: ProductService, private cartService: CartService,
               private snackBar: MatSnackBar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService, private fb: FormBuilder,
               private router: Router, private cdRef: ChangeDetectorRef, private authService: AuthService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog, private userService: UserService) {
     this.products = new Array<ProductModel>();
   }
 
@@ -265,15 +267,37 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   deleteProduct(id: number) {
     this.productService.deleteProduct(id).subscribe(
-      (response) => {
+      (response: boolean) => {
         if (response) {
+          this.openSnackBar("Termék törölve.");
           if (this.filtering) {
             this.fetchProductsByCategory(this.filterOptions);
           } else {
             this.fetchProductsByCategory();
           }
         }
-      }, error => console.log(error)
+      }, (error) => {
+        this.openSnackBar("Valami hiba történt!");
+        console.log(error)
+      }
+    )
+  }
+
+  addProductToFavorites(id: number) {
+    this.spinner = this.spinnerService.start();
+    this.favoriteSub = this.userService.addProductToFavorites(id).subscribe(
+      (response: boolean) => {
+        if (response) {
+          this.openSnackBar("Termék hozzáadva a kedvencekhez.");
+          this.sideNavComponent.updateFavoriteItems(0);
+        } else {
+          this.openSnackBar("Valami hiba történt!");
+        }
+        this.spinnerService.stop(this.spinner);
+      }, (error) => {
+        this.openSnackBar("Valami hiba történt!");
+        this.spinnerService.stop(this.spinner);
+      }
     )
   }
 
@@ -288,6 +312,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.paramsSubscription.unsubscribe();
     if (this.addToCartSubscription) {
       this.addToCartSubscription.unsubscribe();
+    }
+    if (this.favoriteSub){
+      this.favoriteSub.unsubscribe();
     }
   }
 }

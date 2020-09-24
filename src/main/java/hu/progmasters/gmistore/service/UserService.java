@@ -56,10 +56,7 @@ public class UserService {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-        return new UserDto(
-                user.getId(), user.getUsername(), user.getLastName(), user.getFirstName(), user.getShippingAddress(),
-                user.getBillingAddress(), user.getEmail(), user.getPhoneNumber(), user.getRoles(), user.getRegistered(),
-                user.isActive(), user.getOrderList());
+        return new UserDto(user);
     }
 
     public List<UserListDetailDto> getUserList() {

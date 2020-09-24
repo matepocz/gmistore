@@ -146,28 +146,29 @@ public class ProductService {
                 productRepository.findProductsBySubCategory(
                         categoryByKey, pageable
                 );
-        return createPageProductListResponse(categoryByKey, productsBySubCategory);
+        return createPagedProductListResponse(categoryByKey, productsBySubCategory);
     }
 
     /**
      * Fetch all products by the given filter options
      *
      * @param category      The given subcategory
-     * @param page          The index of the requested page
-     * @param size          The size of the requested page
+     * @param pageIndex         The index of the requested page
+     * @param pageSize          The size of the requested page
      * @param filterOptions A DTO containing the filter options
      * @return A PagedProductList DTO, that contains a List of ProductDto
      */
     public PagedProductList getFilteredProducts(
-            String category, String page, String size, ProductFilterOptions filterOptions) {
+            String category, String pageIndex, String pageSize, ProductFilterOptions filterOptions
+    ) {
         LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
-        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Pageable pageable = PageRequest.of(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
         Page<Product> products = productRepository.findAll(
                 buildFilterSpecification(categoryByKey, filterOptions), pageable);
-        return createPageProductListResponse(categoryByKey, products);
+        return createPagedProductListResponse(categoryByKey, products);
     }
 
-    private PagedProductList createPageProductListResponse(LookupEntity categoryByKey, Page<Product> products) {
+    private PagedProductList createPagedProductListResponse(LookupEntity categoryByKey, Page<Product> products) {
         PagedProductList productList = new PagedProductList();
         productList.setProducts(products
                 .stream()
@@ -200,20 +201,21 @@ public class ProductService {
             } else if (nonDiscounted != null && nonDiscounted) {
                 predicates.add(criteriaBuilder.lessThan(root.get("discount"), 1));
             }
-
-            Boolean notInStock = productFilterOptions.getNotInStock();
-            if (notInStock != null && !notInStock) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("inventory").get("quantityAvailable"), 1));
+            if (productFilterOptions.getNotInStock() != null && !productFilterOptions.getNotInStock()) {
+                predicates.add(
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("inventory").get("quantityAvailable"), 1)
+                );
             }
 
             predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("averageRating"),
-                    productFilterOptions.getLowestRating()));
+                    productFilterOptions.getLowestRating())
+            );
             predicates.add(criteriaBuilder.between(
-                    root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice()));
+                    root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice())
+            );
 
-            return criteriaBuilder.and(predicates.toArray(new javax.persistence.criteria.Predicate[predicates.size()]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
@@ -328,13 +330,16 @@ public class ProductService {
 
     private boolean isAuthorized(String productAddedBy) {
         boolean isAdmin = false;
+        String authenticatedUsername = "unknown";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())){
-                isAdmin = true;
+        if (authentication != null) {
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())) {
+                    isAdmin = true;
+                }
             }
+            authenticatedUsername = authentication.getName();
         }
-        String authenticatedUsername = authentication.getName();
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 }

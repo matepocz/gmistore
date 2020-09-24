@@ -1,9 +1,8 @@
 package hu.progmasters.gmistore.dto.user;
 
+import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.Address;
-import hu.progmasters.gmistore.model.Order;
-import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -32,7 +31,7 @@ public class UserDto {
     private List<Role> roles = new ArrayList<>();
     private LocalDateTime registered;
     private boolean active;
-    private List<Order> orderList;
+    private List<OrderDto> orderList;
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -46,6 +45,9 @@ public class UserDto {
         this.roles = user.getRoles();
         this.registered = user.getRegistered();
         this.active = user.isActive();
-        this.orderList = user.getOrderList();
+        this.orderList = user.getOrderList()
+                .stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
 }

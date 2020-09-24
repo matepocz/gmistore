@@ -74,10 +74,10 @@
     </div>
 
     <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
-      <div fxLayout="column" fxFlex="99" fxLayoutAlign="center" *ngIf="products?.length > 0">
+      <div fxLayout="column" fxFlex.lt-md="98" fxFlex="99" fxLayoutAlign="center" *ngIf="products?.length > 0">
         <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100" fxLayout="row wrap">
           <p fxFlex="45">{{ categoryDisplayName }}</p>
-          <p fxFlex="45">{{ products?.length }} termék</p>
+          <p fxFlex="45">{{ numberOfProducts }} termék</p>
           <p *ngIf="filtering" (click)="removeFilters()" class="remove-filters">
             Minden szűrő törlése
           </p><span *ngIf="filtering">
@@ -172,7 +172,8 @@
         </div>
       </mat-card>
 
-      <mat-card class="mat-elevation-z8" fxFlex="98" *ngIf="products?.length > 0">
+      <mat-card class="mat-elevation-z8" fxFlex.lt-md="97" fxFlex="98" *ngIf="products?.length > 0"
+      [ngStyle.gt-sm]="{'margin-left': '3px'}">
         <mat-paginator #paginator [length]="numberOfProducts" [color]="'primary'" (focusin)="detectChanges()"
                        [pageSize]="pageSize" (page)="paginationEventHandler($event)"
                        [pageSizeOptions]="pageSizeOptions">

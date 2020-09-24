@@ -47,7 +47,6 @@ public class Order implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "shipping_method", referencedColumnName = "id")
-    @JsonIgnore
     private ShippingMethod shippingMethod;
 
     @ManyToOne

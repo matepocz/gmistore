@@ -64,7 +64,7 @@
           ></app-billing-address>
         </div>
         <mat-action-row>
-          <button mat-button>Mentés</button>
+          <button (click)="onSubmitAddress(orderDetailsInput.generatedUniqueId)" mat-button>Mentés</button>
         </mat-action-row>
       </mat-expansion-panel>
     </mat-accordion>

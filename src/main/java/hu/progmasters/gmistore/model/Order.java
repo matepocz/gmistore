@@ -1,7 +1,6 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import hu.progmasters.gmistore.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +44,7 @@ public class Order implements Serializable {
     @JoinColumn(name = "order_item", referencedColumnName = "id")
     private Set<OrderItem> items = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shipping_method", referencedColumnName = "id")
     private ShippingMethod shippingMethod;
 
@@ -70,7 +69,7 @@ public class Order implements Serializable {
     @Min(value = 0, message = "Items total price cannot be negative number")
     private Double itemsTotalPrice;
 
-    @Column(name = "total_price",columnDefinition = "double default 0.0")
+    @Column(name = "total_price", columnDefinition = "double default 0.0")
     @NotNull
     @Min(value = 0, message = "Total price cannot be negative number")
     private Double totalPrice;

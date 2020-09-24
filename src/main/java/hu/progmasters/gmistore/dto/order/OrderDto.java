@@ -1,13 +1,14 @@
 package hu.progmasters.gmistore.dto.order;
 
 import hu.progmasters.gmistore.dto.OrderItemListDetailsDto;
-import hu.progmasters.gmistore.model.*;
+import hu.progmasters.gmistore.dto.ShippingMethodItem;
+import hu.progmasters.gmistore.model.Address;
+import hu.progmasters.gmistore.model.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ public class OrderDto {
     private String generatedUniqueId;
     private Set<OrderStatusDetailsDto> status;
     private Set<OrderItemListDetailsDto> items;
-    private ShippingMethod shippingMethod;
+    private ShippingMethodItem shippingMethod;
     private String paymentMethod;
     private Address deliveryAddress;
     private Address invoiceAddress;
@@ -33,7 +34,7 @@ public class OrderDto {
         this.generatedUniqueId = order.getUniqueId();
         this.status = getAllStatuses(order);
         this.items = order.getItems().stream().map(OrderItemListDetailsDto::new).collect(Collectors.toSet());
-        this.shippingMethod = order.getShippingMethod();
+        this.shippingMethod = new ShippingMethodItem(order.getShippingMethod());
         this.paymentMethod = order.getPaymentMethod().getDisplayName();
         this.deliveryAddress = order.getDeliveryAddress();
         this.invoiceAddress = order.getInvoiceAddress();

@@ -6,7 +6,6 @@ import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.model.Inventory;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
-import hu.progmasters.gmistore.repository.LookupRepository;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -40,9 +39,6 @@ public class ProductServiceTest {
 
     @Mock
     private LookupService lookupServiceMock;
-
-    @Mock
-    private LookupRepository lookupRepositoryMock;
 
     @BeforeEach
     public void setup() {

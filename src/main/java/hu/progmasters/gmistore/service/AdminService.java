@@ -7,12 +7,14 @@ import hu.progmasters.gmistore.dto.user.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
+import org.cloudinary.json.JSONObject;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository,UserService userService) {
+    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository, UserService userService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -47,9 +49,16 @@ public class AdminService {
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {
-        Map<String, Integer> userDates = new TreeMap<>();
         List<UserRegistrationDTO> sellerRegistrations = getUserRegistrations(userRole);
+        return getStringIntegerMap(sellerRegistrations);
+    }
 
+    public Map<String, Integer> getSortedUserRegistrationByDateInterval(List<UserRegistrationDTO> sellerRegistrations) {
+        return getStringIntegerMap(sellerRegistrations);
+    }
+
+    private Map<String, Integer> getStringIntegerMap(List<UserRegistrationDTO> sellerRegistrations) {
+        Map<String, Integer> userDates = new TreeMap<>();
         for (UserRegistrationDTO sellerRegistration : sellerRegistrations) {
             int year = sellerRegistration.getRegistered().getYear();
             int month = sellerRegistration.getRegistered().getMonthValue();
@@ -72,5 +81,18 @@ public class AdminService {
 
     public void updateUser(UserEditableDetailsDto user) {
         userService.updateUserById(user);
+    }
+
+    public List<UserRegistrationDTO> getUserRegistrationsByDateInterval(String criteria) {
+        JSONObject obj = new JSONObject(criteria);
+
+        String start = obj.getString("start");
+        String end = obj.getString("end");
+        String startDate = start.substring(0, start.length() - 1);
+        String endDate = end.substring(0, end.length() - 1);
+        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate);
+        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate);
+
+        return userRepository.findUserRegistrationsByDateInterval(dateTimeStart, dateTimeEnd);
     }
 }

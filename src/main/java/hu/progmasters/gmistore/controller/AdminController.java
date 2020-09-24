@@ -2,12 +2,16 @@ package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.*;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
+import hu.progmasters.gmistore.dto.order.OrderProductDetailsDto;
 import hu.progmasters.gmistore.dto.user.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.service.AdminService;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.service.UserService;
 import hu.progmasters.gmistore.validator.UserEditValidator;
+import org.apache.tomcat.util.json.JSONParser;
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +68,15 @@ public class AdminController {
         return new ResponseEntity<>(userRegistrations, HttpStatus.OK);
     }
 
+    @GetMapping("/registered/")
+    public ResponseEntity<UserRegistrationDateDto> getDateOfAllUserRegistrationsByDateInterval(@RequestParam String criteria) {
+        List<UserRegistrationDTO> userRegistrationsByDateInterval = adminService.getUserRegistrationsByDateInterval(criteria);
+        Map<String, Integer> sortedUserRegistrationByDate = adminService.getSortedUserRegistrationByDateInterval(userRegistrationsByDateInterval);
+        UserRegistrationDateDto userRegistrations = new UserRegistrationDateDto(sortedUserRegistrationByDate);
+        return new ResponseEntity<>(userRegistrations,HttpStatus.OK);
+    }
+
+
     @GetMapping("/users")
     public ResponseEntity<List<UserListDetailDto>> getAllUsers() {
         List<UserListDetailDto> userList = userService.getUserList();
@@ -92,4 +107,5 @@ public class AdminController {
         List<OrderListDto> orders = orderService.getAllOrders();
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+
 }

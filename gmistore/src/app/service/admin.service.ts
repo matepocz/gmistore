@@ -11,6 +11,7 @@ import {MainCategoryModel} from "../models/main-category.model";
 import {NewCategoryModel} from "../models/new-category.model";
 import {UserEditableDetailsByAdmin} from "../models/user/userEditableDetailsByAdmin";
 import {OrderListModel} from "../models/order/orderListModel";
+import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistrationStartEndDateModel";
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +64,13 @@ export class AdminService {
     return this.httpClient.get<Array<OrderListModel>>(this.adminUrl + '/orders');
   }
 
-  getStatusOptions(): Observable<Array<string>>  {
+  getStatusOptions(): Observable<Array<string>> {
     return this.httpClient.get<Array<string>>(this.adminUrl + '/orders/orderOptions');
+  }
+
+  getUserRegistrationsCountByDate(dates: UserRegistrationStartEndDateModel): Observable<UserRegistrationsCounterModel> {
+    console.log(dates)
+    return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + '/registered' +
+      '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
   }
 }

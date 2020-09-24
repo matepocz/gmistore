@@ -10,7 +10,8 @@ import {MatTableDataSource} from "@angular/material/table";
 export class OrdersProductListComponent implements OnInit {
   @Input() orderDetailsInput: OrderDetails;
   dataSource: MatTableDataSource<any>;
-  displayedColumns = ['pic','name','quantity','price'];
+  displayedColumns = ['pic', 'name', 'quantity', 'price'];
+
 
   constructor() {
   }
@@ -20,5 +21,4 @@ export class OrdersProductListComponent implements OnInit {
     console.log(dataSource);
     this.dataSource = new MatTableDataSource<any>(dataSource);
   }
-
 }

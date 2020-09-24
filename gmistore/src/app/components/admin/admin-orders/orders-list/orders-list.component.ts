@@ -7,6 +7,7 @@ import {AuthService} from "../../../../service/auth-service";
 import {Router} from "@angular/router";
 import {OrderListModel} from "../../../../models/order/orderListModel";
 import {Subscription} from "rxjs";
+import {MediaChange, MediaObserver} from "@angular/flex-layout";
 
 @Component({
   selector: 'app-orders-list',
@@ -21,10 +22,13 @@ export class OrdersListComponent implements OnInit {
   orderData: Array<OrderListModel>;
   dataSource: MatTableDataSource<OrderListModel>;
   subscription: Subscription;
+  currentScreenWidth: string = '';
+  flexMediaWatcher: Subscription;
 
   constructor(private adminService: AdminService,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private mediaObserver:MediaObserver) {
   }
 
   ngOnInit(): void {
@@ -41,6 +45,14 @@ export class OrdersListComponent implements OnInit {
         this.dataSource.sort = this.sort;
       }
     ));
+
+    this.flexMediaWatcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
+      if (change.mqAlias !== this.currentScreenWidth) {
+        this.currentScreenWidth = change.mqAlias;
+        this.setupTable();
+      }
+    });
+
   }
 
   applyFilter(event: Event) {
@@ -55,6 +67,16 @@ export class OrdersListComponent implements OnInit {
   editOrder(id: string) {
     this.router.navigate(['admin/orders/edit', id])
   }
+
+  setupTable = () => {
+    if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') { // only display internalId on larger screens
+      let displayedColumns = this.displayedColumns;
+      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(date|status|totalPrice)$/)); // remove 'internalId'
+      console.log(this.displayedColumns)
+    } else if (!this.displayedColumns.includes("date" || "totalPrice" || "status")) {
+      this.displayedColumns.push("date", "status","totalPrice");
+    }
+  };
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

@@ -5,6 +5,10 @@ import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrati
 import {UserRegistrationStartEndDateModel} from "../../../models/user/UserRegistrationStartEndDateModel";
 import {Subscription} from "rxjs";
 import {MatCalendar} from "@angular/material/datepicker";
+import {generateRandomColor} from "../../../utils/generate-color";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import { PopupSnackbar} from "../../../utils/popup-snackbar";
+
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,6 +16,7 @@ import {MatCalendar} from "@angular/material/datepicker";
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
+
   @ViewChild('lineChart') private chartRef;
   chart: Chart;
   chartData: UserRegistrationsCounterModel;
@@ -24,7 +29,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     start: Date;
   };
 
-  constructor(private adminService: AdminService) {
+  constructor(private adminService: AdminService,
+              private snackBar: PopupSnackbar) {
   }
 
   @ViewChild(MatCalendar) _datePicker: MatCalendar<Date>
@@ -47,7 +53,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
               {
                 borderWidth: 1,
                 data: this.chartData.size,
-                backgroundColor: this.barColors(),
+                backgroundColor: generateRandomColor(this.chartData.size),
                 borderColor: this.barBorderColors(),
               }
             ]
@@ -88,20 +94,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     )
   }
 
-  barColors = () => {
-    let letters = '0123456789ABCDEF'.split('');
-    let color = '#E6'; //transparency 90%
-    let colors = [];
-    for (let j = 0; j < this.chartData.size.length; j++) {
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      colors.push(color)
-      color = '#E6';
-    }
-    return colors;
-  }
-
   barBorderColors = () => {
     let color = '#851a2a';
     let colors = [];
@@ -127,52 +119,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         (data) => this.chartData = data,
         (err) => console.log(err),
         () => {
-          console.log(this.chartData)
-          this.chart = new Chart(this.chartRef.nativeElement, {
-            type: 'bar',
-            data: {
-              labels: this.chartData.dates,
-              datasets: [
-                {
-                  borderWidth: 1,
-                  data: this.chartData.size,
-                  backgroundColor: this.barColors(),
-                  borderColor: this.barBorderColors(),
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              legend: {
-                display: false
-              },
-              scales: {
-                xAxes: [{
-                  display: true,
-                  ticks: {
-                    autoSkip: true,
-                    maxTicksLimit: 7
-                  }
-                }],
-                scaleLabel: {
-                  labelString: 'dátum',
-                  display: true,
-                },
-                yAxes: [{
-                  display: true,
-                  ticks: {
-                    beginAtZero: true,
-                    maxTicksLimit: 10
-                  },
-                  scaleLabel: {
-                    labelString: 'vásárlók száma',
-                    display: true,
-                  },
-                }],
-              }
-            }
-          });
+          this.chart.data.labels = this.chartData.dates;
+          this.chart.data.datasets[0].data = this.chartData.size;
+          this.chart.update();
         }
       )
       console.log("in range")
@@ -180,6 +129,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.chartData.dates = ["2","3"]
     } else {
       console.log("out of range")
+      this.snackBar.popUp("Sikertelen szűrés, a napok száma nem haladhatja meg a 30-at!");
     }
   }
 }

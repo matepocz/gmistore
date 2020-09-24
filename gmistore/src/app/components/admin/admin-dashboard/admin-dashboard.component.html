@@ -1,36 +1,29 @@
-<mat-expansion-panel [ngStyle]="{'margin':'20px'}">
-  <mat-expansion-panel-header class="dropdown-button">
-    <mat-panel-title class="cart-header-text">
-      Dátum kiválasztása
-    </mat-panel-title>
-    <mat-panel-description>
-      Legfeljebb 30 napos intervallum.
-    </mat-panel-description>
-  </mat-expansion-panel-header>
-  <div>
+<div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="100" fxLayoutAlign="space-evenly start">
+  <div class="grid-container" fxFlex.gt-md="78" fxFlex.md="78" fxFlex.sm="100">
+    <mat-progress-bar mode="indeterminate" *ngIf="!chartData"></mat-progress-bar>
+    <div class="dashboard-card-content" fxLayout="row wrap" fxLayoutAlign="center">
+      <mat-card class="dashboard-card-registered" fxFlex.gt-sm="90">
+        <mat-card-header>
+          <mat-card-title>Új regisztrált felhasználók</mat-card-title>
+          <mat-card-subtitle>nap szerint</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <canvas id="registered-users" #lineChart>{{ chart }}</canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div fxFlex.gt-sm="20" fxFlex.lt-md="100">
+
     <sat-calendar [rangeMode]="true"
                   (dateRangesChange)="inlineRangeChange($event)"
                   [selected]="selectedDate"
                   [minDate]="minDate"
                   [maxDate]="maxDate">
     </sat-calendar>
+
   </div>
-</mat-expansion-panel>
-<div class="grid-container">
 
 
-  <mat-progress-bar mode="indeterminate" *ngIf="!chartData"></mat-progress-bar>
-  <div class="dashboard-card-content" fxLayout="row wrap" fxLayoutAlign="center">
-    <mat-card class="dashboard-card-registered" fxFlex.gt-sm="90">
-      <mat-card-header>
-        <mat-card-title>Új regisztrált vásárlók</mat-card-title>
-        <mat-card-subtitle>nap szerint</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <canvas id="registered-users" #lineChart>{{ chart }}</canvas>
-      </mat-card-content>
-    </mat-card>
-  </div>
 </div>
-<mat-date-range-picker></mat-date-range-picker>
-

@@ -305,9 +305,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       (response: boolean) => {
         if (response) {
           this.openSnackBar("Termék törölve!");
+        } else {
+          this.openSnackBar("Nincs jogosultságod!");
         }
       }, (error) => {
-        this.openSnackBar("Valami hiba történt, vagy nincs jogosultságod!");
+        this.openSnackBar("Valami hiba történt");
         console.log(error);
       }
     ));

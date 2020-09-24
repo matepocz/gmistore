@@ -266,7 +266,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(id: number) {
-    this.spinner = this.spinnerService.start();
     this.productService.deleteProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
@@ -276,11 +275,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
           } else {
             this.fetchProductsByCategory();
           }
-          this.spinnerService.stop(this.spinner);
         }
       }, (error) => {
         this.openSnackBar("Valami hiba történt!");
-        this.spinnerService.stop(this.spinner);
         console.log(error)
       }
     )

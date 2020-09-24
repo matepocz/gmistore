@@ -91,6 +91,7 @@ import {OrdersProductDetailsComponent} from './components/admin/admin-orders/ord
 import {OrdersProductListComponent} from './components/admin/admin-orders/orders-product-list/orders-product-list.component';
 import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
+import {PopupSnackbar} from "./utils/popup-snackbar";
 
 @NgModule({
   declarations: [
@@ -201,7 +202,8 @@ import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
     MatDatepickerModule,
     MatNativeDateModule,
     SatDatepickerModule,
-    SatNativeDateModule
+    SatNativeDateModule,
+    PopupSnackbar
   ],
   bootstrap: [AppComponent]
 })

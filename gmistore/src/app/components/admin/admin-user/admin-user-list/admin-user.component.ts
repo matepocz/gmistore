@@ -84,13 +84,13 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     ));
   }
 
-  // sendResetPassword(email: string) {
-  //   this.subs.add(this.authService.sendResetMail(email).subscribe(
-  //     () => this.myVariableColor = 'green',
-  //     error => this.myVariableColor = 'red'
-  //     )
-  //   )
-  // }
+  sendResetPassword(email: string) {
+    this.subs.add(this.authService.sendResetMail(email).subscribe(
+      () => this.myVariableColor = 'green',
+      error => this.myVariableColor = 'red'
+      )
+    )
+  }
 
   setupTable = () => {
     if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') { // only display internalId on larger screens
@@ -107,4 +107,5 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
 
   }
+
 }

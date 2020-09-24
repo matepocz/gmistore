@@ -12,6 +12,8 @@ import {errorHandler} from "../../../../utils/error-handler";
 import {MatSelectChange} from "@angular/material/select";
 import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptionsModel";
 import {parseDate} from "../../../../utils/dateParser";
+import {generateRandomColor} from "../../../../utils/generate-color";
+import {PopupSnackbar} from "../../../../utils/popup-snackbar";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -25,7 +27,6 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   subs: SubSink = new SubSink();
   loaded: boolean = false;
   val: string[];
-
 
   displayedColumns = ['name', 'email', 'phone'];
   displayedColumnsShipping = ['method', 'days', 'cost'];
@@ -43,6 +44,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   dateParse = (date: Date) => (parseDate(new Date(date)));
 
   constructor(private titleService: Title,
+              private popupSnackbar: PopupSnackbar,
               private adminService: AdminService,
               private orderService: OrderService,
               private activatedRoute: ActivatedRoute,
@@ -123,8 +125,9 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
 
   private updateInvoiceAddress(id: string, data: AddressModel) {
     this.subs.add(this.orderService.updateInvoiceAddress(id, data).subscribe(
-      () => console.log(data),
+      () => (data),
       error => errorHandler(error, this.orderBillingAddressForm),
+      () => this.popupSnackbar.popUp("Sikeres mentés")
     ));
   }
 
@@ -132,6 +135,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     this.subs.add(this.orderService.updateDeliveryAddress(id, data).subscribe(
       () => console.log(data),
       error => errorHandler(error, this.orderBillingAddressForm),
+      () => this.popupSnackbar.popUp("Sikeres mentés")
     ));
   }
 
@@ -139,15 +143,24 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     if ($event.value) {
       this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
         () => console.log("message has been sent"),
-        error => {
-          console.log(error)
-        },
+        error => this.popupSnackbar.popUp("Hiba tőrtént")
+        ,
         // () => this.fetchOrderDetailsData(this.id)
-        () => this.fetchOrderDetailsData(this.id)
+        () => {
+          this.fetchOrderDetailsData(this.id);
+          this.getRandomColor();
+        }
         )
       )
     }
   }
+
+
+  getRandomColor = () => {
+    this.colors = generateRandomColor(this.orderDetailsInput.status);
+  }
+  colors: Array<any>;
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();

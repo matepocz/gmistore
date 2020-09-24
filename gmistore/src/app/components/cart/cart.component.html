@@ -70,7 +70,8 @@
                 </button>
               </div>
               <div>
-                <button mat-button [color]="'primary'" aria-label="Add product to favorites instead of cart">
+                <button mat-button [color]="'primary'" aria-label="Add product to favorites instead of cart"
+                 (click)="addProductToFavorites(item.product.id)">
                   <mat-icon>favorite</mat-icon>
                   Kedvencekhez
                 </button>

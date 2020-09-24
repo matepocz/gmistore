@@ -58,4 +58,16 @@ public class UserController {
         int result = userService.getCountOfFavoriteProducts(principal);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PostMapping("/favorite-product/{id}")
+    public ResponseEntity<Boolean> addProductToFavorites(@PathVariable("id") Long id, Principal principal) {
+        boolean result = userService.addProductToFavorites(id, principal);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/favorite-product/{id}")
+    public ResponseEntity<Boolean> removeProductFromFavorites(@PathVariable("id") Long id, Principal principal) {
+        boolean result = userService.removeProductFromFavorites(id, principal);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

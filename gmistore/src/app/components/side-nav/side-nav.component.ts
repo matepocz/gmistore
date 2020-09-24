@@ -7,6 +7,7 @@ import {CartService} from "../../service/cart-service";
 import {Router} from "@angular/router";
 import {MainCategoryModel} from "../../models/main-category.model";
 import {AdminService} from "../../service/admin.service";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-side-nav',
@@ -45,7 +46,8 @@ export class SideNavComponent implements OnInit {
 
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
-              private router: Router, private adminService: AdminService) {
+              private router: Router, private adminService: AdminService,
+              private userService: UserService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -77,6 +79,7 @@ export class SideNavComponent implements OnInit {
       }
     );
     this.updateItemsInCart(2);
+    this.updateFavoriteItems(2);
   }
 
   logout() {
@@ -109,9 +112,9 @@ export class SideNavComponent implements OnInit {
 
   updateFavoriteItems(timeout: number) {
     setTimeout(() => {
-        this.favoriteItemsSub = this.cartService.getNumberOfItemsInCart().subscribe(
+        this.favoriteItemsSub = this.userService.getCountOfFavoriteProducts().subscribe(
           (response) => {
-            this.itemsInCart = response;
+            this.favoriteItems = response;
           }
         );
       },

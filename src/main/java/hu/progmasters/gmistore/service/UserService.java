@@ -11,7 +11,9 @@ import hu.progmasters.gmistore.model.PasswordResetToken;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.PasswordTokenRepository;
+import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,19 +31,24 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
     private final SessionRegistry sessionRegistry;
     private final PasswordTokenRepository passwordTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProductRepository productRepository;
 
     public UserService(PasswordEncoder passwordEncoder,
                        UserRepository userRepository,
                        SessionRegistry sessionRegistry,
-                       PasswordTokenRepository passwordTokenRepository) {
+                       PasswordTokenRepository passwordTokenRepository,
+                       ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.sessionRegistry = sessionRegistry;
         this.passwordTokenRepository = passwordTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.productRepository = productRepository;
     }
 
     public UserDto getUserData(String username) {
@@ -165,5 +172,34 @@ public class UserService {
     public int getCountOfFavoriteProducts(Principal principal) {
         Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
         return userByUsername.map(user -> user.getFavoriteProducts().size()).orElse(0);
+    }
+
+    public boolean addProductToFavorites(Long id, Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        Optional<Product> productById = productRepository.findById(id);
+        if (userByUsername.isPresent() && productById.isPresent()) {
+            Set<Product> favoriteProducts = userByUsername.get().getFavoriteProducts();
+            favoriteProducts.add(productById.get());
+            LOGGER.debug("Product saved to favorites. id: {}, username: {}", id, principal.getName());
+            return true;
+        }
+        LOGGER.debug("Could not add product to favorites, product or user not exists. " +
+                "username: {}, product id: {}", principal.getName(), id);
+        return false;
+    }
+
+    public boolean removeProductFromFavorites(Long id, Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        Optional<Product> productById = productRepository.findById(id);
+        if (userByUsername.isPresent() && productById.isPresent()) {
+            Set<Product> favoriteProducts = userByUsername.get().getFavoriteProducts();
+            if (favoriteProducts.contains(productById.get())) {
+                favoriteProducts.remove(productById.get());
+                LOGGER.debug("Product removed from favorites. id: {}, username: {}", id, principal.getName());
+                return true;
+            }
+        }
+        LOGGER.debug("Could not delete favorite product, user not found! username: {}", principal.getName());
+        return false;
     }
 }

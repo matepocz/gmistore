@@ -1,25 +1,26 @@
 <form [formGroup]="userForm">
-  <div fxLayoutAlign="center" [style.margin]="'2%'">
+  <div fxLayoutAlign="center" [style.margin]="'2%'" *ngIf="loaded">
     <div fxLayout="row wrap" fxFlex.lt-lg="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
 
-        <mat-card class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100">
+      <mat-card class="box" fxFlex.gt-sm="40" fxFlex.lt-md="100">
 
-          <app-profile *ngIf="loaded"
-                       [userDataForm]="userForm"
-                       [data]="user">
-          </app-profile>
+        <app-profile
+          [userDataForm]="userForm"
+          [data]="user">
+        </app-profile>
 
-          <app-roles *ngIf="loaded" [roles]="user.roles"
-                     [roleOptions]="roleOptions"
-                     [userRolesData]="user.roles"
-                     [userDataForm]="userForm"
-                     (rolesToSend)="toSend=$event">
-          </app-roles>
+        <app-roles
+          [roles]="user.roles"
+          [roleOptions]="roleOptions"
+          [userRolesData]="user.roles"
+          [userDataForm]="userForm"
+          (rolesToSend)="toSend=$event">
+        </app-roles>
 
-          <button class="desktop-btn" mat-flat-button fxHide.lt-md="true" color="primary" (click)="onSubmit(user.id)">
-            Submit
-          </button>
-        </mat-card>
+        <button class="desktop-btn" mat-flat-button fxHide.lt-md="true" color="primary" (click)="onSubmit(user.id)">
+          Submit
+        </button>
+      </mat-card>
 
       <div class="box" fxFlex.gt-sm="30" fxFlex.lt-md="100" fxLayout="column" fxLayoutGap="10px">
         <app-shipping-address *ngIf="loaded" [userDataForm]="userForm"

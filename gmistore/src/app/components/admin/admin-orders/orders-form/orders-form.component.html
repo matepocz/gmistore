@@ -1,8 +1,12 @@
+<mat-progress-bar mode="indeterminate" *ngIf="!orderDetailsData"></mat-progress-bar>
+<div *ngIf="orderDetailsData">
 <mat-toolbar [ngStyle]="{'height' : 'auto'}">
 
   <mat-card-header [ngStyle]="{'margin': '15px'}">
-    <mat-card-title>Megrendlés: {{id}}</mat-card-title>
-    <mat-card-subtitle>A megrendelés adatai</mat-card-subtitle>
+    <mat-card-title>Megrendelés: {{id}}</mat-card-title>
+    <mat-card-subtitle>
+      {{orderDetailsData.user.lastName}} {{orderDetailsData.user.firstName}} rendelési adatai
+    </mat-card-subtitle>
   </mat-card-header>
 
 </mat-toolbar>
@@ -11,14 +15,15 @@
     <mat-tab-group>
       <mat-tab label="Rendelési adatok">
         <app-orders-product-details *ngIf="orderDetailsData"
-                                    [id] = id
+                                    [id]=id
                                     [orderDetailsInput]="orderDetailsData"></app-orders-product-details>
       </mat-tab>
       <mat-tab label="Termékek">
         <app-orders-product-list *ngIf="orderDetailsData"
-                                 [id] = id
+                                 [id]=id
                                  [orderDetailsInput]="orderDetailsData"></app-orders-product-list>
       </mat-tab>
     </mat-tab-group>
   </mat-card>
+</div>
 </div>

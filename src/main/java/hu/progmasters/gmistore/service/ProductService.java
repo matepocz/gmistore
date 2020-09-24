@@ -328,13 +328,16 @@ public class ProductService {
 
     private boolean isAuthorized(String productAddedBy) {
         boolean isAdmin = false;
+        String authenticatedUsername = "unknown";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())){
-                isAdmin = true;
+        if (authentication != null) {
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())) {
+                    isAdmin = true;
+                }
             }
+            authenticatedUsername = authentication.getName();
         }
-        String authenticatedUsername = authentication.getName();
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 }

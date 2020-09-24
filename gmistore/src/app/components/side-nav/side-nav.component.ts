@@ -31,12 +31,9 @@ export class SideNavComponent implements OnInit {
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
+  subscriptions: Subscription = new Subscription();
+
   cartSubscription: Subscription;
-  itemsInCartSubscription: Subscription;
-  isAdminSub: Subscription;
-  isSellerSub: Subscription;
-  categoriesSub: Subscription;
-  favoriteItemsSub: Subscription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -54,36 +51,36 @@ export class SideNavComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.adminService.getProductCategories().subscribe(
+    this.subscriptions.add(this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
       }, (error) => {
         console.log(error);
       }
-    );
+    ));
 
     this.authenticatedUser = this.authService.isAuthenticated();
-    this.isAdminSub = this.authService.isAdmin.subscribe(
+    this.subscriptions.add(this.authService.isAdmin.subscribe(
       (response) => {
         this.isAdmin = response;
       }, (error) => {
         console.log(error);
       }
-    );
+    ));
 
-    this.isSellerSub = this.authService.isSeller.subscribe(
+    this.subscriptions.add(this.authService.isSeller.subscribe(
       (response) => {
         this.isSeller = response;
       }, (error) => {
         console.log(error);
       }
-    );
+    ));
     this.updateItemsInCart(2);
     this.updateFavoriteItems(2);
   }
 
   logout() {
-    this.authService.logout().subscribe(
+    this.subscriptions.add(this.authService.logout().subscribe(
       () => {
       },
       error => console.log(error),
@@ -92,7 +89,7 @@ export class SideNavComponent implements OnInit {
         this.updateItemsInCart(0);
         this.router.navigateByUrl('/');
       }
-    );
+    ));
   }
 
   setUserLoggedIn() {
@@ -101,22 +98,22 @@ export class SideNavComponent implements OnInit {
 
   updateItemsInCart(timeout: number) {
     setTimeout(() => {
-        this.itemsInCartSubscription = this.cartService.getNumberOfItemsInCart().subscribe(
+        this.subscriptions.add(this.cartService.getNumberOfItemsInCart().subscribe(
           (response) => {
             this.itemsInCart = response;
           }
-        );
+        ));
       },
       timeout * 1000);
   }
 
   updateFavoriteItems(timeout: number) {
     setTimeout(() => {
-        this.favoriteItemsSub = this.userService.getCountOfFavoriteProducts().subscribe(
+        this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
           (response) => {
             this.favoriteItems = response;
           }
-        );
+        ));
       },
       timeout * 1000);
   }
@@ -135,12 +132,7 @@ export class SideNavComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.cartSubscription.unsubscribe();
-    this.itemsInCartSubscription.unsubscribe();
-    this.favoriteItemsSub.unsubscribe();
-    this.isAdminSub.unsubscribe();
-    this.isSellerSub.unsubscribe();
+    this.subscriptions.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);
-    this.categoriesSub.unsubscribe();
   }
 }

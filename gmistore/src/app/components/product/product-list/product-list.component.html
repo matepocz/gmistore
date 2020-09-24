@@ -163,7 +163,8 @@
               <mat-icon>add_shopping_cart</mat-icon>
             </button>
 
-            <button mat-icon-button matTooltip="Kedvencekhez" matTooltipPosition="above" [color]="'primary'">
+            <button mat-icon-button matTooltip="Kedvencekhez" matTooltipPosition="above" [color]="'primary'"
+            (click)="addProductToFavorites(product.id)">
               <mat-icon>favorite</mat-icon>
             </button>
           </mat-card-actions>

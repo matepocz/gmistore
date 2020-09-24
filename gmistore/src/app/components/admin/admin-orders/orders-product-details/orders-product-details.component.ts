@@ -108,6 +108,7 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
     this.subs.add(this.orderService.fetchOrderDetails(id).subscribe(
       (data) => {
         this.orderDetailsInput = data;
+        console.log(data);
       }, (error) => console.log(error),
       () => this.setOrderDetailsData()
     ));

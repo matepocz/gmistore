@@ -53,8 +53,8 @@ public class AdminService {
         return getStringIntegerMap(sellerRegistrations);
     }
 
-    public Map<String, Integer> getSortedUserRegistrationByDateInterval(List<UserRegistrationDTO> sellerRegistrations) {
-        return getStringIntegerMap(sellerRegistrations);
+    public Map<String, Integer> getSortedUserRegistrationByDateInterval(List<UserRegistrationDTO> userRegistrations) {
+        return getStringIntegerMap(userRegistrations);
     }
 
     private Map<String, Integer> getStringIntegerMap(List<UserRegistrationDTO> sellerRegistrations) {

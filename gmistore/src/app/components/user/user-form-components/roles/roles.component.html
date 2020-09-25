@@ -1,4 +1,4 @@
-<form [formGroup]="userDataForm">
+<form [formGroup]="userDataForm" *ngIf="roleOptions">
 <h2>Szerep kiválasztása</h2>
 <ul formArrayName="roles" *ngFor="let role of getRolesFormArray().controls; let i = index">
   <li>

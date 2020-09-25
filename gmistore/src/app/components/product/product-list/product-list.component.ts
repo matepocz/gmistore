@@ -3,7 +3,6 @@ import {ProductModel} from "../../../models/product-model";
 import {ProductService} from "../../../service/product-service";
 import {CartService} from "../../../service/cart-service";
 import {Subscription} from "rxjs";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
@@ -17,6 +16,7 @@ import {ProductFilterOptions} from "../../../models/product/product-filter-optio
 import {AuthService} from "../../../service/auth-service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 import {UserService} from "../../../service/user.service";
+import {PopupSnackbar} from "../../../utils/popup-snackbar";
 
 @Component({
   selector: 'app-product-list',
@@ -52,8 +52,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   pageSizeOptions: Array<number> = [10, 20, 50];
 
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   category: string;
   categoryDisplayName: string;
@@ -61,14 +59,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   currentUsername: string = null;
 
-  productsSubscription: Subscription;
-  addToCartSubscription: Subscription;
-  paramsSubscription: Subscription;
-  adminSub: Subscription;
-  favoriteSub: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   constructor(private productService: ProductService, private cartService: CartService,
-              private snackBar: MatSnackBar, private titleService: Title,
+              private snackBar: PopupSnackbar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService, private fb: FormBuilder,
               private router: Router, private cdRef: ChangeDetectorRef, private authService: AuthService,
@@ -78,35 +72,36 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.titleService.setTitle("Termékek - GMI Store");
-    this.adminSub = this.authService.isAdmin.subscribe(
-      (response) => {
+    this.subscriptions.add(this.authService.isAdmin.subscribe(
+      (response: boolean) => {
         this.isAdmin = response;
       }, error => console.log(error)
-    );
+    ));
     this.currentUsername = this.authService.currentUsername;
 
-    this.paramsSubscription = this.activatedRoute.queryParamMap.subscribe(
-      (params: ParamMap) => {
-        this.spinnerService.stop(this.spinner);
-        this.category = params.get('category');
-        this.pageIndex = Number(params.get('pageIndex'));
-        this.pageSize = Number(params.get('pageSize'));
-        if (this.filtering && this.category) {
-          this.fetchProductsByCategory(this.filterOptions);
-        } else {
-          this.fetchProductsByCategory();
+    this.subscriptions.add(
+      this.activatedRoute.queryParamMap.subscribe(
+        (params: ParamMap) => {
+          this.spinnerService.stop(this.spinner);
+          this.category = params.get('category');
+          this.pageIndex = Number(params.get('pageIndex'));
+          this.pageSize = Number(params.get('pageSize'));
+          if (this.filtering && this.category) {
+            this.fetchProductsByCategory(this.filterOptions);
+          } else {
+            this.fetchProductsByCategory();
+          }
+        }, (error) => {
+          console.log(error);
         }
-      }, (error) => {
-        console.log(error);
-      }, () => {
-      }
+      )
     );
   }
 
   private fetchProductsByCategory(filterOptions?: ProductFilterOptions) {
     if (this.category) {
       this.spinner = this.spinnerService.start();
-      this.productsSubscription = this.productService.getProductsByCategory(
+      this.subscriptions.add(this.productService.getProductsByCategory(
         this.category, this.pageIndex, this.pageSize, filterOptions
       )
         .subscribe(
@@ -121,7 +116,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
             console.log(error)
             this.spinnerService.stop(this.spinner);
           }
-        )
+        ));
     }
   }
 
@@ -155,6 +150,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   filterProducts() {
     this.filtering = true;
+    this.pageIndex = 0;
     this.setFilterOptions();
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,
@@ -201,29 +197,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   addToCart(id: number) {
     this.spinner = this.spinnerService.start();
-    this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
+    this.subscriptions.add(this.cartService.addProduct(id).subscribe(
       (response) => {
         if (response) {
-          this.openSnackBar('A termék a kosárba került!');
+          this.snackBar.popUp('A termék a kosárba került!');
           this.sideNavComponent.updateItemsInCart(0);
         } else {
-          this.openSnackBar("A kért mennyiség nincs készleten!");
+          this.snackBar.popUp("A kért mennyiség nincs készleten!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
       }
-    )
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, 'OK', {
-      duration: 2000,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-    });
+    ));
   }
 
   formatLabel(value: number) {
@@ -258,18 +246,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.deleteProduct(productId);
-      }
-    });
+    this.subscriptions.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.deleteProduct(productId);
+        }
+      })
+    );
   }
 
   deleteProduct(id: number) {
-    this.productService.deleteProduct(id).subscribe(
+    this.subscriptions.add(this.productService.deleteProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék törölve.");
+          this.snackBar.popUp("Termék törölve.");
           if (this.filtering) {
             this.fetchProductsByCategory(this.filterOptions);
           } else {
@@ -277,28 +267,28 @@ export class ProductListComponent implements OnInit, OnDestroy {
           }
         }
       }, (error) => {
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
         console.log(error)
       }
-    )
+    ));
   }
 
   addProductToFavorites(id: number) {
     this.spinner = this.spinnerService.start();
-    this.favoriteSub = this.userService.addProductToFavorites(id).subscribe(
+    this.subscriptions.add(this.userService.addProductToFavorites(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék hozzáadva a kedvencekhez.");
+          this.snackBar.popUp("Termék hozzáadva a kedvencekhez.");
           this.sideNavComponent.updateFavoriteItems(0);
         } else {
-          this.openSnackBar("Valami hiba történt!");
+          this.snackBar.popUp("Valami hiba történt!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
         this.spinnerService.stop(this.spinner);
       }
-    )
+    ));
   }
 
   detectChanges() {
@@ -306,15 +296,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.productsSubscription) {
-      this.productsSubscription.unsubscribe();
-    }
-    this.paramsSubscription.unsubscribe();
-    if (this.addToCartSubscription) {
-      this.addToCartSubscription.unsubscribe();
-    }
-    if (this.favoriteSub){
-      this.favoriteSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

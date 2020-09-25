@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ProductModel} from "../../../models/product-model";
 import {ProductService} from "../../../service/product-service";
 import {CartService} from "../../../service/cart-service";
@@ -25,10 +25,8 @@ import {PopupSnackbar} from "../../../utils/popup-snackbar";
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  @Input() products: Array<ProductModel>;
+  products: Array<ProductModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  chooseAbleRatings: Array<number> = [5, 4, 3, 2, 1];
 
   priceForm: FormGroup = this.fb.group({
     minimumPrice: [1],
@@ -53,6 +51,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
 
+  deals: boolean = false;
+
   category: string;
   categoryDisplayName: string;
 
@@ -71,12 +71,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.activatedRoute.snapshot.url[1]?.path === "deals") {
+      this.deals = true;
+    }
     this.titleService.setTitle("Termékek - GMI Store");
-    this.subscriptions.add(this.authService.isAdmin.subscribe(
-      (response: boolean) => {
-        this.isAdmin = response;
-      }, error => console.log(error)
-    ));
+
+    this.subscriptions.add(
+      this.authService.isAdmin.subscribe(
+        (response: boolean) => {
+          this.isAdmin = response;
+        }, error => console.log(error)
+      )
+    );
     this.currentUsername = this.authService.currentUsername;
 
     this.subscriptions.add(
@@ -86,7 +92,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.category = params.get('category');
           this.pageIndex = Number(params.get('pageIndex'));
           this.pageSize = Number(params.get('pageSize'));
-          if (this.filtering && this.category) {
+          if (this.filtering && this.deals) {
+            this.fetchDiscountedProducts(this.filterOptions);
+          } else if (this.deals) {
+            this.fetchDiscountedProducts();
+          } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
           } else {
             this.fetchProductsByCategory();
@@ -98,40 +108,54 @@ export class ProductListComponent implements OnInit, OnDestroy {
     );
   }
 
+  private fetchDiscountedProducts(filterOptions?: ProductFilterOptions) {
+    this.spinner = this.spinnerService.start();
+    this.subscriptions.add(
+      this.productService.getDiscountedProducts(this.pageIndex, this.pageSize, filterOptions).subscribe(
+        (response: PagedProductListModel) => {
+          this.products = response.products;
+          this.setMaxPrice(response.highestPrice);
+          this.numberOfProducts = response.totalElements
+          this.categoryDisplayName = response.categoryDisplayName;
+          this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
+          this.spinnerService.stop(this.spinner);
+        }, (error) => {
+          this.spinnerService.stop(this.spinner);
+        }
+      )
+    );
+  }
+
   private fetchProductsByCategory(filterOptions?: ProductFilterOptions) {
     if (this.category) {
       this.spinner = this.spinnerService.start();
       this.subscriptions.add(this.productService.getProductsByCategory(
-        this.category, this.pageIndex, this.pageSize, filterOptions
-      )
+        this.category, this.pageIndex, this.pageSize, filterOptions)
         .subscribe(
           (response: PagedProductListModel) => {
             this.products = response.products;
             this.categoryDisplayName = response.categoryDisplayName;
             this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
             this.numberOfProducts = response.totalElements;
-            this.setMinAndMaxPrices();
+            this.setMaxPrice(response.highestPrice);
             this.spinnerService.stop(this.spinner);
           }, error => {
             console.log(error)
             this.spinnerService.stop(this.spinner);
           }
-        ));
+        )
+      );
     }
   }
 
-  setMinAndMaxPrices() {
-    this.products.forEach(
-      (product: ProductModel) => {
-        if (product.price > this.maximumPrice) {
-          this.maximumPrice = product.price;
-          this.maxPrice = product.price;
-          this.priceForm.patchValue({
-            maximumPrice: product.price
-          })
-        }
-      }
-    );
+  setMaxPrice(maxPrice: number) {
+    if (maxPrice > this.maximumPrice) {
+      this.maximumPrice = maxPrice
+      this.maxPrice = maxPrice;
+      this.priceForm.patchValue({
+        maximumPrice: maxPrice
+      });
+    }
   }
 
   paginationEventHandler($event: PageEvent) {
@@ -161,13 +185,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
         pageSize: this.pageSize,
       }
     });
-    this.fetchProductsByCategory(this.filterOptions);
+    if (this.deals) {
+      this.fetchDiscountedProducts(this.filterOptions);
+    } else {
+      this.fetchProductsByCategory(this.filterOptions);
+    }
   }
 
   private setFilterOptions() {
     this.filterOptions.notInStock = this.notInStock;
     this.filterOptions.nonDiscounted = this.nonDiscounted;
-    this.filterOptions.discounted = this.discounted;
+    if (this.deals) {
+      this.filterOptions.discounted = true;
+    } else {
+      this.filterOptions.discounted = this.discounted;
+    }
     this.filterOptions.minPrice = this.minimumPrice;
     this.filterOptions.maxPrice = this.maximumPrice;
     this.filterOptions.lowestRating = this.lowestRating;
@@ -179,11 +211,30 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.nonDiscounted = false;
     this.discounted = false;
     this.lowestRating = 0;
+    if (this.category) {
+      this.navigateToUnfilteredCategorizedPage();
+    } else if (this.deals) {
+      this.navigateToUnfilteredDealsPage();
+    }
+  }
+
+  private navigateToUnfilteredCategorizedPage() {
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
         category: this.category,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      }
+    });
+  }
+
+  private navigateToUnfilteredDealsPage() {
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
       }
@@ -260,7 +311,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
       (response: boolean) => {
         if (response) {
           this.snackBar.popUp("Termék törölve.");
-          if (this.filtering) {
+          if (this.filtering && this.deals) {
+            this.fetchDiscountedProducts(this.filterOptions);
+          } else if (this.deals) {
+            this.fetchDiscountedProducts();
+          } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
           } else {
             this.fetchProductsByCategory();

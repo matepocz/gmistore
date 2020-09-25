@@ -35,6 +35,10 @@
             Kategóriák
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
+          <button mat-button fxHide.lt-md="true" aria-label="Deals and offers button"
+                  [routerLink]="['/product-list/deals']" [queryParams]="{pageSize: 10, pageIndex: 0}">
+            Ajánlatok
+          </button>
 
           <mat-menu #level1="matMenu">
             <ng-template matMenuContent>
@@ -95,19 +99,19 @@
 
           </mat-menu>
 
-          <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon"
+          <button mat-button aria-label="Button to favorite products" matTooltip="Kedvencek"
                   *ngIf="authenticatedUser">
             <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()"
                       matBadgeSize="medium"
                       matBadgeOverlap="false">favorite
             </mat-icon>
           </button>
-          <button mat-icon-button class="example-icon" [routerLink]="['/cart']"
-                  aria-label="Example icon-button with share icon" id="cart-icon">
+          <button mat-icon-button [routerLink]="['/cart']" aria-label="Button for cart details" id="cart-icon"
+                  matTooltip="Kosár">
             <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart
             </mat-icon>
           </button>
-          <button color="primary" *ngIf="isAdmin" mat-icon-button class="example-icon" [routerLink]="['/admin/dashboard']"
+          <button color="primary" *ngIf="isAdmin" mat-icon-button [routerLink]="['/admin/dashboard']"
                   aria-label="admin settings button" id="admin-icon">
             <mat-icon>admin_panel_settings</mat-icon>
           </button>

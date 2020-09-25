@@ -106,7 +106,7 @@ public class CartService {
         return false;
     }
 
-    private CartItem createNewCartItem(int count, Product actualProduct) {
+    CartItem createNewCartItem(int count, Product actualProduct) {
         CartItem cartItem = new CartItem();
         cartItem.setProduct(actualProduct);
         cartItem.setCount(count);

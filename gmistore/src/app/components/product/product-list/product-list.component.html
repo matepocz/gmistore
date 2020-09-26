@@ -170,7 +170,7 @@
         </div>
       </mat-card>
 
-      <mat-card class="mat-elevation-z8" fxFlex.lt-md="97" fxFlex="98" *ngIf="products?.length > 0"
+      <mat-card class="mat-elevation-z8" fxFlex.lt-md="97" fxFlex="99" *ngIf="products?.length > 0"
       [ngStyle.gt-sm]="{'margin-left': '3px'}">
         <mat-paginator #paginator [length]="numberOfProducts" [color]="'primary'" (focusin)="detectChanges()"
                        [pageSize]="pageSize" (page)="paginationEventHandler($event)"

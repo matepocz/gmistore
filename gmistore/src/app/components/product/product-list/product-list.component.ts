@@ -218,6 +218,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     }
   }
 
+  openFilterDialog() {
+    console.log("filter dialog opened");
+  }
+
   private navigateToUnfilteredCategorizedPage() {
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,

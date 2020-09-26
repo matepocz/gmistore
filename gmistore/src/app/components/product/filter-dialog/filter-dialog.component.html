@@ -1,0 +1,61 @@
+<h1 mat-dialog-title>Termékek szűrése</h1>
+
+  <div fxLayout="column" fxLayoutAlign="start">
+    <mat-panel-title class="mb-10"><strong>Elérhetőség</strong></mat-panel-title>
+
+    <mat-checkbox [(ngModel)]="data.filterOptions.notInStock">Nincs raktáron</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.filterOptions.nonDiscounted" *ngIf="!data.deals">Nem akciós</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.filterOptions.discounted" *ngIf="!data.deals">Akciós</mat-checkbox>
+
+    <div fxFlex="100">
+      <mat-divider class="divider-primary-colored"></mat-divider>
+    </div>
+
+    <div [formGroup]="priceForm" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
+      <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
+        <mat-label>Minimum ár</mat-label>
+        <label>
+          <input type="number" matInput placeholder="" formControlName="minimumPrice"
+                 [min]="minPrice" [max]="maxPrice - 1" (change)="updateMinPrice()">
+        </label>
+
+        <mat-error *ngIf="priceForm.get('minimumPrice').invalid">
+          Ár szükséges, nem lehet negatív szám!
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
+        <mat-label>Maximum ár</mat-label>
+        <label>
+          <input type="number" matInput placeholder="" formControlName="maximumPrice"
+                 [min]="data.filterOptions.minPrice + 1" [max]="maxPrice" (change)="updateMaxPrice()">
+        </label>
+
+        <mat-error *ngIf="priceForm.get('maximumPrice').invalid">
+          Ár szükséges, nem lehet negatív szám!
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div fxFlex="100">
+      <mat-divider class="divider-primary-colored"></mat-divider>
+    </div>
+
+    <div class="mt-15" fxLayout="column">
+      <p fxFlex="100" class="mb-10"><strong>Legkisebb értékelés</strong></p>
+
+      <ng-template let-id ngFor [ngForOf]="[5, 4, 3, 2, 1]">
+        <mat-checkbox class="rating-checkbox" [checked]="data.filterOptions.lowestRating === id"
+                      (change)="data.filterOptions.lowestRating = id" color="primary">
+          <star-rating [readOnly]="true" [rating]="id" staticColor="ok">
+          </star-rating>
+        </mat-checkbox>
+      </ng-template>
+
+    </div>
+  </div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()" cdkfocusinitial>Vissza</button>
+  <button mat-button [mat-dialog-close]="data">Szűrés</button>
+</div>

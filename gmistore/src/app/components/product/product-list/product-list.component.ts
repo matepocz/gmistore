@@ -119,7 +119,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.categoryDisplayName = response.categoryDisplayName;
           this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
           this.spinnerService.stop(this.spinner);
-        }, (error) => {
+        }, () => {
           this.spinnerService.stop(this.spinner);
         }
       )
@@ -149,11 +149,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   setMaxPrice(maxPrice: number) {
-    if (maxPrice > this.maximumPrice) {
-      this.maximumPrice = maxPrice
-      this.maxPrice = maxPrice;
+    if (maxPrice > this.maximumPrice && !this.filtering) {
+      this.maximumPrice = maxPrice + 1
+      this.maxPrice = maxPrice + 1;
       this.priceForm.patchValue({
-        maximumPrice: maxPrice
+        maximumPrice: maxPrice + 1,
       });
     }
   }
@@ -339,7 +339,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.snackBar.popUp("Valami hiba történt!");
         }
         this.spinnerService.stop(this.spinner);
-      }, (error) => {
+      }, () => {
         this.snackBar.popUp("Valami hiba történt!");
         this.spinnerService.stop(this.spinner);
       }

@@ -40,9 +40,18 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDto>> getActiveProducts() {
-        List<ProductDto> products = productService.getAllActiveProducts();
+    @PostMapping("/discounted-products")
+    public ResponseEntity<PagedProductList> getDiscountedProducts(
+            @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
+            @RequestParam(value = "size", defaultValue = "10") String size,
+            @RequestParam(value = "page", defaultValue = "0") String page,
+            @RequestBody(required = false) ProductFilterOptions filterOptions) {
+        PagedProductList products;
+        if (filter) {
+            products = productService.getFilteredDiscountedProducts(page, size, filterOptions);
+        } else {
+            products = productService.getDiscountedProducts(page, size);
+        }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -54,7 +63,7 @@ public class ProductController {
             @RequestBody(required = false) ProductFilterOptions filterOptions
     ) {
         PagedProductList products;
-        if (filter){
+        if (filter) {
             products = productService.getFilteredProducts(
                     category, page, size, filterOptions);
         } else {
@@ -105,8 +114,8 @@ public class ProductController {
     }
 
     @GetMapping("/get-discount-product")
-    public ResponseEntity<List<ProductDto>>getDiscountProducts(){
+    public ResponseEntity<List<ProductDto>> getDiscountProducts() {
         List<ProductDto> pictureOfProductsInOffer = productService.getProductInOffer();
-        return new ResponseEntity<>(pictureOfProductsInOffer,HttpStatus.OK);
+        return new ResponseEntity<>(pictureOfProductsInOffer, HttpStatus.OK);
     }
 }

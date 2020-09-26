@@ -15,4 +15,5 @@ public class PagedProductList {
     private Long totalElements;
     private Integer totalPages;
     private String categoryDisplayName;
+    private Integer highestPrice;
 }

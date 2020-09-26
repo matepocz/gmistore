@@ -26,8 +26,19 @@ export class ProductService {
     return this.httpClient.get<ProductModel>(this.productsUrl + '/' + slug);
   }
 
-  getActiveProducts(): Observable<ProductModel[]> {
-    return this.httpClient.get<ProductModel[]>(this.productsUrl);
+  getDiscountedProducts(
+    pageIndex: number, pageSize: number, filterOptions?: ProductFilterOptions
+  ): Observable<PagedProductListModel> {
+    let params = {
+      filter: filterOptions ? "true" : "false",
+      size: pageSize.toString(),
+      page: pageIndex.toString()
+    }
+    return this.httpClient.post<PagedProductListModel>(
+      this.productsUrl + '/discounted-products',
+      filterOptions,
+      {params: params}
+    );
   }
 
   getProductsByCategory(
@@ -39,7 +50,7 @@ export class ProductService {
       page: page.toString()
     }
     return this.httpClient.post<PagedProductListModel>(
-      this.productsUrl + '/by-category/' + category, filterOptions,{params: params});
+      this.productsUrl + '/by-category/' + category, filterOptions, {params: params});
   }
 
   getMainProductCategories(): Observable<Array<ProductCategoryModel>> {

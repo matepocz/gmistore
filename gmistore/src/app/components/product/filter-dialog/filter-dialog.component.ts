@@ -1,7 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, Inject, OnInit} from "@angular/core";
 
 @Component({
   selector: 'app-filter-dialog',

@@ -34,14 +34,18 @@
           <div [formGroup]="priceForm" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Minimum ár</mat-label>
-              <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
-                     matInput placeholder="" formControlName="minimumPrice" [min]="minPrice" [max]="maxPrice - 1">
+              <label>
+                <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
+                       matInput placeholder="" formControlName="minimumPrice" [min]="minPrice" [max]="maxPrice - 1">
+              </label>
             </mat-form-field>
 
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Maximum ár</mat-label>
-              <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
-                     matInput placeholder="" formControlName="maximumPrice" [min]="minimumPrice + 1" [max]="maxPrice">
+              <label>
+                <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
+                       matInput placeholder="" formControlName="maximumPrice" [min]="minimumPrice + 1" [max]="maxPrice">
+              </label>
             </mat-form-field>
           </div>
 
@@ -72,7 +76,7 @@
       </mat-card>
     </div>
 
-    <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
+    <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-lg="space-evenly">
       <div fxLayout="column" fxFlex.lt-md="98" fxFlex="99" fxLayoutAlign="center" *ngIf="products">
         <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100" fxLayout="row wrap">
           <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">

@@ -110,14 +110,16 @@ export class SideNavComponent implements OnInit {
   }
 
   updateFavoriteItems(timeout: number) {
-    setTimeout(() => {
-        this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
-          (response) => {
-            this.favoriteItems = response;
-          }
-        ));
-      },
-      timeout * 1000);
+    if (this.authenticatedUser){
+      setTimeout(() => {
+          this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
+            (response) => {
+              this.favoriteItems = response;
+            }
+          ));
+        },
+        timeout * 1000);
+    }
   }
 
   getData(selected) {

@@ -9,7 +9,7 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
@@ -17,6 +17,7 @@ import {AuthService} from "../../../service/auth-service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 import {UserService} from "../../../service/user.service";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
+import {FilterDialogComponent} from "../filter-dialog/filter-dialog.component";
 
 @Component({
   selector: 'app-product-list',
@@ -29,8 +30,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   priceForm: FormGroup = this.fb.group({
-    minimumPrice: [1],
-    maximumPrice: [0]
+    minimumPrice: [1, Validators.compose(
+      [Validators.required, Validators.min(1)])],
+    maximumPrice: [0, Validators.compose(
+      [Validators.required, Validators.min(2)])]
   })
 
   notInStock: boolean = false;
@@ -219,7 +222,28 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   openFilterDialog() {
-    console.log("filter dialog opened");
+    this.setFilterOptions();
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
+      width: '90%',
+      data: {
+        filterOptions: this.filterOptions,
+        deals: this.deals
+      }
+    });
+
+    this.subscriptions.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.notInStock = this.filterOptions.notInStock;
+          this.discounted = this.filterOptions.discounted;
+          this.nonDiscounted = this.filterOptions.nonDiscounted;
+          this.minimumPrice = this.filterOptions.minPrice;
+          this.maximumPrice = this.filterOptions.maxPrice;
+          this.lowestRating = this.filterOptions.lowestRating;
+          this.filterProducts();
+        }
+      })
+    );
   }
 
   private navigateToUnfilteredCategorizedPage() {

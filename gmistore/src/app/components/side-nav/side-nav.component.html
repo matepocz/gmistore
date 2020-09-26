@@ -6,6 +6,10 @@
                  [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [(opened)]="opened">
       <mat-nav-list>
+        <a mat-list-item [routerLink]="['/product-list/deals']" [queryParams]="{pageSize: 10, pageIndex: 0}"
+        [ngStyle]="{'color': 'red'}">
+          Ajánlatok
+        </a>
         <app-menu-list-item *ngFor="let item of categories" [item]="item"></app-menu-list-item>
         <mat-divider class="divider-primary-colored" *ngIf="authenticatedUser"></mat-divider>
         <a mat-list-item [routerLink]="['/add-product']" *ngIf="isAdmin || isSeller">Új termék</a>

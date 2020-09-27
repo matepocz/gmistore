@@ -29,6 +29,8 @@ import {AdminCategoriesComponent} from "./components/admin/admin-categories/admi
 import {PasswordResetComponent} from "./components/user/password-reset/password-reset.component";
 import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
 import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
+import {AdminIncomeEmailsComponent} from "./components/admin/admin-income-emails/admin-income-emails.component";
+import {IncomeEmailsDetailsComponent} from "./components/admin/admin-income-emails/income-emails-details/income-emails-details.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -93,6 +95,8 @@ const routes: Routes = [
       {path: 'user/edit/:id', component: AdminUserFormComponent},
       {path: 'orders', component: OrdersListComponent},
       {path: 'orders/edit/:id', component: OrdersFormComponent},
+      {path: 'income-emails', component: AdminIncomeEmailsComponent},
+      {path: 'income-emails/edit/:id', component: IncomeEmailsDetailsComponent},
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},

@@ -9,13 +9,18 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class EmailSendingService {
-  private baseURL = environment.apiUrl + 'api/contact-us'
+  private baseURL = environment.apiUrl + 'api/contact-messages'
 
   constructor(private http: HttpClient) {
 
   }
 
-  saveEmailFromUser(data: EmailModel): Observable<any> {
-    return this.http.post(this.baseURL, data);
+  saveEmailFromUser(data: EmailModel): Observable<EmailModel> {
+    return this.http.post<EmailModel>(this.baseURL, data);
+  }
+
+
+  getIncomeEmails(): Observable<Array<EmailModel>> {
+    return this.http.get<Array<EmailModel>>(this.baseURL+'/income-emails');
   }
 }

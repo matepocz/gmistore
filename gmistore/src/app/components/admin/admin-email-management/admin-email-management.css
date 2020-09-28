@@ -43,8 +43,9 @@ tr.student-element-row:not(.student-expanded-row):active {
   border: 1px solid lightgray;
 }
 
-.response-icon{
-  color: limegreen;
+.response-icon:hover{
+  background-color: #94e394;
+  color: white;
 }
 
 .search-field{

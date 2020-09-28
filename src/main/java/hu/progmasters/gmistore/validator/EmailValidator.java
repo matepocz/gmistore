@@ -1,6 +1,6 @@
 package hu.progmasters.gmistore.validator;
 
-import hu.progmasters.gmistore.dto.EmailCreatingDto;
+import hu.progmasters.gmistore.dto.messages.EmailCreatingDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

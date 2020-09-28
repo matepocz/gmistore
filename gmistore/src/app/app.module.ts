@@ -93,8 +93,7 @@ import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
 import {PopupSnackbar} from "./utils/popup-snackbar";
 import {FilterDialogComponent} from './components/product/filter-dialog/filter-dialog.component';
-import { AdminIncomeEmailsComponent } from './components/admin/admin-income-emails/admin-income-emails.component';
-import { IncomeEmailsDetailsComponent } from './components/admin/admin-income-emails/income-emails-details/income-emails-details.component';
+import {AdminEmailManagement} from './components/admin/admin-email-management/admin-email-management';
 
 @NgModule({
   declarations: [
@@ -145,8 +144,7 @@ import { IncomeEmailsDetailsComponent } from './components/admin/admin-income-em
     LoadingSpinnerComponent,
     ConfirmDialog,
     FilterDialogComponent,
-    AdminIncomeEmailsComponent,
-    IncomeEmailsDetailsComponent,
+    AdminEmailManagement,
   ],
 
     imports: [

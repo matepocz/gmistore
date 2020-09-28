@@ -1,0 +1,22 @@
+<div class="containerX" fxLayoutAlign="center">
+  <mat-card class="mat-elevation-z8" fxLayout="row wrap" fxLayoutGap="10px"
+            fxFlex.lt-md="100" fxFlex.gt-md="70" fxLayoutAlign="space-between" *ngIf="products">
+    <mat-card-header>
+      <mat-card-title class="mb-10" fxFlex="100">
+        Kedvenc termékeim ( {{ products?.length }} termék)
+      </mat-card-title>
+      <mat-icon mat-card-avatar>favorite</mat-icon>
+    </mat-card-header>
+
+    <div fxFlex="100" fxLayout="column" class="mt-15" *ngFor="let product of products; let last = last">
+      <app-product-card fxFlex="100" [product]="product" [deleteAble]="true"
+      (deleteProduct)="openDeleteProductDialog(product.id, product.name)"
+      (productToCart)="addProductToCart(product.id)">
+      </app-product-card>
+
+      <mat-divider inset="true" class="divider-primary-colored" *ngIf="!last">
+      </mat-divider>
+    </div>
+
+  </mat-card>
+</div>

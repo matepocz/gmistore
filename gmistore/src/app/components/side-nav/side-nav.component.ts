@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {MainCategoryModel} from "../../models/main-category.model";
 import {AdminService} from "../../service/admin.service";
 import {UserService} from "../../service/user.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-side-nav',
@@ -16,6 +17,10 @@ import {UserService} from "../../service/user.service";
 })
 
 export class SideNavComponent implements OnInit {
+
+  searchForm: FormGroup = new FormGroup({
+    searchInput: new FormControl(null, Validators.required)
+  })
   mobileQuery: MediaQueryList;
   @ViewChild('drawer') drawer: ElementRef;
 
@@ -110,7 +115,7 @@ export class SideNavComponent implements OnInit {
   }
 
   updateFavoriteItems(timeout: number) {
-    if (this.authenticatedUser){
+    if (this.authenticatedUser) {
       setTimeout(() => {
           this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
             (response) => {
@@ -133,6 +138,19 @@ export class SideNavComponent implements OnInit {
 
   openNav() {
     this.opened = true;
+  }
+
+  submitSearch() {
+    this.router.navigate(
+      ['/product-list/search'],
+      {
+        queryParams: {
+          q: this.searchForm.get('searchInput').value,
+          pageSize: 10,
+          pageIndex: 0
+        }
+      }
+    )
   }
 
   ngOnDestroy(): void {

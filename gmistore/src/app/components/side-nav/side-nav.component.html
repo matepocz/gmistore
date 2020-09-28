@@ -7,7 +7,7 @@
                  [(opened)]="opened">
       <mat-nav-list>
         <a mat-list-item [routerLink]="['/product-list/deals']" [queryParams]="{pageSize: 10, pageIndex: 0}"
-        [ngStyle]="{'color': 'red'}">
+           [ngStyle]="{'color': 'red'}">
           Ajánlatok
         </a>
         <app-menu-list-item *ngFor="let item of categories" [item]="item"></app-menu-list-item>
@@ -46,6 +46,15 @@
                   [routerLink]="['/product-list/deals']" [queryParams]="{pageSize: 10, pageIndex: 0}">
             Ajánlatok
           </button>
+          <span class="spacer"></span>
+
+          <div [formGroup]="searchForm" fxHide.lt-sm="true" fxLayout="row"
+               class="search-input-div" fxFlex="30" fxFlex.lt-md="40" fxLayoutAlign="space-between">
+
+              <input class="search-input" fxFlex="87" fxFlex.lt-lg="83" placeholder=" Keresés..."
+              formControlName="searchInput" (keyup.enter)="submitSearch()">
+            <mat-icon fxFlex="10" fxFlex.lt-lg="15" (click)="submitSearch()" class="search-input-icon">search</mat-icon>
+          </div>
 
           <mat-menu #level1="matMenu">
             <ng-template matMenuContent>

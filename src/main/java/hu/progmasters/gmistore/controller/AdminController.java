@@ -1,6 +1,8 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.*;
+import hu.progmasters.gmistore.dto.order.IncomePerOrderDto;
+import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderListDto;
 import hu.progmasters.gmistore.dto.order.OrderProductDetailsDto;
 import hu.progmasters.gmistore.dto.product.ProductTableDto;
@@ -91,6 +93,14 @@ public class AdminController {
         return new ResponseEntity<>(userRegistrations, HttpStatus.OK);
     }
 
+    @GetMapping("/income")
+    public ResponseEntity<List<IncomePerOrderDto>> getIncomePerOrder(@RequestParam String criteria) {
+        List<IncomePerOrderDto> userRegistrationsByDateInterval = orderService.getIncomePerOrder(criteria);
+        return userRegistrationsByDateInterval != null ?
+                new ResponseEntity<>(userRegistrationsByDateInterval, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 
     @GetMapping("/users")
     public ResponseEntity<List<UserListDetailDto>> getAllUsers() {
@@ -128,7 +138,7 @@ public class AdminController {
         SseEmitter emitter = new SseEmitter();
         executor.execute(() -> {
             try {
-                for (int i = 0; i <20 ; i++) {
+                for (int i = 0; i < 20; i++) {
                     emitter.send(new Date());
                     Thread.sleep(4000);
                 }
@@ -141,7 +151,7 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductTableDto>> getAllProductsToTable(){
+    public ResponseEntity<List<ProductTableDto>> getAllProductsToTable() {
         List<ProductTableDto> orders = productService.getAllProductsToTable();
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }

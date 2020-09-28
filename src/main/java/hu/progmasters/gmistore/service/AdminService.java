@@ -26,11 +26,14 @@ public class AdminService {
     private final SessionRegistry sessionRegistry;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final DateService dateService;
 
-    public AdminService(SessionRegistry sessionRegistry, UserRepository userRepository, UserService userService) {
+    public AdminService(SessionRegistry sessionRegistry, DateService dateService,
+                        UserRepository userRepository, UserService userService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.dateService = dateService;
     }
 
     public UserDto getUserById(Long id) {
@@ -84,15 +87,39 @@ public class AdminService {
     }
 
     public List<UserRegistrationDTO> getUserRegistrationsByDateInterval(String criteria) {
-        JSONObject obj = new JSONObject(criteria);
-
-        String start = obj.getString("start");
-        String end = obj.getString("end");
-        String startDate = start.substring(0, start.length() - 1);
-        String endDate = end.substring(0, end.length() - 1);
-        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate);
-        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate);
-
-        return userRepository.findUserRegistrationsByDateInterval(dateTimeStart, dateTimeEnd);
+        DateService.CreateDates createDates = dateService.stringToDate(criteria);
+        return userRepository.findUserRegistrationsByDateInterval(createDates.getStart(), createDates.getEnd());
     }
+
+
+//    public CreateDates stringToDate(String criteria){
+//        JSONObject obj = new JSONObject(criteria);
+//
+//        String start = obj.getString("start");
+//        String end = obj.getString("end");
+//        String startDate = start.substring(0, start.length() - 1);
+//        String endDate = end.substring(0, end.length() - 1);
+//        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate);
+//        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate);
+//
+//        return new CreateDates(dateTimeStart, dateTimeEnd);
+//    }
+//
+//    private static class CreateDates {
+//        private final LocalDateTime start;
+//        private final LocalDateTime end;
+//        public CreateDates(LocalDateTime dateTimeStart, LocalDateTime dateTimeEnd) {
+//            this.start = dateTimeStart;
+//            this.end = dateTimeEnd;
+//        }
+//
+//        public LocalDateTime getStart() {
+//            return start;
+//        }
+//
+//        public LocalDateTime getEnd() {
+//            return end;
+//        }
+//    }
 }
+

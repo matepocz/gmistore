@@ -2,10 +2,7 @@ package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.order.OrderDto;
-import hu.progmasters.gmistore.dto.order.OrderListDto;
-import hu.progmasters.gmistore.dto.order.OrderRequest;
-import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
+import hu.progmasters.gmistore.dto.order.*;
 import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.enums.EnglishAlphabet;
 import hu.progmasters.gmistore.enums.OrderStatus;
@@ -42,14 +39,16 @@ public class OrderService {
     private final InventoryService inventoryService;
     private final EmailSenderService emailSenderService;
     private final OrderStatusHistoryRepository orderStatusHistoryRepository;
+    private final DateService dateService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService, InventoryService inventoryService,
+                        LookupService lookupService, InventoryService inventoryService,DateService dateService,
                         EmailSenderService emailSenderService, OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.cartService = cartService;
+        this.dateService = dateService;
         this.lookupService = lookupService;
         this.inventoryService = inventoryService;
         this.emailSenderService = emailSenderService;
@@ -385,5 +384,10 @@ public class OrderService {
             orderStatusList.add(orderStatusHistory);
             order.setStatus(OrderStatus.valueOf(status));
         }
+    }
+
+    public List<IncomePerOrderDto> getIncomePerOrder(String criteria) {
+        DateService.CreateDates dates = dateService.stringToDate(criteria);
+        return orderRepository.findAllByOrderedAt(dates.getStart(), dates.getEnd());
     }
 }

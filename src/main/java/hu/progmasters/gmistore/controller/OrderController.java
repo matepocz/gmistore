@@ -2,6 +2,7 @@ package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
+import hu.progmasters.gmistore.dto.order.IncomePerOrderDto;
 import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 

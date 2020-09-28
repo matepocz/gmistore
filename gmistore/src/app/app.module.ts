@@ -93,6 +93,7 @@ import {HunMatPaginatorIntl} from "./utils/hun-mat-paginator-intl";
 import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
 import {PopupSnackbar} from "./utils/popup-snackbar";
 import {FilterDialogComponent} from './components/product/filter-dialog/filter-dialog.component';
+import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import {FilterDialogComponent} from './components/product/filter-dialog/filter-d
     LoadingSpinnerComponent,
     ConfirmDialog,
     FilterDialogComponent,
+    FavoriteProductsComponent,
   ],
 
     imports: [

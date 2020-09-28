@@ -29,6 +29,7 @@ import {AdminCategoriesComponent} from "./components/admin/admin-categories/admi
 import {PasswordResetComponent} from "./components/user/password-reset/password-reset.component";
 import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
 import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
+import {FavoriteProductsComponent} from "./components/favorite-products/favorite-products.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -68,6 +69,12 @@ const routes: Routes = [
   {
     path: 'add-review/:slug',
     component: AddProductReviewComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
+  {
+    path: 'favorite-products',
+    component: FavoriteProductsComponent,
     canActivate: [AuthGuard],
     data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
   },

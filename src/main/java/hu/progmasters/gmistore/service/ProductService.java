@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,7 +78,12 @@ public class ProductService {
         product.setAverageRating(productDto.getAverageRating());
         product.setActive(productDto.isActive());
         product.setAddedBy(productDto.getAddedBy());
+        product.setPriceGross(getPriceGross(productDto));
         return product;
+    }
+
+    private double getPriceGross(ProductDto productDto) {
+        return productDto.getPrice()* 0.5 + new Random().nextFloat() * (0.80 - 0.5);
     }
 
     LookupEntity getCategoryByKey(String key) {

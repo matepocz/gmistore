@@ -67,6 +67,9 @@ public class Product implements Serializable {
     @Column(name = "price")
     private Double price;
 
+    @Column(name = "price_gross")
+    private Double priceGross;
+
     @Column(name = "discount", columnDefinition = "int default 0")
     private int discount;
 

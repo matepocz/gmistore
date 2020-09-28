@@ -1,53 +1,65 @@
-<div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
-  <div fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100" fxFlex.gt-sm="80"
-       fxLayoutAlign.lt-md="center" fxLayoutAlign="space-evenly start">
-    <div >
-      <mat-card class="mat-elevation-z8" fxFlex="100" fxLayout="column">
+<div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
+  <a [routerLink]="['/product', product.slug]" fxFlex.gt-xs="36" fxFlex.lt-sm="100">
+    <img mat-card-image class="product-preview-img"
+         [src]="product.pictureUrl" alt="product-picture">
+  </a>
 
-        <div class="cart-product-card" *ngFor="let item of products" fxLayout="row wrap"
-             fxLayoutAlign="space-between center" fxLayoutGap="10px">
-
-          <div class="" fxFlex.gt-xs="30" fxFlex.xs="100" fxLayout="row">
-            <img mat-card-image class="cart-product-preview-img" fxFlex="100" [src]="item.pictureUrl"
-                 alt="product-picture">
-          </div>
-
-          <div fxLayout="column" fxFlex.gt-xs="60" fxFlex.xs="100">
-
-            <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
-              <mat-card-header fxLayout="column" fxFlex="75">
-                <mat-card-title><a href>{{item.orderItemId }}</a></mat-card-title>
-                <mat-card-title>{{ item.name }}</mat-card-title>
-                <mat-card-subtitle class="cart-product-text">Termék
-                  kód: {{ item.productCode }}</mat-card-subtitle>
-              </mat-card-header>
-            </div>
-
-            <div class="" fxFlex="100" fxLayout="row">
-              <mat-card-header *ngIf="item.discount">
-                <mat-card-title class="text-red">
-                  {{ (item.price / 100) * (100 - item.discount) |
-                  currency: 'HUF': 'symbol-narrow': '2.0' }}
-                </mat-card-title>
-                <mat-card-subtitle>
-                  <del>
-                    {{ item.price | currency: 'HUF': 'symbol-narrow': '2.0'}}
-                  </del>
-                  ({{ item.discount }} %)
-                </mat-card-subtitle>
-              </mat-card-header>
-
-              <mat-card-header *ngIf="!item.discount">
-                <mat-card-subtitle>
-                  {{ item.price | currency: 'HUF': 'symbol-narrow': '3.0'}}
-                </mat-card-subtitle>
-              </mat-card-header>
-            </div>
-          </div>
-          <mat-divider class="divider-primary-colored" inset="true"></mat-divider>
-        </div>
-      </mat-card>
+  <div fxLayout="column" fxFlex.gt-xs="60" fxFlex.xs="100">
+    <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
+      <mat-card-header fxLayout="column" fxFlex="75">
+        <mat-card-title>{{ product.name }}</mat-card-title>
+        <mat-card-subtitle class="cart-product-text">Termék
+          kód: {{ product.productCode }}</mat-card-subtitle>
+        <mat-card-subtitle class="cart-product-text">Garancia: {{ product.warrantyMonths }}hónap
+        </mat-card-subtitle>
+      </mat-card-header>
     </div>
+
+    <div class="" fxFlex="100" fxLayout="row">
+
+      <mat-card-header *ngIf="product.discount">
+        <mat-card-title class="text-red">
+          {{ (product.price / 100) * (100 - product.discount) | hufCurrency }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          <del>
+            {{ product.price | hufCurrency }}
+          </del>
+          &nbsp;(-{{ product.discount }} %)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-header *ngIf="!product.discount">
+        <mat-card-subtitle>
+          {{ product.price | hufCurrency }}
+        </mat-card-subtitle>
+      </mat-card-header>
+    </div>
+
+    <mat-card-actions fxLayout="row" fxFlex="100" *ngIf="deleteAble">
+      <a mat-button [routerLink]="['/product/', product.slug]" [color]="'primary'"
+         aria-label="Product details">
+        <mat-icon>info</mat-icon>
+        Részletek
+      </a>
+
+      <div>
+        <button mat-button [color]="'primary'" aria-label="Delete product from favorites"
+        (click)="deleteProductFromFavorites()">
+          <mat-icon>delete</mat-icon>
+          Törlés
+        </button>
+      </div>
+
+      <div>
+        <button mat-button [color]="'primary'" aria-label="Add product to cart"
+        (click)="addProductToCart()">
+          <mat-icon>add_shopping_cart</mat-icon>
+          Kosárba
+        </button>
+      </div>
+    </mat-card-actions>
+
   </div>
 </div>
 

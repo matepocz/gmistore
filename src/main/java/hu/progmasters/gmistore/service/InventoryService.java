@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.inventory.InventorySoldProductsDto;
 import hu.progmasters.gmistore.model.CartItem;
 import hu.progmasters.gmistore.model.Inventory;
 import hu.progmasters.gmistore.model.Product;
@@ -7,9 +8,12 @@ import hu.progmasters.gmistore.repository.InventoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,7 +27,8 @@ public class InventoryService {
 
     /**
      * Creates an Inventory object for the given Product with the given product count
-     * @param product The actual Product object
+     *
+     * @param product           The actual Product object
      * @param quantityAvailable The given product count
      */
     public void saveInventory(Product product, int quantityAvailable) {
@@ -33,6 +38,7 @@ public class InventoryService {
 
     /**
      * Attempts to find an Inventory object by a given Product object
+     *
      * @param product The actual Product object
      * @return An Inventory object if successful, null otherwise
      */
@@ -43,6 +49,7 @@ public class InventoryService {
 
     /**
      * Updates the available and sold quantities for a List of Products
+     *
      * @param items A Set of CartItems
      */
     public void updateAvailableAndSoldQuantities(Set<CartItem> items) {
@@ -54,5 +61,23 @@ public class InventoryService {
                 inventoryByProduct.setUpdated(LocalDateTime.now());
             }
         }
+    }
+
+    public InventorySoldProductsDto getIncomeSpentByInventory() {
+
+        List<Inventory> all = inventoryRepository.findAll();
+        List<InventorySoldProductsDto> inventory = all.stream().map(inv -> {
+            int quantityAvailable = inv.getQuantityAvailable();
+            int quantitySold = inv.getQuantitySold();
+            Double price = inv.getProduct().getPrice();
+            Double priceGross = inv.getProduct().getPriceGross();
+            int quantity = quantityAvailable + quantitySold;
+            return new InventorySoldProductsDto(quantitySold * price, quantity * priceGross);
+        }).collect(Collectors.toList());
+
+        Double income = inventory.stream().mapToDouble(InventorySoldProductsDto::getIncome).sum();
+        Double spent = inventory.stream().mapToDouble(InventorySoldProductsDto::getSpent).sum();
+
+        return new InventorySoldProductsDto(income, spent);
     }
 }

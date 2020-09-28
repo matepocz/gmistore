@@ -381,4 +381,6 @@ public class ProductService {
     public List<ProductTableDto> getAllProductsToTable(){
         return productRepository.findAllToTable();
     }
+
+
 }

@@ -1,8 +1,10 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.inventory.InventorySoldProductsDto;
 import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.dto.product.ProductDto;
 import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
+import hu.progmasters.gmistore.service.InventoryService;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,15 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final InventoryService inventoryService;
     private final ProductDtoValidator productDtoValidator;
 
     @Autowired
-    public ProductController(ProductService productService, ProductDtoValidator productDtoValidator) {
+    public ProductController(ProductService productService,InventoryService inventoryService,
+                             ProductDtoValidator productDtoValidator) {
         this.productService = productService;
         this.productDtoValidator = productDtoValidator;
+        this.inventoryService = inventoryService;
     }
 
     @InitBinder("productDto")
@@ -117,5 +122,11 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getDiscountProducts() {
         List<ProductDto> pictureOfProductsInOffer = productService.getProductInOffer();
         return new ResponseEntity<>(pictureOfProductsInOffer, HttpStatus.OK);
+    }
+
+    @GetMapping("/income-spent")
+    public ResponseEntity<InventorySoldProductsDto> getIncomeSpent() {
+        InventorySoldProductsDto inventorySoldProductsDto = inventoryService.getIncomeSpentByInventory();
+        return new ResponseEntity<>(inventorySoldProductsDto, HttpStatus.OK);
     }
 }

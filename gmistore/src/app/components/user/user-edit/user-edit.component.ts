@@ -40,10 +40,6 @@ export class UserEditComponent implements OnInit {
       }),
       email: ['', Validators.required],
       phoneNumber: [''],
-      //'roles': new FormArray([], Validators.required),
-      //'registered': new FormControl(''),
-      //'active': new FormControl(''),
-      //'orderList': new FormControl(''),
     })
   }
 
@@ -58,7 +54,6 @@ export class UserEditComponent implements OnInit {
       this.deliveryAddress = data.shippingAddress;
 
       this.userForm.patchValue({
-        //username: data.username,
         firstName: data.firstName,
         lastName: data.lastName,
         shippingAddress: {
@@ -81,10 +76,6 @@ export class UserEditComponent implements OnInit {
         },
         email: data.email,
         phoneNumber: data.phoneNumber,
-        //roles: data.roles,
-        //registered: data.registered,
-        //active: data.active,
-        //orderList: data.orderList
       });
     }, error => {
       console.log(error);

@@ -1,1 +1,47 @@
-<p>admin-product works!</p>
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="pic">
+    <th mat-header-cell *matHeaderCellDef>Kép</th>
+    <td mat-cell *matCellDef="let element">
+      <img
+        [ngStyle]="{'height': '100px','margin': '10px'}"
+        src="{{element.pictureUrl}}"
+        alt="Product picture"
+      ></td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Név</th>
+    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Kategória</th>
+    <td mat-cell *matCellDef="let element"> {{element.categoryDisplayName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Ár</th>
+    <td mat-cell *matCellDef="let element"> {{element.price | hufCurrency}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="active">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Aktív</th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon [ngClass]="element.active ? 'green' : 'red' ">thumb_up</mat-icon>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editProduct(row.slug)"></tr>
+
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="5">No data matching the filter "{{input.value}}"</td>
+  </tr>
+</table>
+<mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>

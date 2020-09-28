@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 public class Config {
@@ -28,4 +30,9 @@ public class Config {
         config.put("api_secret", apiSecret);
         return new Cloudinary(config);
     }
-}
+
+    @Bean
+    public ExecutorService executor() {
+        return Executors.newCachedThreadPool();
+    }
+ }

@@ -129,6 +129,25 @@ public class ProductService {
     }
 
     /**
+     * Fetch products from the database by the given input, it will return the product
+     * if the product's name or description containing that piece of string.
+     *
+     * @param query         The given input
+     * @param page          The index of the page
+     * @param size          The size of the page
+     * @param filterOptions The filtering criteria
+     * @return A PagedProductList Dto
+     */
+    public PagedProductList getProductsByQuery(
+            String query, String page, String size, ProductFilterOptions filterOptions
+    ) {
+        System.out.println(query);
+        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Page<Product> products = productRepository.findProductsBySearchInput(query, pageable);
+        return createPagedProductListResponse("Keresési eredmény", products);
+    }
+
+    /**
      * Fetch all active products by the given subcategory
      *
      * @param category The given subcategory
@@ -235,8 +254,8 @@ public class ProductService {
     /**
      * Fetch all filtered and discounted products
      *
-     * @param page The requested page
-     * @param size The size of the requested page
+     * @param page          The requested page
+     * @param size          The size of the requested page
      * @param filterOptions The filter specifications
      * @return A PagedProductList DTO containing ProductDtos and extra details
      */
@@ -372,7 +391,7 @@ public class ProductService {
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
     }
 
-    public List<ProductTableDto> getAllProductsToTable(){
+    public List<ProductTableDto> getAllProductsToTable() {
         return productRepository.findAllToTable();
     }
 }

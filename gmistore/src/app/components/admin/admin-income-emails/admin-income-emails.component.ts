@@ -9,17 +9,26 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-admin-income-emails',
   templateUrl: './admin-income-emails.component.html',
-  styleUrls: ['./admin-income-emails.component.css']
+  styleUrls: ['./admin-income-emails.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class AdminIncomeEmailsComponent implements OnInit, OnDestroy {
+  isTableExpanded = false;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  displayedColumns: string[] = ['targy', 'email', 'datum','reszlet'];
+  displayedColumns: string[] = ['targy', 'email', 'datum','reszlet','valasz','torles'];
 
   emails: Array<EmailModel>;
   private emailsSub: Subscription = new Subscription();
@@ -53,6 +62,13 @@ export class AdminIncomeEmailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  // toggleTableRows() {
+  //   this.isTableExpanded = !this.isTableExpanded;
+  //   this.emails.forEach((row: any) => {
+  //     row.isExpanded = this.isTableExpanded;
+  //   })
+  // }
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -67,7 +83,4 @@ export class AdminIncomeEmailsComponent implements OnInit, OnDestroy {
     this.emailsSub.unsubscribe();
   }
 
-  jumpTheEmailDetails(id: string) {
-    this.router.navigate(['admin/income-emails/edit/', id])
-  }
 }

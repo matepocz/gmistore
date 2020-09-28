@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/ratings**").authenticated()
                 .antMatchers("/api/products/added-by-user/**").authenticated()
                 .antMatchers("/api/user/my-account").authenticated()
+                .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))

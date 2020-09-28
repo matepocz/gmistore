@@ -8,9 +8,17 @@
     <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between stretch">
       <mat-card-header fxLayout="column" fxFlex="75">
         <mat-card-title>{{ product.name }}</mat-card-title>
-        <mat-card-subtitle class="cart-product-text">Termék
-          kód: {{ product.productCode }}</mat-card-subtitle>
-        <mat-card-subtitle class="cart-product-text">Garancia: {{ product.warrantyMonths }}hónap
+        <mat-card-subtitle class="cart-product-text">
+          Termék kód: {{ product.productCode }}</mat-card-subtitle>
+        <mat-card-subtitle class="cart-product-text">
+          Garancia: {{ product.warrantyMonths }} hónap
+        </mat-card-subtitle>
+
+        <mat-card-subtitle class="cart-product-text text-green" *ngIf="product.quantityAvailable > 0">
+          Elérhető: {{ product.quantityAvailable }} db
+        </mat-card-subtitle>
+        <mat-card-subtitle class="cart-product-text text-red" *ngIf="product.quantityAvailable < 1">
+          Nincs raktáron
         </mat-card-subtitle>
       </mat-card-header>
     </div>
@@ -37,15 +45,17 @@
     </div>
 
     <mat-card-actions fxLayout="row" fxFlex="100" *ngIf="deleteAble">
-      <a mat-button [routerLink]="['/product/', product.slug]" [color]="'primary'"
-         aria-label="Product details">
-        <mat-icon>info</mat-icon>
-        Részletek
-      </a>
+      <div>
+        <a mat-button [routerLink]="['/product/', product.slug]" [color]="'primary'"
+           aria-label="Product details">
+          <mat-icon>info</mat-icon>
+          Részletek
+        </a>
+      </div>
 
       <div>
         <button mat-button [color]="'primary'" aria-label="Delete product from favorites"
-        (click)="deleteProductFromFavorites()">
+                (click)="deleteProductFromFavorites()">
           <mat-icon>delete</mat-icon>
           Törlés
         </button>
@@ -53,7 +63,7 @@
 
       <div>
         <button mat-button [color]="'primary'" aria-label="Add product to cart"
-        (click)="addProductToCart()">
+                (click)="addProductToCart()">
           <mat-icon>add_shopping_cart</mat-icon>
           Kosárba
         </button>

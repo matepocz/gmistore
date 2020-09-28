@@ -4,6 +4,7 @@ import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 import {UserModel} from "../models/user/user-model";
 import {UserEditableDetailsByUser} from "../models/user/userEditableDetailsByUser";
+import {ProductModel} from "../models/product-model";
 
 
 @Injectable({
@@ -33,11 +34,15 @@ export class UserService {
   }
 
   addProductToFavorites(id: number): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.userUrl + '/favorite-product/' + id, {});
+    return this.httpClient.post<boolean>(this.userUrl + '/favorite-products/' + id, {});
+  }
+
+  getFavoriteProducts(): Observable<Array<ProductModel>> {
+    return this.httpClient.get<Array<ProductModel>>(this.userUrl + '/favorite-products');
   }
 
   removeProductFromFavorites(id: number): Observable<boolean> {
-    return this.httpClient.delete<boolean>(this.userUrl + '/favorite-product/' + id);
+    return this.httpClient.delete<boolean>(this.userUrl + '/favorite-products/' + id);
   }
 }
 

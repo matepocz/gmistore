@@ -12,6 +12,9 @@ import {NewCategoryModel} from "../models/new-category.model";
 import {UserEditableDetailsByAdmin} from "../models/user/userEditableDetailsByAdmin";
 import {OrderListModel} from "../models/order/orderListModel";
 import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistrationStartEndDateModel";
+import {LiveDataSubjectService} from "./live-data-subject.service";
+import {ProductTableModel} from "../models/product/productTableModel";
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +22,45 @@ import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistration
 export class AdminService {
   private adminUrl = environment.apiUrl + 'api/admin';
   private lookupUrl = environment.apiUrl + 'api/lookup';
+  evs: EventSource;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private subj: LiveDataSubjectService) {
+  }
+
+  GetExchangeData() {
+    let subject = this.subj;
+    if (typeof (EventSource) !== undefined) {
+      this.evs = new EventSource(this.adminUrl + '/sse');
+      this.evs.onopen = function (e) {
+        console.log('Opening connection.Ready State is' + this.readyState);
+      }
+      this.evs.onmessage = function (e) {
+        console.log('Message Received.Ready State is ' + this.readyState);
+        console.log(e.data)
+
+        subject.updatedDataSelection((e.data));
+      }
+      // this.evs.addEventListener("timestamp", function (e) {
+      //   console.log("Timestamp event Received.Ready State is " + this.readyState);
+      //   subject.updatedDataSelection(e["data"]);
+      // })
+      this.evs.onerror = function (e) {
+        console.log(e);
+        if (this.readyState == 0) {
+          console.log('Reconnecting…');
+        }
+      }
+    }
+  }
+
+  stopExchangeUpdates()
+  {
+    this.evs.close();
+  }
+
+  returnAsObservable() {
+    return this.subj.asObservable();
   }
 
   getUserRegistrationsCount(): Observable<UserRegistrationsCounterModel> {
@@ -72,5 +112,9 @@ export class AdminService {
     console.log(dates)
     return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + '/registered' +
       '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
+  }
+
+  fetchProductsTableData(): Observable<ProductTableModel[]> {
+    return this.httpClient.get<Array<ProductTableModel>>(this.adminUrl + '/products');
   }
 }

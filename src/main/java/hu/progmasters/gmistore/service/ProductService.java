@@ -1,10 +1,7 @@
 package hu.progmasters.gmistore.service;
 
 import com.github.slugify.Slugify;
-import hu.progmasters.gmistore.dto.product.PagedProductList;
-import hu.progmasters.gmistore.dto.product.ProductCategoryDetails;
-import hu.progmasters.gmistore.dto.product.ProductDto;
-import hu.progmasters.gmistore.dto.product.ProductFilterOptions;
+import hu.progmasters.gmistore.dto.product.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
@@ -373,5 +370,9 @@ public class ProductService {
             authenticatedUsername = authentication.getName();
         }
         return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
+    }
+
+    public List<ProductTableDto> getAllProductsToTable(){
+        return productRepository.findAllToTable();
     }
 }

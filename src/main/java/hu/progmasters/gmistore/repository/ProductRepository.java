@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.repository;
 
+import hu.progmasters.gmistore.dto.product.ProductTableDto;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query(value = "SELECT max(price) FROM product", nativeQuery = true)
     Double getHighestPrice();
+
+    @Query("select new hu.progmasters.gmistore.dto.product.ProductTableDto(" +
+            " p.id," +
+            " p.name," +
+            " p.subCategory," +
+            " p.price," +
+            " p.active," +
+            "p.pictureUrl," +
+            "p.slug) from Product p")
+    List<ProductTableDto> findAllToTable();
 }

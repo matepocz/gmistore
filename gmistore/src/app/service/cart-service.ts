@@ -24,11 +24,11 @@ export class CartService {
     return this.httpClient.get<CartModel>(this.cartUrl);
   }
 
-  addProduct(id: number): Observable<any> {
+  addProduct(id: number): Observable<boolean> {
     let params = new HttpParams();
     params = params.append('id', String(id));
     params = params.append('count', String(1));
-    return this.httpClient.put(
+    return this.httpClient.put<boolean>(
       this.cartUrl + '/add-item',
       {},
       {params},

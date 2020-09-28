@@ -13,6 +13,9 @@
         <app-menu-list-item *ngFor="let item of categories" [item]="item"></app-menu-list-item>
         <mat-divider class="divider-primary-colored" *ngIf="authenticatedUser"></mat-divider>
         <a mat-list-item [routerLink]="['/add-product']" *ngIf="isAdmin || isSeller">Új termék</a>
+        <a mat-list-item [routerLink]="['/favorite-products']" *ngIf="authenticatedUser">
+          Kedvenc Termékek
+        </a>
         <a mat-list-item [routerLink]="['/user/my-account']" *ngIf="authenticatedUser">Profil</a>
         <mat-divider class="divider-primary-colored"></mat-divider>
         <a mat-list-item (click)="logout()" *ngIf="authenticatedUser; else actions">Kijelentkezés</a>
@@ -104,7 +107,7 @@
           </mat-menu>
 
           <button mat-button aria-label="Button to favorite products" matTooltip="Kedvencek"
-                  *ngIf="authenticatedUser">
+                  *ngIf="authenticatedUser" [routerLink]="['/favorite-products']">
             <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()"
                       matBadgeSize="medium"
                       matBadgeOverlap="false">favorite

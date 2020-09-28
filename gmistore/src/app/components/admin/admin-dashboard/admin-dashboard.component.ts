@@ -3,11 +3,11 @@ import {Chart} from "chart.js";
 import {AdminService} from "../../../service/admin.service";
 import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrationsCounterModel";
 import {UserRegistrationStartEndDateModel} from "../../../models/user/UserRegistrationStartEndDateModel";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {MatCalendar} from "@angular/material/datepicker";
 import {generateRandomColor} from "../../../utils/generate-color";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import { PopupSnackbar} from "../../../utils/popup-snackbar";
+import {LiveDataSubjectService} from "../../../service/live-data-subject.service";
 
 
 @Component({
@@ -28,15 +28,25 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     end: Date;
     start: Date;
   };
+  liveData:any;
+  items: any[] = [''];
 
   constructor(private adminService: AdminService,
-              private snackBar: PopupSnackbar) {
+              private snackBar: PopupSnackbar,
+              private subj: LiveDataSubjectService) {
   }
 
   @ViewChild(MatCalendar) _datePicker: MatCalendar<Date>
 
 
   ngOnInit(): void {
+    // this.adminService.returnAsObservable().subscribe(data=>this.liveData = data);
+    this.subj.asObservable().subscribe(dataa => {
+      this.liveData = dataa;
+      if(this.liveData != null) {
+        this.items.push(this.liveData);
+      }
+    })
     this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
       (data: UserRegistrationsCounterModel) => {
         this.chartData = data;
@@ -131,5 +141,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       console.log("out of range")
       this.snackBar.popUp("Sikertelen szűrés, a napok száma nem haladhatja meg a 30-at!");
     }
+  }
+
+  GetExchangeData() {
+    this.adminService.GetExchangeData();
+  }
+
+  stopExchangeUpdates() {
+    this.adminService.stopExchangeUpdates();
   }
 }

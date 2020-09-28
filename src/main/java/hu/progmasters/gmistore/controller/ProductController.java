@@ -40,6 +40,18 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<PagedProductList> getProductsByQuery(
+            @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
+            @RequestParam(value = "size", defaultValue = "10") String size,
+            @RequestParam(value = "page", defaultValue = "0") String page,
+            @RequestParam(value = "query") String query,
+            @RequestBody(required = false) ProductFilterOptions filterOptions
+    ) {
+        PagedProductList products = productService.getProductsByQuery(query, page, size, filterOptions);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @PostMapping("/discounted-products")
     public ResponseEntity<PagedProductList> getDiscountedProducts(
             @RequestParam(value = "filter", defaultValue = "false") Boolean filter,

@@ -1,22 +1,23 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ProductModel} from "../../../models/product-model";
 import {ProductService} from "../../../service/product-service";
 import {CartService} from "../../../service/cart-service";
 import {Subscription} from "rxjs";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
 import {SideNavComponent} from "../../side-nav/side-nav.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {PagedProductListModel} from "../../../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../../../models/product/product-filter-options";
 import {AuthService} from "../../../service/auth-service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 import {UserService} from "../../../service/user.service";
+import {PopupSnackbar} from "../../../utils/popup-snackbar";
+import {FilterDialogComponent} from "../filter-dialog/filter-dialog.component";
 
 @Component({
   selector: 'app-product-list',
@@ -25,14 +26,14 @@ import {UserService} from "../../../service/user.service";
 })
 export class ProductListComponent implements OnInit, OnDestroy {
 
-  @Input() products: Array<ProductModel>;
+  products: Array<ProductModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  chooseAbleRatings: Array<number> = [5, 4, 3, 2, 1];
-
   priceForm: FormGroup = this.fb.group({
-    minimumPrice: [1],
-    maximumPrice: [0]
+    minimumPrice: [1, Validators.compose(
+      [Validators.required, Validators.min(1)])],
+    maximumPrice: [0, Validators.compose(
+      [Validators.required, Validators.min(2)])]
   })
 
   notInStock: boolean = false;
@@ -52,8 +53,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   pageSizeOptions: Array<number> = [10, 20, 50];
 
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
+  deals: boolean = false;
 
   category: string;
   categoryDisplayName: string;
@@ -61,14 +62,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   currentUsername: string = null;
 
-  productsSubscription: Subscription;
-  addToCartSubscription: Subscription;
-  paramsSubscription: Subscription;
-  adminSub: Subscription;
-  favoriteSub: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   constructor(private productService: ProductService, private cartService: CartService,
-              private snackBar: MatSnackBar, private titleService: Title,
+              private snackBar: PopupSnackbar, private titleService: Title,
               private sideNavComponent: SideNavComponent, private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService, private fb: FormBuilder,
               private router: Router, private cdRef: ChangeDetectorRef, private authService: AuthService,
@@ -77,66 +74,91 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.activatedRoute.snapshot.url[1]?.path === "deals") {
+      this.deals = true;
+    }
     this.titleService.setTitle("Termékek - GMI Store");
-    this.adminSub = this.authService.isAdmin.subscribe(
-      (response) => {
-        this.isAdmin = response;
-      }, error => console.log(error)
+
+    this.subscriptions.add(
+      this.authService.isAdmin.subscribe(
+        (response: boolean) => {
+          this.isAdmin = response;
+        }, error => console.log(error)
+      )
     );
     this.currentUsername = this.authService.currentUsername;
 
-    this.paramsSubscription = this.activatedRoute.queryParamMap.subscribe(
-      (params: ParamMap) => {
-        this.spinnerService.stop(this.spinner);
-        this.category = params.get('category');
-        this.pageIndex = Number(params.get('pageIndex'));
-        this.pageSize = Number(params.get('pageSize'));
-        if (this.filtering && this.category) {
-          this.fetchProductsByCategory(this.filterOptions);
-        } else {
-          this.fetchProductsByCategory();
+    this.subscriptions.add(
+      this.activatedRoute.queryParamMap.subscribe(
+        (params: ParamMap) => {
+          this.spinnerService.stop(this.spinner);
+          this.category = params.get('category');
+          this.pageIndex = Number(params.get('pageIndex'));
+          this.pageSize = Number(params.get('pageSize'));
+          if (this.filtering && this.deals) {
+            this.fetchDiscountedProducts(this.filterOptions);
+          } else if (this.deals) {
+            this.fetchDiscountedProducts();
+          } else if (this.filtering && this.category) {
+            this.fetchProductsByCategory(this.filterOptions);
+          } else {
+            this.fetchProductsByCategory();
+          }
+        }, (error) => {
+          console.log(error);
         }
-      }, (error) => {
-        console.log(error);
-      }, () => {
-      }
+      )
+    );
+  }
+
+  private fetchDiscountedProducts(filterOptions?: ProductFilterOptions) {
+    this.spinner = this.spinnerService.start();
+    this.subscriptions.add(
+      this.productService.getDiscountedProducts(this.pageIndex, this.pageSize, filterOptions).subscribe(
+        (response: PagedProductListModel) => {
+          this.products = response.products;
+          this.setMaxPrice(response.highestPrice);
+          this.numberOfProducts = response.totalElements
+          this.categoryDisplayName = response.categoryDisplayName;
+          this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
+          this.spinnerService.stop(this.spinner);
+        }, () => {
+          this.spinnerService.stop(this.spinner);
+        }
+      )
     );
   }
 
   private fetchProductsByCategory(filterOptions?: ProductFilterOptions) {
     if (this.category) {
       this.spinner = this.spinnerService.start();
-      this.productsSubscription = this.productService.getProductsByCategory(
-        this.category, this.pageIndex, this.pageSize, filterOptions
-      )
+      this.subscriptions.add(this.productService.getProductsByCategory(
+        this.category, this.pageIndex, this.pageSize, filterOptions)
         .subscribe(
           (response: PagedProductListModel) => {
             this.products = response.products;
             this.categoryDisplayName = response.categoryDisplayName;
             this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
             this.numberOfProducts = response.totalElements;
-            this.setMinAndMaxPrices();
+            this.setMaxPrice(response.highestPrice);
             this.spinnerService.stop(this.spinner);
           }, error => {
             console.log(error)
             this.spinnerService.stop(this.spinner);
           }
         )
+      );
     }
   }
 
-  setMinAndMaxPrices() {
-    this.products.forEach(
-      (product: ProductModel) => {
-        if (product.price > this.maximumPrice) {
-          this.maximumPrice = product.price;
-          this.maxPrice = product.price;
-          this.priceForm.patchValue({
-            maximumPrice: product.price
-          })
-        }
-      }
-    );
+  setMaxPrice(maxPrice: number) {
+    if (maxPrice > this.maximumPrice && !this.filtering) {
+      this.maximumPrice = maxPrice + 1
+      this.maxPrice = maxPrice + 1;
+      this.priceForm.patchValue({
+        maximumPrice: maxPrice + 1,
+      });
+    }
   }
 
   paginationEventHandler($event: PageEvent) {
@@ -155,6 +177,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   filterProducts() {
     this.filtering = true;
+    this.pageIndex = 0;
     this.setFilterOptions();
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,
@@ -165,13 +188,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
         pageSize: this.pageSize,
       }
     });
-    this.fetchProductsByCategory(this.filterOptions);
+    if (this.deals) {
+      this.fetchDiscountedProducts(this.filterOptions);
+    } else {
+      this.fetchProductsByCategory(this.filterOptions);
+    }
   }
 
   private setFilterOptions() {
     this.filterOptions.notInStock = this.notInStock;
     this.filterOptions.nonDiscounted = this.nonDiscounted;
-    this.filterOptions.discounted = this.discounted;
+    if (this.deals) {
+      this.filterOptions.discounted = true;
+    } else {
+      this.filterOptions.discounted = this.discounted;
+    }
     this.filterOptions.minPrice = this.minimumPrice;
     this.filterOptions.maxPrice = this.maximumPrice;
     this.filterOptions.lowestRating = this.lowestRating;
@@ -183,11 +214,55 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.nonDiscounted = false;
     this.discounted = false;
     this.lowestRating = 0;
+    if (this.category) {
+      this.navigateToUnfilteredCategorizedPage();
+    } else if (this.deals) {
+      this.navigateToUnfilteredDealsPage();
+    }
+  }
+
+  openFilterDialog() {
+    this.setFilterOptions();
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
+      width: '90%',
+      data: {
+        filterOptions: this.filterOptions,
+        deals: this.deals
+      }
+    });
+
+    this.subscriptions.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.notInStock = this.filterOptions.notInStock;
+          this.discounted = this.filterOptions.discounted;
+          this.nonDiscounted = this.filterOptions.nonDiscounted;
+          this.minimumPrice = this.filterOptions.minPrice;
+          this.maximumPrice = this.filterOptions.maxPrice;
+          this.lowestRating = this.filterOptions.lowestRating;
+          this.filterProducts();
+        }
+      })
+    );
+  }
+
+  private navigateToUnfilteredCategorizedPage() {
     this.router.navigate(['.'], {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
         category: this.category,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      }
+    });
+  }
+
+  private navigateToUnfilteredDealsPage() {
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
       }
@@ -201,29 +276,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   addToCart(id: number) {
     this.spinner = this.spinnerService.start();
-    this.addToCartSubscription = this.cartService.addProduct(id).subscribe(
+    this.subscriptions.add(this.cartService.addProduct(id).subscribe(
       (response) => {
         if (response) {
-          this.openSnackBar('A termék a kosárba került!');
+          this.snackBar.popUp('A termék a kosárba került!');
           this.sideNavComponent.updateItemsInCart(0);
         } else {
-          this.openSnackBar("A kért mennyiség nincs készleten!");
+          this.snackBar.popUp("A kért mennyiség nincs készleten!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
       }
-    )
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, 'OK', {
-      duration: 2000,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-    });
+    ));
   }
 
   formatLabel(value: number) {
@@ -258,47 +325,53 @@ export class ProductListComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.deleteProduct(productId);
-      }
-    });
+    this.subscriptions.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.deleteProduct(productId);
+        }
+      })
+    );
   }
 
   deleteProduct(id: number) {
-    this.productService.deleteProduct(id).subscribe(
+    this.subscriptions.add(this.productService.deleteProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék törölve.");
-          if (this.filtering) {
+          this.snackBar.popUp("Termék törölve.");
+          if (this.filtering && this.deals) {
+            this.fetchDiscountedProducts(this.filterOptions);
+          } else if (this.deals) {
+            this.fetchDiscountedProducts();
+          } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
           } else {
             this.fetchProductsByCategory();
           }
         }
       }, (error) => {
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
         console.log(error)
       }
-    )
+    ));
   }
 
   addProductToFavorites(id: number) {
     this.spinner = this.spinnerService.start();
-    this.favoriteSub = this.userService.addProductToFavorites(id).subscribe(
+    this.subscriptions.add(this.userService.addProductToFavorites(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék hozzáadva a kedvencekhez.");
+          this.snackBar.popUp("Termék hozzáadva a kedvencekhez.");
           this.sideNavComponent.updateFavoriteItems(0);
         } else {
-          this.openSnackBar("Valami hiba történt!");
+          this.snackBar.popUp("Valami hiba történt!");
         }
         this.spinnerService.stop(this.spinner);
-      }, (error) => {
-        this.openSnackBar("Valami hiba történt!");
+      }, () => {
+        this.snackBar.popUp("Valami hiba történt!");
         this.spinnerService.stop(this.spinner);
       }
-    )
+    ));
   }
 
   detectChanges() {
@@ -306,15 +379,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.productsSubscription) {
-      this.productsSubscription.unsubscribe();
-    }
-    this.paramsSubscription.unsubscribe();
-    if (this.addToCartSubscription) {
-      this.addToCartSubscription.unsubscribe();
-    }
-    if (this.favoriteSub){
-      this.favoriteSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

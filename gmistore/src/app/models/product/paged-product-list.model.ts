@@ -5,4 +5,5 @@ export interface PagedProductListModel {
   totalElements: number;
   totalPages: number;
   categoryDisplayName: string;
+  highestPrice: number;
 }

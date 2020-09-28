@@ -143,15 +143,15 @@ public class ProductService {
                 productRepository.findProductsBySubCategory(
                         categoryByKey, pageable
                 );
-        return createPagedProductListResponse(categoryByKey, productsBySubCategory);
+        return createPagedProductListResponse(categoryByKey.getDisplayName(), productsBySubCategory);
     }
 
     /**
      * Fetch all products by the given filter options
      *
      * @param category      The given subcategory
-     * @param pageIndex         The index of the requested page
-     * @param pageSize          The size of the requested page
+     * @param pageIndex     The index of the requested page
+     * @param pageSize      The size of the requested page
      * @param filterOptions A DTO containing the filter options
      * @return A PagedProductList DTO, that contains a List of ProductDto
      */
@@ -162,19 +162,20 @@ public class ProductService {
         Pageable pageable = PageRequest.of(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
         Page<Product> products = productRepository.findAll(
                 buildFilterSpecification(categoryByKey, filterOptions), pageable);
-        return createPagedProductListResponse(categoryByKey, products);
+        return createPagedProductListResponse(categoryByKey.getDisplayName(), products);
     }
 
-    private PagedProductList createPagedProductListResponse(LookupEntity categoryByKey, Page<Product> products) {
+    private PagedProductList createPagedProductListResponse(String categoryDisplayName, Page<Product> products) {
         PagedProductList productList = new PagedProductList();
         productList.setProducts(products
                 .stream()
                 .map(this::mapProductToProductDto)
                 .collect(Collectors.toList())
         );
-        productList.setCategoryDisplayName(categoryByKey.getDisplayName());
+        productList.setCategoryDisplayName(categoryDisplayName);
         productList.setTotalElements(products.getTotalElements());
         productList.setTotalPages(products.getTotalPages());
+        productList.setHighestPrice(productRepository.getHighestPrice().intValue());
         return productList;
     }
 
@@ -188,6 +189,7 @@ public class ProductService {
     Specification<Product> buildFilterSpecification(LookupEntity category, ProductFilterOptions productFilterOptions) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.isTrue(root.get("active")));
 
             Boolean discounted = productFilterOptions.getDiscounted();
             Boolean nonDiscounted = productFilterOptions.getNonDiscounted();
@@ -204,16 +206,46 @@ public class ProductService {
                 );
             }
 
-            predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
+            if (category != null) {
+                predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
+            }
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("averageRating"),
                     productFilterOptions.getLowestRating())
             );
             predicates.add(criteriaBuilder.between(
                     root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice())
             );
-
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    /**
+     * Fetch all discounted products
+     *
+     * @param page The requested page index
+     * @param size The size of the requested page
+     * @return A PagedProductList DTO containing ProductDtos and extra details
+     */
+    public PagedProductList getDiscountedProducts(String page, String size) {
+        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Page<Product> discountedProducts = productRepository.findDiscountedProducts(pageable);
+        return createPagedProductListResponse("Leárazott termékek", discountedProducts);
+    }
+
+    /**
+     * Fetch all filtered and discounted products
+     *
+     * @param page The requested page
+     * @param size The size of the requested page
+     * @param filterOptions The filter specifications
+     * @return A PagedProductList DTO containing ProductDtos and extra details
+     */
+    public PagedProductList getFilteredDiscountedProducts(
+            String page, String size, ProductFilterOptions filterOptions) {
+        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Page<Product> filteredDiscountedProducts =
+                productRepository.findAll(buildFilterSpecification(null, filterOptions), pageable);
+        return createPagedProductListResponse("Leárazott termékek", filteredDiscountedProducts);
     }
 
     /**

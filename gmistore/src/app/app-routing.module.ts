@@ -57,6 +57,7 @@ const routes: Routes = [
     data: {roles: [RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
   },
   {path: 'product-list', component: ProductListComponent},
+  {path: 'product-list/deals', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
   {
     path: 'edit-product/:slug',

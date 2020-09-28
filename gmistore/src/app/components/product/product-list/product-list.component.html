@@ -2,14 +2,14 @@
   <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-sm="80" fxLayoutAlign="space-evenly start">
 
     <div fxFlex.gt-md="17" fxFlex.md="20" fxHide.lt-md fxLayout="column" fxLayoutGap="10px">
-      <mat-card class="mat-elevation-z8" fxFlex="100" *ngIf="products?.length > 0">
+      <mat-card class="mat-elevation-z8" fxFlex="100" *ngIf="products">
 
         <div fxLayout="column" fxLayoutAlign="start">
           <mat-panel-title class="mb-10"><strong>Elérhetőség</strong></mat-panel-title>
 
           <mat-checkbox [(ngModel)]="notInStock">Nincs raktáron</mat-checkbox>
-          <mat-checkbox [(ngModel)]="nonDiscounted">Nem akciós</mat-checkbox>
-          <mat-checkbox [(ngModel)]="discounted">Akciós</mat-checkbox>
+          <mat-checkbox [(ngModel)]="nonDiscounted" *ngIf="!deals">Nem akciós</mat-checkbox>
+          <mat-checkbox [(ngModel)]="discounted" *ngIf="!deals">Akciós</mat-checkbox>
 
           <div fxFlex="100">
             <mat-divider inset="true" class="divider-primary-colored"></mat-divider>
@@ -17,7 +17,8 @@
 
           <div fxFlex="100" fxLayout="column" class="mb-15">
             <mat-panel-title><strong>Ár</strong></mat-panel-title>
-            <mat-slider class="mb-10" min="1" color="primary" [max]="maximumPrice - 1" step="500" [(ngModel)]="minimumPrice"
+            <mat-slider class="mb-10" min="1" color="primary" [max]="maximumPrice - 1" step="500"
+                        [(ngModel)]="minimumPrice"
                         thumbLabel name="Minimum ár" fxFlex="100" [displayWith]="formatLabel"
                         matTooltip="Minimum ár" matTooltipPosition="above"
                         (ngModelChange)="updateMinimumPrice(minPriceElement)">
@@ -33,14 +34,18 @@
           <div [formGroup]="priceForm" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-between">
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Minimum ár</mat-label>
-              <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
-                     matInput placeholder="" formControlName="minimumPrice" [min]="minPrice" [max]="maxPrice - 1">
+              <label>
+                <input type="number" #minPriceElement (change)="updateMinimumPriceSlider(minPriceElement.value)"
+                       matInput placeholder="" formControlName="minimumPrice" [min]="minPrice" [max]="maxPrice - 1">
+              </label>
             </mat-form-field>
 
             <mat-form-field appearance="outline" fxFlex="45" fxFlex.md="100">
               <mat-label>Maximum ár</mat-label>
-              <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
-                     matInput placeholder="" formControlName="maximumPrice" [min]="minimumPrice + 1" [max]="maxPrice">
+              <label>
+                <input type="number" #maxPriceElement (change)="updateMaximumPriceSlider(maxPriceElement.value)"
+                       matInput placeholder="" formControlName="maximumPrice" [min]="minimumPrice + 1" [max]="maxPrice">
+              </label>
             </mat-form-field>
           </div>
 
@@ -69,20 +74,25 @@
           </button>
         </div>
       </mat-card>
-
-
     </div>
 
-    <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-md="space-evenly">
-      <div fxLayout="column" fxFlex.lt-md="98" fxFlex="99" fxLayoutAlign="center" *ngIf="products?.length > 0">
+    <div fxFlex.gt-md="82" fxFlex.md="78" fxFlex.sm="100" fxLayout="row wrap" fxLayoutAlign.lt-lg="space-evenly">
+      <div fxLayout="column" fxFlex.lt-md="98" fxFlex="99" fxLayoutAlign="center" *ngIf="products">
         <mat-card class="list-header-panel mat-elevation-z8" fxFlex="100" fxLayout="row wrap">
-          <p fxFlex="45">{{ categoryDisplayName }}</p>
-          <p fxFlex="45">{{ numberOfProducts }} termék</p>
-          <p *ngIf="filtering" (click)="removeFilters()" class="remove-filters">
-            Minden szűrő törlése
-          </p><span *ngIf="filtering">
+          <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between center">
+            <p fxFlex="40">{{ categoryDisplayName }}</p>
+            <p fxFlex.lt-md="20" fxFlex="40">{{ numberOfProducts }} termék</p>
+            <button fxHide.gt-sm="true" mat-flat-button (click)="openFilterDialog()" color="primary">
+              <mat-icon>filter_list</mat-icon> Szűrés
+            </button>
+          </div>
+          <div *ngIf="filtering" fxFlex="45" fxLayout="row">
+            <p (click)="removeFilters()" class="remove-filters">
+              Minden szűrő törlése
+            </p><span *ngIf="filtering">
           <mat-icon class="remove-filters">clear</mat-icon>
           </span>
+          </div>
         </mat-card>
       </div>
 
@@ -164,7 +174,7 @@
             </button>
 
             <button mat-icon-button matTooltip="Kedvencekhez" matTooltipPosition="above" [color]="'primary'"
-            (click)="addProductToFavorites(product.id)">
+                    (click)="addProductToFavorites(product.id)">
               <mat-icon>favorite</mat-icon>
             </button>
           </mat-card-actions>
@@ -172,8 +182,8 @@
         </div>
       </mat-card>
 
-      <mat-card class="mat-elevation-z8" fxFlex.lt-md="97" fxFlex="98" *ngIf="products?.length > 0"
-      [ngStyle.gt-sm]="{'margin-left': '3px'}">
+      <mat-card class="mat-elevation-z8" fxFlex.lt-md="97" fxFlex="99" *ngIf="products?.length > 0"
+                [ngStyle.gt-sm]="{'margin-left': '3px'}">
         <mat-paginator #paginator [length]="numberOfProducts" [color]="'primary'" (focusin)="detectChanges()"
                        [pageSize]="pageSize" (page)="paginationEventHandler($event)"
                        [pageSizeOptions]="pageSizeOptions">

@@ -28,6 +28,7 @@ export class SideNavComponent implements OnInit {
   favoriteItems: number = 0;
 
   authenticatedUser: boolean;
+  currentUsername: string = null;
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
@@ -51,6 +52,7 @@ export class SideNavComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentUsername = this.authService.currentUsername;
     this.subscriptions.add(this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
@@ -108,14 +110,16 @@ export class SideNavComponent implements OnInit {
   }
 
   updateFavoriteItems(timeout: number) {
-    setTimeout(() => {
-        this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
-          (response) => {
-            this.favoriteItems = response;
-          }
-        ));
-      },
-      timeout * 1000);
+    if (this.authenticatedUser){
+      setTimeout(() => {
+          this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
+            (response) => {
+              this.favoriteItems = response;
+            }
+          ));
+        },
+        timeout * 1000);
+    }
   }
 
   getData(selected) {

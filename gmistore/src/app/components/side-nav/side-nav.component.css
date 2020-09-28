@@ -21,7 +21,6 @@
   margin-right: 1%;
 }
 
-
 .example-container {
   display: flex;
   flex-direction: column;
@@ -34,17 +33,10 @@
 
 .example-is-mobile .example-toolbar {
   position: sticky;
-  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
   z-index: 3000;
 }
 
-h1.example-app-name {
-  margin-left: 8px;
-}
-
-.example-sidenav-container {
-  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
-     causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+.sidenav-container {
   flex: 1;
 }
 

@@ -56,15 +56,28 @@
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Email cím:</mat-label>
             <input matInput fxFlexAlign="start" formControlName="email" name="email" required>
-            <mat-error *ngIf="contactForm.get('email').invalid && !contactForm.get('email').errors?.serverError">Az email mező kötelező!</mat-error>
-            <mat-error *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}</mat-error>
+            <mat-error *ngIf="contactForm.get('email').invalid &&
+            !contactForm.get('email').hasError('required') &&
+            !contactForm.get('email').errors?.serverError">Érvénytelen
+              email cím!
+            </mat-error>
+            <mat-error *ngIf="contactForm.get('email').hasError('required') &&
+            !contactForm.get('email').errors?.serverError">Az
+              email mező kötelező!
+            </mat-error>
+            <mat-error
+              *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Tárgy:</mat-label>
             <input matInput fxFlexAlign="start" formControlName="subject" name="subject" required>
-            <mat-error *ngIf="contactForm.get('subject').invalid && !contactForm.get('subject').errors?.serverError">Az tárgy mező kötelező!</mat-error>
+
+            <mat-error *ngIf="contactForm.get('subject').invalid && contactForm.get('subject').value?.length < 30 && !contactForm.get('subject').errors?.serverError">Az tárgy mező kötelező(min. 3 karakter)!</mat-error>
+            <mat-error *ngIf="contactForm.get('subject').invalid && contactForm.get('subject').value?.length > 30 && !contactForm.get('subject').errors?.serverError">Max 30 karakter!</mat-error>
             <mat-error *ngIf="contactForm.get('subject').errors?.serverError">{{contactForm.get('subject').errors?.serverError}}</mat-error>
+
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
@@ -78,9 +91,21 @@
                       name="message"
                       type="text"
                       required
+
             ></textarea>
-            <mat-error *ngIf="contactForm.get('message').invalid && !contactForm.get('message').errors?.serverError">A mező kitöltése kötelező</mat-error>
-            <mat-error *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}</mat-error>
+            <mat-hint align="end">{{ contactForm.get('message').value?.length }} / 1000</mat-hint>
+
+            <mat-error *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length < 1000 && !contactForm.get('message').errors?.serverError">
+              A mező kitöltése kötelező (min. 3 karakter)!
+            </mat-error>
+
+            <mat-error *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length > 1000 && !contactForm.get('message').errors?.serverError">
+              Max 1000 karakter!
+            </mat-error>
+
+            <mat-error
+              *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}
+            </mat-error>
           </mat-form-field>
           <button class="footer-form-btn" mat-raised-button type="submit" color="primary"
                   [disabled]="contactForm.invalid">Üzenet küldése
@@ -97,6 +122,7 @@
 
 
   <div class="copyrigth footer" fxLayout="row" fxLayoutAlign="center center">
-    <span fxLayout="row" fxLayoutAlign="center center">Copyright&nbsp;<mat-icon class="copyright-icon">copyright</mat-icon>GMI Store All rights reserved</span>
+    <span fxLayout="row" fxLayoutAlign="center center">Copyright&nbsp;<mat-icon
+      class="copyright-icon">copyright</mat-icon>GMI Store All rights reserved</span>
   </div>
 </div>

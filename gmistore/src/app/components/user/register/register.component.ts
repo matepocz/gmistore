@@ -23,6 +23,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   hideConfirmPassword: boolean = true;
   isSeller: boolean = false;
 
+  authenticatedUser: boolean = false;
+
   registerSubscription: Subscription;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService,
@@ -30,6 +32,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.authenticatedUser = this.authService.isAuthenticated();
+    if (this.authenticatedUser) {
+      this.router.navigate(['/']);
+    }
     this.registerForm = this.formBuilder.group({
       firstName: [null,
         [Validators.required, Validators.minLength(3), Validators.maxLength(100),

@@ -31,6 +31,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query(value = "select p from Product p where p.discount>0 and p.active=true order by p.discount desc")
     List<Product> findProductByAndDiscountOrderByDiscountAsc();
 
+    @Query("SELECT p FROM Product p WHERE p.discount > 0 AND p.active = true")
+    Page<Product> findDiscountedProducts(Pageable pageable);
+
+    @Query(value = "SELECT max(price) FROM product", nativeQuery = true)
+    Double getHighestPrice();
+
     @Query("select new hu.progmasters.gmistore.dto.product.ProductTableDto(" +
             " p.id," +
             " p.name," +

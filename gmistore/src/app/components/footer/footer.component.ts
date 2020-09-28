@@ -28,10 +28,13 @@ export class FooterComponent implements OnInit {
 
   ngOnInit(): void {
     this.contactForm = this.formBuilder.group({
-      email: [null, [Validators.required, Validators.email]],
-      subject: [null, [Validators.required], Validators.minLength(3), Validators.maxLength(30)],
-      message: [null, [Validators.minLength(3), Validators.maxLength(1000)]]
+      email: [null, Validators.compose([Validators.required, Validators.email])],
+      subject: [null, Validators.compose(
+        [Validators.required,Validators.minLength(3), Validators.maxLength(30)])],
+      message: [null, Validators.compose(
+        [Validators.required,Validators.minLength(3), Validators.maxLength(1000)])]
     });
+    console.log(this.contactForm.get('message'));
   }
 
   openSnackBar(message: string) {

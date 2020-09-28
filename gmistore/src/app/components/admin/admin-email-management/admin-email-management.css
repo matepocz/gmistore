@@ -45,7 +45,7 @@ tr.student-element-row:not(.student-expanded-row):active {
 
 .response-icon:hover{
   background-color: #94e394;
-  color: white;
+  color: black;
 }
 
 .search-field{

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,4 +47,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "p.pictureUrl," +
             "p.slug) from Product p")
     List<ProductTableDto> findAllToTable();
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(p.name LIKE %:query% AND p.active = true) OR " +
+            "(p.description LIKE %:query% AND p.active = true)")
+    Page<Product> findProductsBySearchInput(@Param("query") String query, Pageable pageable);
 }

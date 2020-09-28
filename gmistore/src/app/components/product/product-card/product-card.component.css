@@ -1,17 +1,4 @@
-.cart-product-preview-img {
+.product-preview-img {
   max-height: 300px;
   padding-left: 10px;
-}
-
-.cart-product-card {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.cart-header-text {
-  margin-bottom: 10px;
-}
-
-.cart-product-text {
-  margin-top: 10px;
 }

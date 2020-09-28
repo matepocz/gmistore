@@ -26,6 +26,21 @@ export class ProductService {
     return this.httpClient.get<ProductModel>(this.productsUrl + '/' + slug);
   }
 
+  getProductsBySearchInput(
+    input: string, pageIndex: number, pageSize: number, filterOptions?: ProductFilterOptions
+  ): Observable<PagedProductListModel> {
+    let params = {
+      filter: filterOptions ? "true" : "false",
+      query: input,
+      size: pageSize.toString(),
+      page: pageIndex.toString(),
+    };
+    return this.httpClient.post<PagedProductListModel>(
+      this.productsUrl + '/search',
+      filterOptions,
+      {params: params});
+  }
+
   getDiscountedProducts(
     pageIndex: number, pageSize: number, filterOptions?: ProductFilterOptions
   ): Observable<PagedProductListModel> {

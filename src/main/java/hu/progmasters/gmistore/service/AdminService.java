@@ -11,6 +11,7 @@ import org.cloudinary.json.JSONObject;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,14 +48,17 @@ public class AdminService {
         List<Object> principals = sessionRegistry.getAllPrincipals();
         List<String> usersNamesList = new ArrayList<>();
 
-        for (Object principal: principals) {
-            if (principal instanceof User) {
-                usersNamesList.add(((User) principal).getUsername());
+        for (Object principal : principals) {
+
+            if (principal instanceof UserDetails) {
+                usersNamesList.add(((UserDetails) principal).getUsername());
+
             }
         }
         LOGGER.info(String.valueOf(usersNamesList.size()));
         LOGGER.info(String.valueOf(principals.size()));
         return usersNamesList;
+
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {

@@ -7,7 +7,6 @@ import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;
-import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,15 +34,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
-    private final UserRepository userRepository;
     private final LookupService lookupService;
 
     @Autowired
     public ProductService(ProductRepository productRepository, InventoryService inventoryService,
-                          UserRepository userRepository, LookupService lookupService) {
+                          LookupService lookupService) {
         this.productRepository = productRepository;
         this.inventoryService = inventoryService;
-        this.userRepository = userRepository;
         this.lookupService = lookupService;
     }
 

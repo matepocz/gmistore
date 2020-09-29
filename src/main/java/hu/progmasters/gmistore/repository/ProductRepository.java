@@ -54,6 +54,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "(p.description LIKE %:query% AND p.active = true)")
     Page<Product> findProductsBySearchInput(@Param("query") String query, Pageable pageable);
 
-    @Query("SELECT p.name FROM Product p WHERE p.name LIKE %:name% AND p.active = true")
-    Set<String> findProductNames(String name);
+    @Query(value = "SELECT name FROM product WHERE name LIKE %:name% AND active = true LIMIT 10;",
+            nativeQuery = true)
+    Set<String> findProductNames(@Param("name") String name);
 }

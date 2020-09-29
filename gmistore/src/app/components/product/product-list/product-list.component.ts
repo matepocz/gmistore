@@ -197,6 +197,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
+        q: this.searchInput,
         category: this.category,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
@@ -212,6 +213,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
+        q: this.searchInput,
         category: this.category,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
@@ -219,8 +221,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
     if (this.deals) {
       this.fetchDiscountedProducts(this.filterOptions);
-    } else {
+    } else if (this.category) {
       this.fetchProductsByCategory(this.filterOptions);
+    } else if (this.searching) {
+      this.fetchProductsBySearchInput(this.filterOptions);
     }
   }
 
@@ -247,7 +251,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.navigateToUnfilteredCategorizedPage();
     } else if (this.deals) {
       this.navigateToUnfilteredDealsPage();
+    } else if (this.searching) {
+      this.navigateToUnfilteredSearchPage();
     }
+  }
+
+  private navigateToUnfilteredSearchPage() {
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
+        q: this.searchInput,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      }
+    });
   }
 
   openFilterDialog() {
@@ -374,6 +392,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
             this.fetchDiscountedProducts();
           } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
+          } else if (this.searching) {
+            this.fetchProductsBySearchInput();
           } else {
             this.fetchProductsByCategory();
           }

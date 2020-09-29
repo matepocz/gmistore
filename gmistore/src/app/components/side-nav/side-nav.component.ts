@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints, MediaMatcher} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {debounceTime, map, shareReplay} from 'rxjs/operators';
 import {AuthService} from "../../service/auth-service";
 import {CartService} from "../../service/cart-service";
 import {Router} from "@angular/router";
@@ -53,7 +53,7 @@ export class SideNavComponent implements OnInit {
 
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
-              private router: Router, private adminService: AdminService,
+              private router: Router, private adminService: AdminService, private cdRef: ChangeDetectorRef,
               private userService: UserService, private productService: ProductService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -73,7 +73,6 @@ export class SideNavComponent implements OnInit {
     this.subscriptions.add(
       this.searchForm.get('searchInput').valueChanges.subscribe(
         (value) => {
-          console.log('changed');
           this.currentSearchingQuery = value;
           if (this.currentSearchingQuery !== '') {
             this.autoCompleteOptions = this.fetchSearchOptions();
@@ -105,23 +104,13 @@ export class SideNavComponent implements OnInit {
   }
 
   fetchSearchOptions(): Observable<string[]> {
-    return this.productService.getProductNamesForAutocomplete(this.currentSearchingQuery)
-      .pipe(
-        map(result => {
-            console.log(result)
-            return result;
-          }
-        ))
+    return this.productService.getProductNamesForAutocomplete(this.currentSearchingQuery).pipe(
+      debounceTime(500),
+      map(result => {
+          return result;
+        }
+      ));
   }
-
-  // private _filter(value: string): string[] {
-  //   const filterValue = this._normalizeValue(value);
-  //   return this.autoCompleteOptions.filter(street => this._normalizeValue(street).includes(filterValue));
-  // }
-  //
-  // private _normalizeValue(value: string): string {
-  //   return value.toLowerCase().replace(/\s/g, '');
-  // }
 
   logout() {
     this.subscriptions.add(this.authService.logout().subscribe(
@@ -188,6 +177,10 @@ export class SideNavComponent implements OnInit {
         }
       }
     )
+  }
+
+  detectChanges() {
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy(): void {

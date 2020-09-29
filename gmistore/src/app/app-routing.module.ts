@@ -30,6 +30,8 @@ import {PasswordResetComponent} from "./components/user/password-reset/password-
 import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
 import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
 import {FavoriteProductsComponent} from "./components/favorite-products/favorite-products.component";
+import {AdminEmailManagement} from "./components/admin/admin-email-management/admin-email-management";
+
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -101,6 +103,7 @@ const routes: Routes = [
       {path: 'user/edit/:id', component: AdminUserFormComponent},
       {path: 'orders', component: OrdersListComponent},
       {path: 'orders/edit/:id', component: OrdersFormComponent},
+      {path: 'income-emails', component: AdminEmailManagement},
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},

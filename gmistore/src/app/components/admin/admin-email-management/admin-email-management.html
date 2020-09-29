@@ -1,0 +1,111 @@
+<div fxLayout="row" fxFlex="100" fxLayoutAlign="center center">
+  <div fxLayout="column" fxFlex="95">
+
+    <mat-form-field class="search-field">
+      <mat-label>Keresés</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Keresett szó vagy szótöredék" #input>
+    </mat-form-field>
+
+
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows fxFlex="80">
+
+      <ng-container matColumnDef="targy">
+        <th mat-header-cell *matHeaderCellDef> Tárgy:</th>
+        <td mat-cell *matCellDef="let email">
+          {{email.subject}}</td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Feladó email címe:</th>
+        <td mat-cell *matCellDef="let email">{{email.email}}</td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="datum">
+        <th mat-header-cell *matHeaderCellDef> Üzenetküldés dátuma:</th>
+        <td mat-cell *matCellDef="let email">{{email.messageCreateTime}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reszlet">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let email">
+          <a mat-stroked-button href="javascript:void()" (click)="email.isExpanded = !email.isExpanded">Részletek</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="torles">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let email">
+          <a mat-stroked-button color="warn" (click)="openDeleteEmailDialog(email.id)">
+            <mat-icon>delete</mat-icon>
+            Üzenet törlése</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let email" [attr.colspan]="displayedColumns.length">
+          <div class="row email-element-detail" [@detailExpand]="email.isExpanded ? 'expanded' : 'collapsed'">
+            <mat-card fxFlex="80" fxLayout="column" class="email-element-card-detail">
+              <div mat-card-subtitle>Üzenet:</div>
+              <mat-card-content fxFlex="100">
+                <div>{{email.message}}</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="replyEmail">
+        <td mat-cell *matCellDef="let email" [attr.colspan]="displayedColumns.length">
+          <div class="row email-element-detail" [@detailExpand]="email.isExpanded ? 'expanded' : 'collapsed'">
+            <mat-card fxFlex="80" fxLayout="column" class="email-element-card-detail">
+
+              <form [formGroup]="contactForm" (ngSubmit)="sendReplyEmail(email)">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Válasz:</mat-label>
+                  <textarea formControlName="message" matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="5"
+                            cdkAutosizeMaxRows="7"
+                            required
+                  ></textarea>
+                  <mat-hint align="end">{{ contactForm.get('message').value?.length }} / 2000</mat-hint>
+                  <mat-error
+                    *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length < 2000 && !contactForm.get('message').errors?.serverError">
+                    A mező kitöltése kötelező(min. 1 karakter)!
+                  </mat-error>
+
+                  <mat-error
+                    *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length > 2000 && !contactForm.get('message').errors?.serverError">
+                    Max 1000 karakter!
+                  </mat-error>
+                  <mat-error
+                    *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}
+                  </mat-error>
+                </mat-form-field>
+                <button [ngStyle]="{backgroundColor: contactForm.invalid ? '#ffffff':'#94e394'}" mat-stroked-button class="response-icon" [disabled]="contactForm.invalid">Válasz küldése
+                </button>
+              </form>
+
+            </mat-card>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+      <tr mat-row *matRowDef="let email; columns: displayedColumns;" class="student-element-row"
+          [class.student-expanded-row]="email.isExpanded"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="student-detail-row"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['replyEmail']" class="student-detail-row"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">Nincs egyezés a keresett kifejezésre "{{input.value}}"</td>
+      </tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 50]"></mat-paginator>
+
+  </div>
+</div>

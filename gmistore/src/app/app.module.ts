@@ -95,6 +95,7 @@ import {PopupSnackbar} from "./utils/popup-snackbar";
 import {FilterDialogComponent} from './components/product/filter-dialog/filter-dialog.component';
 import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {AdminEmailManagement} from './components/admin/admin-email-management/admin-email-management';
 
 @NgModule({
   declarations: [
@@ -146,6 +147,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     ConfirmDialog,
     FilterDialogComponent,
     FavoriteProductsComponent,
+    AdminEmailManagement,
   ],
 
     imports: [

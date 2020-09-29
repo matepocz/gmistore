@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -123,6 +124,12 @@ public class ProductController {
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/product-names/{name}")
+    public ResponseEntity<Set<String>> getProductNames(@PathVariable("name") String name) {
+        Set<String> productNames = productService.getProductNames(name);
+        return new ResponseEntity<>(productNames, HttpStatus.OK);
     }
 
     @GetMapping("/get-discount-product")

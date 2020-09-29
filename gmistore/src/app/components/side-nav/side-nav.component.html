@@ -52,7 +52,13 @@
                class="search-input-div" fxFlex="30" fxFlex.lt-md="40" fxLayoutAlign="space-between">
 
               <input class="search-input" fxFlex="87" fxFlex.lt-lg="83" placeholder=" Keresés..."
-              formControlName="searchInput" (keyup.enter)="submitSearch()">
+              formControlName="searchInput" (keyup.enter)="submitSearch()"
+              [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of autoCompleteOptions | async" [value]="option">
+                {{ option.toLowerCase() | slice: 0: 20}}
+              </mat-option>
+            </mat-autocomplete>
             <mat-icon fxFlex="10" fxFlex.lt-lg="15" (click)="submitSearch()" class="search-input-icon">search</mat-icon>
           </div>
 

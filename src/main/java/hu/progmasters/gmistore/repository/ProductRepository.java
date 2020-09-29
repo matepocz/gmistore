@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
@@ -52,4 +53,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "(p.name LIKE %:query% AND p.active = true) OR " +
             "(p.description LIKE %:query% AND p.active = true)")
     Page<Product> findProductsBySearchInput(@Param("query") String query, Pageable pageable);
+
+    @Query("SELECT p.name FROM Product p WHERE p.name LIKE %:name% AND p.active = true")
+    Set<String> findProductNames(String name);
 }

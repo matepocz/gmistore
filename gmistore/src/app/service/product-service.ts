@@ -26,6 +26,10 @@ export class ProductService {
     return this.httpClient.get<ProductModel>(this.productsUrl + '/' + slug);
   }
 
+  getProductNamesForAutocomplete(name: string): Observable<Array<string>> {
+    return this.httpClient.get<Array<string>>(this.productsUrl + '/product-names/' + name);
+  }
+
   getProductsBySearchInput(
     input: string, pageIndex: number, pageSize: number, filterOptions?: ProductFilterOptions
   ): Observable<PagedProductListModel> {

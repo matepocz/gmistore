@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -145,6 +146,11 @@ public class ProductService {
         Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
         Page<Product> products = productRepository.findProductsBySearchInput(query, pageable);
         return createPagedProductListResponse("Keresési eredmény", products);
+    }
+
+
+    public Set<String> getProductNames(String name) {
+        return productRepository.findProductNames(name);
     }
 
     /**

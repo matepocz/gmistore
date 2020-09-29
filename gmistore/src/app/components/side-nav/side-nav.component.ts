@@ -9,6 +9,7 @@ import {MainCategoryModel} from "../../models/main-category.model";
 import {AdminService} from "../../service/admin.service";
 import {UserService} from "../../service/user.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ProductService} from "../../service/product-service";
 
 @Component({
   selector: 'app-side-nav',
@@ -37,6 +38,9 @@ export class SideNavComponent implements OnInit {
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
+  currentSearchingQuery: string;
+  autoCompleteOptions: Observable<string[]>;
+
   subscriptions: Subscription = new Subscription();
 
   cartSubscription: Subscription;
@@ -50,7 +54,7 @@ export class SideNavComponent implements OnInit {
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
               private router: Router, private adminService: AdminService,
-              private userService: UserService) {
+              private userService: UserService, private productService: ProductService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -65,6 +69,20 @@ export class SideNavComponent implements OnInit {
         console.log(error);
       }
     ));
+
+    this.subscriptions.add(
+      this.searchForm.get('searchInput').valueChanges.subscribe(
+        (value) => {
+          console.log('changed');
+          this.currentSearchingQuery = value;
+          if (this.currentSearchingQuery !== '') {
+            this.autoCompleteOptions = this.fetchSearchOptions();
+          }
+        }, error => {
+          console.log(error)
+        }
+      )
+    );
 
     this.authenticatedUser = this.authService.isAuthenticated();
     this.subscriptions.add(this.authService.isAdmin.subscribe(
@@ -85,6 +103,25 @@ export class SideNavComponent implements OnInit {
     this.updateItemsInCart(2);
     this.updateFavoriteItems(2);
   }
+
+  fetchSearchOptions(): Observable<string[]> {
+    return this.productService.getProductNamesForAutocomplete(this.currentSearchingQuery)
+      .pipe(
+        map(result => {
+            console.log(result)
+            return result;
+          }
+        ))
+  }
+
+  // private _filter(value: string): string[] {
+  //   const filterValue = this._normalizeValue(value);
+  //   return this.autoCompleteOptions.filter(street => this._normalizeValue(street).includes(filterValue));
+  // }
+  //
+  // private _normalizeValue(value: string): string {
+  //   return value.toLowerCase().replace(/\s/g, '');
+  // }
 
   logout() {
     this.subscriptions.add(this.authService.logout().subscribe(

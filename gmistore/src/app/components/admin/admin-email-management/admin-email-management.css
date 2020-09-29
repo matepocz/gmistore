@@ -9,7 +9,7 @@ table {
 
 
 
-tr.student-detail-row {
+tr.email-detail-row {
   height: 0;
 }
 
@@ -17,12 +17,12 @@ tr.student-detail-row {
 /*  background: whitesmoke;*/
 /*}*/
 
-tr.student-element-row:not(.student-expanded-row):active {
+tr.email-element-row:not(.email-expanded-row):active {
   background: #efefef;
 }
 
 
-.student-element-row td {
+.email-element-row td {
   border-bottom-width: 0;
 }
 

@@ -94,6 +94,7 @@ import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
 import {PopupSnackbar} from "./utils/popup-snackbar";
 import {FilterDialogComponent} from './components/product/filter-dialog/filter-dialog.component';
 import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -196,7 +197,8 @@ import {FavoriteProductsComponent} from './components/favorite-products/favorite
         MatDatepickerModule,
         MatNativeDateModule,
         SatDatepickerModule,
-        SatNativeDateModule
+        SatNativeDateModule,
+        MatAutocompleteModule
     ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

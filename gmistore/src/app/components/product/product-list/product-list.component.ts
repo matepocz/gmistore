@@ -56,6 +56,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   deals: boolean = false;
 
+  searchInput: string;
+  searching: boolean = false;
+
   category: string;
   categoryDisplayName: string;
 
@@ -76,6 +79,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.activatedRoute.snapshot.url[1]?.path === "deals") {
       this.deals = true;
+    } else if (this.activatedRoute.snapshot.url[1]?.path === "search") {
+      this.searching = true;
     }
     this.titleService.setTitle("Termékek - GMI Store");
 
@@ -95,15 +100,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.category = params.get('category');
           this.pageIndex = Number(params.get('pageIndex'));
           this.pageSize = Number(params.get('pageSize'));
+          this.searchInput = params.get('q');
+
           if (this.filtering && this.deals) {
             this.fetchDiscountedProducts(this.filterOptions);
           } else if (this.deals) {
             this.fetchDiscountedProducts();
           } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
-          } else {
+          } else if (this.category) {
             this.fetchProductsByCategory();
+          } else if (this.filtering && this.searching && this.searchInput) {
+            this.fetchProductsBySearchInput(this.filterOptions);
+          } else if (this.searching && this.searchInput) {
+            this.fetchProductsBySearchInput();
+          } else {
+            //this.router.navigate(['/not-found']);
           }
+
         }, (error) => {
           console.log(error);
         }
@@ -111,17 +125,37 @@ export class ProductListComponent implements OnInit, OnDestroy {
     );
   }
 
+  private fetchProductsBySearchInput(filterOptions?: ProductFilterOptions) {
+    this.spinner = this.spinnerService.start();
+    this.subscriptions.add(
+      this.productService.getProductsBySearchInput(
+        this.searchInput, this.pageIndex, this.pageSize, filterOptions
+      ).subscribe(
+        (response: PagedProductListModel) => {
+          this.handlePagedProductListResponse(response);
+        }, (error) => {
+          console.log(error);
+          this.spinnerService.stop(this.spinner);
+        }
+      )
+    );
+  }
+
+  private handlePagedProductListResponse(response: PagedProductListModel) {
+    this.products = response.products;
+    this.setMaxPrice(response.highestPrice);
+    this.numberOfProducts = response.totalElements;
+    this.categoryDisplayName = response.categoryDisplayName;
+    this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
+    this.spinnerService.stop(this.spinner);
+  }
+
   private fetchDiscountedProducts(filterOptions?: ProductFilterOptions) {
     this.spinner = this.spinnerService.start();
     this.subscriptions.add(
       this.productService.getDiscountedProducts(this.pageIndex, this.pageSize, filterOptions).subscribe(
         (response: PagedProductListModel) => {
-          this.products = response.products;
-          this.setMaxPrice(response.highestPrice);
-          this.numberOfProducts = response.totalElements
-          this.categoryDisplayName = response.categoryDisplayName;
-          this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
-          this.spinnerService.stop(this.spinner);
+          this.handlePagedProductListResponse(response);
         }, () => {
           this.spinnerService.stop(this.spinner);
         }
@@ -136,12 +170,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.category, this.pageIndex, this.pageSize, filterOptions)
         .subscribe(
           (response: PagedProductListModel) => {
-            this.products = response.products;
-            this.categoryDisplayName = response.categoryDisplayName;
-            this.titleService.setTitle(this.categoryDisplayName + " - GMI Store");
-            this.numberOfProducts = response.totalElements;
-            this.setMaxPrice(response.highestPrice);
-            this.spinnerService.stop(this.spinner);
+            this.handlePagedProductListResponse(response);
           }, error => {
             console.log(error)
             this.spinnerService.stop(this.spinner);
@@ -168,6 +197,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
+        q: this.searchInput,
         category: this.category,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
@@ -183,6 +213,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       relativeTo: this.activatedRoute,
       queryParams: {
         filter: this.filtering,
+        q: this.searchInput,
         category: this.category,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
@@ -190,8 +221,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
     if (this.deals) {
       this.fetchDiscountedProducts(this.filterOptions);
-    } else {
+    } else if (this.category) {
       this.fetchProductsByCategory(this.filterOptions);
+    } else if (this.searching) {
+      this.fetchProductsBySearchInput(this.filterOptions);
     }
   }
 
@@ -218,7 +251,21 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.navigateToUnfilteredCategorizedPage();
     } else if (this.deals) {
       this.navigateToUnfilteredDealsPage();
+    } else if (this.searching) {
+      this.navigateToUnfilteredSearchPage();
     }
+  }
+
+  private navigateToUnfilteredSearchPage() {
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        filter: this.filtering,
+        q: this.searchInput,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      }
+    });
   }
 
   openFilterDialog() {
@@ -345,6 +392,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
             this.fetchDiscountedProducts();
           } else if (this.filtering && this.category) {
             this.fetchProductsByCategory(this.filterOptions);
+          } else if (this.searching) {
+            this.fetchProductsBySearchInput();
           } else {
             this.fetchProductsByCategory();
           }

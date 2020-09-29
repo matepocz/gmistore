@@ -61,6 +61,7 @@ const routes: Routes = [
   },
   {path: 'product-list', component: ProductListComponent},
   {path: 'product-list/deals', component: ProductListComponent},
+  {path: 'product-list/search', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
   {
     path: 'edit-product/:slug',

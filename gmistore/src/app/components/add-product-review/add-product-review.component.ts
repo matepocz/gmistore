@@ -1,13 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ClickEvent} from "angular-star-rating";
 import {RatingService} from "../../service/rating.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {RatingInitDataModel} from "../../models/rating-init-data-model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {AddRatingRequestModel} from "../../models/add-rating-request-model";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SpinnerService} from "../../service/spinner-service.service";
+import {PopupSnackbar} from "../../utils/popup-snackbar";
+import {MatDialogRef} from "@angular/material/dialog";
+import {LoadingSpinnerComponent} from "../loading-spinner/loading-spinner.component";
+import {ProductService} from "../../service/product-service";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-add-product-review',
@@ -16,30 +21,32 @@ import {HttpErrorResponse} from "@angular/common/http";
 })
 export class AddProductReviewComponent implements OnInit, OnDestroy {
 
+  loading: boolean = false;
   ratingForm: FormGroup;
   product: RatingInitDataModel;
   slug: string;
 
+  selectedFiles: FileList;
   pictures: Array<string> = new Array<string>();
   ratingInputValue: number;
   ratingData: AddRatingRequestModel;
 
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  activatedRouteSubscription: Subscription;
-  initDataSubscription: Subscription;
-  newRatingSubscription: Subscription;
+  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
+
+  subscriptions: Subscription = new Subscription();
 
   constructor(private ratingService: RatingService, private activatedRoute: ActivatedRoute,
-              private formBuilder: FormBuilder, private snackBar: MatSnackBar,
-              private router: Router) {
+              private formBuilder: FormBuilder, private snackbar: PopupSnackbar,
+              private router: Router, private spinnerService: SpinnerService,
+              private productService: ProductService) {
   }
 
   ngOnInit(): void {
-    this.activatedRouteSubscription = this.activatedRoute.paramMap.subscribe(
-      (params) => {
+    this.subscriptions.add(this.activatedRoute.paramMap.subscribe(
+      (params: ParamMap) => {
+        this.spinnerService.stop(this.spinner);
         this.slug = params.get('slug');
-        this.initDataSubscription = this.ratingService.getInitData(this.slug).subscribe(
+        this.subscriptions.add(this.ratingService.getInitData(this.slug).subscribe(
           (response: RatingInitDataModel) => {
             this.product = response;
           }, (error) => {
@@ -55,12 +62,11 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
               pictures: [null]
             })
           }
-        );
+        ));
       }, (error) => {
         console.log(error);
-      }, () => {
       }
-    )
+    ));
   }
 
   getRatingInputValue = ($event: ClickEvent) => {
@@ -68,34 +74,69 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.spinner = this.spinnerService.start();
     this.ratingData = this.ratingForm.value;
     this.ratingData.product = this.slug;
     this.ratingData.actualRating = this.ratingInputValue;
     this.ratingData.pictures = this.pictures;
-    this.newRatingSubscription = this.ratingService.addNewRating(this.ratingData).subscribe(
-      () => {},
-      (error: HttpErrorResponse) => {
-        this.openSnackBar('Valami hiba történt! Mindent kitöltöttél?');
-      },
-      () => {
-        this.router.navigate(['/product', this.slug]);
-      }
+    this.subscriptions.add(
+      this.ratingService.addNewRating(this.ratingData).subscribe(
+        () => {
+          this.spinnerService.stop(this.spinner);
+        },
+        (error: HttpErrorResponse) => {
+          this.spinnerService.stop(this.spinner);
+          this.snackbar.popUp('Valami hiba történt! Mindent kitöltöttél?');
+        },
+        () => {
+          this.router.navigate(['/product', this.slug]);
+        }
+      )
     );
   }
 
-  openSnackBar(message: string) {
-    this.snackBar.open(message, 'OK', {
-      duration: 2000,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
+  onFileChange(event) {
+    if (event.target.files.length > 0) {
+      this.selectedFiles = event.target.files;
+      this.uploadFiles();
+    }
+  }
+
+  uploadFiles() {
+    this.spinner = this.spinnerService.start();
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      if (this.selectedFiles[i].type.startsWith('image')) {
+        this.upload(this.selectedFiles[i]).then(
+          () => this.spinnerService.stop(this.spinner),
+          () => this.spinnerService.stop(this.spinner)
+        );
+      } else {
+        this.spinnerService.stop(this.spinner);
+      }
+    }
+  }
+
+  async upload(file) {
+    this.loading = true;
+    return await this.productService.uploadImage(file).then((data) => {
+      this.pictures.push(data[1]);
+      this.loading = false;
+    }, (error) => {
+      this.loading = false;
+      console.log(error);
     });
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.pictures, event.previousIndex, event.currentIndex);
+  }
+
+  removeImage(picture: string) {
+    let indexOfImage = this.pictures.indexOf(picture);
+    this.pictures.splice(indexOfImage, 1);
+  }
+
   ngOnDestroy() {
-    this.activatedRouteSubscription.unsubscribe();
-    this.initDataSubscription.unsubscribe();
-    if (this.newRatingSubscription) {
-      this.newRatingSubscription.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

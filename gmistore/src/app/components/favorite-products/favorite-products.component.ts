@@ -66,18 +66,18 @@ export class FavoriteProductsComponent implements OnInit, OnDestroy {
       (response: boolean) => {
         if (response) {
           this.snackbar.popUp("Termék törölve!");
+
+          this.subscriptions.add(
+            this.userService.getFavoriteProducts().subscribe(
+              (response) => {
+                this.products = response;
+              }, (error) => {
+                console.log(error);
+              }
+            )
+          );
         }
-
-        this.subscriptions.add(
-          this.userService.getFavoriteProducts().subscribe(
-            (response) => {
-              this.products = response;
-            }, (error) => {
-              console.log(error);
-            }
-          )
-        );
-
+        this.sideNav.updateFavoriteItems(0);
         this.spinnerService.stop(this.spinner);
       }, (error) => {
         this.spinnerService.stop(this.spinner);

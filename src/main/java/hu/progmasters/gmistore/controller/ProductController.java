@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -40,6 +41,23 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<PagedProductList> getProductsByQuery(
+            @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
+            @RequestParam(value = "size", defaultValue = "10") String size,
+            @RequestParam(value = "page", defaultValue = "0") String page,
+            @RequestParam(value = "query") String query,
+            @RequestBody(required = false) ProductFilterOptions filterOptions
+    ) {
+        PagedProductList products;
+        if (filter){
+            products = productService.getFilteredProductsByQuery(query, page, size, filterOptions);
+        } else {
+            products = productService.getProductsByQuery(query, page, size);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @PostMapping("/discounted-products")
     public ResponseEntity<PagedProductList> getDiscountedProducts(
             @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
@@ -64,7 +82,7 @@ public class ProductController {
     ) {
         PagedProductList products;
         if (filter) {
-            products = productService.getFilteredProducts(
+            products = productService.getFilteredProductsByCategory(
                     category, page, size, filterOptions);
         } else {
             products = productService.getActiveProductsByCategory(
@@ -111,6 +129,12 @@ public class ProductController {
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/product-names/{name}")
+    public ResponseEntity<Set<String>> getProductNames(@PathVariable("name") String name) {
+        Set<String> productNames = productService.getProductNames(name);
+        return new ResponseEntity<>(productNames, HttpStatus.OK);
     }
 
     @GetMapping("/get-discount-product")

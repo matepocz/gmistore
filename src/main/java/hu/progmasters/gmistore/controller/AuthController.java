@@ -114,7 +114,8 @@ public class AuthController {
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<User> findUserAndSendMailToResetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
+    public ResponseEntity<User> findUserAndSendMailToResetPassword(HttpServletRequest request,
+                                                                   @RequestParam("email") String userEmail) {
         resetPasswordService.findUserAndSendMailToResetPassword(request, userEmail);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -9,6 +9,7 @@ import hu.progmasters.gmistore.dto.product.ProductTableDto;
 import hu.progmasters.gmistore.dto.user.*;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.Product;
+import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.service.AdminService;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.service.ProductService;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -30,10 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,15 +46,17 @@ public class AdminController {
     OrderService orderService;
     UserEditValidator userEditValidator;
     ExecutorService executor;
+    ActiveUserStore activeUserStore;
 
     @Autowired
     public AdminController(AdminService adminService, UserService userService,
                            ProductService productService, OrderService orderService,
-                           UserEditValidator userEditValidator, ExecutorService executor
+                           UserEditValidator userEditValidator, ExecutorService executor, ActiveUserStore activeUserStore
     ) {
         this.adminService = adminService;
         this.userService = userService;
         this.userEditValidator = userEditValidator;
+        this.activeUserStore = activeUserStore;
         this.orderService = orderService;
         this.executor = executor;
         this.productService = productService;
@@ -72,7 +73,8 @@ public class AdminController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping
+    //TODO - session_registry
+    @GetMapping("/users/logged-in")
     public ResponseEntity<Integer> loggedInUsers() {
         List<String> usersFromSessionRegistry = adminService.getUsersFromSessionRegistry();
         return new ResponseEntity<>(usersFromSessionRegistry.size(), HttpStatus.OK);
@@ -138,7 +140,7 @@ public class AdminController {
         SseEmitter emitter = new SseEmitter();
         executor.execute(() -> {
             try {
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 2; i++) {
                     emitter.send(new Date());
                     Thread.sleep(4000);
                 }
@@ -147,6 +149,7 @@ public class AdminController {
                 emitter.completeWithError(ex);
             }
         });
+
         return emitter;
     }
 

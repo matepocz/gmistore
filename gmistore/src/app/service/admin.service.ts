@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable, Output} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
@@ -23,6 +23,7 @@ export class AdminService {
   private adminUrl = environment.apiUrl + 'api/admin';
   private lookupUrl = environment.apiUrl + 'api/lookup';
   evs: EventSource;
+  @Output() emitData:EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private httpClient: HttpClient,
               private subj: LiveDataSubjectService) {
@@ -48,7 +49,8 @@ export class AdminService {
       this.evs.onerror = function (e) {
         console.log(e);
         if (this.readyState == 0) {
-          console.log('Reconnecting…');
+          console.log('Stopping…');
+          this.close();
         }
       }
     }

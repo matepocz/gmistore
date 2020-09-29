@@ -43,12 +43,18 @@ public class AdminService {
     }
 
     public List<String> getUsersFromSessionRegistry() {
-        List<String> sessions = sessionRegistry.getAllPrincipals().stream()
-                .filter(u -> !sessionRegistry.getAllSessions(u, false).isEmpty())
-                .map(Object::toString)
-                .collect(Collectors.toList());
-        LOGGER.info(String.valueOf(sessions.size()));
-        return sessions;
+
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+        List<String> usersNamesList = new ArrayList<>();
+
+        for (Object principal: principals) {
+            if (principal instanceof User) {
+                usersNamesList.add(((User) principal).getUsername());
+            }
+        }
+        LOGGER.info(String.valueOf(usersNamesList.size()));
+        LOGGER.info(String.valueOf(principals.size()));
+        return usersNamesList;
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {

@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.config;
 
 import com.cloudinary.Cloudinary;
+import hu.progmasters.gmistore.dto.ActiveUserStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,5 +35,10 @@ public class Config {
     @Bean
     public ExecutorService executor() {
         return Executors.newCachedThreadPool();
+    }
+
+    @Bean
+    public ActiveUserStore activeUserStore(){
+        return new ActiveUserStore();
     }
  }

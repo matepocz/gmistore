@@ -49,7 +49,12 @@ public class ProductController {
             @RequestParam(value = "query") String query,
             @RequestBody(required = false) ProductFilterOptions filterOptions
     ) {
-        PagedProductList products = productService.getProductsByQuery(query, page, size, filterOptions);
+        PagedProductList products;
+        if (filter){
+            products = productService.getFilteredProductsByQuery(query, page, size, filterOptions);
+        } else {
+            products = productService.getProductsByQuery(query, page, size);
+        }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -77,7 +82,7 @@ public class ProductController {
     ) {
         PagedProductList products;
         if (filter) {
-            products = productService.getFilteredProducts(
+            products = productService.getFilteredProductsByCategory(
                     category, page, size, filterOptions);
         } else {
             products = productService.getActiveProductsByCategory(

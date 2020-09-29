@@ -130,27 +130,103 @@ public class ProductService {
     }
 
     /**
+     * Fetch product names for autocomplete function
+     *
+     * @param name The name to look for in the product names
+     * @return A List containing product names
+     */
+    public Set<String> getProductNames(String name) {
+        return productRepository.findProductNames(name);
+    }
+
+    /**
      * Fetch products from the database by the given input, it will return the product
      * if the product's name or description containing that piece of string.
      *
-     * @param query         The given input
-     * @param page          The index of the page
-     * @param size          The size of the page
-     * @param filterOptions The filtering criteria
-     * @return A PagedProductList Dto
+     * @param query The given input, the return products containing this piece of string
+     * @param page  The index of the page
+     * @param size  The size of the page
+     * @return A PageProductList DTO that contains a list of ProductDTO,
+     * also the total number of elements found in the database
      */
-    public PagedProductList getProductsByQuery(
-            String query, String page, String size, ProductFilterOptions filterOptions
-    ) {
-        System.out.println(query);
+    public PagedProductList getProductsByQuery(String query, String page, String size) {
         Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
         Page<Product> products = productRepository.findProductsBySearchInput(query, pageable);
         return createPagedProductListResponse("Keresési eredmény", products);
     }
 
+    /**
+     * Fetch products from the database by the given input, it will return the product
+     * if the product's name or description containing that piece of string, also accepts a
+     * ProductFilterOptions DTO that can hold extra details to filter the products.
+     *
+     * @param query         The given input, the return products containing this piece of string
+     * @param page          The required page index
+     * @param size          The number of products returned on the given page
+     * @param filterOptions ProductFilterOption DTO, products filter by this criteria
+     * @return A PageProductList DTO that contains a list of ProductDTO,
+     * also the total number of elements found in the database
+     */
+    public PagedProductList getFilteredProductsByQuery(
+            String query, String page, String size, ProductFilterOptions filterOptions
+    ) {
+        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
+        Page<Product> products;
+        products = productRepository.findAll(
+                buildFilterSpecificationForSearch(query, filterOptions), pageable);
+        return createPagedProductListResponse("Keresési eredmény", products);
+    }
 
-    public Set<String> getProductNames(String name) {
-        return productRepository.findProductNames(name);
+    /**
+     * Builds a specification for searching in products name's, description's,
+     * also contains other filtering criteria
+     *
+     * @param searchInput          The given input that must be in the returned products name's, descriptions.
+     * @param productFilterOptions ProductFilterOptions that holds filtering criteria
+     * @return A specification that holds the criteria
+     */
+    Specification<Product> buildFilterSpecificationForSearch(
+            String searchInput, ProductFilterOptions productFilterOptions) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = getPredicates(productFilterOptions, root, criteriaBuilder);
+            predicates.add(
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(root.get("name"), "%" + searchInput + "%"),
+                            criteriaBuilder.like(root.get("description"), "%" + searchInput + "%"))
+            );
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
+
+    private List<Predicate> getPredicates(ProductFilterOptions productFilterOptions,
+                                          javax.persistence.criteria.Root<Product> root,
+                                          javax.persistence.criteria.CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.isTrue(root.get("active")));
+
+        Boolean discounted = productFilterOptions.getDiscounted();
+        Boolean nonDiscounted = productFilterOptions.getNonDiscounted();
+        if (discounted != null && discounted && nonDiscounted != null && nonDiscounted) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("discount"), 0));
+        } else if (discounted != null && discounted) {
+            predicates.add(criteriaBuilder.greaterThan(root.get("discount"), 0));
+        } else if (nonDiscounted != null && nonDiscounted) {
+            predicates.add(criteriaBuilder.lessThan(root.get("discount"), 1));
+        }
+        if (productFilterOptions.getNotInStock() != null && !productFilterOptions.getNotInStock()) {
+            predicates.add(
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("inventory").get("quantityAvailable"), 1)
+            );
+        } else if (productFilterOptions.getNotInStock() != null && productFilterOptions.getNotInStock()) {
+            predicates.add(criteriaBuilder.lessThan(root.get("inventory").get("quantityAvailable"), 1));
+        }
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("averageRating"),
+                productFilterOptions.getLowestRating())
+        );
+        predicates.add(criteriaBuilder.between(
+                root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice())
+        );
+        return predicates;
     }
 
     /**
@@ -180,16 +256,41 @@ public class ProductService {
      * @param filterOptions A DTO containing the filter options
      * @return A PagedProductList DTO, that contains a List of ProductDto
      */
-    public PagedProductList getFilteredProducts(
+    public PagedProductList getFilteredProductsByCategory(
             String category, String pageIndex, String pageSize, ProductFilterOptions filterOptions
     ) {
         LookupEntity categoryByKey = lookupService.getCategoryByKey(category);
         Pageable pageable = PageRequest.of(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
         Page<Product> products = productRepository.findAll(
-                buildFilterSpecification(categoryByKey, filterOptions), pageable);
+                buildFilterSpecificationForCategory(categoryByKey, filterOptions), pageable);
         return createPagedProductListResponse(categoryByKey.getDisplayName(), products);
     }
 
+    /**
+     * Builds a specification for the filter query
+     *
+     * @param category             The subcategory where the products belongs to
+     * @param productFilterOptions A DTO containing the required filters
+     * @return A Specification
+     */
+    Specification<Product> buildFilterSpecificationForCategory(
+            LookupEntity category, ProductFilterOptions productFilterOptions) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = getPredicates(productFilterOptions, root, criteriaBuilder);
+            if (category != null) {
+                predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
+
+    /**
+     * Builds/wraps a page of products to a wrapper DTO, also sets some extra details
+     *
+     * @param categoryDisplayName The category display name or other string to show
+     * @param products            A list of ProductDTO
+     * @return A PagedProductList DTO that containing all the required details
+     */
     private PagedProductList createPagedProductListResponse(String categoryDisplayName, Page<Product> products) {
         PagedProductList productList = new PagedProductList();
         productList.setProducts(products
@@ -205,51 +306,11 @@ public class ProductService {
     }
 
     /**
-     * Builds a specification for the filter query
-     *
-     * @param category             The subcategory where the products belongs to
-     * @param productFilterOptions A DTO containing the required filters
-     * @return A Specification
-     */
-    Specification<Product> buildFilterSpecification(LookupEntity category, ProductFilterOptions productFilterOptions) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.isTrue(root.get("active")));
-
-            Boolean discounted = productFilterOptions.getDiscounted();
-            Boolean nonDiscounted = productFilterOptions.getNonDiscounted();
-            if (discounted != null && discounted && nonDiscounted != null && nonDiscounted) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("discount"), 0));
-            } else if (discounted != null && discounted) {
-                predicates.add(criteriaBuilder.greaterThan(root.get("discount"), 0));
-            } else if (nonDiscounted != null && nonDiscounted) {
-                predicates.add(criteriaBuilder.lessThan(root.get("discount"), 1));
-            }
-            if (productFilterOptions.getNotInStock() != null && !productFilterOptions.getNotInStock()) {
-                predicates.add(
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("inventory").get("quantityAvailable"), 1)
-                );
-            }
-
-            if (category != null) {
-                predicates.add(criteriaBuilder.equal(root.get("subCategory"), category));
-            }
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("averageRating"),
-                    productFilterOptions.getLowestRating())
-            );
-            predicates.add(criteriaBuilder.between(
-                    root.get("price"), productFilterOptions.getMinPrice(), productFilterOptions.getMaxPrice())
-            );
-            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        };
-    }
-
-    /**
      * Fetch all discounted products
      *
      * @param page The requested page index
      * @param size The size of the requested page
-     * @return A PagedProductList DTO containing ProductDtos and extra details
+     * @return A PagedProductList DTO containing ProductDTOs and extra details
      */
     public PagedProductList getDiscountedProducts(String page, String size) {
         Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
@@ -269,8 +330,21 @@ public class ProductService {
             String page, String size, ProductFilterOptions filterOptions) {
         Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(size));
         Page<Product> filteredDiscountedProducts =
-                productRepository.findAll(buildFilterSpecification(null, filterOptions), pageable);
+                productRepository.findAll(buildFilterSpecificationForDiscountedProducts(filterOptions), pageable);
         return createPagedProductListResponse("Leárazott termékek", filteredDiscountedProducts);
+    }
+
+    /**
+     * Builds a specification query for the discounted products
+     *
+     * @param productFilterOptions DTO that contains the filtering criteria
+     * @return A Specification that contains the filtering criteria
+     */
+    Specification<Product> buildFilterSpecificationForDiscountedProducts(ProductFilterOptions productFilterOptions) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = getPredicates(productFilterOptions, root, criteriaBuilder);
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
     }
 
     /**

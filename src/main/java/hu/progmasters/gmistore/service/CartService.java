@@ -90,7 +90,7 @@ public class CartService {
                     }
                 }
             }
-            if (actualProduct.getInventory().getQuantityAvailable() > count) {
+            if (actualProduct.getInventory().getQuantityAvailable() >= count) {
                 items.add(createNewCartItem(count, actualProduct));
                 setInitialShippingMethod(actualCart);
                 setItemsTotalPrice(actualCart);

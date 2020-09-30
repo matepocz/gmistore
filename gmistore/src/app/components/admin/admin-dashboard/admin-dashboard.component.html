@@ -27,6 +27,8 @@
 
   <button (click)=GetExchangeData()>Get Exchange Rate Updates</button>
   <button (click)=stopExchangeUpdates()>Stop Exchange Rate Updates</button>
-
+  <app-income-spent-graph
+  ></app-income-spent-graph>
+  <app-income-per-order-graph></app-income-per-order-graph>
 </div>
 <div>{{items.toString()}}</div>

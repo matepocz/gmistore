@@ -15,7 +15,6 @@ import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistration
 import {LiveDataSubjectService} from "./live-data-subject.service";
 import {ProductTableModel} from "../models/product/productTableModel";
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -113,6 +112,12 @@ export class AdminService {
   getUserRegistrationsCountByDate(dates: UserRegistrationStartEndDateModel): Observable<UserRegistrationsCounterModel> {
     console.log(dates)
     return this.httpClient.get<UserRegistrationsCounterModel>(this.adminUrl + '/registered' +
+      '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
+  }
+
+  getIncomePerOrder(dates: UserRegistrationStartEndDateModel): Observable<UserRegistrationsCounterModel> {
+    console.log(dates)
+    return this.httpClient.get<any>(this.adminUrl + '/income' +
       '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
   }
 

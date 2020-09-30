@@ -95,7 +95,7 @@ public class AdminController {
         return new ResponseEntity<>(userRegistrations, HttpStatus.OK);
     }
 
-    @GetMapping("/income")
+    @GetMapping("/income/")
     public ResponseEntity<List<IncomePerOrderDto>> getIncomePerOrder(@RequestParam String criteria) {
         List<IncomePerOrderDto> userRegistrationsByDateInterval = orderService.getIncomePerOrder(criteria);
         return userRegistrationsByDateInterval != null ?

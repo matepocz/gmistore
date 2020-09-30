@@ -32,10 +32,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("select o.uniqueId from Order as o join o.items as i where i.id=:item_id")
     String findOrderIdByItemId(@Param("item_id") Long id);
 
-    @Query("select new hu.progmasters.gmistore.dto.order.IncomePerOrderDto(o.items,o.orderedAt,o.uniqueId) " +
+    @Query("select new hu.progmasters.gmistore.dto.order.IncomePerOrderDto(o.totalPrice,o.orderedAt,o.uniqueId) " +
             "from Order o where o.orderedAt <= :end AND o.orderedAt>=:start")
     List<IncomePerOrderDto> findAllByOrderedAt(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-    
+
     //    @Query("select new hu.progmasters.gmistore.dto.order.OrderListDto(o) from Order as o")
 //    List<OrderListDto> findAllByOrderListDetails();
 }

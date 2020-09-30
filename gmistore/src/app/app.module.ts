@@ -94,6 +94,8 @@ import {ConfirmDialog} from './components/confirm-delete-dialog/confirm-dialog';
 import {PopupSnackbar} from "./utils/popup-snackbar";
 import {FilterDialogComponent} from './components/product/filter-dialog/filter-dialog.component';
 import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
+import { IncomePerOrderGraphComponent } from './components/admin/admin-dashboard/income-per-order-graph/income-per-order-graph.component';
+import { IncomeSpentGraphComponent } from './components/admin/admin-dashboard/income-spent-graph/income-spent-graph.component';
 
 @NgModule({
   declarations: [
@@ -145,6 +147,8 @@ import {FavoriteProductsComponent} from './components/favorite-products/favorite
     ConfirmDialog,
     FilterDialogComponent,
     FavoriteProductsComponent,
+    IncomePerOrderGraphComponent,
+    IncomeSpentGraphComponent,
   ],
 
     imports: [

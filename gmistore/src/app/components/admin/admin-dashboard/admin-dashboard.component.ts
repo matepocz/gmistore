@@ -133,6 +133,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           this.chart.update();
         }
       )
+
+      this.adminService.getIncomePerOrder(this.dateInterval).subscribe(
+        (data) => console.log(data),
+        (err) => console.log(err),
+      )
+
       console.log("in range")
       this.chartData.size = [1, 2]
       this.chartData.dates = ["2", "3"]

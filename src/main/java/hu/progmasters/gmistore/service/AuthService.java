@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,11 +131,12 @@ public class AuthService {
      * @return A DTO, containing the username, the JWT token
      */
     public AuthenticationResponse login(LoginRequest loginRequest) {
-        Optional<User> userByUsername = userRepository.findUserByUsername(loginRequest.getUsername());
+        String username = new String(Base64.getDecoder().decode(loginRequest.getUsername()));
+        String password = new String(Base64.getDecoder().decode(loginRequest.getPassword()));
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername.isPresent()) {
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(),
-                    loginRequest.getPassword()));
+            Authentication authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authenticate);
             AuthenticationResponse response = new AuthenticationResponse();
             response.setAuthenticationToken(jwtProvider.generateToken(authenticate));

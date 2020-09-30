@@ -25,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Optional<Product> findProductBySlug(String slug);
 
-    List<Product> findProductsByAddedBy(String name);
+    Page<Product> findProductsByAddedBy(String name,Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.subCategory = :category AND p.active = true")
     Page<Product> findProductsBySubCategory(LookupEntity category, Pageable pageable);

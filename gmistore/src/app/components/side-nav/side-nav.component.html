@@ -137,6 +137,10 @@
                   aria-label="admin settings button" id="admin-icon">
             <mat-icon>admin_panel_settings</mat-icon>
           </button>
+          <button color="primary" *ngIf="isSeller" mat-icon-button [routerLink]="['/seller/dashboard']"
+                  aria-label="seller settings button" id="seller-icon">
+            <mat-icon>storefront</mat-icon>
+          </button>
 
         </mat-toolbar-row>
       </mat-toolbar>

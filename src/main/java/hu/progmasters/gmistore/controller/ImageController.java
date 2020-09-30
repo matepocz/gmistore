@@ -26,8 +26,8 @@ public class ImageController {
         return imageService.uploadImage(imageToUpload);
     }
 
-    @DeleteMapping("/{url}")
-    public ResponseEntity<Boolean> destroyImage(@PathVariable("url") String imageUrl) {
+    @PutMapping
+    public ResponseEntity<Boolean> destroyImage(@RequestBody String imageUrl) {
         boolean result = imageService.destroyImage(imageUrl);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

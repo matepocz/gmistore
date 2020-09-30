@@ -14,7 +14,7 @@ export class SellerService {
   }
 
   getOwnProducts(
-    page: number, size: number,
+    size: number, page: number,
 
 
   ): Observable<PagedSellerProductListModel> {

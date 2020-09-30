@@ -35,10 +35,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.loginPayload = this.loginForm.value;
+    this.loginPayload.username = btoa(this.loginForm.get('username').value);
+    this.loginPayload.password = btoa(this.loginForm.get('password').value);
+    console.log(this.loginPayload);
     this.authService.login(this.loginPayload).subscribe(
       (data) => {
         if (data) {
-
           let returnUrl;
           this.route.queryParams.subscribe(
             (params) => {

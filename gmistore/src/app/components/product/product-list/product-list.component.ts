@@ -82,6 +82,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
     } else if (this.activatedRoute.snapshot.url[1]?.path === "search") {
       this.searching = true;
     }
+    this.subscriptions.add(
+      this.authService.usernameSubject.subscribe(
+        (username) => {
+          this.currentUsername = username;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
     this.titleService.setTitle("Termékek - GMI Store");
 
     this.subscriptions.add(
@@ -91,7 +100,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
         }, error => console.log(error)
       )
     );
-    this.currentUsername = this.authService.currentUsername;
 
     this.subscriptions.add(
       this.activatedRoute.queryParamMap.subscribe(

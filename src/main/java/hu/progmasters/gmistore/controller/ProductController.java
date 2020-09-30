@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.controller;
 
+import hu.progmasters.gmistore.dto.inventory.InventorySoldProductsDto;
 import hu.progmasters.gmistore.dto.product.PagedProductList;
 import hu.progmasters.gmistore.dto.product.PagedSellerProductList;
 import hu.progmasters.gmistore.dto.product.ProductDto;

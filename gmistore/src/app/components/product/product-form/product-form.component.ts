@@ -80,7 +80,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loading = true;
-    this.currentUsername = this.authService.currentUsername;
+    this.subscriptions.add(
+      this.authService.usernameSubject.subscribe(
+        (response: string) => {
+          this.currentUsername = response;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
     this.titleService.setTitle("Új termék");
     this.fetchMainCategories();
 

@@ -405,7 +405,5 @@ public class OrderService {
         Collection<Double> values = orderDates.values();
 
         return new IncomeByDaysDto(values,strings);
-
     }
-
 }

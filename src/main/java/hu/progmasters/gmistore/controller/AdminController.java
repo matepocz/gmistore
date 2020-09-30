@@ -155,4 +155,11 @@ public class AdminController {
         List<ProductTableDto> orders = productService.getAllProductsToTable();
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardData> getDashboardData() {
+        DashboardData data = adminService.getDashBasicDashBoardData();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
 }

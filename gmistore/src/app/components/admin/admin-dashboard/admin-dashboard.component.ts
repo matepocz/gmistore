@@ -8,6 +8,10 @@ import {MatCalendar} from "@angular/material/datepicker";
 import {generateRandomColor} from "../../../utils/generate-color";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
 import {LiveDataSubjectService} from "../../../service/live-data-subject.service";
+import {ProductService} from "../../../service/product-service";
+import {IncomeSpentModel} from "../../../models/incomeSpentModel";
+import {IncomeByDateModel} from "../../../models/order/IncomeByDateModel";
+import {DashBoardBasicModel} from "../../../models/DashBoardBasicModel";
 
 
 @Component({
@@ -24,23 +28,51 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   selectedDate: any;
   minDate: Date;
   maxDate: Date;
-  dateInterval: UserRegistrationStartEndDateModel = new class implements UserRegistrationStartEndDateModel {
-    end: Date;
-    start: Date;
-  };
-  liveData: any;
+  dateInterval: UserRegistrationStartEndDateModel;
   items: any[] = [''];
+  pieChartData: IncomeSpentModel;
+  incomeLineChartData: IncomeByDateModel;
+  private dates: { end: Date; start: Date };
+  dashboardData: DashBoardBasicModel;
 
   constructor(private adminService: AdminService,
+              private productService: ProductService,
               private snackBar: PopupSnackbar,
               private subj: LiveDataSubjectService,
               private cdRef: ChangeDetectorRef) {
+
+    this.dates = new class implements UserRegistrationStartEndDateModel {
+      end: Date = new Date(Date.now());
+      start: Date = new Date(Date.now() - (3600 * 1000 * 24 * 30));
+
+    }
+
+    this.dateInterval = new class implements UserRegistrationStartEndDateModel {
+      end: Date;
+      start: Date;
+    };
   }
 
   @ViewChild(MatCalendar) _datePicker: MatCalendar<Date>
 
 
   ngOnInit(): void {
+    this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
+      (data: IncomeByDateModel) => this.incomeLineChartData = data,
+      error => console.log(error)
+    );
+
+    this.subscription = this.adminService.fetchDashboardData().subscribe(
+      (data: DashBoardBasicModel) => this.dashboardData = data,
+      error => console.log(error)
+    );
+
+    this.productService.getIncomeAndSpent().subscribe(
+      (data) => this.pieChartData = data,
+      (err) => console.log(err),
+      () =>
+        console.log(this.chartData))
+
     this.subj.asObservable().subscribe(data => {
       this.items.push(data);
       this.cdRef.detectChanges();
@@ -119,7 +151,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  inlineRangeChange($event: any) { //30 days
+  inlineRangeChange($event
+                      :
+                      any
+  ) { //30 days
     if ($event.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.end.getTime()) {
       this.dateInterval.start = $event.begin;
       this.dateInterval.end = $event.end;

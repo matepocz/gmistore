@@ -199,4 +199,8 @@ public class UserService {
         LOGGER.debug("Could not delete favorite product, user not found! username: {}", principal.getName());
         return false;
     }
+
+    Integer countAllByRole(Role role) {
+        return userRepository.countByRoles(role);
+    }
 }

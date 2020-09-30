@@ -15,6 +15,7 @@ import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistration
 import {LiveDataSubjectService} from "./live-data-subject.service";
 import {ProductTableModel} from "../models/product/productTableModel";
 import {IncomeByDateModel} from "../models/order/IncomeByDateModel";
+import {DashBoardBasicModel} from "../models/DashBoardBasicModel";
 
 @Injectable({
   providedIn: 'root'
@@ -124,5 +125,9 @@ export class AdminService {
 
   fetchProductsTableData(): Observable<ProductTableModel[]> {
     return this.httpClient.get<Array<ProductTableModel>>(this.adminUrl + '/products');
+  }
+
+  fetchDashboardData(): Observable<DashBoardBasicModel> {
+    return this.httpClient.get<DashBoardBasicModel>(this.adminUrl + '/dashboard');
   }
 }

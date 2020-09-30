@@ -1,0 +1,31 @@
+<mat-card class="card" *ngIf="!noBackgroundColor" [ngStyle]="{'color': 'white','background-color': backgroundColor}" fxLayout="row wrap ">
+  <div fxFlex="60">
+    <mat-card-header>
+      <mat-card-title>{{title}}</mat-card-title>
+      <mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+      <mat-icon mat-card-avatar>{{icon}}</mat-icon>
+    </mat-card-header>
+    <mat-card-content fxLayout="row"
+                      fxLayoutAlign="center"
+                      [ngStyle]="{'font-size': '30px','margin': '10px'}">{{data | hufCurrency}}</mat-card-content>
+  </div>
+
+  <div fxFlex="40" fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+    <mat-icon [ngStyle]="{'font-size': '100px'}" mat-card-avatar>bar_chart</mat-icon>
+  </div>
+</mat-card>
+
+<mat-card class="card" *ngIf="noBackgroundColor" fxLayout="row wrap " fxLayoutAlign="space-between">
+  <div fxFlex="40" fxLayout="row" fxLayoutAlign="center" >
+    <mat-icon [ngStyle]="{'font-size': '100px','color': avatarColor}" mat-card-avatar>{{avatar}}</mat-icon>
+  </div>
+
+  <div fxFlex="40">
+    <mat-card-header>
+      <mat-card-title>{{title}}</mat-card-title>
+      <mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content fxLayout="row"
+                      [ngStyle]="{'font-size': '30px','margin': '10px'}">{{data}}</mat-card-content>
+  </div>
+</mat-card>

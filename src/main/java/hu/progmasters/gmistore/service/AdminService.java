@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.DashboardData;
 import hu.progmasters.gmistore.dto.user.UserDto;
 import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
 import hu.progmasters.gmistore.dto.user.UserIsActiveDto;
@@ -28,13 +29,15 @@ public class AdminService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final DateService dateService;
+    private final ProductService productService;
 
     public AdminService(SessionRegistry sessionRegistry, DateService dateService,
-                        UserRepository userRepository, UserService userService) {
+                        UserRepository userRepository, UserService userService, ProductService productService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
         this.userService = userService;
         this.dateService = dateService;
+        this.productService = productService;
     }
 
     public UserDto getUserById(Long id) {
@@ -101,6 +104,13 @@ public class AdminService {
         return userRepository.findUserRegistrationsByDateInterval(createDates.getStart(), createDates.getEnd());
     }
 
+    public DashboardData getDashBasicDashBoardData() {
+        Integer customers = userService.countAllByRole(Role.ROLE_USER);
+        Integer sellers = userService.countAllByRole(Role.ROLE_SELLER);
+        Integer productsActive = productService.countAllByActive();
+        Integer productsInactive = productService.countAllByInActive();
+        return new DashboardData(customers,sellers,productsActive,productsInactive);
+    }
 
 //    public CreateDates stringToDate(String criteria){
 //        JSONObject obj = new JSONObject(criteria);

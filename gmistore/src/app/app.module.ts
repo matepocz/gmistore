@@ -96,6 +96,8 @@ import {FilterDialogComponent} from './components/product/filter-dialog/filter-d
 import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
 import { IncomePerOrderGraphComponent } from './components/admin/admin-dashboard/income-per-order-graph/income-per-order-graph.component';
 import { IncomeSpentGraphComponent } from './components/admin/admin-dashboard/income-spent-graph/income-spent-graph.component';
+import { UserRegistrationsGraphComponent } from './components/admin/admin-dashboard/user-registrations-graph/user-registrations-graph.component';
+import { MiniCardDataComponent } from './components/admin/admin-dashboard/mini-card-data/mini-card-data.component';
 
 @NgModule({
   declarations: [
@@ -149,6 +151,8 @@ import { IncomeSpentGraphComponent } from './components/admin/admin-dashboard/in
     FavoriteProductsComponent,
     IncomePerOrderGraphComponent,
     IncomeSpentGraphComponent,
+    UserRegistrationsGraphComponent,
+    MiniCardDataComponent,
   ],
 
     imports: [

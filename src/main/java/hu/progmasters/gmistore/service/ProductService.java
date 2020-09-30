@@ -382,5 +382,12 @@ public class ProductService {
         return productRepository.findAllToTable();
     }
 
+    public Integer countAllByActive() {
+        return productRepository.countAllByActive(true);
+    }
+
+    public Integer countAllByInActive() {
+        return productRepository.countAllByActive(false);
+    }
 
 }

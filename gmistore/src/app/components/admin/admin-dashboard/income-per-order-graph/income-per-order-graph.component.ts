@@ -1,8 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Chart} from "chart.js";
-import {AdminService} from "../../../../service/admin.service";
-import {UserRegistrationStartEndDateModel} from "../../../../models/user/UserRegistrationStartEndDateModel";
-import {Subscription} from "rxjs";
 import {IncomeByDateModel} from "../../../../models/order/IncomeByDateModel";
 
 @Component({
@@ -11,76 +8,54 @@ import {IncomeByDateModel} from "../../../../models/order/IncomeByDateModel";
   styleUrls: ['./income-per-order-graph.component.css']
 })
 export class IncomePerOrderGraphComponent implements OnInit {
-  @ViewChild('chart') chartRef;
+  @ViewChild('incomePerDays') chartRef;
+  @Input() chartData: IncomeByDateModel;
 
-  dates: UserRegistrationStartEndDateModel;
-  private subscription: Subscription;
-  private chartData: IncomeByDateModel;
-  private chart: Chart;
-
-  constructor(private adminService: AdminService) {
-    this.dates = new class implements UserRegistrationStartEndDateModel {
-      end: Date = new Date(Date.now());
-      start: Date = new Date(Date.now() - (3600 * 1000 * 24 * 30));
-    }
-  }
+  chart: Chart;
 
   ngOnInit(): void {
-    this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
-      (data: IncomeByDateModel) => this.chartData = data,
-        error => {
-        console.log(error)
-      },
-
-      () => {
-        console.log(this.chartData)
-        console.log(this.chartData.date)
-        console.log(this.chartData.income)
-
-        this.chart = new Chart(this.chartRef.nativeElement, {
-          type: 'line',
-          data: {
-            labels: this.chartData.date,
-            datasets: [
-              {
-                borderWidth: 1,
-                data: this.chartData.income
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-              display: false
-            },
-            scales: {
-              xAxes: [{
-                display: true,
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 7
-                }
-              }],
-              scaleLabel: {
-                labelString: 'dátum',
-                display: true,
-              },
-              yAxes: [{
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  maxTicksLimit: 10
-                },
-                scaleLabel: {
-                  labelString: 'vásárlók száma',
-                  display: true,
-                },
-              }],
-            }
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels: this.chartData.date,
+        datasets: [
+          {
+            borderWidth: 1,
+            data: this.chartData.income
           }
-        });
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 7
+            }
+          }],
+          scaleLabel: {
+            labelString: 'dátum',
+            display: true,
+          },
+          yAxes: [{
+            display: true,
+            ticks: {
+              beginAtZero: true,
+              maxTicksLimit: 10
+            },
+            scaleLabel: {
+              labelString: 'vásárlók száma',
+              display: true,
+            },
+          }],
+        }
       }
-    )
+    });
   }
 }

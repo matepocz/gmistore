@@ -26,6 +26,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "from User u join u.roles as r where r in :role ")
     List<UserRegistrationDTO> findByRolesIn(@Param("role") Role role);
 
+    @Query("select count(u) from User as u join u.roles as r where r in :role")
+    Integer countByRoles(@Param("role") Role role);
+
     @Query("select u from User u")
     List<User> findAllUsersWithListDetails2();
 

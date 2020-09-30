@@ -4,15 +4,16 @@ import {RatingService} from "../../service/rating.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {RatingInitDataModel} from "../../models/rating-init-data-model";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AddRatingRequestModel} from "../../models/add-rating-request-model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SpinnerService} from "../../service/spinner-service.service";
 import {PopupSnackbar} from "../../utils/popup-snackbar";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../loading-spinner/loading-spinner.component";
-import {ProductService} from "../../service/product-service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {ImageService} from "../../service/image.service";
+import {errorHandler} from "../../utils/error-handler";
 
 @Component({
   selector: 'app-add-product-review',
@@ -22,7 +23,6 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 export class AddProductReviewComponent implements OnInit, OnDestroy {
 
   loading: boolean = false;
-  ratingForm: FormGroup;
   product: RatingInitDataModel;
   slug: string;
 
@@ -31,6 +31,17 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   ratingInputValue: number;
   ratingData: AddRatingRequestModel;
 
+  ratingForm: FormGroup = this.formBuilder.group({
+    product: [null],
+    actualRating: [null],
+    title: [null, Validators.maxLength(100)],
+    positiveComment: [null, Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(1000)])],
+    negativeComment: [null, Validators.compose(
+      [Validators.required, Validators.minLength(3), Validators.maxLength(1000)])],
+    pictures: [null]
+  })
+
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
 
   subscriptions: Subscription = new Subscription();
@@ -38,7 +49,7 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   constructor(private ratingService: RatingService, private activatedRoute: ActivatedRoute,
               private formBuilder: FormBuilder, private snackbar: PopupSnackbar,
               private router: Router, private spinnerService: SpinnerService,
-              private productService: ProductService) {
+              private imageService: ImageService) {
   }
 
   ngOnInit(): void {
@@ -53,14 +64,6 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
             console.log(error);
           },
           () => {
-            this.ratingForm = this.formBuilder.group({
-              product: [null],
-              actualRating: [null],
-              title: [null],
-              positiveComment: [null],
-              negativeComment: [null],
-              pictures: [null]
-            })
           }
         ));
       }, (error) => {
@@ -82,9 +85,11 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.ratingService.addNewRating(this.ratingData).subscribe(
         () => {
+          this.snackbar.popUp("Köszönjük az értékelést!");
           this.spinnerService.stop(this.spinner);
         },
         (error: HttpErrorResponse) => {
+          errorHandler(error, this.ratingForm);
           this.spinnerService.stop(this.spinner);
           this.snackbar.popUp('Valami hiba történt! Mindent kitöltöttél?');
         },
@@ -118,7 +123,7 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
 
   async upload(file) {
     this.loading = true;
-    return await this.productService.uploadImage(file).then((data) => {
+    return await this.imageService.uploadImage(file).then((data) => {
       this.pictures.push(data[1]);
       this.loading = false;
     }, (error) => {
@@ -132,8 +137,24 @@ export class AddProductReviewComponent implements OnInit, OnDestroy {
   }
 
   removeImage(picture: string) {
+    this.spinner = this.spinnerService.start();
     let indexOfImage = this.pictures.indexOf(picture);
-    this.pictures.splice(indexOfImage, 1);
+    this.subscriptions.add(
+      this.imageService.destroyImage(picture).subscribe(
+        (response) => {
+          if (response) {
+            this.snackbar.popUp("Sikeres törlés!");
+            this.pictures.splice(indexOfImage, 1);
+          } else {
+            this.snackbar.popUp("Valami hiba történt!");
+          }
+          this.spinnerService.stop(this.spinner);
+        }, (error) => {
+          this.spinnerService.stop(this.spinner);
+          console.log(error);
+        }
+      )
+    );
   }
 
   ngOnDestroy() {

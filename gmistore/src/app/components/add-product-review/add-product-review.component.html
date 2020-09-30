@@ -27,7 +27,20 @@
         <mat-form-field fxFlex="100" appearance="outline">
           <mat-label>Cím</mat-label>
           <input matInput formControlName="title">
-          <mat-hint align="end">Max. karakterek: {{ ratingForm.get('title').value?.length || 0 }}/100</mat-hint>
+          <mat-hint align="end">Max. karakterek: {{ ratingForm.get('title').value?.length || 0 }} / 100</mat-hint>
+          <mat-error *ngIf="ratingForm.get('title').invalid && ratingForm.get('title').value?.length > 100
+          && !ratingForm.get('title').errors?.serverError">
+            Maximum 100 karakter!
+          </mat-error>
+
+          <mat-error *ngIf="ratingForm.get('title').invalid && ratingForm.get('title').value?.length < 100
+          && !ratingForm.get('title').errors?.serverError">
+            Érvénytelen cím!
+          </mat-error>
+
+          <mat-error *ngIf="ratingForm.get('title').errors?.serverError">
+            {{ ratingForm.get('title').errors.serverError}}
+          </mat-error>
         </mat-form-field>
       </div>
 
@@ -41,7 +54,30 @@
 
           <mat-form-field fxFlex="100" appearance="outline">
             <mat-label>Pozitívumok</mat-label>
-            <textarea class="rating-comment" rows="7" matInput formControlName="positiveComment"></textarea>
+            <textarea class="rating-comment" matTextareaAutosize [matAutosizeMaxRows]="20" rows="7"
+                      matInput formControlName="positiveComment"></textarea>
+
+            <mat-error *ngIf="ratingForm.get('positiveComment').invalid
+            && ratingForm.get('positiveComment').value?.length < 3
+            && !ratingForm.get('positiveComment').errors?.serverError">
+              Minimum 3 karakter!
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('positiveComment').invalid
+            && ratingForm.get('positiveComment').value?.length > 1000
+            && !ratingForm.get('positiveComment').errors?.serverError">
+              Max. 1000 karakter!
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('positiveComment').invalid
+            && ratingForm.get('positiveComment').value?.length <= 1000
+            && !ratingForm.get('positiveComment').errors?.serverError">
+              Érvénytelen értékelés
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('positiveComment').errors?.serverError">
+              {{ ratingForm.get('positiveComment').errors.serverError}}
+            </mat-error>
           </mat-form-field>
 
         </div>
@@ -54,7 +90,30 @@
 
           <mat-form-field fxFlex="100" appearance="outline">
             <mat-label>Negatívumok</mat-label>
-            <textarea class="rating-comment" rows="7" matInput formControlName="negativeComment"></textarea>
+            <textarea class="rating-comment" matTextareaAutosize [matAutosizeMaxRows]="20" rows="7"
+                      matInput formControlName="negativeComment"></textarea>
+
+            <mat-error *ngIf="ratingForm.get('negativeComment').invalid
+            && ratingForm.get('negativeComment').value?.length < 3
+            && !ratingForm.get('negativeComment').errors?.serverError">
+              Minimum 3 karakter!
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('negativeComment').invalid
+            && ratingForm.get('negativeComment').value?.length > 1000
+            && !ratingForm.get('negativeComment').errors?.serverError">
+              Maximum 1000 karakter!
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('negativeComment').invalid
+            && ratingForm.get('negativeComment').value?.length <= 1000
+            && !ratingForm.get('negativeComment').errors?.serverError">
+              Érvénytelen értékelés
+            </mat-error>
+
+            <mat-error *ngIf="ratingForm.get('negativeComment').errors?.serverError">
+              {{ ratingForm.get('negativeComment').errors.serverError}}
+            </mat-error>
           </mat-form-field>
         </div>
 

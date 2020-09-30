@@ -1,10 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.*;
-import hu.progmasters.gmistore.dto.order.IncomePerOrderDto;
-import hu.progmasters.gmistore.dto.order.OrderDto;
-import hu.progmasters.gmistore.dto.order.OrderListDto;
-import hu.progmasters.gmistore.dto.order.OrderProductDetailsDto;
+import hu.progmasters.gmistore.dto.order.*;
 import hu.progmasters.gmistore.dto.product.ProductTableDto;
 import hu.progmasters.gmistore.dto.user.*;
 import hu.progmasters.gmistore.enums.Role;
@@ -96,8 +93,8 @@ public class AdminController {
     }
 
     @GetMapping("/income/")
-    public ResponseEntity<List<IncomePerOrderDto>> getIncomePerOrder(@RequestParam String criteria) {
-        List<IncomePerOrderDto> userRegistrationsByDateInterval = orderService.getIncomePerOrder(criteria);
+    public ResponseEntity<IncomeByDaysDto> getIncomePerOrder(@RequestParam String criteria) {
+        IncomeByDaysDto userRegistrationsByDateInterval = orderService.getIncomePerOrder(criteria);
         return userRegistrationsByDateInterval != null ?
                 new ResponseEntity<>(userRegistrationsByDateInterval, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

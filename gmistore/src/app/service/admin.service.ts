@@ -14,6 +14,7 @@ import {OrderListModel} from "../models/order/orderListModel";
 import {UserRegistrationStartEndDateModel} from "../models/user/UserRegistrationStartEndDateModel";
 import {LiveDataSubjectService} from "./live-data-subject.service";
 import {ProductTableModel} from "../models/product/productTableModel";
+import {IncomeByDateModel} from "../models/order/IncomeByDateModel";
 
 @Injectable({
   providedIn: 'root'
@@ -115,9 +116,9 @@ export class AdminService {
       '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
   }
 
-  getIncomePerOrder(dates: UserRegistrationStartEndDateModel): Observable<UserRegistrationsCounterModel> {
+  getIncomePerOrder(dates: UserRegistrationStartEndDateModel): Observable<IncomeByDateModel> {
     console.log(dates)
-    return this.httpClient.get<any>(this.adminUrl + '/income' +
+    return this.httpClient.get<IncomeByDateModel>(this.adminUrl + '/income' +
       '/?criteria=' + encodeURIComponent(JSON.stringify(dates)));
   }
 

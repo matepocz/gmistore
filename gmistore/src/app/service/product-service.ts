@@ -12,7 +12,6 @@ import {ProductFilterOptions} from "../models/product/product-filter-options";
 })
 export class ProductService {
   private productsUrl = environment.apiUrl + 'api/products';
-  private imageUploadUrl = environment.apiUrl + 'api/images/upload';
   private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
@@ -82,13 +81,6 @@ export class ProductService {
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {
     return this.httpClient.put(this.productsUrl + '/' + slug, product);
-  }
-
-  public async uploadImage(image: File) {
-    const uploadData = new FormData();
-    uploadData.append('picture', image);
-
-    return await this.httpClient.post(this.imageUploadUrl, uploadData).toPromise();
   }
 
   getDiscountProducts(): Observable<Array<ProductModel>> {

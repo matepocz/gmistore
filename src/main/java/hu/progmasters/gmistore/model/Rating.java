@@ -1,7 +1,9 @@
 package hu.progmasters.gmistore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -12,7 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "product_rating")
 public class Rating implements Serializable {
 
@@ -38,7 +42,7 @@ public class Rating implements Serializable {
     @Column(name = "rating")
     private int actualRating;
 
-    @Column(name = "title")
+    @Column(name = "title", columnDefinition = "varchar(100)")
     private String title;
 
     @Column(name = "positive_comment", columnDefinition = "TEXT")

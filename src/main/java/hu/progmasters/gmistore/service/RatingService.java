@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class RatingService {
 
     /**
      * Fetch all active ratings for the given product
+     *
      * @param productSlug The given product's unique ID
      * @return A list of Rating DTOs
      */
@@ -51,6 +53,7 @@ public class RatingService {
 
     /**
      * Fetch the product's name, wraps into a DTO
+     *
      * @param productSlug The given product's unique ID
      * @return A DTO
      */
@@ -65,31 +68,35 @@ public class RatingService {
 
     /**
      * Creates a new Rating
+     *
      * @param newRatingRequest A DTO containing the required details
      * @return A boolean, true if successful, false otherwise
      */
-    public boolean create(NewRatingRequest newRatingRequest) {
+    public boolean create(NewRatingRequest newRatingRequest, Principal principal) {
         String productSlug = newRatingRequest.getProduct();
         Optional<Product> productBySlug = productRepository.findProductBySlug(productSlug);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (productBySlug.isPresent() && !authentication.getName().equals("anonymousUser")) {
+        if (productBySlug.isPresent() && !principal.getName().equals("anonymousUser")) {
             Product actualProduct = productBySlug.get();
-            Rating rating = new Rating();
-            rating.setActive(true);
-            rating.setUsername(authentication.getName());
-            rating.setProduct(actualProduct);
-            rating.setActualRating(newRatingRequest.getActualRating());
-            rating.setTitle(newRatingRequest.getTitle());
-            rating.setPositiveComment(newRatingRequest.getPositiveComment());
-            rating.setNegativeComment(newRatingRequest.getNegativeComment());
-            rating.setUpVotes(0);
-            rating.setPictures(newRatingRequest.getPictures());
-            rating.setReported(false);
-            rating.setTimeStamp(LocalDateTime.now());
-            ratingRepository.save(rating);
-            calculateAndSetAverageRating(actualProduct);
-            LOGGER.info("Product rating created, id: {}", rating.getId());
-            return true;
+            Optional<Rating> ratingByUsername =
+                    ratingRepository.findRatingByUsername(principal.getName(), actualProduct);
+            if (ratingByUsername.isEmpty()) {
+                Rating rating = new Rating();
+                rating.setActive(true);
+                rating.setUsername(principal.getName());
+                rating.setProduct(actualProduct);
+                rating.setActualRating(newRatingRequest.getActualRating());
+                rating.setTitle(newRatingRequest.getTitle());
+                rating.setPositiveComment(newRatingRequest.getPositiveComment());
+                rating.setNegativeComment(newRatingRequest.getNegativeComment());
+                rating.setUpVotes(0);
+                rating.setPictures(newRatingRequest.getPictures());
+                rating.setReported(false);
+                rating.setTimeStamp(LocalDateTime.now());
+                ratingRepository.save(rating);
+                calculateAndSetAverageRating(actualProduct);
+                LOGGER.info("Product rating created, id: {}", rating.getId());
+                return true;
+            }
         }
         LOGGER.info("Product rating creation failed, product slug: {}", productSlug);
         return false;
@@ -104,6 +111,7 @@ public class RatingService {
 
     /**
      * Set the given Rating's state to inactive
+     *
      * @param id The given Rating's ID
      * @return A boolean, true if successful, false otherwise
      */
@@ -126,7 +134,8 @@ public class RatingService {
 
     /**
      * Increases the given Rating's vote counter by one.
-     * @param id The given Rating's ID
+     *
+     * @param id       The given Rating's ID
      * @param username The actual user's username who up voted the Rating
      */
     public void upVoteRating(Long id, String username) {
@@ -141,7 +150,8 @@ public class RatingService {
 
     /**
      * Decreases the given Rating's vote counter by one.
-     * @param id The given Rating's ID
+     *
+     * @param id       The given Rating's ID
      * @param username The actual user's username who removed their up vote from this Rating
      */
     public void removeUpVoteRating(Long id, String username) {
@@ -158,6 +168,7 @@ public class RatingService {
 
     /**
      * Set a Rating's reported flag to true
+     *
      * @param id The given Rating's ID
      * @return A boolean, true if successful, false otherwise
      */

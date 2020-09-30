@@ -53,6 +53,10 @@ main {
   color: indianred;
 }
 
+#seller-icon{
+  color: #ffcf02;
+}
+
 .search-input-div {
   border-radius: 20px;
   background-color: #673ab7;

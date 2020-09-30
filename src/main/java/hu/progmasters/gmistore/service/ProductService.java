@@ -358,13 +358,19 @@ public class ProductService {
     /**
      * Get all products added by the user
      *
-     * @param username The user's username
+     * @param sellerName
      * @return A List of ProductDto
      */
-    public List<ProductDto> getAllProductsAddedByUser(String username) {
-        List<Product> productsAddedByUser = productRepository.findProductsByAddedBy(username);
-        return productsAddedByUser.stream().map(this::mapProductToProductDto)
-                .collect(Collectors.toList());
+    public PagedSellerProductList getAllProductsAddedByUser(String sellerName, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productsAddedByUser = productRepository.findProductsByAddedBy(sellerName, pageable);
+
+        PagedSellerProductList sellerProducts = new PagedSellerProductList();
+        sellerProducts.setProducts(
+                productsAddedByUser.stream().map(this::mapProductToProductTableDto)
+                        .collect(Collectors.toList()));
+        sellerProducts.setTotalElements(productsAddedByUser.getTotalElements());
+        return sellerProducts;
     }
 
     private ProductDto mapProductToProductDto(Product product) {
@@ -388,6 +394,18 @@ public class ProductService {
         productDto.setActive(product.isActive());
         productDto.setAddedBy(product.getAddedBy());
         return productDto;
+    }
+    private ProductTableDto mapProductToProductTableDto(Product product){
+        ProductTableDto productTableDto = new ProductTableDto();
+        productTableDto.setId(product.getId());
+        productTableDto.setName(product.getName());
+        productTableDto.setCategoryDisplayName(product.getSubCategory().getDisplayName());
+        productTableDto.setPrice(product.getPrice());
+        productTableDto.setActive(product.isActive());
+        productTableDto.setPictureUrl(product.getPictureUrl());
+        productTableDto.setSlug(product.getSlug());
+        return productTableDto;
+
     }
 
     /**

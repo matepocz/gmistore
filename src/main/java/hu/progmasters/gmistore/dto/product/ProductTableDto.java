@@ -3,10 +3,12 @@ package hu.progmasters.gmistore.dto.product;
 import hu.progmasters.gmistore.model.LookupEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductTableDto {
     private Long id;
     private String name;

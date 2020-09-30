@@ -1,13 +1,15 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints, MediaMatcher} from '@angular/cdk/layout';
 import {Observable, Subscription} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {debounceTime, map, shareReplay} from 'rxjs/operators';
 import {AuthService} from "../../service/auth-service";
 import {CartService} from "../../service/cart-service";
 import {Router} from "@angular/router";
 import {MainCategoryModel} from "../../models/main-category.model";
 import {AdminService} from "../../service/admin.service";
 import {UserService} from "../../service/user.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ProductService} from "../../service/product-service";
 
 @Component({
   selector: 'app-side-nav',
@@ -16,6 +18,10 @@ import {UserService} from "../../service/user.service";
 })
 
 export class SideNavComponent implements OnInit {
+
+  searchForm: FormGroup = new FormGroup({
+    searchInput: new FormControl(null, Validators.required)
+  })
   mobileQuery: MediaQueryList;
   @ViewChild('drawer') drawer: ElementRef;
 
@@ -28,9 +34,13 @@ export class SideNavComponent implements OnInit {
   favoriteItems: number = 0;
 
   authenticatedUser: boolean;
-  currentUsername: string = null;
+  currentUsername: string;
   isAdmin: boolean = false;
   isSeller: boolean = false;
+
+  showMobileSearch: boolean = false;
+  currentSearchingQuery: string;
+  autoCompleteOptions: Observable<string[]>;
 
   subscriptions: Subscription = new Subscription();
 
@@ -44,15 +54,23 @@ export class SideNavComponent implements OnInit {
 
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
-              private router: Router, private adminService: AdminService,
-              private userService: UserService) {
+              private router: Router, private adminService: AdminService, private cdRef: ChangeDetectorRef,
+              private userService: UserService, private productService: ProductService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
   ngOnInit() {
-    this.currentUsername = this.authService.currentUsername;
+    this.subscriptions.add(
+      this.authService.usernameSubject.subscribe(
+        (response) => {
+          this.currentUsername = response;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
     this.subscriptions.add(this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
@@ -61,7 +79,21 @@ export class SideNavComponent implements OnInit {
       }
     ));
 
+    this.subscriptions.add(
+      this.searchForm.get('searchInput').valueChanges.subscribe(
+        (value) => {
+          this.currentSearchingQuery = value;
+          if (this.currentSearchingQuery !== '') {
+            this.autoCompleteOptions = this.fetchSearchOptions();
+          }
+        }, error => {
+          console.log(error)
+        }
+      )
+    );
+
     this.authenticatedUser = this.authService.isAuthenticated();
+    console.log(this.authenticatedUser);
     this.subscriptions.add(this.authService.isAdmin.subscribe(
       (response) => {
         this.isAdmin = response;
@@ -79,6 +111,15 @@ export class SideNavComponent implements OnInit {
     ));
     this.updateItemsInCart(2);
     this.updateFavoriteItems(2);
+  }
+
+  fetchSearchOptions(): Observable<string[]> {
+    return this.productService.getProductNamesForAutocomplete(this.currentSearchingQuery).pipe(
+      debounceTime(500),
+      map(result => {
+          return result;
+        }
+      ));
   }
 
   logout() {
@@ -110,7 +151,7 @@ export class SideNavComponent implements OnInit {
   }
 
   updateFavoriteItems(timeout: number) {
-    if (this.authenticatedUser){
+    if (this.authenticatedUser) {
       setTimeout(() => {
           this.subscriptions.add(this.userService.getCountOfFavoriteProducts().subscribe(
             (response) => {
@@ -133,6 +174,38 @@ export class SideNavComponent implements OnInit {
 
   openNav() {
     this.opened = true;
+  }
+
+  submitSearch() {
+    this.router.navigate(
+      ['/product-list/search'],
+      {
+        queryParams: {
+          q: this.searchForm.get('searchInput').value,
+          pageSize: 10,
+          pageIndex: 0
+        }
+      }
+    )
+  }
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  navigateToDeals() {
+    this.closeNav();
+    this.router.navigate(['/product-list/deals'],
+      {
+        queryParams: {
+          pageSize: 10,
+          pageIndex: 0
+        }
+      });
+  }
+
+  detectChanges() {
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy(): void {

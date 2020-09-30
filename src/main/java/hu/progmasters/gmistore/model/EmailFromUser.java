@@ -37,4 +37,7 @@ public class EmailFromUser {
     @Column(name = "messageCreateTime")
     private LocalDateTime messageCreateTime;
 
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private boolean active;
+
 }

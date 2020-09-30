@@ -1,0 +1,62 @@
+<div fxLayout="row" fxFlex="100" fxLayoutAlign="center center">
+  <div fxLayout="column" fxFlex="95">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="picture">
+        <th mat-header-cell *matHeaderCellDef>Kép</th>
+        <td mat-cell *matCellDef="let product">
+          <img
+            [ngStyle]="{'height': '100px','margin': '10px'}"
+            src="{{product.pictureUrl}}"
+            alt="Product picture"
+          ></td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Név</th>
+        <td mat-cell *matCellDef="let product"> {{product.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Kategória</th>
+        <td mat-cell *matCellDef="let product"> {{product.categoryDisplayName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Ár</th>
+        <td mat-cell *matCellDef="let product"> {{product.price | hufCurrency}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="active">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Aktív</th>
+        <td mat-cell *matCellDef="let product">
+          <mat-icon [ngStyle]="{color: product.active ? '#2bce50':'#ff162f'}">check_circle</mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="modify">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Opció</th>
+        <td mat-cell *matCellDef="let product">
+          <a mat-stroked-button  (click)="editProduct(product.slug)">
+            <mat-icon>mode_edit</mat-icon>
+            Módosít</a>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+<!--      <tr class="mat-row" *matNoDataRow>-->
+<!--        <td class="mat-cell" colspan="5">No data matching the filter "{{input.value}}"</td>-->
+<!--      </tr>-->
+    </table>
+
+<mat-paginator [length]="numberOfProducts" [color]="'primary'" (focusin)="detectChanges()"
+               [pageSize]="pageSize" (page)="paginationEventHandler($event)"
+               [pageSizeOptions]="pageSizeOptions">
+</mat-paginator>
+
+
+  </div>
+</div>

@@ -7,7 +7,6 @@ import hu.progmasters.gmistore.model.Inventory;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.repository.ProductRepository;
-import hu.progmasters.gmistore.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,15 +34,12 @@ public class ProductServiceTest {
     private InventoryService inventoryServiceMock;
 
     @Mock
-    private UserRepository userRepositoryMock;
-
-    @Mock
     private LookupService lookupServiceMock;
 
     @BeforeEach
     public void setup() {
         productService = new ProductService(
-                productRepositoryMock, inventoryServiceMock, userRepositoryMock, lookupServiceMock);
+                productRepositoryMock, inventoryServiceMock, lookupServiceMock);
     }
 
     private final Supplier<ProductDto> productDtoSupplier = () -> {

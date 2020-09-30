@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../environments/environment";
 import {RoleModel} from "../models/role.model";
 import {PasswordResetToken} from "../models/passwordResetToken";
+import {UsernameModel} from "../models/user/username.model";
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,14 @@ export class AuthService {
   private currentUserRoles: BehaviorSubject<Array<RoleModel>>;
   public userRoles: Observable<Array<RoleModel>>;
 
+  public usernameSubject: BehaviorSubject<string> = new BehaviorSubject<string>("anonymous");
   public isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isSeller: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private httpClient: HttpClient, private localStorageService: LocalStorageService,
               private _router: Router, private activatedRoute: ActivatedRoute) {
     this.fetchCurrentUserRoles();
+    this.fetchCurrentUsername();
   }
 
   register(registerPayload: RegisterRequestModel): Observable<any> {
@@ -43,13 +46,14 @@ export class AuthService {
 
   confirmResetPassword(resetPasswordData: PasswordResetToken) {
     console.log(resetPasswordData)
-    return this.httpClient.post<PasswordResetToken>(this.authUrl + "savePassword",resetPasswordData)
+    return this.httpClient.post<PasswordResetToken>(this.authUrl + "savePassword", resetPasswordData)
   }
 
   login(loginPayload: LoginRequestModel): Observable<boolean> {
     return this.httpClient.put<LoginResponseModel>(this.authUrl + 'login', loginPayload)
       .pipe(map(response => {
           this.fetchCurrentUserRoles();
+          this.fetchCurrentUsername();
           if (response && response.authenticationToken) {
             this.localStorageService.store('authenticationToken', response.authenticationToken);
             this.localStorageService.store('username', response.username);
@@ -59,9 +63,17 @@ export class AuthService {
       );
   }
 
+  private async fetchCurrentUsername() {
+    await this.fetchUsername().then(
+      (response: UsernameModel) => {
+        this.usernameSubject.next(response.username);
+      },
+    )
+  }
+
   private async fetchCurrentUserRoles() {
     await this.getUserRoles().then(
-      (response) => {
+      (response: Array<RoleModel>) => {
         this.currentUserRoles = new BehaviorSubject<Array<RoleModel>>(response);
         this.userRoles = this.currentUserRoles.asObservable();
 
@@ -80,7 +92,7 @@ export class AuthService {
   }
 
   sendResetMail(mail) {
-    return this.httpClient.post(this.authUrl + 'resetPassword?email=' + mail,null);
+    return this.httpClient.post(this.authUrl + 'resetPassword?email=' + mail, null);
   }
 
   isAuthenticated(): boolean {
@@ -92,6 +104,10 @@ export class AuthService {
       return this.localStorageService.retrieve('username');
     }
     return null;
+  }
+
+  async fetchUsername(): Promise<UsernameModel> {
+    return await this.httpClient.get<UsernameModel>(this.authUrl + 'username').toPromise();
   }
 
   checkIfUsernameTaken(username: string): Observable<boolean> {
@@ -107,6 +123,7 @@ export class AuthService {
   logout(): Observable<any> {
     this.localStorageService.clear('authenticationToken');
     this.localStorageService.clear('username');
+    this.usernameSubject.next("anonymous");
     this.isAdmin.next(false);
     this.isSeller.next(false);
     this.currentUserRoles.next(new Array<RoleModel>());

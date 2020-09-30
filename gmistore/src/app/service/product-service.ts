@@ -12,7 +12,6 @@ import {ProductFilterOptions} from "../models/product/product-filter-options";
 })
 export class ProductService {
   private productsUrl = environment.apiUrl + 'api/products';
-  private imageUploadUrl = environment.apiUrl + 'api/images/upload';
   private lookupUrl = environment.apiUrl + 'api/lookup';
 
   constructor(private httpClient: HttpClient) {
@@ -24,6 +23,25 @@ export class ProductService {
 
   getProductBySlug(slug: string): Observable<ProductModel> {
     return this.httpClient.get<ProductModel>(this.productsUrl + '/' + slug);
+  }
+
+  getProductNamesForAutocomplete(name: string): Observable<Array<string>> {
+    return this.httpClient.get<Array<string>>(this.productsUrl + '/product-names/' + name);
+  }
+
+  getProductsBySearchInput(
+    input: string, pageIndex: number, pageSize: number, filterOptions?: ProductFilterOptions
+  ): Observable<PagedProductListModel> {
+    let params = {
+      filter: filterOptions ? "true" : "false",
+      query: input,
+      size: pageSize.toString(),
+      page: pageIndex.toString(),
+    };
+    return this.httpClient.post<PagedProductListModel>(
+      this.productsUrl + '/search',
+      filterOptions,
+      {params: params});
   }
 
   getDiscountedProducts(
@@ -63,13 +81,6 @@ export class ProductService {
 
   updateProduct(product: ProductModel, slug: string): Observable<any> {
     return this.httpClient.put(this.productsUrl + '/' + slug, product);
-  }
-
-  public async uploadImage(image: File) {
-    const uploadData = new FormData();
-    uploadData.append('picture', image);
-
-    return await this.httpClient.post(this.imageUploadUrl, uploadData).toPromise();
   }
 
   getDiscountProducts(): Observable<Array<ProductModel>> {

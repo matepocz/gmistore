@@ -1,16 +1,14 @@
-package hu.progmasters.gmistore.dto;
+package hu.progmasters.gmistore.dto.messages;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class EmailCreating {
-
+public class ReplyEmailDto {
+    private Long id;
     private String email;
     private String subject;
     private String message;
-
+    private boolean active;
 }

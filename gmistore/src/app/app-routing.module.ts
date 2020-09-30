@@ -30,6 +30,11 @@ import {PasswordResetComponent} from "./components/user/password-reset/password-
 import {NewPasswordComponent} from "./components/user/password-reset/new-password/new-password.component";
 import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
 import {FavoriteProductsComponent} from "./components/favorite-products/favorite-products.component";
+import {AdminEmailManagement} from "./components/admin/admin-email-management/admin-email-management";
+import {SellerNavComponent} from "./components/seller/seller-nav/seller-nav.component";
+import {SellerDashboardComponent} from "./components/seller/seller-dashboard/seller-dashboard.component";
+import {SellerProductsComponent} from "./components/seller/seller-products/seller-products.component";
+
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -59,6 +64,7 @@ const routes: Routes = [
   },
   {path: 'product-list', component: ProductListComponent},
   {path: 'product-list/deals', component: ProductListComponent},
+  {path: 'product-list/search', component: ProductListComponent},
   {path: 'product/:slug', component: ProductDetailsComponent},
   {
     path: 'edit-product/:slug',
@@ -100,9 +106,23 @@ const routes: Routes = [
       {path: 'user/edit/:id', component: AdminUserFormComponent},
       {path: 'orders', component: OrdersListComponent},
       {path: 'orders/edit/:id', component: OrdersFormComponent},
+      {path: 'income-emails', component: AdminEmailManagement},
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},
+  },
+
+  {
+    path: 'seller',component:SellerNavComponent,
+    children:[
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {path: 'dashboard', component: SellerDashboardComponent},
+      {path: 'product', component: SellerProductsComponent},
+    ],
   },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},

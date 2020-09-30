@@ -1,0 +1,26 @@
+<mat-sidenav-container fxLayout="row" class="sidenav-container" fxLayoutAlign="space-between">
+  <mat-sidenav [fixedTopGap] fxLayout="column" mode="side" opened="true">
+    <mat-nav-list>
+      <mat-list-item [routerLink]="'/seller/dashboard'">
+        <mat-icon mat-list-icon>dashboard</mat-icon>
+        <h4 mat-line fxHide.lt-md="true">Dashboard</h4>
+      </mat-list-item>
+      <mat-list-item  [routerLink]="'/seller/product'" [queryParams]="{pageSize:10,pageIndex:0}">
+        <mat-icon mat-list-icon>devices_other</mat-icon>
+        <h4 mat-line fxHide.lt-md="true">Termékek</h4>
+      </mat-list-item>
+<!--      <mat-list-item  [routerLink]="'/seller/orders'">-->
+<!--        <mat-icon mat-list-icon>list_alt</mat-icon>-->
+<!--        <h4 mat-line fxHide.lt-md="true">Rendelések</h4>-->
+<!--      </mat-list-item>-->
+<!--      <mat-list-item  [routerLink]="'/seller/income-emails'">-->
+<!--        <mat-icon mat-list-icon>email</mat-icon>-->
+<!--        <h4 mat-line fxHide.lt-md="true">Bejövő emailek</h4>-->
+<!--      </mat-list-item>-->
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="dashboard-content" fxFlex="100">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

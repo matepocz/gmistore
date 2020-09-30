@@ -44,10 +44,58 @@
   text-decoration: none;
   color: white;
 }
+
 main {
   min-height: 84vh;
 }
 
 #admin-icon {
   color: indianred;
+}
+
+#seller-icon{
+  color: #ffcf02;
+}
+
+.search-input-div {
+  border-radius: 20px;
+  background-color: #673ab7;
+  border: 2px solid white;
+  height: 32px;
+  margin-bottom: 0;
+}
+
+.search-input {
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  height: 100%;
+  border: 2px solid transparent;
+  outline: none;
+  text-indent: 5px;
+}
+
+.search-input:focus {
+  border: 2px solid #ffcf02;
+}
+
+.search-input-icon {
+  margin-left: 3px;
+  padding-top: 2px;
+  cursor: pointer;
+}
+
+.mobile-search-div {
+  background-color: #673ab7;
+}
+.mobile-search-input {
+  margin-left: 5px;
+  text-indent: 3px;
+  margin-bottom: 5px;
+  outline: none;
+  height: 35px;
+}
+
+.mobile-search-icon {
+  padding-top: 5px;
+  color: white;
 }

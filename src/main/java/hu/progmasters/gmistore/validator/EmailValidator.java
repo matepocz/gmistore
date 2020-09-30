@@ -1,6 +1,6 @@
 package hu.progmasters.gmistore.validator;
 
-import hu.progmasters.gmistore.dto.EmailCreating;
+import hu.progmasters.gmistore.dto.messages.EmailCreatingDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -10,17 +10,17 @@ public class EmailValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return EmailCreating.class.equals(aClass);
+        return EmailCreatingDto.class.equals(aClass);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        EmailCreating emailCreating = (EmailCreating) target;
+        EmailCreatingDto emailCreatingDto = (EmailCreatingDto) target;
 
 
-        String email = emailCreating.getEmail();
-        String subject = emailCreating.getSubject();
-        String message = emailCreating.getMessage();
+        String email = emailCreatingDto.getEmail();
+        String subject = emailCreatingDto.getSubject();
+        String message = emailCreatingDto.getMessage();
 
         if (email == null || email.isEmpty()) {
             errors.rejectValue("email", "email.empty");

@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   products: Array<ProductModel>;
-  private productSub: Subscription;
+  private productSub: Subscription = new Subscription();
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
 
   constructor(private productService: ProductService,
@@ -71,15 +71,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.productSub = this.productService.getDiscountProducts().subscribe(
-      (response) => {
-        this.products = response;
-        this.spinnerService.stop(this.spinner);
-      }, error => {
-        this.spinnerService.stop(this.spinner);
-      }, () => {
-        this.spinnerService.stop(this.spinner);
-      }
+    this.productSub.add(
+      this.productService.getDiscountProducts().subscribe(
+        (response) => {
+          this.products = response;
+          this.spinnerService.stop(this.spinner);
+        }, error => {
+          this.spinnerService.stop(this.spinner);
+        }, () => {
+          this.spinnerService.stop(this.spinner);
+        }
+      )
     );
     this.titleService.setTitle("Főoldal - GMI Store");
   }

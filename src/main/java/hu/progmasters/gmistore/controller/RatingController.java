@@ -50,8 +50,9 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewRating(@Valid @RequestBody NewRatingRequest newRatingRequest) {
-        boolean result = ratingService.create(newRatingRequest);
+    public ResponseEntity<Void> createNewRating(@Valid @RequestBody NewRatingRequest newRatingRequest,
+                                                Principal principal) {
+        boolean result = ratingService.create(newRatingRequest, principal);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

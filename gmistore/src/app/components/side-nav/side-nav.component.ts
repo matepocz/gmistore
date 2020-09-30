@@ -34,7 +34,7 @@ export class SideNavComponent implements OnInit {
   favoriteItems: number = 0;
 
   authenticatedUser: boolean;
-  currentUsername: string = null;
+  currentUsername: string;
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
@@ -61,7 +61,15 @@ export class SideNavComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUsername = this.authService.currentUsername;
+    this.subscriptions.add(
+      this.authService.usernameSubject.subscribe(
+        (response) => {
+          this.currentUsername = response;
+        }, (error) => {
+          console.log(error);
+        }
+      )
+    );
     this.subscriptions.add(this.adminService.getProductCategories().subscribe(
       (response: Array<MainCategoryModel>) => {
         this.categories = response;
@@ -84,6 +92,7 @@ export class SideNavComponent implements OnInit {
     );
 
     this.authenticatedUser = this.authService.isAuthenticated();
+    console.log(this.authenticatedUser);
     this.subscriptions.add(this.authService.isAdmin.subscribe(
       (response) => {
         this.isAdmin = response;

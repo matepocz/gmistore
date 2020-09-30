@@ -1,6 +1,7 @@
 package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.messages.EmailCreatingDto;
+import hu.progmasters.gmistore.dto.messages.PagedActiveEmailList;
 import hu.progmasters.gmistore.dto.messages.ReplyEmailDto;
 import hu.progmasters.gmistore.service.EmailFromUserService;
 import hu.progmasters.gmistore.validator.EmailValidator;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -45,8 +47,11 @@ public class EmailController {
     }
 
     @GetMapping("/income-emails")
-    public ResponseEntity<List<EmailCreatingDto>> getAllActiveIncomeEmails() {
-        List<EmailCreatingDto> emails = emailFromUserService.getAllActiveIncomeEmails();
+    public ResponseEntity<PagedActiveEmailList> getAllActiveIncomeEmails(
+            @RequestParam(value = "size", defaultValue = "20") String size,
+            @RequestParam(value = "page", defaultValue = "0") String page
+            ) {
+        PagedActiveEmailList emails = emailFromUserService.getAllActiveIncomeEmails(Integer.parseInt(size),Integer.parseInt(page));
         return new ResponseEntity<>(emails, HttpStatus.OK);
     }
 

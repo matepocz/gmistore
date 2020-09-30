@@ -1,12 +1,6 @@
 <div fxLayout="row" fxFlex="100" fxLayoutAlign="center center">
   <div fxLayout="column" fxFlex="95">
 
-    <mat-form-field class="search-field">
-      <mat-label>Keresés</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Keresett szó vagy szótöredék" #input>
-    </mat-form-field>
-
-
     <table mat-table [dataSource]="dataSource" multiTemplateDataRows fxFlex="80">
 
       <ng-container matColumnDef="targy">
@@ -84,7 +78,8 @@
                     *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}
                   </mat-error>
                 </mat-form-field>
-                <button [ngStyle]="{backgroundColor: contactForm.invalid ? '#ffffff':'#94e394'}" mat-stroked-button class="response-icon" [disabled]="contactForm.invalid">Válasz küldése
+                <button [ngStyle]="{backgroundColor: contactForm.invalid ? '#ffffff':'#94e394'}" mat-stroked-button
+                        class="response-icon" [disabled]="contactForm.invalid">Válasz küldése
                 </button>
               </form>
 
@@ -99,13 +94,14 @@
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="email-detail-row"></tr>
       <tr mat-row *matRowDef="let row; columns: ['replyEmail']" class="email-detail-row"></tr>
 
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">Nincs egyezés a keresett kifejezésre "{{input.value}}"</td>
-      </tr>
 
     </table>
 
-    <mat-paginator [pageSizeOptions]="[10, 20, 50]"></mat-paginator>
+    <mat-paginator
+      [length]="numberOfEmails" [color]="'primary'" (focusin)="detectChanges()"
+      [pageSize]="pageSize" (page)="paginationEventHandler($event)"
+      [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
 
   </div>
 </div>

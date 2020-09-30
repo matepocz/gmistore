@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {EmailModel} from "../../../models/messages/email-model";
 import {Subscription} from "rxjs";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -6,15 +6,16 @@ import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.com
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {EmailSendingService} from "../../../service/email-sending.service";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {Router} from "@angular/router";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
 import {errorHandler} from "../../../utils/error-handler";
 import {ReplyEmailModel} from "../../../models/messages/reply-email-model";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
+import {EmailTableModel} from "../../../models/messages/email-table-model";
 
 @Component({
   selector: 'app-email-management',
@@ -32,22 +33,27 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
   @ViewChild(FormGroupDirective) messageForm: FormGroupDirective;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
+
   contactForm: FormGroup;
-
-
+  emailsSub: Subscription = new Subscription();
+  emailTableData: Array<EmailTableModel>
+  dataSource: MatTableDataSource<EmailTableModel>;
   displayedColumns: string[] = ['targy', 'email', 'datum', 'reszlet', 'torles'];
 
-  emails: Array<EmailModel>;
-  replyEmail: ReplyEmailModel;
-  emailsSub: Subscription = new Subscription();
-  spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
+  numberOfEmails = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: Array<number> = [10, 20, 50];
 
-  dataSource: MatTableDataSource<EmailModel>;
+  replyEmail: ReplyEmailModel;
+  spinner: MatDialogRef<LoadingSpinnerComponent>;
 
 
   constructor(private spinnerService: SpinnerService,
               private router: Router,
+              private cdRef: ChangeDetectorRef,
               private emailService: EmailSendingService,
+              private activatedRoute: ActivatedRoute,
               private snackbar: PopupSnackbar,
               private dialog: MatDialog,
               private formBuilder: FormBuilder) {
@@ -55,40 +61,43 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+
     this.contactForm = this.formBuilder.group({
       message: [null, Validators.compose(
         [Validators.required, Validators.minLength(0), Validators.maxLength(2000)])]
     });
-    this.creatingAllActiveEmailsTable();
+    this.emailsSub.add(
+      this.activatedRoute.queryParamMap.subscribe(
+        (param: ParamMap) => {
+          this.pageSize = Number(param.get('pageSize'));
+          this.pageIndex = Number(param.get('pageIndex'));
+          this.creatingAllActiveEmailsTable();
+        }
+      )
+    );
+
   }
 
 
   private creatingAllActiveEmailsTable() {
+    this.spinner = this.spinnerService.start();
     this.emailsSub.add(
-      this.emailService.getAllActiveIncomeEmails().subscribe(
-        (response) => {
-          this.emails = response;
+      this.emailService.getAllActiveIncomeEmails(this.pageSize,this.pageIndex).subscribe(
+        response=> {
+          console.log(response)
+          this.emailTableData = response.emails;
+          this.dataSource = new MatTableDataSource<EmailTableModel>(this.emailTableData);
+          this.numberOfEmails = response.totalElements;
           this.spinnerService.stop(this.spinner);
         }, error => {
           this.spinnerService.stop(this.spinner);
         }, () => {
-          this.dataSource = new MatTableDataSource(this.emails);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
           this.spinnerService.stop(this.spinner);
         }
       )
     );
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
 
 
   sendReplyEmail(email: EmailModel) {
@@ -99,18 +108,20 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
     this.replyEmail.message = this.contactForm.get('message').value;
     this.replyEmail.active = true;
 
-
-    this.emailService.sendReplyEmailToUser(this.replyEmail).subscribe((response: boolean) => {
-        if (response) {
-          this.snackbar.popUp('Az üzenet sikeresen elküldve');
+    this.emailsSub.add(
+      this.emailService.sendReplyEmailToUser(this.replyEmail).subscribe((response: boolean) => {
+          if (response) {
+            this.snackbar.popUp('Az üzenet sikeresen elküldve');
+          }
+        }, error => {
+          errorHandler(error, this.contactForm);
+          console.warn(error);
+        }, () => {
+          this.messageForm.resetForm();
         }
-      }, error => {
-        errorHandler(error, this.contactForm);
-        console.warn(error);
-      }, () => {
-        this.messageForm.resetForm();
-      }
+      )
     );
+
   }
 
   openDeleteEmailDialog(emailId: number) {
@@ -144,7 +155,24 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
     ));
   }
 
+
   ngOnDestroy(): void {
     this.emailsSub.unsubscribe();
+  }
+
+  detectChanges() {
+    this.cdRef.detectChanges();
+  }
+
+  paginationEventHandler($event: PageEvent) {
+    this.pageSize = $event.pageSize;
+    this.pageIndex = $event.pageIndex;
+    this.router.navigate(['.'], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex,
+      }
+    });
   }
 }

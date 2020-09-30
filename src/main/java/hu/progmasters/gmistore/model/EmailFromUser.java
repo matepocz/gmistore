@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,7 +35,7 @@ public class EmailFromUser {
     private String message;
 
     @Column(name = "messageCreateTime")
-    private LocalDate messageCreateTime;
+    private LocalDateTime messageCreateTime;
 
     @Column(name = "active", columnDefinition = "boolean default true")
     private boolean active;

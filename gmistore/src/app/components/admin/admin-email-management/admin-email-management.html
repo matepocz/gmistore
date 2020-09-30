@@ -18,7 +18,7 @@
 
       <ng-container matColumnDef="datum">
         <th mat-header-cell *matHeaderCellDef> Üzenetküldés dátuma:</th>
-        <td mat-cell *matCellDef="let email">{{email.messageCreateTime}}</td>
+        <td mat-cell *matCellDef="let email">{{email.messageCreateTime | date:'yyyy/MM/dd HH:MM'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="reszlet">
@@ -78,8 +78,7 @@
                     *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}
                   </mat-error>
                 </mat-form-field>
-                <button [ngStyle]="{backgroundColor: contactForm.invalid ? '#ffffff':'#94e394'}" mat-stroked-button
-                        class="response-icon" [disabled]="contactForm.invalid">Válasz küldése
+                <button [ngStyle]="{backgroundColor: contactForm.invalid ? '#ffffff':'#94e394'}" mat-stroked-button class="response-icon" [disabled]="contactForm.invalid">Válasz küldése
                 </button>
               </form>
 
@@ -93,7 +92,6 @@
           [class.email-expanded-row]="email.isExpanded"></tr>
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="email-detail-row"></tr>
       <tr mat-row *matRowDef="let row; columns: ['replyEmail']" class="email-detail-row"></tr>
-
 
     </table>
 

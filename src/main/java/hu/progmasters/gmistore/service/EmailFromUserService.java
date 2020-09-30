@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,7 +37,7 @@ public class EmailFromUserService {
         email.setEmail(emailCreatingDto.getEmail());
         email.setSubject(emailCreatingDto.getSubject());
         email.setMessage(emailCreatingDto.getMessage());
-        email.setMessageCreateTime(LocalDate.now());
+        email.setMessageCreateTime(LocalDateTime.now());
         email.setActive(true);
         emailRepository.save(email);
         LOGGER.debug("Email has been saved.");

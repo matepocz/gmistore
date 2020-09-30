@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ public class EmailCreatingDto {
     private String email;
     private String subject;
     private String message;
-    private LocalDate messageCreateTime;
+    private LocalDateTime messageCreateTime;
     private boolean active;
 
     public EmailCreatingDto(EmailFromUser emailFromUser) {

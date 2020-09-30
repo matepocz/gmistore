@@ -5,7 +5,7 @@
         <mat-icon mat-list-icon>dashboard</mat-icon>
         <h4 mat-line fxHide.lt-md="true">Dashboard</h4>
       </mat-list-item>
-      <mat-list-item  [routerLink]="'/seller/product'">
+      <mat-list-item  [routerLink]="'/seller/product'" [queryParams]="{pageSize:10,pageIndex:0}">
         <mat-icon mat-list-icon>devices_other</mat-icon>
         <h4 mat-line fxHide.lt-md="true">Termékek</h4>
       </mat-list-item>

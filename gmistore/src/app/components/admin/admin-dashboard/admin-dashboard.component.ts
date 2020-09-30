@@ -12,6 +12,7 @@ import {ProductService} from "../../../service/product-service";
 import {IncomeSpentModel} from "../../../models/incomeSpentModel";
 import {IncomeByDateModel} from "../../../models/order/IncomeByDateModel";
 import {DashBoardBasicModel} from "../../../models/DashBoardBasicModel";
+import {SatDatepickerInputEvent} from "saturn-datepicker";
 
 
 @Component({
@@ -22,6 +23,7 @@ import {DashBoardBasicModel} from "../../../models/DashBoardBasicModel";
 export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild('lineChart') private chartRef;
+
   chart: Chart;
   chartData: UserRegistrationsCounterModel;
   subscription: Subscription;
@@ -86,51 +88,51 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         console.log(error)
       },
       () => {
-        this.chart = new Chart(this.chartRef.nativeElement, {
-          type: 'bar',
-          data: {
-            labels: this.chartData.dates,
-            datasets: [
-              {
-                borderWidth: 1,
-                data: this.chartData.size,
-                backgroundColor: generateRandomColor(this.chartData.size),
-                borderColor: this.barBorderColors(),
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-              display: false
-            },
-            scales: {
-              xAxes: [{
-                display: true,
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 7
-                }
-              }],
-              scaleLabel: {
-                labelString: 'dátum',
-                display: true,
-              },
-              yAxes: [{
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  maxTicksLimit: 10
-                },
-                scaleLabel: {
-                  labelString: 'vásárlók száma',
-                  display: true,
-                },
-              }],
-            }
-          }
-        });
+      //   this.chart = new Chart(this.chartRef.nativeElement, {
+      //     type: 'bar',
+      //     data: {
+      //       labels: this.chartData.dates,
+      //       datasets: [
+      //         {
+      //           borderWidth: 1,
+      //           data: this.chartData.size,
+      //           backgroundColor: generateRandomColor(this.chartData.size),
+      //           borderColor: this.barBorderColors(),
+      //         }
+      //       ]
+      //     },
+      //     options: {
+      //       responsive: true,
+      //       maintainAspectRatio: false,
+      //       legend: {
+      //         display: false
+      //       },
+      //       scales: {
+      //         xAxes: [{
+      //           display: true,
+      //           ticks: {
+      //             autoSkip: true,
+      //             maxTicksLimit: 7
+      //           }
+      //         }],
+      //         scaleLabel: {
+      //           labelString: 'dátum',
+      //           display: true,
+      //         },
+      //         yAxes: [{
+      //           display: true,
+      //           ticks: {
+      //             beginAtZero: true,
+      //             maxTicksLimit: 10
+      //           },
+      //           scaleLabel: {
+      //             labelString: 'vásárlók száma',
+      //             display: true,
+      //           },
+      //         }],
+      //       }
+      //     }
+      //   });
       }
     )
   }
@@ -143,6 +145,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
     return colors;
   }
+  date: any;
 
 
   ngOnDestroy() {
@@ -189,5 +192,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   stopExchangeUpdates() {
     this.adminService.stopExchangeUpdates();
+  }
+
+  onDateInput($event: SatDatepickerInputEvent<Date>) {
+
+  }
+
+  onDateChange($event: SatDatepickerInputEvent<Date>) {
+
   }
 }

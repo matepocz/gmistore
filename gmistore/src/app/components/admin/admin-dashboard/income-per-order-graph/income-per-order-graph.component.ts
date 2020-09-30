@@ -8,7 +8,7 @@ import {IncomeByDateModel} from "../../../../models/order/IncomeByDateModel";
   styleUrls: ['./income-per-order-graph.component.css']
 })
 export class IncomePerOrderGraphComponent implements OnInit {
-  @ViewChild('incomePerDays') chartRef;
+  @ViewChild('incomePerDays',{static: true}) chartRef;
   @Input() chartData: IncomeByDateModel;
 
   chart: Chart;

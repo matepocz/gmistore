@@ -1,4 +1,4 @@
-<mat-card class="card" *ngIf="!noBackgroundColor" [ngStyle]="{'color': 'white','background-color': backgroundColor}" fxLayout="row wrap ">
+<mat-card  class="mat-elevation-z8 card" *ngIf="!noBackgroundColor" [ngStyle]="{'color': 'white','background-color': backgroundColor}" fxLayout="row wrap ">
   <div fxFlex="60">
     <mat-card-header>
       <mat-card-title>{{title}}</mat-card-title>
@@ -15,7 +15,7 @@
   </div>
 </mat-card>
 
-<mat-card class="card" *ngIf="noBackgroundColor" fxLayout="row wrap " fxLayoutAlign="space-between">
+<mat-card class="mat-elevation-z8 card" *ngIf="noBackgroundColor" fxLayout="row wrap " fxLayoutAlign="space-between">
   <div fxFlex="40" fxLayout="row" fxLayoutAlign="center" >
     <mat-icon [ngStyle]="{'font-size': '100px','color': avatarColor}" mat-card-avatar>{{avatar}}</mat-icon>
   </div>

@@ -14,7 +14,7 @@ import {LiveDataSubjectService} from "../../../../service/live-data-subject.serv
   styleUrls: ['./user-registrations-graph.component.css']
 })
 export class UserRegistrationsGraphComponent implements OnInit {
-  @ViewChild('lineChart') private chartRef;
+  @ViewChild('lineChart',{static: true}) private chartRef;
   @Input() chart: Chart;
   @Input() chartData: UserRegistrationsCounterModel;
   subscription: Subscription;

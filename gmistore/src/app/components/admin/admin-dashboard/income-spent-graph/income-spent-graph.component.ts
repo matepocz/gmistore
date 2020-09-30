@@ -8,7 +8,7 @@ import * as Chart from "chart.js";
   styleUrls: ['./income-spent-graph.component.css']
 })
 export class IncomeSpentGraphComponent implements OnInit {
-  @ViewChild('myPieChart') chartRef;
+  @ViewChild(`myPieChart`, {static: true}) chartRef;
   @Input() chartData: IncomeSpentModel;
   myPieChart: Chart;
 

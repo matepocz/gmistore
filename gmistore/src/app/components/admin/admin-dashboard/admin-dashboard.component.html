@@ -37,21 +37,39 @@
 <!--<div>{{items.toString()}}</div>-->
 
 
-<div class="containerX" fxLayoutAlign="center" fxLayoutGap="10px">
+<div class="containerX" fxLayoutAlign="center" *ngIf="pieChartData" fxLayoutGap="10px">
   <div fxLayout="row wrap" fxFlex.gt-sm="97">
 
     <div id="row-0" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
       <div fxFlex.gt-sm="100">
-        <mat-card>
+        <mat-card class="mat-elevation-z8">
           <mat-header fxFlex.gt-sm="20">
-            <mat-card-title>dashboard</mat-card-title>
+            <mat-card-title>Dashboard</mat-card-title>
           </mat-header>
           <div fxFlex.gt-sm="20">
-            <mat-date-range-picker></mat-date-range-picker>
+            <mat-form-field>
+              <input matInput
+                     placeholder="Choose a date"
+                     #resultPickerModel="ngModel"
+                     [max]="maxDate"
+                     [satDatepicker]="resultPicker"
+                     [(ngModel)]="date"
+                     (dateInput)="onDateInput($event)"
+                     (dateChange)="onDateChange($event)"
+              >
+              <sat-datepicker panelClass="hdd-datepicker"
+                              #resultPicker [rangeMode]="true">
+              </sat-datepicker>
+              <sat-datepicker-toggle matSuffix [for]="resultPicker"></sat-datepicker-toggle>
+            </mat-form-field>
           </div>
         </mat-card>
       </div>
     </div>
+
+    <mat-date-range-picker>
+
+    </mat-date-range-picker>
 
     <div id="row-1" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
       <div fxFlex.gt-sm="23">
@@ -98,21 +116,21 @@
 
     <div id="row-2" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
       <div fxFlex.gt-sm="65">
-        <mat-card>
+        <mat-card class="mat-elevation-z8">
           <app-income-per-order-graph fxFlex="100"
                                       [chartData]="incomeLineChartData"
           ></app-income-per-order-graph>
         </mat-card>
       </div>
       <div fxFlex.gt-sm="34">
-        <mat-card fxLayout="row wrap">
+        <mat-card class="mat-elevation-z8" fxLayout="row wrap">
           <mat-card-header fxFlex="100">
             <mat-card-title>
               Pie
             </mat-card-title>
             <mat-icon mat-card-avatar>person</mat-icon>
           </mat-card-header>
-          <app-income-spent-graph fxFlex="100"
+          <app-income-spent-graph *ngIf="pieChartData" fxFlex="100"
                                   fxFill
                                   [chartData]="pieChartData"
           ></app-income-spent-graph>
@@ -153,7 +171,7 @@
 
     <div id="row-4" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
       <div fxFlex.gt-sm="34">
-        <mat-card>
+        <mat-card class="mat-elevation-z8">
           <sat-calendar [rangeMode]="true"
                         (dateRangesChange)="inlineRangeChange($event)"
                         [selected]="selectedDate"
@@ -163,7 +181,7 @@
         </mat-card>
       </div>
       <div fxFlex.gt-sm="65">
-        <mat-card>
+        <mat-card class="mat-elevation-z8">
           <canvas id="registered-users" #lineChart>{{ chart }}</canvas>
         </mat-card>
       </div>

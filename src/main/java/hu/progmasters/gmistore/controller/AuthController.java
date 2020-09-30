@@ -1,13 +1,12 @@
 package hu.progmasters.gmistore.controller;
 
-import com.sun.tools.jconsole.JConsoleContext;
 import hu.progmasters.gmistore.dto.AuthenticationResponse;
 import hu.progmasters.gmistore.dto.LoginRequest;
 import hu.progmasters.gmistore.dto.PasswordTokenDto;
 import hu.progmasters.gmistore.dto.RegisterRequest;
+import hu.progmasters.gmistore.dto.user.UsernameDto;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.response.ConfirmAccountResponse;
-import hu.progmasters.gmistore.response.GenericResponse;
 import hu.progmasters.gmistore.service.AuthService;
 import hu.progmasters.gmistore.service.ResetPasswordService;
 import hu.progmasters.gmistore.service.SecurityService;
@@ -20,15 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -89,6 +87,14 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
         AuthenticationResponse loginResponse = authService.login(loginRequest);
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/username")
+    public ResponseEntity<UsernameDto> getCurrentUsername(Principal principal) {
+        LOGGER.debug("Username requested");
+        return principal != null ?
+                new ResponseEntity<>(new UsernameDto(principal.getName()), HttpStatus.OK) :
+                new ResponseEntity<>(new UsernameDto("anonymous"), HttpStatus.OK);
     }
 
     @GetMapping("/check-username-taken/{username}")

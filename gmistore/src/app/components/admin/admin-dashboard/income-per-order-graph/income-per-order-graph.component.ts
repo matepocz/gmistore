@@ -11,9 +11,10 @@ import {IncomeByDateModel} from "../../../../models/order/IncomeByDateModel";
   styleUrls: ['./income-per-order-graph.component.css']
 })
 export class IncomePerOrderGraphComponent implements OnInit {
+  @ViewChild('chart') chartRef;
+
   dates: UserRegistrationStartEndDateModel;
   private subscription: Subscription;
-  @ViewChild('chart') chartRef;
   private chartData: IncomeByDateModel;
   private chart: Chart;
 
@@ -32,20 +33,18 @@ export class IncomePerOrderGraphComponent implements OnInit {
       },
 
       () => {
+        console.log(this.chartData)
         console.log(this.chartData.date)
-        let dates = []
-        let income = [];
+        console.log(this.chartData.income)
 
-        console.log(dates)
-        console.log(income)
         this.chart = new Chart(this.chartRef.nativeElement, {
           type: 'line',
           data: {
-            labels: dates,
+            labels: this.chartData.date,
             datasets: [
               {
                 borderWidth: 1,
-                data: income
+                data: this.chartData.income
               }
             ]
           },

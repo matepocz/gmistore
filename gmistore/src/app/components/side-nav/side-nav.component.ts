@@ -38,6 +38,7 @@ export class SideNavComponent implements OnInit {
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
+  showMobileSearch: boolean = false;
   currentSearchingQuery: string;
   autoCompleteOptions: Observable<string[]>;
 
@@ -186,6 +187,21 @@ export class SideNavComponent implements OnInit {
         }
       }
     )
+  }
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  navigateToDeals() {
+    this.closeNav();
+    this.router.navigate(['/product-list/deals'],
+      {
+        queryParams: {
+          pageSize: 10,
+          pageIndex: 0
+        }
+      });
   }
 
   detectChanges() {

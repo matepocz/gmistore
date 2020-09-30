@@ -83,3 +83,19 @@ main {
   padding-top: 2px;
   cursor: pointer;
 }
+
+.mobile-search-div {
+  background-color: #673ab7;
+}
+.mobile-search-input {
+  margin-left: 5px;
+  text-indent: 3px;
+  margin-bottom: 5px;
+  outline: none;
+  height: 35px;
+}
+
+.mobile-search-icon {
+  padding-top: 5px;
+  color: white;
+}

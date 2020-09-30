@@ -12,4 +12,5 @@ import lombok.Setter;
 public class InventorySoldProductsDto {
     private Double income;
     private Double spent;
+    private Double discount;
 }

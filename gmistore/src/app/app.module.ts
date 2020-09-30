@@ -100,6 +100,10 @@ import {SellerDashboardComponent} from './components/seller/seller-dashboard/sel
 import {SellerProductsComponent} from './components/seller/seller-products/seller-products.component';
 import {SellerNavComponent} from './components/seller/seller-nav/seller-nav.component';
 import {ProductSearchComponent} from './components/product/product-search/product-search.component';
+import { IncomePerOrderGraphComponent } from './components/admin/admin-dashboard/income-per-order-graph/income-per-order-graph.component';
+import { IncomeSpentGraphComponent } from './components/admin/admin-dashboard/income-spent-graph/income-spent-graph.component';
+import { UserRegistrationsGraphComponent } from './components/admin/admin-dashboard/user-registrations-graph/user-registrations-graph.component';
+import { MiniCardDataComponent } from './components/admin/admin-dashboard/mini-card-data/mini-card-data.component';
 
 @NgModule({
   declarations: [
@@ -156,6 +160,10 @@ import {ProductSearchComponent} from './components/product/product-search/produc
     SellerProductsComponent,
     SellerNavComponent,
     ProductSearchComponent,
+    IncomePerOrderGraphComponent,
+    IncomeSpentGraphComponent,
+    UserRegistrationsGraphComponent,
+    MiniCardDataComponent,
   ],
 
     imports: [

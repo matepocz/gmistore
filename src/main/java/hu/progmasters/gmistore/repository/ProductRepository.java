@@ -57,4 +57,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query(value = "SELECT name FROM product WHERE name LIKE %:name% AND active = true LIMIT 10;",
             nativeQuery = true)
     Set<String> findProductNames(@Param("name") String name);
+
+    @Query("select count(p) from Product as p where p.active = :active")
+    Integer countAllByActive(@Param("active") Boolean active);
 }

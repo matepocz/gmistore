@@ -6,6 +6,7 @@ import {environment} from "../../environments/environment";
 import {ProductCategoryModel} from "../models/product-category.model";
 import {PagedProductListModel} from "../models/product/paged-product-list.model";
 import {ProductFilterOptions} from "../models/product/product-filter-options";
+import {IncomeSpentModel} from "../models/incomeSpentModel";
 
 @Injectable({
   providedIn: 'root'
@@ -89,5 +90,9 @@ export class ProductService {
 
   deleteProduct(id: number): Observable<boolean> {
     return this.httpClient.delete<boolean>(this.productsUrl + '/' + id);
+  }
+
+  getIncomeAndSpent(): Observable<IncomeSpentModel> {
+    return this.httpClient.get<IncomeSpentModel>(this.productsUrl + '/income-spent');
   }
 }

@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
                 .and().httpBasic();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.sessionManagement().maximumSessions(3).sessionRegistry(sessionRegistry());
+        http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
     }
 
     @Bean
@@ -109,7 +109,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
+        return new SessionRegistryImpl() {
+        };
     }
 
     @Bean

@@ -495,4 +495,13 @@ public class ProductService {
     public List<ProductTableDto> getAllProductsToTable() {
         return productRepository.findAllToTable();
     }
+
+    public Integer countAllByActive() {
+        return productRepository.countAllByActive(true);
+    }
+
+    public Integer countAllByInActive() {
+        return productRepository.countAllByActive(false);
+    }
+
 }

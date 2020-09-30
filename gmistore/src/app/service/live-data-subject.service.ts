@@ -14,7 +14,7 @@ export class LiveDataSubjectService {
     this.dataSource.next(data);
   }
 
-  asObservable(){
+  asObservable() {
     return this.dataSource.asObservable();
   }
 }

@@ -11,6 +11,7 @@ import hu.progmasters.gmistore.repository.OrderRepository;
 import hu.progmasters.gmistore.repository.OrderStatusHistoryRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +44,7 @@ public class OrderService {
 
     @Autowired
     public OrderService(OrderRepository orderRepository, UserService userService, CartService cartService,
-                        LookupService lookupService, InventoryService inventoryService,DateService dateService,
+                        LookupService lookupService, InventoryService inventoryService, DateService dateService,
                         EmailSenderService emailSenderService, OrderStatusHistoryRepository orderStatusHistoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
@@ -386,8 +387,23 @@ public class OrderService {
         }
     }
 
-    public List<IncomePerOrderDto> getIncomePerOrder(String criteria) {
+    public IncomeByDaysDto getIncomePerOrder(String criteria) {
         DateService.CreateDates dates = dateService.stringToDate(criteria);
-        return orderRepository.findAllByOrderedAt(dates.getStart(), dates.getEnd());
+        List<IncomePerOrderDto> allByOrderedAt = orderRepository.findAllByOrderedAt(dates.getStart(), dates.getEnd());
+
+        Map<String, Double> orderDates = new TreeMap<>();
+        for (IncomePerOrderDto orderRegistration : allByOrderedAt) {
+            int year = orderRegistration.getDate().getYear();
+            int month = orderRegistration.getDate().getMonthValue();
+            int dayOfMonth = orderRegistration.getDate().getDayOfMonth();
+            String date = year + "." + month + "." + dayOfMonth;
+
+            orderDates.merge(date, orderRegistration.getIncome(), Double::sum);
+        }
+
+        Set<String> strings = orderDates.keySet();
+        Collection<Double> values = orderDates.values();
+
+        return new IncomeByDaysDto(values,strings);
     }
 }

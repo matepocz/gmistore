@@ -69,15 +69,21 @@ public class InventoryService {
         List<InventorySoldProductsDto> inventory = all.stream().map(inv -> {
             int quantityAvailable = inv.getQuantityAvailable();
             int quantitySold = inv.getQuantitySold();
-            Double price = inv.getProduct().getPrice();
+            Double discount = (100.0 - inv.getProduct().getDiscount())/100;
+            double price = inv.getProduct().getPrice() * discount;
             Double priceGross = inv.getProduct().getPriceGross();
             int quantity = quantityAvailable + quantitySold;
-            return new InventorySoldProductsDto(quantitySold * price, quantity * priceGross);
+            double substitutedPriceFromOriginalPrice = discount / 100 * inv.getProduct().getPrice();
+            return new InventorySoldProductsDto(
+                    quantitySold * price,
+                    quantity * priceGross,
+                    quantitySold * substitutedPriceFromOriginalPrice);
         }).collect(Collectors.toList());
 
         Double income = inventory.stream().mapToDouble(InventorySoldProductsDto::getIncome).sum();
         Double spent = inventory.stream().mapToDouble(InventorySoldProductsDto::getSpent).sum();
+        Double discount = inventory.stream().mapToDouble(InventorySoldProductsDto::getDiscount).sum();
 
-        return new InventorySoldProductsDto(income, spent);
+        return new InventorySoldProductsDto(income, spent,discount);
     }
 }

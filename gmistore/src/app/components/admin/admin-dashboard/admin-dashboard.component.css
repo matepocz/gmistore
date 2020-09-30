@@ -8,3 +8,35 @@
   height: 300px;
   min-width: 360px;
 }
+
+canvas {
+  display: none;
+}
+
+.containerX {
+  max-width: 1912px;
+}
+
+#row-0 mat-card {
+
+}
+
+#row-1 mat-card {
+  height: 150px;
+}
+
+#row-2 mat-card {
+  height: 500px;
+}
+#row-3 mat-card {
+  height: 150px;
+}
+
+#row-4 mat-card {
+  height: 500px;
+}
+
+mat-card{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

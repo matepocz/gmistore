@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.DashboardData;
 import hu.progmasters.gmistore.dto.user.UserDto;
 import hu.progmasters.gmistore.dto.user.UserEditableDetailsDto;
 import hu.progmasters.gmistore.dto.user.UserIsActiveDto;
@@ -11,6 +12,7 @@ import org.cloudinary.json.JSONObject;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +29,15 @@ public class AdminService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final DateService dateService;
+    private final ProductService productService;
 
     public AdminService(SessionRegistry sessionRegistry, DateService dateService,
-                        UserRepository userRepository, UserService userService) {
+                        UserRepository userRepository, UserService userService, ProductService productService) {
         this.sessionRegistry = sessionRegistry;
         this.userRepository = userRepository;
         this.userService = userService;
         this.dateService = dateService;
+        this.productService = productService;
     }
 
     public UserDto getUserById(Long id) {
@@ -43,12 +47,21 @@ public class AdminService {
     }
 
     public List<String> getUsersFromSessionRegistry() {
-        List<String> sessions = sessionRegistry.getAllPrincipals().stream()
-                .filter(u -> !sessionRegistry.getAllSessions(u, false).isEmpty())
-                .map(Object::toString)
-                .collect(Collectors.toList());
-        LOGGER.info(String.valueOf(sessions.size()));
-        return sessions;
+
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+        List<String> usersNamesList = new ArrayList<>();
+
+        for (Object principal : principals) {
+
+            if (principal instanceof UserDetails) {
+                usersNamesList.add(((UserDetails) principal).getUsername());
+
+            }
+        }
+        LOGGER.info(String.valueOf(usersNamesList.size()));
+        LOGGER.info(String.valueOf(principals.size()));
+        return usersNamesList;
+
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {
@@ -91,6 +104,13 @@ public class AdminService {
         return userRepository.findUserRegistrationsByDateInterval(createDates.getStart(), createDates.getEnd());
     }
 
+    public DashboardData getDashBasicDashBoardData() {
+        Integer customers = userService.countAllByRole(Role.ROLE_USER);
+        Integer sellers = userService.countAllByRole(Role.ROLE_SELLER);
+        Integer productsActive = productService.countAllByActive();
+        Integer productsInactive = productService.countAllByInActive();
+        return new DashboardData(customers,sellers,productsActive,productsInactive);
+    }
 
 //    public CreateDates stringToDate(String criteria){
 //        JSONObject obj = new JSONObject(criteria);

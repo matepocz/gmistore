@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import hu.progmasters.gmistore.model.OrderItem;
 import hu.progmasters.gmistore.model.Product;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -17,14 +19,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class IncomePerOrderDto {
     private Double income;
-    private Double spent;
+    @JsonFormat(pattern = "YYYY.MMM.dd")
     private LocalDateTime date;
     private String orderId;
-
-    public IncomePerOrderDto(Set<OrderItem> items, LocalDateTime date, String orderId) {
-        this.income = items.stream().map(OrderItem::getProduct).mapToDouble(Product::getPrice).sum();
-        this.spent = items.stream().map(OrderItem::getProduct).mapToDouble(Product::getPriceGross).sum();
-        this.date = date;
-        this.orderId = orderId;
-    }
 }
+

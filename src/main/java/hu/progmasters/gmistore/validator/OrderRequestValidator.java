@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.validator;
 
+import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -23,43 +24,70 @@ public class OrderRequestValidator implements Validator {
     public void validate(Object target, Errors errors) {
         OrderRequest orderRequest = (OrderRequest) target;
 
+        validatePhoneNumber(errors, orderRequest);
         validateEmailAddress(errors, orderRequest);
         validateFirstAndLastName(errors, orderRequest);
         validateShippingAddress(errors, orderRequest);
         validateBillingAddress(errors, orderRequest);
     }
 
+    private void validatePhoneNumber(Errors errors, OrderRequest orderRequest) {
+        if (orderRequest.getPhoneNumber() == null) {
+            errors.rejectValue("phoneNumber", "order.phoneNumber.empty");
+        } else if (orderRequest.getPhoneNumber().length() < 10) {
+            errors.rejectValue("phoneNumber", "order.phoneNumber.tooShort");
+        } else if (orderRequest.getPhoneNumber().length() > 12) {
+            errors.rejectValue("phoneNumber", "order.phoneNumber.tooLong");
+        } else if (!orderRequest.getPhoneNumber().matches("^\\+[0-9]{11}$")) {
+            errors.rejectValue("phoneNumber", "order.phoneNumber.invalid");
+        }
+    }
+
     private void validateBillingAddress(Errors errors, OrderRequest orderRequest) {
-        if (orderRequest.getBillingAddress() == null || orderRequest.getBillingAddress().getCity() == null ||
-                orderRequest.getBillingAddress().getCity().length() < 3) {
+        AddressDetails billingAddress = orderRequest.getBillingAddress();
+        if (billingAddress == null || billingAddress.getCity() == null ||
+                billingAddress.getCity().length() < 3) {
             errors.rejectValue(BILLING_ADDRESS, BILLING_ADDRESS_INVALID);
         }
 
-        if (orderRequest.getBillingAddress() == null || orderRequest.getBillingAddress().getStreet() == null ||
-                orderRequest.getBillingAddress().getStreet().length() < 2) {
+        if (billingAddress == null || billingAddress.getStreet() == null ||
+                billingAddress.getStreet().length() < 2) {
             errors.rejectValue(BILLING_ADDRESS, BILLING_ADDRESS_INVALID);
         }
 
-        if (orderRequest.getBillingAddress() == null || orderRequest.getBillingAddress().getNumber() == null ||
-                orderRequest.getBillingAddress().getNumber() < 1) {
+        if (billingAddress == null || billingAddress.getNumber() == null ||
+                billingAddress.getNumber() < 1) {
             errors.rejectValue(BILLING_ADDRESS, BILLING_ADDRESS_INVALID);
+        }
+        if (billingAddress == null ||
+                billingAddress.getPostcode().length() < 4) {
+            errors.rejectValue(BILLING_ADDRESS + ".postcode", "address.postcode.invalid");
+        } else if (!billingAddress.getPostcode().matches("^[0-9]{4}$")) {
+            errors.rejectValue(BILLING_ADDRESS + ".postcode", "address.postcode.invalid");
         }
     }
 
     private void validateShippingAddress(Errors errors, OrderRequest orderRequest) {
-        if (orderRequest.getShippingAddress() == null || orderRequest.getShippingAddress().getCity() == null ||
-                orderRequest.getShippingAddress().getCity().length() < 3) {
+        AddressDetails shippingAddress = orderRequest.getShippingAddress();
+        if (shippingAddress == null || shippingAddress.getCity() == null ||
+                shippingAddress.getCity().length() < 3) {
             errors.rejectValue(SHIPPING_ADDRESS, SHIPPING_ADDRESS_INVALID);
         }
 
-        if (orderRequest.getShippingAddress() == null || orderRequest.getShippingAddress().getStreet() == null ||
-                orderRequest.getShippingAddress().getStreet().length() < 2) {
+        if (shippingAddress == null || shippingAddress.getStreet() == null ||
+                shippingAddress.getStreet().length() < 2) {
             errors.rejectValue(SHIPPING_ADDRESS, SHIPPING_ADDRESS_INVALID);
         }
 
-        if (orderRequest.getShippingAddress() == null || orderRequest.getShippingAddress().getNumber() == null ||
-                orderRequest.getShippingAddress().getNumber() < 1) {
+        if (shippingAddress == null || shippingAddress.getNumber() == null ||
+                shippingAddress.getNumber() < 1) {
             errors.rejectValue(SHIPPING_ADDRESS, SHIPPING_ADDRESS_INVALID);
+        }
+        if (shippingAddress == null ||
+                shippingAddress.getPostcode().length() < 4) {
+            errors.rejectValue("shippingAddress.postcode", "address.postcode.invalid");
+        } else if (!shippingAddress.getPostcode().matches("^[0-9]{4}$")) {
+            errors.rejectValue(SHIPPING_ADDRESS + ".postcode", "address.postcode.invalid");
         }
     }
 

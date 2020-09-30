@@ -1,18 +1,22 @@
 package hu.progmasters.gmistore.service;
 
 import hu.progmasters.gmistore.dto.messages.EmailCreatingDto;
+import hu.progmasters.gmistore.dto.messages.EmailTableDto;
+import hu.progmasters.gmistore.dto.messages.PagedActiveEmailList;
 import hu.progmasters.gmistore.dto.messages.ReplyEmailDto;
 import hu.progmasters.gmistore.model.EmailFromUser;
 import hu.progmasters.gmistore.repository.EmailRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmailFromUserService {
@@ -39,29 +43,22 @@ public class EmailFromUserService {
         LOGGER.debug("Email has been saved.");
     }
 
-    public List<EmailCreatingDto> getAllActiveIncomeEmails() {
-        List<EmailFromUser> getAllIncomeEmail = emailRepository.findAllActiveEmail();
+    public PagedActiveEmailList getAllActiveIncomeEmails(Integer size,Integer page) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EmailFromUser> getAllIncomeEmail = emailRepository.findAllActiveEmail(pageable);
 
-        List<EmailCreatingDto> collect = new ArrayList<>();
-        for (EmailFromUser email : getAllIncomeEmail) {
-            if (collect.size() < 20) {
-                EmailCreatingDto emailCreatingDto = mapEmailModelToEmailDto(email);
-                collect.add(emailCreatingDto);
-            } else {
-                break;
-            }
-        }
-        return collect;
+        PagedActiveEmailList activeEmailList = new PagedActiveEmailList();
+        activeEmailList.setEmails(
+                getAllIncomeEmail.stream().map(this::mapEmailToEmailTableDto)
+                        .collect(Collectors.toList()));
+        activeEmailList.setTotalElements(getAllIncomeEmail.getTotalElements());
+        return activeEmailList;
+
     }
 
-    private EmailCreatingDto mapEmailModelToEmailDto(EmailFromUser email) {
-        EmailCreatingDto emailCreatingDto = new EmailCreatingDto();
-        emailCreatingDto.setId(email.getId());
-        emailCreatingDto.setEmail(email.getEmail());
-        emailCreatingDto.setSubject(email.getSubject());
-        emailCreatingDto.setMessage(email.getMessage());
-        emailCreatingDto.setMessageCreateTime(email.getMessageCreateTime());
-        return emailCreatingDto;
+    private EmailTableDto mapEmailToEmailTableDto(EmailFromUser emailFromUser) {
+        EmailTableDto emailTableDto = new EmailTableDto(emailFromUser);
+        return emailTableDto;
     }
 
 
@@ -82,7 +79,7 @@ public class EmailFromUserService {
 
     public boolean deleteEmail(Long id) {
         Optional<EmailFromUser> optionalEmail = emailRepository.findById(id);
-        if(optionalEmail.isPresent()){
+        if (optionalEmail.isPresent()) {
             EmailFromUser currentEmail = optionalEmail.get();
             currentEmail.setActive(false);
             emailRepository.save(currentEmail);

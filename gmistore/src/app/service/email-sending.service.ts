@@ -4,6 +4,7 @@ import {EmailModel} from "../models/messages/email-model";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {ReplyEmailModel} from "../models/messages/reply-email-model";
+import {PagedEmailListModel} from "../models/messages/paged-email-list-model";
 
 
 @Injectable({
@@ -21,8 +22,14 @@ export class EmailSendingService {
   }
 
 
-  getAllActiveIncomeEmails(): Observable<Array<EmailModel>> {
-    return this.http.get<Array<EmailModel>>(this.baseURL+'/income-emails');
+  getAllActiveIncomeEmails(
+    size: number, page: number,
+  ): Observable<PagedEmailListModel> {
+    let params = {
+      size: size.toString(),
+      page: page.toString()
+    }
+    return this.http.get<PagedEmailListModel>(this.baseURL+'/income-emails',{params: params});
   }
 
   sendReplyEmailToUser(data: ReplyEmailModel): Observable<boolean>{

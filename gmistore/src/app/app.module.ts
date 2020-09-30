@@ -96,6 +96,9 @@ import {FilterDialogComponent} from './components/product/filter-dialog/filter-d
 import {FavoriteProductsComponent} from './components/favorite-products/favorite-products.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {AdminEmailManagement} from './components/admin/admin-email-management/admin-email-management';
+import { SellerDashboardComponent } from './components/seller/seller-dashboard/seller-dashboard.component';
+import { SellerProductsComponent } from './components/seller/seller-products/seller-products.component';
+import { SellerNavComponent } from './components/seller/seller-nav/seller-nav.component';
 
 @NgModule({
   declarations: [
@@ -148,6 +151,9 @@ import {AdminEmailManagement} from './components/admin/admin-email-management/ad
     FilterDialogComponent,
     FavoriteProductsComponent,
     AdminEmailManagement,
+    SellerDashboardComponent,
+    SellerProductsComponent,
+    SellerNavComponent,
   ],
 
     imports: [

@@ -31,6 +31,9 @@ import {NewPasswordComponent} from "./components/user/password-reset/new-passwor
 import {OrdersFormComponent} from "./components/admin/admin-orders/orders-form/orders-form.component";
 import {FavoriteProductsComponent} from "./components/favorite-products/favorite-products.component";
 import {AdminEmailManagement} from "./components/admin/admin-email-management/admin-email-management";
+import {SellerNavComponent} from "./components/seller/seller-nav/seller-nav.component";
+import {SellerDashboardComponent} from "./components/seller/seller-dashboard/seller-dashboard.component";
+import {SellerProductsComponent} from "./components/seller/seller-products/seller-products.component";
 
 
 const routes: Routes = [
@@ -107,6 +110,19 @@ const routes: Routes = [
     ],
     canActivate: [AuthGuard],
     data: {roles: RoleModel.ROLE_ADMIN},
+  },
+
+  {
+    path: 'seller',component:SellerNavComponent,
+    children:[
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {path: 'dashboard', component: SellerDashboardComponent},
+      {path: 'product', component: SellerProductsComponent},
+    ],
   },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},

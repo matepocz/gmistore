@@ -15,6 +15,8 @@ import {MatChipInputEvent} from "@angular/material/chips";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 import {SpinnerService} from "../../../service/spinner-service.service";
+import {ImageService} from "../../../service/image.service";
+import {AuthService} from "../../../service/auth-service";
 
 @Component({
   selector: 'app-product-form',
@@ -45,6 +47,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   slug: string;
 
+  currentUsername: string;
+
   productForm = this.formBuilder.group({
     id: [null],
     name: [null, Validators.compose(
@@ -66,25 +70,23 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     active: [false],
   });
 
-  mainCategorySub: Subscription;
-  subCategorySub: Subscription;
-  productSubscription: Subscription;
-  submitProductSub: Subscription;
-  paramMapSub: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder, private productService: ProductService,
               private localStorageService: LocalStorageService, private activatedRoute: ActivatedRoute,
-              private titleService: Title, private router: Router, private spinnerService: SpinnerService) {
+              private titleService: Title, private router: Router, private spinnerService: SpinnerService,
+              private imageService: ImageService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.loading = true;
+    this.currentUsername = this.authService.currentUsername;
     this.titleService.setTitle("Új termék");
     this.fetchMainCategories();
 
     this.productPictures = new Array<string>();
 
-    this.paramMapSub = this.activatedRoute.paramMap.subscribe(
+    this.subscriptions.add(this.activatedRoute.paramMap.subscribe(
       (data) => {
         this.slug = data.get('slug');
         this.spinnerService.stop(this.spinner);
@@ -95,7 +97,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.productForm.get('productCode').disable();
           this.titleService.setTitle("Termék szerkesztése");
 
-          this.productSubscription = this.productService.getProductBySlug(this.slug).subscribe(
+          this.subscriptions.add(this.productService.getProductBySlug(this.slug).subscribe(
             (data: ProductModel) => {
               this.product = data;
               this.productName = this.product.name;
@@ -112,17 +114,17 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               this.pathValueProductForm();
               this.loading = false;
               this.spinnerService.stop(this.spinner);
-            });
+            }));
         }
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
       }
-    );
+    ));
   }
 
   fetchMainCategories() {
-    this.mainCategorySub = this.productService.getMainProductCategories().subscribe(
+    this.subscriptions.add(this.productService.getMainProductCategories().subscribe(
       (response: Array<ProductCategoryModel>) => {
         this.mainProductCategories = response;
         this.loading = false;
@@ -130,7 +132,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         console.log(error);
         this.loading = false;
       }
-    );
+    ));
   }
 
   pathValueProductForm() {
@@ -154,13 +156,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   fetchCurrentSubCategories() {
-    this.subCategorySub = this.productService.getSubProductCategories(this.currentMainCategory.id).subscribe(
+    this.subscriptions.add(this.productService.getSubProductCategories(this.currentMainCategory.id).subscribe(
       (response: Array<ProductCategoryModel>) => {
         this.subProductCategories = response;
       }, (error) => {
         console.log(error);
       }
-    );
+    ));
   }
 
   fetchSubCategories($event: MatSelectChange) {
@@ -168,7 +170,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.spinner = this.spinnerService.start();
       this.loading = true;
       this.setCurrentMainCategory($event);
-      this.subCategorySub = this.productService.getSubProductCategories($event.value).subscribe(
+      this.subscriptions.add(this.productService.getSubProductCategories($event.value).subscribe(
         (response: Array<ProductCategoryModel>) => {
           this.subProductCategories = response;
           this.loading = false;
@@ -178,7 +180,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.spinnerService.stop(this.spinner);
         }
-      );
+      ));
     }
   }
 
@@ -247,8 +249,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   processNewProduct() {
     this.spinner = this.spinnerService.start();
-    this.product.addedBy = this.localStorageService.retrieve("username");
-    this.submitProductSub = this.productService.addProduct(this.product).subscribe(
+    this.product.addedBy = this.currentUsername;
+    this.subscriptions.add(this.productService.addProduct(this.product).subscribe(
       (response) => {
         console.log(response);
         this.spinnerService.stop(this.spinner);
@@ -259,14 +261,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         this.spinnerService.stop(this.spinner);
         this.router.navigate(['product-list']);
       }
-    );
+    ));
   }
 
   processProductUpdate() {
     this.spinner = this.spinnerService.start();
     this.product.name = this.productName;
     this.product.productCode = this.productCode;
-    this.submitProductSub = this.productService.updateProduct(this.product, this.slug).subscribe(
+    this.subscriptions.add(this.productService.updateProduct(this.product, this.slug).subscribe(
       () => {
       },
       (error) => {
@@ -275,9 +277,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       },
       () => {
         this.spinnerService.stop(this.spinner);
-        this.router.navigate(['product', this.slug]);
+        this.navigateBack();
       }
-    )
+    ))
   }
 
   onFileChange(event) {
@@ -303,7 +305,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   async upload(file) {
     this.loading = true;
-    return await this.productService.uploadImage(file).then((data) => {
+    return await this.imageService.uploadImage(file).then((data) => {
       this.productPictures.push(data[1]);
       this.loading = false;
     }, (error) => {
@@ -313,8 +315,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   removeImage(picture: string) {
+    this.spinner = this.spinnerService.start();
     let indexOfImage = this.productPictures.indexOf(picture);
-    this.productPictures.splice(indexOfImage, 1);
+    this.subscriptions.add(
+      this.imageService.destroyImage(picture).subscribe(
+        (response) => {
+          this.productPictures.splice(indexOfImage, 1);
+          this.spinnerService.stop(this.spinner);
+        }, (error) => {
+          this.spinnerService.stop(this.spinner);
+          console.log(error);
+        }
+      )
+    );
   }
 
   navigateBack() {
@@ -326,16 +339,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.paramMapSub.unsubscribe();
-    this.mainCategorySub.unsubscribe();
-    if (this.subCategorySub) {
-      this.subCategorySub.unsubscribe();
-    }
-    if (this.productSubscription) {
-      this.productSubscription.unsubscribe();
-    }
-    if (this.submitProductSub) {
-      this.submitProductSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

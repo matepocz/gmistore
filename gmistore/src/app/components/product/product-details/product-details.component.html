@@ -252,6 +252,9 @@
             <mat-icon class="rating-negative-icon">remove</mat-icon>
           </div>
           <mat-card-content fxFlex="95" fxFlex.lt-md="90">{{ rating.negativeComment }}</mat-card-content>
+          <div fxFlex="100" fxLayout="row">
+            <img class="rating-pic" [src]="picture" *ngFor="let picture of rating.pictures" alt="Thumbnail picture">
+          </div>
           <mat-card-actions>
             <button mat-icon-button color="primary" (click)="voteRating(rating.id)">
               <mat-icon>thumb_up</mat-icon>

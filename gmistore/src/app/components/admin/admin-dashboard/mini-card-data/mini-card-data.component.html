@@ -1,4 +1,5 @@
-<mat-card  class="mat-elevation-z8 card" *ngIf="!noBackgroundColor" [ngStyle]="{'color': 'white','background-color': backgroundColor}" fxLayout="row wrap ">
+<mat-card class="mat-elevation-z8 card" *ngIf="!noBackgroundColor"
+          [ngStyle]="{'color': 'white','background-color': backgroundColor}" fxLayout="row wrap ">
   <div fxFlex="60">
     <mat-card-header>
       <mat-card-title>{{title}}</mat-card-title>
@@ -15,17 +16,19 @@
   </div>
 </mat-card>
 
-<mat-card class="mat-elevation-z8 card" *ngIf="noBackgroundColor" fxLayout="row wrap " fxLayoutAlign="space-between">
-  <div fxFlex="40" fxLayout="row" fxLayoutAlign="center" >
-    <mat-icon [ngStyle]="{'font-size': '100px','color': avatarColor}" mat-card-avatar>{{avatar}}</mat-icon>
+<mat-card class="mat-elevation-z8 card" *ngIf="noBackgroundColor" fxLayout="row wrap " fxLayoutAlign="start">
+  <div fxFlex="35" fxLayout="row" fxLayoutAlign="start">
+    <mat-icon [ngStyle.lt-lg]="{'font-size': '65px','color': avatarColor}"
+              [ngStyle.lt-md]="{'font-size': '80px','color': avatarColor}"
+              [ngStyle.gt-md]="{'font-size': '95px','color': avatarColor}" mat-card-avatar>{{avatar}}</mat-icon>
   </div>
 
-  <div fxFlex="40">
+  <div fxFlex="50">
     <mat-card-header>
       <mat-card-title>{{title}}</mat-card-title>
       <mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content fxLayout="row"
-                      [ngStyle]="{'font-size': '30px','margin': '10px'}">{{data}}</mat-card-content>
+                      [ngStyle]="{'font-size': '25px','margin': '10px'}">{{data}}</mat-card-content>
   </div>
 </mat-card>

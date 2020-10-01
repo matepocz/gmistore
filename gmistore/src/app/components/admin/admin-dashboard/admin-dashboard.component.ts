@@ -86,7 +86,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.subj.asObservable().subscribe(data => {
       console.log("---------------------");
       this.liveItem = data;
-      console.log(this.liveItem);
+      this.liveDataSize = Object.keys(this.liveItem).length;
       this.cdRef.detectChanges();
 
     })
@@ -148,6 +148,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   date: any;
+  liveDataSize:any;
 
   getOrdersByDays(dates) {
     this.subscription = this.adminService.getIncomePerOrder(dates).subscribe(
@@ -160,6 +161,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
+      this.stopExchangeUpdates();
     }
   }
 
@@ -203,5 +205,18 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   onDateInput($event: SatDatepickerInputEvent<Date>) {
+    this.snackBar.popUp('Use the calendar instead ' + $event)
+  }
+
+  getIconForUser(role: string) {
+    if (role === 'ROLE_USER') {
+      return 'person';
+    }
+    if (role === 'ROLE_SELLER') {
+      return 'shopping_bag';
+    }
+    if (role === 'ROLE_ADMIN') {
+      return 'admin_panel_settings';
+    }
   }
 }

@@ -33,3 +33,12 @@ mat-card{
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+
+.user-list {
+  overflow-y: auto;
+}
+
+.users-icon {
+  margin: 5px;
+}

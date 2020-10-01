@@ -59,6 +59,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   searchInput: string;
   searching: boolean = false;
 
+  previousCategory: string;
   category: string;
   categoryDisplayName: string;
 
@@ -106,6 +107,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
         (params: ParamMap) => {
           this.spinnerService.stop(this.spinner);
           this.category = params.get('category');
+          if (this.previousCategory !== this.category) {
+            this.removeFilters();
+            this.previousCategory = this.category;
+          }
           this.pageIndex = Number(params.get('pageIndex'));
           this.pageSize = Number(params.get('pageSize'));
           this.searchInput = params.get('q');

@@ -1,6 +1,6 @@
 <div class="containerX" fxLayoutAlign="center" [style.margin-top]="'25px'" [style.margin-bottom]="'25px'">
   <mat-card class="mat-elevation-z4" fxLayout="row wrap" fxLayoutGap="10px" fxLayout.lt-md="column" fxFlex.lt-md="100"
-            fxFlex.lg="80" fxLayoutAlign="space-evenly start">
+            fxFlex.lg="80" fxLayoutAlign="space-evenly start" fxFlex.md="80">
 
     <mat-card-title>Rendelés véglegesítése</mat-card-title>
 
@@ -57,6 +57,7 @@
               <mat-label>Telefon</mat-label>
               <input matInput placeholder="" formControlName="phoneNumber" required>
               <mat-icon matSuffix>phone</mat-icon>
+              <mat-hint>Pl.: +36301234567</mat-hint>
               <mat-error *ngIf="detailsForm.get('phoneNumber').invalid &&
               !detailsForm.get('phoneNumber').errors?.serverError">
                 Érvénytelen telefonszám
@@ -84,16 +85,25 @@
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Város</mat-label>
               <input matInput placeholder="" formControlName="city" required>
+              <mat-error *ngIf="shippingAddressForm.get('city').invalid">
+                Érvénytelen város
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Utca/út</mat-label>
               <input matInput placeholder="" formControlName="street" required>
+              <mat-error *ngIf="shippingAddressForm.get('street').invalid">
+                Érvénytelen utca
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Házszám</mat-label>
               <input matInput placeholder="" formControlName="number" required>
+              <mat-error *ngIf="shippingAddressForm.get('number').invalid">
+                Érvénytelen házszám
+              </mat-error>
             </mat-form-field>
           </div>
 
@@ -115,11 +125,20 @@
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Ország</mat-label>
               <input matInput placeholder="" formControlName="country" required>
+              <mat-error *ngIf="shippingAddressForm.get('country').invalid">
+                Érvénytelen ország
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Irányítószám</mat-label>
               <input matInput placeholder="" formControlName="postcode" required>
+              <mat-error *ngIf="shippingAddressForm.get('postcode').invalid &&
+                !shippingAddressForm.get('postcode').errors?.serverError"></mat-error>
+
+              <mat-error *ngIf="shippingAddressForm.get('postcode').errors?.serverError">
+                {{ shippingAddressForm.get('postcode').errors.serverError }}
+              </mat-error>
             </mat-form-field>
           </div>
 
@@ -145,16 +164,25 @@
             <mat-form-field class="mt-15" fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Város</mat-label>
               <input matInput placeholder="" formControlName="city" required>
+              <mat-error *ngIf="billingAddressForm.get('city').invalid">
+                Érvénytelen város
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Utca/út</mat-label>
               <input matInput placeholder="" formControlName="street" required>
+              <mat-error *ngIf="billingAddressForm.get('street').invalid">
+                Érvénytelen utca
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Házszám</mat-label>
               <input matInput placeholder="" formControlName="number" required>
+              <mat-error *ngIf="billingAddressForm.get('number').invalid">
+                Érvénytelen házszám
+              </mat-error>
             </mat-form-field>
           </div>
 
@@ -176,11 +204,20 @@
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Ország</mat-label>
               <input matInput placeholder="" formControlName="country" required>
+              <mat-error *ngIf="billingAddressForm.get('country').invalid">
+                Érvénytelen ország
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex.lt-sm="100" fxFlex="25" appearance="outline">
               <mat-label>Irányítószám</mat-label>
               <input matInput placeholder="" formControlName="postcode" required>
+              <mat-error *ngIf="billingAddressForm.get('postcode').invalid &&
+                !billingAddressForm.get('postcode').errors?.serverError"></mat-error>
+
+              <mat-error *ngIf="billingAddressForm.get('postcode').errors?.serverError">
+                {{ billingAddressForm.get('postcode').errors.serverError }}
+              </mat-error>
             </mat-form-field>
           </div>
 

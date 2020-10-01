@@ -58,4 +58,10 @@ export class IncomePerOrderGraphComponent implements OnInit {
       }
     });
   }
+
+  onChangeGraph(data:IncomeByDateModel) {
+    this.chart.data.labels = data.date;
+    this.chart.data.datasets[0].data = data.income;
+    this.chart.update();
+  }
 }

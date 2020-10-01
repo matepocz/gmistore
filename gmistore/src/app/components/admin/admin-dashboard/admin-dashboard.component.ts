@@ -12,6 +12,8 @@ import {IncomeSpentModel} from "../../../models/incomeSpentModel";
 import {IncomeByDateModel} from "../../../models/order/IncomeByDateModel";
 import {DashBoardBasicModel} from "../../../models/DashBoardBasicModel";
 import {SatDatepickerInputEvent} from "saturn-datepicker";
+import {UserRegistrationsGraphComponent} from "./user-registrations-graph/user-registrations-graph.component";
+import {IncomePerOrderGraphComponent} from "./income-per-order-graph/income-per-order-graph.component";
 
 
 @Component({
@@ -22,12 +24,12 @@ import {SatDatepickerInputEvent} from "saturn-datepicker";
 export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   // @ViewChild('lineChart') private chartRef;
-  @ViewChild('registered-users-graph', {static: true}) private registeredUsers;
+  @ViewChild(UserRegistrationsGraphComponent) registeredUsers: UserRegistrationsGraphComponent;
+  @ViewChild(IncomePerOrderGraphComponent) incomeByDays: IncomePerOrderGraphComponent;
 
   chart: Chart;
   chartData: UserRegistrationsCounterModel;
   subscription: Subscription;
-  selectedDate: any;
   minDate: Date;
   maxDate: Date;
   dateInterval: UserRegistrationStartEndDateModel;
@@ -62,6 +64,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getExchangeData();
+
+    this.getOrdersByDays(this.dates);
 
     this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
       (data: IncomeByDateModel) => this.incomeLineChartData = data,
@@ -143,16 +147,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     )
   }
 
-  barBorderColors = () => {
-    let color = '#851a2a';
-    let colors = [];
-    for (let j = 0; j < this.chartData.size.length; j++) {
-      colors.push(color)
-    }
-    return colors;
-  }
   date: any;
 
+  getOrdersByDays(dates) {
+    this.subscription = this.adminService.getIncomePerOrder(dates).subscribe(
+      (data: IncomeByDateModel) => this.incomeLineChartData = data,
+      error => console.log(error),
+      () => this.incomeByDays.onChangeGraph(this.incomeLineChartData)
+    )
+  }
 
   ngOnDestroy() {
     if (this.subscription) {
@@ -160,7 +163,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  inlineRangeChange($event:any) {
+  inlineRangeChange($event: any) {
     //30 days
     if ($event.value.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.value.end.getTime()) {
       this.dateInterval.start = $event.value.begin;
@@ -170,18 +173,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         (data) => this.chartData = data,
         (err) => console.log(err),
         () => {
-          // this.chart.data.labels = this.chartData.dates;
-          // this.chart.data.datasets[0].data = this.chartData.size;
-          // this.chart.update();
-
-          // this.registeredUsers.nativeElement.onChangeGraph(this.chartData);
-
-          // this.registeredUsers.chart.chart.data.labels = this.chartData.dates;
-          // this.registeredUsers.chart.chart.data.datasets[0].data = this.chartData.size;
-          // this.registeredUsers.chart.chart.update();
+          this.registeredUsers.onChangeGraph(this.chartData)
         }
       )
 
+      this.getOrdersByDays(this.dateInterval);
+
+      this.incomeByDays.onChangeGraph(this.incomeLineChartData);
       this.adminService.getIncomePerOrder(this.dateInterval).subscribe(
         (data) => console.log(data),
         (err) => console.log(err),
@@ -205,10 +203,5 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   onDateInput($event: SatDatepickerInputEvent<Date>) {
-
-  }
-
-  onDateChange($event: SatDatepickerInputEvent<Date>) {
-
   }
 }

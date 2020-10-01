@@ -134,7 +134,9 @@
               <mat-label>Irányítószám</mat-label>
               <input matInput placeholder="" formControlName="postcode" required>
               <mat-error *ngIf="shippingAddressForm.get('postcode').invalid &&
-                !shippingAddressForm.get('postcode').errors?.serverError"></mat-error>
+                !shippingAddressForm.get('postcode').errors?.serverError">
+                Érvénytelen irányítószám
+              </mat-error>
 
               <mat-error *ngIf="shippingAddressForm.get('postcode').errors?.serverError">
                 {{ shippingAddressForm.get('postcode').errors.serverError }}
@@ -213,7 +215,9 @@
               <mat-label>Irányítószám</mat-label>
               <input matInput placeholder="" formControlName="postcode" required>
               <mat-error *ngIf="billingAddressForm.get('postcode').invalid &&
-                !billingAddressForm.get('postcode').errors?.serverError"></mat-error>
+                !billingAddressForm.get('postcode').errors?.serverError">
+                Érvénytelen irányítószám
+              </mat-error>
 
               <mat-error *ngIf="billingAddressForm.get('postcode').errors?.serverError">
                 {{ billingAddressForm.get('postcode').errors.serverError }}

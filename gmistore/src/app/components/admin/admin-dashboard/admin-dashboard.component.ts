@@ -5,7 +5,6 @@ import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrati
 import {UserRegistrationStartEndDateModel} from "../../../models/user/UserRegistrationStartEndDateModel";
 import {Subscription} from "rxjs";
 import {MatCalendar} from "@angular/material/datepicker";
-import {generateRandomColor} from "../../../utils/generate-color";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
 import {LiveDataSubjectService} from "../../../service/live-data-subject.service";
 import {ProductService} from "../../../service/product-service";
@@ -13,6 +12,8 @@ import {IncomeSpentModel} from "../../../models/incomeSpentModel";
 import {IncomeByDateModel} from "../../../models/order/IncomeByDateModel";
 import {DashBoardBasicModel} from "../../../models/DashBoardBasicModel";
 import {SatDatepickerInputEvent} from "saturn-datepicker";
+import {UserRegistrationsGraphComponent} from "./user-registrations-graph/user-registrations-graph.component";
+import {IncomePerOrderGraphComponent} from "./income-per-order-graph/income-per-order-graph.component";
 
 
 @Component({
@@ -22,20 +23,25 @@ import {SatDatepickerInputEvent} from "saturn-datepicker";
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
 
-  @ViewChild('lineChart') private chartRef;
+  // @ViewChild('lineChart') private chartRef;
+  @ViewChild(UserRegistrationsGraphComponent) registeredUsers: UserRegistrationsGraphComponent;
+  @ViewChild(IncomePerOrderGraphComponent) incomeByDays: IncomePerOrderGraphComponent;
 
   chart: Chart;
+  date: any;
+  liveDataSize: any;
   chartData: UserRegistrationsCounterModel;
-  subscription: Subscription;
-  selectedDate: any;
   minDate: Date;
   maxDate: Date;
   dateInterval: UserRegistrationStartEndDateModel;
   items: any[] = [''];
   pieChartData: IncomeSpentModel;
   incomeLineChartData: IncomeByDateModel;
-  private dates: { end: Date; start: Date };
+  dates: { end: Date; start: Date };
   dashboardData: DashBoardBasicModel;
+  liveItem: any;
+  subs: Subscription[] = [];
+
 
   constructor(private adminService: AdminService,
               private productService: ProductService,
@@ -59,119 +65,71 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
+    this.getExchangeData();
+
+    this.subs.push(this.adminService.getIncomePerOrder(this.dates).subscribe(
       (data: IncomeByDateModel) => this.incomeLineChartData = data,
       error => console.log(error)
-    );
+    ));
 
-    this.subscription = this.adminService.fetchDashboardData().subscribe(
+    this.subs.push(this.adminService.getIncomePerOrder(this.dates).subscribe(
+      (data: IncomeByDateModel) => this.incomeLineChartData = data,
+      error => console.log(error)
+    ));
+
+    this.subs.push(this.adminService.fetchDashboardData().subscribe(
       (data: DashBoardBasicModel) => this.dashboardData = data,
       error => console.log(error)
-    );
+    ));
 
-    this.productService.getIncomeAndSpent().subscribe(
+    this.subs.push(this.productService.getIncomeAndSpent().subscribe(
       (data) => this.pieChartData = data,
       (err) => console.log(err),
-      () =>
-        console.log(this.chartData))
+      () => console.log(this.chartData)
+    ));
 
-    this.subj.asObservable().subscribe(data => {
-      this.items.push(data);
+    this.subs.push(this.subj.asObservable().subscribe(data => {
+      this.liveItem = data;
+      this.liveDataSize = Object.keys(this.liveItem).length;
       this.cdRef.detectChanges();
-      console.log(this.items);
-    })
+    }));
 
-    this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
+    this.subs.push(this.adminService.getUserRegistrationsCount().subscribe(
       (data: UserRegistrationsCounterModel) => {
         this.chartData = data;
-      }, error => {
-        console.log(error)
-      },
-      () => {
-      //   this.chart = new Chart(this.chartRef.nativeElement, {
-      //     type: 'bar',
-      //     data: {
-      //       labels: this.chartData.dates,
-      //       datasets: [
-      //         {
-      //           borderWidth: 1,
-      //           data: this.chartData.size,
-      //           backgroundColor: generateRandomColor(this.chartData.size),
-      //           borderColor: this.barBorderColors(),
-      //         }
-      //       ]
-      //     },
-      //     options: {
-      //       responsive: true,
-      //       maintainAspectRatio: false,
-      //       legend: {
-      //         display: false
-      //       },
-      //       scales: {
-      //         xAxes: [{
-      //           display: true,
-      //           ticks: {
-      //             autoSkip: true,
-      //             maxTicksLimit: 7
-      //           }
-      //         }],
-      //         scaleLabel: {
-      //           labelString: 'dátum',
-      //           display: true,
-      //         },
-      //         yAxes: [{
-      //           display: true,
-      //           ticks: {
-      //             beginAtZero: true,
-      //             maxTicksLimit: 10
-      //           },
-      //           scaleLabel: {
-      //             labelString: 'vásárlók száma',
-      //             display: true,
-      //           },
-      //         }],
-      //       }
-      //     }
-      //   });
-      }
-    )
+      }, error => console.log(error)
+    ))
   }
 
-  barBorderColors = () => {
-    let color = '#851a2a';
-    let colors = [];
-    for (let j = 0; j < this.chartData.size.length; j++) {
-      colors.push(color)
-    }
-    return colors;
+  getOrdersByDays(dates) {
+    this.subs.push(this.adminService.getIncomePerOrder(dates).subscribe(
+      (data: IncomeByDateModel) => this.incomeLineChartData = data,
+      error => console.log(error),
+      () => this.incomeByDays.onChangeGraph(this.incomeLineChartData)
+    ));
   }
-  date: any;
-
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subs.map(sub => sub.unsubscribe());
   }
 
-  inlineRangeChange($event
-                      :
-                      any
-  ) { //30 days
-    if ($event.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.end.getTime()) {
-      this.dateInterval.start = $event.begin;
-      this.dateInterval.end = $event.end;
+  inlineRangeChange($event: any) {
+    //30 days
+    if ($event.value.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.value.end.getTime()) {
+      this.dateInterval.start = $event.value.begin;
+      this.dateInterval.end = $event.value.end;
 
-      this.adminService.getUserRegistrationsCountByDate(this.dateInterval).subscribe(
+      this.subs.push(this.adminService.getUserRegistrationsCountByDate(this.dateInterval).subscribe(
         (data) => this.chartData = data,
         (err) => console.log(err),
         () => {
-          this.chart.data.labels = this.chartData.dates;
-          this.chart.data.datasets[0].data = this.chartData.size;
-          this.chart.update();
+          this.registeredUsers.onChangeGraph(this.chartData)
         }
-      )
+      ));
 
+      this.getOrdersByDays(this.dateInterval);
+
+      this.incomeByDays.onChangeGraph(this.incomeLineChartData);
       this.adminService.getIncomePerOrder(this.dateInterval).subscribe(
         (data) => console.log(data),
         (err) => console.log(err),
@@ -186,8 +144,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  GetExchangeData() {
-    this.adminService.GetExchangeData();
+  getExchangeData() {
+    this.adminService.getExchangeData();
   }
 
   stopExchangeUpdates() {
@@ -195,10 +153,18 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   onDateInput($event: SatDatepickerInputEvent<Date>) {
-
+    this.snackBar.popUp('Use the calendar instead ' + $event)
   }
 
-  onDateChange($event: SatDatepickerInputEvent<Date>) {
-
+  getIconForUser(role: string) {
+    if (role === 'ROLE_USER') {
+      return 'person';
+    }
+    if (role === 'ROLE_SELLER') {
+      return 'shopping_bag';
+    }
+    if (role === 'ROLE_ADMIN') {
+      return 'admin_panel_settings';
+    }
   }
 }

@@ -24,41 +24,43 @@ export class AdminService {
   private adminUrl = environment.apiUrl + 'api/admin';
   private lookupUrl = environment.apiUrl + 'api/lookup';
   evs: EventSource;
-  @Output() emitData:EventEmitter<any> = new EventEmitter<any>();
+  @Output() emitData: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private httpClient: HttpClient,
               private subj: LiveDataSubjectService) {
   }
 
-  GetExchangeData() {
+  getExchangeData() {
     let subject = this.subj;
-    if (typeof (EventSource) !== undefined) {
-      this.evs = new EventSource(this.adminUrl + '/sse');
-      this.evs.onopen = function (e) {
-        console.log('Opening connection.Ready State is' + this.readyState);
-      }
-      this.evs.onmessage = function (e) {
-        console.log('Message Received.Ready State is ' + this.readyState);
-        console.log(e.data)
+    if (this.evs == null) {
 
-        subject.updatedDataSelection((e.data));
-      }
-      // this.evs.addEventListener("timestamp", function (e) {
-      //   console.log("Timestamp event Received.Ready State is " + this.readyState);
-      //   subject.updatedDataSelection(e["data"]);
-      // })
-      this.evs.onerror = function (e) {
-        console.log(e);
-        if (this.readyState == 0) {
-          console.log('Stopping…');
-          this.close();
+      if (typeof (EventSource) !== undefined) {
+        this.evs = new EventSource(this.adminUrl + '/sse');
+        this.evs.onopen = function (e) {
+          console.log('Opening connection.Ready State is' + this.readyState);
+        }
+        this.evs.onmessage = function (e) {
+          console.log('Message Received.Ready State is ' + this.readyState);
+          console.log(JSON.parse(e.data))
+
+          subject.updatedDataSelection(JSON.parse(e.data));
+        }
+        // this.evs.addEventListener("timestamp", function (e) {
+        //   console.log("Timestamp event Received.Ready State is " + this.readyState);
+        //   subject.updatedDataSelection(e["data"]);
+        // })
+        this.evs.onerror = function (e) {
+          console.log(e);
+          if (this.readyState == 0) {
+            console.log('Stopping…');
+            this.close();
+          }
         }
       }
     }
   }
 
-  stopExchangeUpdates()
-  {
+  stopExchangeUpdates() {
     this.evs.close();
   }
 

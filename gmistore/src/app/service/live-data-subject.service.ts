@@ -10,7 +10,7 @@ export class LiveDataSubjectService {
 
   constructor() { }
 
-  updatedDataSelection(data:any){
+  updatedDataSelection(data){
     this.dataSource.next(data);
   }
 

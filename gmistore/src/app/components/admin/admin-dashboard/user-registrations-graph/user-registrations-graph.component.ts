@@ -14,77 +14,68 @@ import {LiveDataSubjectService} from "../../../../service/live-data-subject.serv
   styleUrls: ['./user-registrations-graph.component.css']
 })
 export class UserRegistrationsGraphComponent implements OnInit {
-  @ViewChild('lineChart',{static: true}) private chartRef;
+  @ViewChild('lineChart', {static: true}) private chartRef;
   @Input() chart: Chart;
   @Input() chartData: UserRegistrationsCounterModel;
   subscription: Subscription;
-  selectedDate: any;
-  minDate: Date;
-  maxDate: Date;
-  dateInterval: UserRegistrationStartEndDateModel = new class implements UserRegistrationStartEndDateModel {
-    end: Date;
-    start: Date;
-  };
+
   constructor(private adminService: AdminService,
               private snackBar: PopupSnackbar,
               private subj: LiveDataSubjectService,
-              private cdRef: ChangeDetectorRef) { }
+              private cdRef: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
-    this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
-      (data: UserRegistrationsCounterModel) => {
-        this.chartData = data;
-      }, error => {
-        console.log(error)
-      },
-      () => {
-        this.chart = new Chart(this.chartRef.nativeElement, {
-          type: 'bar',
-          data: {
-            labels: this.chartData.dates,
-            datasets: [
-              {
-                borderWidth: 1,
-                data: this.chartData.size,
-                backgroundColor: generateRandomColor(this.chartData.size),
-                borderColor: this.barBorderColors(),
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-              display: false
-            },
-            scales: {
-              xAxes: [{
-                display: true,
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 7
-                }
-              }],
-              scaleLabel: {
-                labelString: 'dátum',
-                display: true,
-              },
-              yAxes: [{
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  maxTicksLimit: 10
-                },
-                scaleLabel: {
-                  labelString: 'vásárlók száma',
-                  display: true,
-                },
-              }],
-            }
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'bar',
+      data: {
+        labels: this.chartData.dates,
+        datasets: [
+          {
+            borderWidth: 1,
+            data: this.chartData.size,
+            backgroundColor: generateRandomColor(this.chartData.size),
+            borderColor: this.barBorderColors(),
           }
-        });
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: 'Napi regisztrálások száma'
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 7
+            }
+          }],
+          scaleLabel: {
+            labelString: 'dátum',
+            display: true,
+          },
+          yAxes: [{
+            display: true,
+            ticks: {
+              beginAtZero: true,
+              maxTicksLimit: 10
+            },
+            scaleLabel: {
+              labelString: 'vásárlók száma',
+              display: true,
+            },
+          }],
+        }
       }
-    )
+    });
+
   }
 
   barBorderColors = () => {
@@ -94,6 +85,13 @@ export class UserRegistrationsGraphComponent implements OnInit {
       colors.push(color)
     }
     return colors;
+  }
+
+  onChangeGraph(chartData:UserRegistrationsCounterModel) {
+    console.log("Native works")
+    this.chart.data.labels = chartData.dates;
+    this.chart.data.datasets[0].data = chartData.size;
+    this.chart.update();
   }
 
 }

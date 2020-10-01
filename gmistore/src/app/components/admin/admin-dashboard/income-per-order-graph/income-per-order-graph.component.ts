@@ -31,17 +31,17 @@ export class IncomePerOrderGraphComponent implements OnInit {
         legend: {
           display: false
         },
+        title: {
+          display: true,
+          text: 'Napi bevétel'
+        },
         scales: {
           xAxes: [{
             display: true,
-            ticks: {
-              autoSkip: true,
-              maxTicksLimit: 7
-            }
           }],
           scaleLabel: {
-            labelString: 'dátum',
             display: true,
+            labelString: 'dátum'
           },
           yAxes: [{
             display: true,
@@ -50,12 +50,18 @@ export class IncomePerOrderGraphComponent implements OnInit {
               maxTicksLimit: 10
             },
             scaleLabel: {
-              labelString: 'vásárlók száma',
+              labelString: 'Bevétel (HUF)',
               display: true,
             },
           }],
         }
       }
     });
+  }
+
+  onChangeGraph(data:IncomeByDateModel) {
+    this.chart.data.labels = data.date;
+    this.chart.data.datasets[0].data = data.income;
+    this.chart.update();
   }
 }

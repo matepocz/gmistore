@@ -1,0 +1,7 @@
+.dashboard-card-registered {
+  overflow-x: scroll;
+}
+#registered-users {
+  height: 300px;
+  min-width: 360px;
+}

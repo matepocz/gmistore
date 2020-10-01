@@ -8,7 +8,6 @@ import hu.progmasters.gmistore.dto.user.UserRegistrationDTO;
 import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.UserRepository;
-import org.cloudinary.json.JSONObject;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
@@ -16,9 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,22 +43,20 @@ public class AdminService {
         return new UserDto(user);
     }
 
-    public List<String> getUsersFromSessionRegistry() {
-
+    public Map<String, String> getUsersFromSessionRegistry() {
         List<Object> principals = sessionRegistry.getAllPrincipals();
-        List<String> usersNamesList = new ArrayList<>();
+        Map<String, String> users = new HashMap<>();
 
         for (Object principal : principals) {
 
             if (principal instanceof UserDetails) {
-                usersNamesList.add(((UserDetails) principal).getUsername());
+                users.put(((UserDetails) principal).getUsername(),String.valueOf(((UserDetails) principal).getAuthorities()));
 
             }
         }
-        LOGGER.info(String.valueOf(usersNamesList.size()));
-        LOGGER.info(String.valueOf(principals.size()));
-        return usersNamesList;
+        LOGGER.info(String.valueOf(users));
 
+        return users;
     }
 
     public Map<String, Integer> getSortedUserRegistrationByDate(Role userRole) {

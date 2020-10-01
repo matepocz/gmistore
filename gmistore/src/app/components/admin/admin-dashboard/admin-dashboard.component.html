@@ -40,152 +40,162 @@
 <div class="containerX" fxLayoutAlign="center" *ngIf="pieChartData" fxLayoutGap="10px">
   <div fxLayout="row wrap" fxFlex.gt-sm="97">
 
-    <div id="row-0" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="100">
-        <mat-card class="mat-elevation-z8">
-          <mat-header fxFlex.gt-sm="20">
+    <div id="row-0" fxLayout="row" fxFlex.gt-sm="100">
+    <div fxFlex.gt-sm="100">
+      <mat-card class="mat-elevation-z8" fxLayoutAlign="space-between">
+        <div fxFlex.gt-sm="20">
+          <mat-header>
             <mat-card-title>Dashboard</mat-card-title>
           </mat-header>
-          <div fxFlex.gt-sm="20">
-            <mat-form-field>
-              <input matInput
-                     placeholder="Choose a date"
-                     #resultPickerModel="ngModel"
-                     [max]="maxDate"
-                     [satDatepicker]="resultPicker"
-                     [(ngModel)]="date"
-                     (dateInput)="onDateInput($event)"
-                     (dateChange)="onDateChange($event)"
-              >
-              <sat-datepicker panelClass="hdd-datepicker"
-                              #resultPicker [rangeMode]="true">
-              </sat-datepicker>
-              <sat-datepicker-toggle matSuffix [for]="resultPicker"></sat-datepicker-toggle>
-            </mat-form-field>
-          </div>
-        </mat-card>
-      </div>
-    </div>
-
-    <mat-date-range-picker>
-
-    </mat-date-range-picker>
-
-    <div id="row-1" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="23">
-        <app-mini-card-data
-          [avatarColor]="'rgba(80, 84, 103, 1)'"
-          [title]="'Vásárlók'"
-          [subtitle]="'száma'"
-          [avatar]="'person'"
-          [data]="dashboardData.customers"
-          [noBackgroundColor] = "true"
-        ></app-mini-card-data>
-      </div>
-      <div fxFlex.gt-sm="23">
-        <app-mini-card-data
-          [avatarColor]="'rgba(130, 104, 103, 1)'"
-          [title]="'Eladók'"
-          [subtitle]="'száma'"
-          [avatar]="'shopping_bag'"
-          [data]="dashboardData.sellers"
-          [noBackgroundColor] = "true"
-        ></app-mini-card-data>
-      </div>
-      <div fxFlex.gt-sm="23">
-        <app-mini-card-data
-          [avatarColor]="'rgba(80, 184, 103, 1)'"
-          [title]="'Termékek'"
-          [subtitle]="'Elérhető'"
-          [avatar]="'check'"
-          [data]="dashboardData.productsActive"
-          [noBackgroundColor] = "true"
-        ></app-mini-card-data>
-      </div>
-      <div fxFlex.gt-sm="23">
-        <app-mini-card-data
-          [avatarColor]="'rgba(120, 84, 103, 1)'"
-          [title]="'Termékek'"
-          [subtitle]="'Inaktív'"
-          [avatar]="'close'"
-          [data]="dashboardData.productsInactive"
-          [noBackgroundColor] = "true"
-        ></app-mini-card-data>
-      </div>
-    </div>
-
-    <div id="row-2" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="65">
-        <mat-card class="mat-elevation-z8">
-          <app-income-per-order-graph fxFlex="100"
-                                      [chartData]="incomeLineChartData"
-          ></app-income-per-order-graph>
-        </mat-card>
-      </div>
-      <div fxFlex.gt-sm="34">
-        <mat-card class="mat-elevation-z8" fxLayout="row wrap">
-          <mat-card-header fxFlex="100">
-            <mat-card-title>
-              Pie
-            </mat-card-title>
-            <mat-icon mat-card-avatar>person</mat-icon>
-          </mat-card-header>
-          <app-income-spent-graph *ngIf="pieChartData" fxFlex="100"
-                                  fxFill
-                                  [chartData]="pieChartData"
-          ></app-income-spent-graph>
-
-        </mat-card>
-      </div>
-    </div>
-
-    <div id="row-3" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="32">
-        <app-mini-card-data
-          [backgroundColor]="'rgba(132, 54, 194, 0.8)'"
-          [title]="'Bevétel'"
-          [subtitle]="'forintban'"
-          [icon]="'add'"
-          [data]="pieChartData.income"
-        ></app-mini-card-data>
-      </div>
-      <div fxFlex.gt-sm="32">
-        <app-mini-card-data
-          [backgroundColor]="'rgba(80, 114, 203, 0.8)'"
-          [title]="'Kiadások'"
-          [subtitle]="'forintban'"
-          [icon]="'remove'"
-          [data]="pieChartData.spent"
-        ></app-mini-card-data>
-      </div>
-      <div fxFlex.gt-sm="32">
-        <app-mini-card-data
-          [backgroundColor]="'rgba(80, 84, 203, 0.8)'"
-          [title]="'Kedvezmények'"
-          [subtitle]="'forintban'"
-          [icon]="'money_off'"
-          [data]="pieChartData.discount"
-        ></app-mini-card-data>
-      </div>
-    </div>
-
-    <div id="row-4" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="34">
-        <mat-card class="mat-elevation-z8">
-          <sat-calendar [rangeMode]="true"
-                        (dateRangesChange)="inlineRangeChange($event)"
-                        [selected]="selectedDate"
-                        [minDate]="minDate"
-                        [maxDate]="maxDate">
-          </sat-calendar>
-        </mat-card>
-      </div>
-      <div fxFlex.gt-sm="65">
-        <mat-card class="mat-elevation-z8">
-          <canvas id="registered-users" #lineChart>{{ chart }}</canvas>
-        </mat-card>
-      </div>
+        </div>
+        <div fxFlex.gt-sm="20">
+          <mat-form-field>
+            <input matInput
+                   id="registered-users-graph"
+                   placeholder="Choose a date"
+                   #resultPickerModel="ngModel"
+                   [max]="maxDate"
+                   [min]="minDate"
+                   [satDatepicker]="resultPicker"
+                   [(ngModel)]="date"
+                   (dateInput)="onDateInput($event)"
+                   (dateChange)="inlineRangeChange($event)"
+            >
+            <sat-datepicker panelClass="hdd-datepicker"
+                            #resultPicker [rangeMode]="true">
+            </sat-datepicker>
+            <sat-datepicker-toggle matSuffix [for]="resultPicker"></sat-datepicker-toggle>
+          </mat-form-field>
+        </div>
+      </mat-card>
     </div>
   </div>
+
+  <mat-date-range-picker>
+
+  </mat-date-range-picker>
+
+  <div id="row-1" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+    <div fxFlex.gt-sm="23">
+      <app-mini-card-data
+        [avatarColor]="'rgba(80, 84, 103, 1)'"
+        [title]="'Vásárlók'"
+        [subtitle]="'száma'"
+        [avatar]="'person'"
+        [data]="dashboardData.customers"
+        [noBackgroundColor]="true"
+      ></app-mini-card-data>
+    </div>
+    <div fxFlex.gt-sm="23">
+      <app-mini-card-data
+        [avatarColor]="'rgba(130, 104, 103, 1)'"
+        [title]="'Eladók'"
+        [subtitle]="'száma'"
+        [avatar]="'shopping_bag'"
+        [data]="dashboardData.sellers"
+        [noBackgroundColor]="true"
+      ></app-mini-card-data>
+    </div>
+    <div fxFlex.gt-sm="23">
+      <app-mini-card-data
+        [avatarColor]="'rgba(80, 184, 103, 1)'"
+        [title]="'Termékek'"
+        [subtitle]="'Elérhető'"
+        [avatar]="'check'"
+        [data]="dashboardData.productsActive"
+        [noBackgroundColor]="true"
+      ></app-mini-card-data>
+    </div>
+    <div fxFlex.gt-sm="23">
+      <app-mini-card-data
+        [avatarColor]="'rgba(120, 84, 103, 1)'"
+        [title]="'Termékek'"
+        [subtitle]="'Inaktív'"
+        [avatar]="'close'"
+        [data]="dashboardData.productsInactive"
+        [noBackgroundColor]="true"
+      ></app-mini-card-data>
+    </div>
+  </div>
+
+  <div id="row-2" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+    <div fxFlex.gt-sm="65">
+      <mat-card class="mat-elevation-z8">
+        <app-income-per-order-graph fxFlex="100"
+                                    *ngIf="incomeLineChartData"
+                                    [chartData]="incomeLineChartData"
+        ></app-income-per-order-graph>
+      </mat-card>
+    </div>
+    <div fxFlex.gt-sm="34">
+      <mat-card class="mat-elevation-z8" fxLayout="row wrap">
+        <mat-card-header fxFlex="100">
+          <mat-card-title>
+            Pie
+          </mat-card-title>
+          <mat-icon mat-card-avatar>person</mat-icon>
+        </mat-card-header>
+        <app-income-spent-graph *ngIf="pieChartData" fxFlex="100"
+                                fxFill
+                                [chartData]="pieChartData"
+        ></app-income-spent-graph>
+
+      </mat-card>
+    </div>
+  </div>
+
+  <div id="row-3" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+    <div fxFlex.gt-sm="32">
+      <app-mini-card-data
+        [backgroundColor]="'rgba(132, 54, 194, 0.8)'"
+        [title]="'Bevétel'"
+        [subtitle]="'forintban'"
+        [icon]="'add'"
+        [data]="pieChartData.income"
+      ></app-mini-card-data>
+    </div>
+    <div fxFlex.gt-sm="32">
+      <app-mini-card-data
+        [backgroundColor]="'rgba(80, 114, 203, 0.8)'"
+        [title]="'Kiadások'"
+        [subtitle]="'forintban'"
+        [icon]="'remove'"
+        [data]="pieChartData.spent"
+      ></app-mini-card-data>
+    </div>
+    <div fxFlex.gt-sm="32">
+      <app-mini-card-data
+        [backgroundColor]="'rgba(80, 84, 203, 0.8)'"
+        [title]="'Kedvezmények'"
+        [subtitle]="'forintban'"
+        [icon]="'money_off'"
+        [data]="pieChartData.discount"
+      ></app-mini-card-data>
+    </div>
+  </div>
+
+  <div id="row-4" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+    <div fxFlex.gt-sm="34">
+      <mat-card class="mat-elevation-z8">
+        <ul>
+        <li *ngFor="let blabla of liveItem | keyvalue">
+
+          {{blabla.key}}
+          {{blabla.value}}
+        </li>
+        </ul>
+      </mat-card>
+    </div>
+    <div fxFlex.gt-sm="65">
+      <mat-card class="mat-elevation-z8">
+        <app-user-registrations-graph
+          *ngIf="chartData" fxFlex="100"
+          [chartData]="chartData"
+        >
+        </app-user-registrations-graph>
+      </mat-card>
+    </div>
+  </div>
+</div>
 </div>
 

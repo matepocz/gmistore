@@ -72,9 +72,9 @@ public class AdminController {
 
     //TODO - session_registry
     @GetMapping("/users/logged-in")
-    public ResponseEntity<Integer> loggedInUsers() {
-        List<String> usersFromSessionRegistry = adminService.getUsersFromSessionRegistry();
-        return new ResponseEntity<>(usersFromSessionRegistry.size(), HttpStatus.OK);
+    public ResponseEntity<Map<String,String>> loggedInUsers() {
+        Map<String, String> usersFromSessionRegistry = adminService.getUsersFromSessionRegistry();
+        return new ResponseEntity<>(usersFromSessionRegistry, HttpStatus.OK);
     }
 
     @GetMapping("/registered")
@@ -134,14 +134,13 @@ public class AdminController {
 
     @GetMapping("/sse")
     public SseEmitter handleSse() {
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(150000L);
         executor.execute(() -> {
             try {
-                for (int i = 0; i < 2; i++) {
-                    emitter.send(new Date());
+                while (true) {
+                    emitter.send(adminService.getUsersFromSessionRegistry());
                     Thread.sleep(4000);
                 }
-                emitter.complete();
             } catch (Exception ex) {
                 emitter.completeWithError(ex);
             }

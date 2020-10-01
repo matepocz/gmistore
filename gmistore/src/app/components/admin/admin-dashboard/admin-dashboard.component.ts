@@ -5,7 +5,6 @@ import {UserRegistrationsCounterModel} from "../../../models/user/UserRegistrati
 import {UserRegistrationStartEndDateModel} from "../../../models/user/UserRegistrationStartEndDateModel";
 import {Subscription} from "rxjs";
 import {MatCalendar} from "@angular/material/datepicker";
-import {generateRandomColor} from "../../../utils/generate-color";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
 import {LiveDataSubjectService} from "../../../service/live-data-subject.service";
 import {ProductService} from "../../../service/product-service";
@@ -22,7 +21,8 @@ import {SatDatepickerInputEvent} from "saturn-datepicker";
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
 
-  @ViewChild('lineChart') private chartRef;
+  // @ViewChild('lineChart') private chartRef;
+  @ViewChild('registered-users-graph', {static: true}) private registeredUsers;
 
   chart: Chart;
   chartData: UserRegistrationsCounterModel;
@@ -36,6 +36,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   incomeLineChartData: IncomeByDateModel;
   private dates: { end: Date; start: Date };
   dashboardData: DashBoardBasicModel;
+  liveItem: any;
+
 
   constructor(private adminService: AdminService,
               private productService: ProductService,
@@ -59,6 +61,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.getExchangeData();
+
     this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
       (data: IncomeByDateModel) => this.incomeLineChartData = data,
       error => console.log(error)
@@ -76,9 +80,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         console.log(this.chartData))
 
     this.subj.asObservable().subscribe(data => {
-      this.items.push(data);
+      console.log("---------------------");
+      this.liveItem = data;
+      console.log(this.liveItem);
       this.cdRef.detectChanges();
-      console.log(this.items);
+
     })
 
     this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
@@ -88,51 +94,51 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         console.log(error)
       },
       () => {
-      //   this.chart = new Chart(this.chartRef.nativeElement, {
-      //     type: 'bar',
-      //     data: {
-      //       labels: this.chartData.dates,
-      //       datasets: [
-      //         {
-      //           borderWidth: 1,
-      //           data: this.chartData.size,
-      //           backgroundColor: generateRandomColor(this.chartData.size),
-      //           borderColor: this.barBorderColors(),
-      //         }
-      //       ]
-      //     },
-      //     options: {
-      //       responsive: true,
-      //       maintainAspectRatio: false,
-      //       legend: {
-      //         display: false
-      //       },
-      //       scales: {
-      //         xAxes: [{
-      //           display: true,
-      //           ticks: {
-      //             autoSkip: true,
-      //             maxTicksLimit: 7
-      //           }
-      //         }],
-      //         scaleLabel: {
-      //           labelString: 'dátum',
-      //           display: true,
-      //         },
-      //         yAxes: [{
-      //           display: true,
-      //           ticks: {
-      //             beginAtZero: true,
-      //             maxTicksLimit: 10
-      //           },
-      //           scaleLabel: {
-      //             labelString: 'vásárlók száma',
-      //             display: true,
-      //           },
-      //         }],
-      //       }
-      //     }
-      //   });
+        //   this.chart = new Chart(this.chartRef.nativeElement, {
+        //     type: 'bar',
+        //     data: {
+        //       labels: this.chartData.dates,
+        //       datasets: [
+        //         {
+        //           borderWidth: 1,
+        //           data: this.chartData.size,
+        //           backgroundColor: generateRandomColor(this.chartData.size),
+        //           borderColor: this.barBorderColors(),
+        //         }
+        //       ]
+        //     },
+        //     options: {
+        //       responsive: true,
+        //       maintainAspectRatio: false,
+        //       legend: {
+        //         display: false
+        //       },
+        //       scales: {
+        //         xAxes: [{
+        //           display: true,
+        //           ticks: {
+        //             autoSkip: true,
+        //             maxTicksLimit: 7
+        //           }
+        //         }],
+        //         scaleLabel: {
+        //           labelString: 'dátum',
+        //           display: true,
+        //         },
+        //         yAxes: [{
+        //           display: true,
+        //           ticks: {
+        //             beginAtZero: true,
+        //             maxTicksLimit: 10
+        //           },
+        //           scaleLabel: {
+        //             labelString: 'vásárlók száma',
+        //             display: true,
+        //           },
+        //         }],
+        //       }
+        //     }
+        //   });
       }
     )
   }
@@ -154,21 +160,25 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  inlineRangeChange($event
-                      :
-                      any
-  ) { //30 days
-    if ($event.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.end.getTime()) {
-      this.dateInterval.start = $event.begin;
-      this.dateInterval.end = $event.end;
+  inlineRangeChange($event:any) {
+    //30 days
+    if ($event.value.begin.getTime() + (1000 * 60 * 60 * 24 * 30) > $event.value.end.getTime()) {
+      this.dateInterval.start = $event.value.begin;
+      this.dateInterval.end = $event.value.end;
 
       this.adminService.getUserRegistrationsCountByDate(this.dateInterval).subscribe(
         (data) => this.chartData = data,
         (err) => console.log(err),
         () => {
-          this.chart.data.labels = this.chartData.dates;
-          this.chart.data.datasets[0].data = this.chartData.size;
-          this.chart.update();
+          // this.chart.data.labels = this.chartData.dates;
+          // this.chart.data.datasets[0].data = this.chartData.size;
+          // this.chart.update();
+
+          // this.registeredUsers.nativeElement.onChangeGraph(this.chartData);
+
+          // this.registeredUsers.chart.chart.data.labels = this.chartData.dates;
+          // this.registeredUsers.chart.chart.data.datasets[0].data = this.chartData.size;
+          // this.registeredUsers.chart.chart.update();
         }
       )
 
@@ -186,8 +196,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  GetExchangeData() {
-    this.adminService.GetExchangeData();
+  getExchangeData() {
+    this.adminService.getExchangeData();
   }
 
   stopExchangeUpdates() {

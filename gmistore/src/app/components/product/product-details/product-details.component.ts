@@ -74,7 +74,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     ));
-    this.currentUsername = this.authService.currentUsername;
+    this.authService.usernameSubject.subscribe(
+      (username) => {
+        this.currentUsername = username;
+      }, error => console.log(error)
+    )
 
     this.subscriptions.add(this.authService.isSeller.subscribe(
       (response) => {
@@ -160,7 +164,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   isReviewedByUserAlready() {
     this.ratings.forEach((rating) => {
-      if (rating.username === this.localStorageService.retrieve('username')) {
+      if (rating.username === this.currentUsername) {
         this.ratingByCurrentUser = rating.actualRating;
         this.ratedByCurrentUser = true;
       }

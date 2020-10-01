@@ -3,18 +3,14 @@
 
     <!--    Dashboard panel-->
     <div id="row-0" fxLayout="row" fxFlex="100">
-      <mat-card class="mat-elevation-z8" fxFlex="100" fxLayoutAlign="space-around center">
-        <div fxFlex="20">
+      <mat-card class="mat-elevation-z8" fxFlex="100" fxLayoutAlign="space-between ">
+        <div fxFlex="20" fxLayoutAlign="center center">
           <mat-header>
             <mat-card-title>Dashboard</mat-card-title>
           </mat-header>
         </div>
-        <div fxFlex="20">
-          <mat-header>
-            <mat-card-title>Online felhasználók száma: {{liveDataSize}}</mat-card-title>
-          </mat-header>
-        </div>
-        <div fxFlex="20">
+        <div fxFlex="20" fxLayoutAlign="center center">
+
           <mat-form-field>
             <input matInput
                    id="registered-users-graph"
@@ -82,7 +78,13 @@
 
     <div id="row-2" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
       <div fxFlex.gt-sm="65">
-        <mat-card class="mat-elevation-z8">
+        <mat-card class="mat-elevation-z8" fxLayout="row wrap">
+          <mat-card-header fxFlex="100">
+            <mat-card-title>
+              Bevétel / nap
+            </mat-card-title>
+            <mat-icon mat-card-avatar>money</mat-icon>
+          </mat-card-header>
           <app-income-per-order-graph fxFlex="100"
                                       *ngIf="incomeLineChartData"
                                       [chartData]="incomeLineChartData"
@@ -93,9 +95,9 @@
         <mat-card class="mat-elevation-z8" fxLayout="row wrap">
           <mat-card-header fxFlex="100">
             <mat-card-title>
-              Pie
+              Költségvetés
             </mat-card-title>
-            <mat-icon mat-card-avatar>person</mat-icon>
+            <mat-icon mat-card-avatar>money</mat-icon>
           </mat-card-header>
           <span class="spacer"></span>
           <app-income-spent-graph *ngIf="pieChartData" fxFlex="100"
@@ -142,7 +144,7 @@
 
           <mat-card-header>
             <mat-card-title>Felhasználók</mat-card-title>
-            <mat-card-subtitle>online</mat-card-subtitle>
+            <mat-card-subtitle>bejelentkezve: {{liveDataSize}}</mat-card-subtitle>
           </mat-card-header>
 
           <mat-card-content>
@@ -158,9 +160,15 @@
         </mat-card>
       </div>
       <div fxFlex.gt-sm="65">
-        <mat-card class="mat-elevation-z8">
+        <mat-card class="mat-elevation-z8" fxLayout="row wrap">
+          <mat-card-header fxFlex="100">
+            <mat-card-title>
+              Regisztrációk száma / nap
+            </mat-card-title>
+            <mat-icon mat-card-avatar>account_box</mat-icon>
+          </mat-card-header>
           <app-user-registrations-graph
-            *ngIf="chartData" fxFlex="100"
+            *ngIf="chartData" fxFlex
             [chartData]="chartData"
           >
           </app-user-registrations-graph>

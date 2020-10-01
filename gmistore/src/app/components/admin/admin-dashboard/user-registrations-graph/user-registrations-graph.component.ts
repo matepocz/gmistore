@@ -45,6 +45,10 @@ export class UserRegistrationsGraphComponent implements OnInit {
         legend: {
           display: false
         },
+        title: {
+          display: true,
+          text: 'Napi regisztrálások száma'
+        },
         scales: {
           xAxes: [{
             display: true,

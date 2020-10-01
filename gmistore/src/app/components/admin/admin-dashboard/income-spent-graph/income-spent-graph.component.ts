@@ -24,11 +24,16 @@ export class IncomeSpentGraphComponent implements OnInit {
           data: [this.chartData.income, this.chartData.spent, this.chartData.discount],
           backgroundColor: ['red', 'yellow', 'green']
         }],
+        labels: [
+          'Bevétel',
+          'Kiadás',
+          'Kedvezmény'
+        ]
       },
       options: {
         responsive: true,
         legend: {
-          position: "right",
+          position: "top",
           labels: {
             usePointStyle: true
           }

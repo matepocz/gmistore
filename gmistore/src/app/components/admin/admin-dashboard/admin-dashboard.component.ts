@@ -28,17 +28,19 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   @ViewChild(IncomePerOrderGraphComponent) incomeByDays: IncomePerOrderGraphComponent;
 
   chart: Chart;
+  date: any;
+  liveDataSize: any;
   chartData: UserRegistrationsCounterModel;
-  subscription: Subscription;
   minDate: Date;
   maxDate: Date;
   dateInterval: UserRegistrationStartEndDateModel;
   items: any[] = [''];
   pieChartData: IncomeSpentModel;
   incomeLineChartData: IncomeByDateModel;
-  private dates: { end: Date; start: Date };
+  dates: { end: Date; start: Date };
   dashboardData: DashBoardBasicModel;
   liveItem: any;
+  subs: Subscription[] = [];
 
 
   constructor(private adminService: AdminService,
@@ -65,104 +67,50 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getExchangeData();
 
-    this.getOrdersByDays(this.dates);
-
-    this.subscription = this.adminService.getIncomePerOrder(this.dates).subscribe(
+    this.subs.push(this.adminService.getIncomePerOrder(this.dates).subscribe(
       (data: IncomeByDateModel) => this.incomeLineChartData = data,
       error => console.log(error)
-    );
+    ));
 
-    this.subscription = this.adminService.fetchDashboardData().subscribe(
+    this.subs.push(this.adminService.getIncomePerOrder(this.dates).subscribe(
+      (data: IncomeByDateModel) => this.incomeLineChartData = data,
+      error => console.log(error)
+    ));
+
+    this.subs.push(this.adminService.fetchDashboardData().subscribe(
       (data: DashBoardBasicModel) => this.dashboardData = data,
       error => console.log(error)
-    );
+    ));
 
-    this.productService.getIncomeAndSpent().subscribe(
+    this.subs.push(this.productService.getIncomeAndSpent().subscribe(
       (data) => this.pieChartData = data,
       (err) => console.log(err),
-      () =>
-        console.log(this.chartData))
+      () => console.log(this.chartData)
+    ));
 
-    this.subj.asObservable().subscribe(data => {
-      console.log("---------------------");
+    this.subs.push(this.subj.asObservable().subscribe(data => {
       this.liveItem = data;
       this.liveDataSize = Object.keys(this.liveItem).length;
       this.cdRef.detectChanges();
+    }));
 
-    })
-
-    this.subscription = this.adminService.getUserRegistrationsCount().subscribe(
+    this.subs.push(this.adminService.getUserRegistrationsCount().subscribe(
       (data: UserRegistrationsCounterModel) => {
         this.chartData = data;
-      }, error => {
-        console.log(error)
-      },
-      () => {
-        //   this.chart = new Chart(this.chartRef.nativeElement, {
-        //     type: 'bar',
-        //     data: {
-        //       labels: this.chartData.dates,
-        //       datasets: [
-        //         {
-        //           borderWidth: 1,
-        //           data: this.chartData.size,
-        //           backgroundColor: generateRandomColor(this.chartData.size),
-        //           borderColor: this.barBorderColors(),
-        //         }
-        //       ]
-        //     },
-        //     options: {
-        //       responsive: true,
-        //       maintainAspectRatio: false,
-        //       legend: {
-        //         display: false
-        //       },
-        //       scales: {
-        //         xAxes: [{
-        //           display: true,
-        //           ticks: {
-        //             autoSkip: true,
-        //             maxTicksLimit: 7
-        //           }
-        //         }],
-        //         scaleLabel: {
-        //           labelString: 'dátum',
-        //           display: true,
-        //         },
-        //         yAxes: [{
-        //           display: true,
-        //           ticks: {
-        //             beginAtZero: true,
-        //             maxTicksLimit: 10
-        //           },
-        //           scaleLabel: {
-        //             labelString: 'vásárlók száma',
-        //             display: true,
-        //           },
-        //         }],
-        //       }
-        //     }
-        //   });
-      }
-    )
+      }, error => console.log(error)
+    ))
   }
 
-  date: any;
-  liveDataSize:any;
-
   getOrdersByDays(dates) {
-    this.subscription = this.adminService.getIncomePerOrder(dates).subscribe(
+    this.subs.push(this.adminService.getIncomePerOrder(dates).subscribe(
       (data: IncomeByDateModel) => this.incomeLineChartData = data,
       error => console.log(error),
       () => this.incomeByDays.onChangeGraph(this.incomeLineChartData)
-    )
+    ));
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-      this.stopExchangeUpdates();
-    }
+    this.subs.map(sub => sub.unsubscribe());
   }
 
   inlineRangeChange($event: any) {
@@ -171,13 +119,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       this.dateInterval.start = $event.value.begin;
       this.dateInterval.end = $event.value.end;
 
-      this.adminService.getUserRegistrationsCountByDate(this.dateInterval).subscribe(
+      this.subs.push(this.adminService.getUserRegistrationsCountByDate(this.dateInterval).subscribe(
         (data) => this.chartData = data,
         (err) => console.log(err),
         () => {
           this.registeredUsers.onChangeGraph(this.chartData)
         }
-      )
+      ));
 
       this.getOrdersByDays(this.dateInterval);
 

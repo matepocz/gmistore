@@ -13,10 +13,10 @@ import {Router} from "@angular/router";
 import {PaymentMethodDetailsModel} from "../../models/payment-method-details.model";
 import {errorHandler} from "../../utils/error-handler";
 import {AddressModel} from "../../models/address-model";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../loading-spinner/loading-spinner.component";
 import {SpinnerService} from "../../service/spinner-service.service";
+import {PopupSnackbar} from "../../utils/popup-snackbar";
 
 @Component({
   selector: 'app-checkout',
@@ -24,9 +24,6 @@ import {SpinnerService} from "../../service/spinner-service.service";
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
-
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
   authenticatedUser: boolean;
@@ -41,22 +38,19 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   shippingAddressForm: FormGroup;
   billingAddressForm: FormGroup;
 
-  customerDetailsSub: Subscription;
-  cartSub: Subscription;
-  createOrderSub: Subscription;
-  paymentMethodsSub: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder, private cartService: CartService,
               private authService: AuthService, private orderService: OrderService,
               private titleService: Title, private sideNav: SideNavComponent, private router: Router,
-              private snackBar: MatSnackBar, private spinnerService: SpinnerService) {
+              private snackBar: PopupSnackbar, private spinnerService: SpinnerService) {
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Kosár véglegesítése - GMI Store")
     this.authenticatedUser = this.authService.isAuthenticated();
 
-    this.cartSub = this.cartService.getCart().subscribe(
+    this.subscriptions.add(this.cartService.getCart().subscribe(
       (response) => {
         this.cartDetails = response;
         if (this.cartDetails.cartItems.length <= 0) {
@@ -70,7 +64,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       () => {
         this.spinnerService.stop(this.spinner);
       }
-    );
+    ));
 
     this.detailsForm = this.formBuilder.group({
       firstName: [null, Validators.compose(
@@ -78,13 +72,19 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       lastName: [null, Validators.compose(
         [Validators.required, Validators.minLength(3), Validators.maxLength(100)])],
       email: [null, Validators.compose([Validators.required, Validators.email])],
-      phoneNumber: [null, Validators.required]
+      phoneNumber: [null, Validators.compose(
+        [
+          Validators.required,
+          Validators.pattern('^\\+[0-9]{11}$'),
+          Validators.minLength(10),
+          Validators.maxLength(12)
+        ])]
     });
 
     this.shippingAddressForm = this.makeNewAddressForm();
     this.billingAddressForm = this.makeNewAddressForm();
 
-    this.paymentMethodsSub = this.orderService.getPaymentMethods().subscribe(
+    this.subscriptions.add(this.orderService.getPaymentMethods().subscribe(
       (response) => {
         this.paymentMethods = response;
         if (this.paymentMethods.length > 0) {
@@ -93,10 +93,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }, (error) => {
         console.log(error);
       }
-    )
+    ));
 
     if (this.authenticatedUser) {
-      this.customerDetailsSub = this.orderService.getCustomerDetails().subscribe(
+      this.subscriptions.add(this.orderService.getCustomerDetails().subscribe(
         (response) => {
           console.log(response);
           this.customerDetails = response;
@@ -108,7 +108,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         },
         () => {
         }
-      )
+      ));
     }
   }
 
@@ -124,9 +124,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       floor: [null],
       door: [null],
       country: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])],
+        Validators.compose([Validators.required, Validators.minLength(4)])],
       postcode: [null,
-        Validators.compose([Validators.required, Validators.minLength(3)])]
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(4),
+          Validators.pattern('^[0-9]{4}$')
+        ])]
     });
   }
 
@@ -176,38 +180,24 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.orderRequest.billingAddress = this.billingAddressForm.value;
     this.orderRequest.paymentMethod = this.chosenPaymentMethod.paymentMethod;
 
-    this.createOrderSub = this.orderService.createOrder(this.orderRequest).subscribe(
+    this.subscriptions.add(this.orderService.createOrder(this.orderRequest).subscribe(
       (response) => {
-        console.log(response);
-        this.openSnackBar("Sikeres vásárlás!");
+        this.snackBar.popUp("Sikeres vásárlás!");
       }, (error) => {
         console.log(error);
         errorHandler(error, this.detailsForm);
+        errorHandler(error, this.shippingAddressForm);
+        errorHandler(error, this.billingAddressForm);
         this.spinnerService.stop(this.spinner);
       },
       () => {
         this.sideNav.updateItemsInCart(0);
         this.spinnerService.stop(this.spinner);
       }
-    )
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, 'OK', {
-      duration: 2000,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-    });
+    ));
   }
 
   ngOnDestroy() {
-    this.cartSub.unsubscribe();
-    this.paymentMethodsSub.unsubscribe();
-    if (this.customerDetailsSub) {
-      this.customerDetailsSub.unsubscribe();
-    }
-    if (this.createOrderSub) {
-      this.createOrderSub.unsubscribe();
-    }
+    this.subscriptions.unsubscribe();
   }
 }

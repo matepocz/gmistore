@@ -60,6 +60,8 @@ public class MessageService {
         message.setReceiver(receiver);
         message.setSubject(newMessageRequest.getSubject());
         message.setContent(newMessageRequest.getContent());
+        message.setDisplayForSender(true);
+        message.setDisplayForReceiver(true);
         message.setTimestamp(LocalDateTime.now());
         return messageRepository.save(message);
     }

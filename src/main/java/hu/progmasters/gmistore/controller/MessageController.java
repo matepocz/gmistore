@@ -44,4 +44,10 @@ public class MessageController {
         System.out.println(countOfUnreadMails);
         return new ResponseEntity<>(countOfUnreadMails, HttpStatus.OK);
     }
+
+    @PutMapping("/mark-read/{id}")
+    public ResponseEntity<Boolean> markMessageRead(@PathVariable("id") Long id) {
+        boolean result = messageService.markMessageRead(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

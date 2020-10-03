@@ -37,4 +37,11 @@ public class MessageController {
         boolean result = messageService.deleteMessageForCurrentUser(id, principal);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/unread-mail-count")
+    public ResponseEntity<Integer> getCountOfUnreadMailsForCurrentUser(Principal principal) {
+        int countOfUnreadMails = messageService.getCountOfUnreadMailsForCurrentUser(principal);
+        System.out.println(countOfUnreadMails);
+        return new ResponseEntity<>(countOfUnreadMails, HttpStatus.OK);
+    }
 }

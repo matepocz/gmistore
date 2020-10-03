@@ -31,4 +31,10 @@ public class MessageController {
         MessagesResponse messages = messageService.getMessagesForCurrentUser(principal);
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteMessage(@PathVariable("id") Long id, Principal principal) {
+        boolean result = messageService.deleteMessageForCurrentUser(id, principal);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

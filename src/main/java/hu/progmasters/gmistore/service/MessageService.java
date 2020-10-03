@@ -63,6 +63,7 @@ public class MessageService {
         message.setContent(newMessageRequest.getContent());
         message.setDisplayForSender(true);
         message.setDisplayForReceiver(true);
+        message.setRead(false);
         message.setTimestamp(LocalDateTime.now());
         return messageRepository.save(message);
     }
@@ -138,5 +139,15 @@ public class MessageService {
             LOGGER.debug("Message deleted from the database, id: {}", message.getId());
             messageRepository.deleteById(message.getId());
         }
+    }
+
+    public int getCountOfUnreadMailsForCurrentUser(Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        return userByUsername.map(user ->
+                (int) user.getIncomingMessages()
+                        .stream()
+                        .filter(incomingMessage -> !incomingMessage.isRead())
+                        .count())
+                .orElse(0);
     }
 }

@@ -34,8 +34,9 @@ public class MessageService {
 
     /**
      * Attempts to create a new message
+     *
      * @param newMessageRequest NewMessageRequest DTO that holds the incoming data
-     * @param principal The currently logged in user
+     * @param principal         The currently logged in user
      * @return A boolean, true if successful, false otherwise
      */
     public boolean createMessage(NewMessageRequest newMessageRequest, Principal principal) {
@@ -98,5 +99,44 @@ public class MessageService {
                 .filter(Message::isDisplayForReceiver)
                 .map(MessageDetails::new)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Set the given message's display flag to false for the currently logged in user,
+     * in case if it has been deleted for both the sender and the receiver,
+     * the message will be removed from the database.
+     *
+     * @param id        The given Message object's id
+     * @param principal The currently logged in user's details
+     * @return A boolean, true if successful, false otherwise
+     */
+    public boolean deleteMessageForCurrentUser(Long id, Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        Optional<Message> messageById = messageRepository.findById(id);
+        if (userByUsername.isPresent() && messageById.isPresent()) {
+            User user = userByUsername.get();
+            Message message = messageById.get();
+            if (message.getSender().equals(user)) {
+                message.setDisplayForSender(false);
+                user.getOutgoingMessages()
+                        .removeIf(currentMessage -> currentMessage.getId().equals(id));
+            }
+            if (message.getReceiver().equals(user)) {
+                message.setDisplayForReceiver(false);
+                user.getIncomingMessages()
+                        .removeIf(currentMessage -> currentMessage.getId().equals(id));
+            }
+            isMessageDeletedForEveryone(message);
+            return true;
+        }
+        LOGGER.debug("Message delete failed! Message id: {}", id);
+        return false;
+    }
+
+    private void isMessageDeletedForEveryone(Message message) {
+        if (!message.isDisplayForReceiver() && !message.isDisplayForSender()) {
+            LOGGER.debug("Message deleted from the database, id: {}", message.getId());
+            messageRepository.deleteById(message.getId());
+        }
     }
 }

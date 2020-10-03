@@ -141,6 +141,12 @@ public class MessageService {
         }
     }
 
+    /**
+     * Get the count of unread incoming messages for the currently logged in user
+     *
+     * @param principal The currently logged in user's details
+     * @return The count of unread messages (int)
+     */
     public int getCountOfUnreadMailsForCurrentUser(Principal principal) {
         Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
         return userByUsername.map(user ->
@@ -149,5 +155,17 @@ public class MessageService {
                         .filter(incomingMessage -> !incomingMessage.isRead())
                         .count())
                 .orElse(0);
+    }
+
+    /**
+     * Mark the given message status to read by the user
+     *
+     * @param id The given message's unique ID
+     * @return A boolean
+     */
+    public boolean markMessageRead(Long id) {
+        Optional<Message> messageById = messageRepository.findById(id);
+        messageById.ifPresent(message -> message.setRead(true));
+        return true;
     }
 }

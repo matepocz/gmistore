@@ -10,6 +10,7 @@ import {AdminService} from "../../service/admin.service";
 import {UserService} from "../../service/user.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProductService} from "../../service/product-service";
+import {MessageService} from "../../service/message.service";
 
 @Component({
   selector: 'app-side-nav',
@@ -32,6 +33,7 @@ export class SideNavComponent implements OnInit {
 
   itemsInCart: number = 0;
   favoriteItems: number = 0;
+  countOfUnreadMails: number = 0;
 
   authenticatedUser: boolean;
   currentUsername: string;
@@ -43,8 +45,7 @@ export class SideNavComponent implements OnInit {
   autoCompleteOptions: Observable<string[]>;
 
   subscriptions: Subscription = new Subscription();
-
-  cartSubscription: Subscription;
+  unreadMessagesPolling: any;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -55,7 +56,8 @@ export class SideNavComponent implements OnInit {
   constructor(private authService: AuthService, private breakpointObserver: BreakpointObserver,
               changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private cartService: CartService,
               private router: Router, private adminService: AdminService, private cdRef: ChangeDetectorRef,
-              private userService: UserService, private productService: ProductService) {
+              private userService: UserService, private productService: ProductService,
+              private messageService: MessageService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -111,6 +113,23 @@ export class SideNavComponent implements OnInit {
     ));
     this.updateItemsInCart(2);
     this.updateFavoriteItems(2);
+    this.updateCountOfUnreadMails(2);
+
+    this.unreadMessagesPolling = setInterval(() => {
+      this.updateCountOfUnreadMails(0);
+    }, 30000);
+  }
+
+  updateCountOfUnreadMails(timeout: number) {
+    setTimeout(() => {
+      this.subscriptions.add(
+        this.messageService.getCountOfUnreadMails().subscribe(
+          (response) => {
+            this.countOfUnreadMails = response;
+          }, error => console.log(error)
+        )
+      );
+    }, timeout * 1000)
   }
 
   fetchSearchOptions(): Observable<string[]> {
@@ -211,5 +230,6 @@ export class SideNavComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    clearInterval(this.unreadMessagesPolling);
   }
 }

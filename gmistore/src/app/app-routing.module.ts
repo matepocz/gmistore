@@ -34,6 +34,7 @@ import {AdminEmailManagement} from "./components/admin/admin-email-management/ad
 import {SellerNavComponent} from "./components/seller/seller-nav/seller-nav.component";
 import {SellerDashboardComponent} from "./components/seller/seller-dashboard/seller-dashboard.component";
 import {SellerProductsComponent} from "./components/seller/seller-products/seller-products.component";
+import {MessagesComponent} from "./components/messages/messages.component";
 
 
 const routes: Routes = [
@@ -113,8 +114,8 @@ const routes: Routes = [
   },
 
   {
-    path: 'seller',component:SellerNavComponent,
-    children:[
+    path: 'seller', component: SellerNavComponent,
+    children: [
       {
         path: '',
         redirectTo: 'dashboard',
@@ -123,6 +124,12 @@ const routes: Routes = [
       {path: 'dashboard', component: SellerDashboardComponent},
       {path: 'product', component: SellerProductsComponent},
     ],
+  },
+  {
+    path: 'messages',
+    component: MessagesComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_ADMIN, RoleModel.ROLE_SELLER, RoleModel.ROLE_USER]}
   },
   {path: 'not-found', component: NotFoundComponent,},
   {path: 'privacy', component: PrivacyComponent,},

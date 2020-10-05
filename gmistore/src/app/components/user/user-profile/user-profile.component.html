@@ -1,4 +1,4 @@
-<form [formGroup]="userForm">
+<form [formGroup]="userForm" *ngIf="!showOrderDetails">
   <mat-progress-bar mode="indeterminate" *ngIf="!user"></mat-progress-bar>
   <div *ngIf="user">
     <mat-toolbar [ngStyle]="{'height' : 'auto'}">
@@ -43,9 +43,7 @@
               <mat-accordion>
                 <mat-expansion-panel *ngFor="let order of user.orderList">
                   <mat-expansion-panel-header class="dropdown-button">
-                    <mat-panel-title class="cart-header-text">
-                      {{order.generatedUniqueId}}
-                    </mat-panel-title>
+                    <mat-panel-title class="cart-header-text">{{order.generatedUniqueId}}</mat-panel-title>
                     <mat-panel-description>
                       {{order.orderedAt | date}}
                     </mat-panel-description>
@@ -56,6 +54,9 @@
                       [orderDetailsInput]="order"
                     ></app-orders-product-list>
                   </div>
+                  <mat-action-row>
+                    <button (click)="editOrder(order.generatedUniqueId)" mat-button>Részletes adatok</button>
+                  </mat-action-row>
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
@@ -67,7 +68,9 @@
     </div>
   </div>
 </form>
-
+<app-orders-form *ngIf="showOrderDetails">
+  <button (click)="editOrder('')"></button>
+</app-orders-form>
 <!--<form [formGroup]="userForm">-->
 <!--  <div fxLayoutAlign="center" [style.margin]="'2%'">-->
 <!--    <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">-->

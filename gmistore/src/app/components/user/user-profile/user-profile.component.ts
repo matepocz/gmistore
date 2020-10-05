@@ -25,6 +25,7 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
   subs = new SubSink();
   orderedProducts: Array<ProductOrderedListModel>;
   show: boolean;
+  showOrderDetails: boolean = false;
 
   constructor(private sharingService: SharingService,
               private fb: FormBuilder, private route: ActivatedRoute,
@@ -107,7 +108,12 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
 
   openClose() {
     this.show = !this.show;
-    this.prop.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    this.prop.nativeElement.scrollIntoView({behavior: "smooth", block: "start"});
+  }
+
+  editOrder(id: string) {
+    this.showOrderDetails = !this.showOrderDetails;
+    this.router.navigate(['user/my-account/order/' + id])
   }
 }
 

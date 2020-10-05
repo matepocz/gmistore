@@ -14,6 +14,10 @@ import {OrderStatusOptionsModel} from "../../../../models/order/orderStatusOptio
 import {parseDate} from "../../../../utils/dateParser";
 import {generateRandomColor} from "../../../../utils/generate-color";
 import {PopupSnackbar} from "../../../../utils/popup-snackbar";
+import {AuthService} from "../../../../service/auth-service";
+import {SpinnerService} from "../../../../service/spinner-service.service";
+import {LoadingSpinnerComponent} from "../../../loading-spinner/loading-spinner.component";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-orders-product-details',
@@ -42,17 +46,30 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   statusForm: FormGroup;
 
   dateParse = (date: Date) => (parseDate(new Date(date)));
+  isAdmin: boolean = false;
+  private spinner: MatDialogRef<LoadingSpinnerComponent>;
 
   constructor(private titleService: Title,
               private popupSnackbar: PopupSnackbar,
+              private authService: AuthService,
               private adminService: AdminService,
               private orderService: OrderService,
               private activatedRoute: ActivatedRoute,
+              private spinnerService: SpinnerService,
               private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
     this.titleService.setTitle("Megrendelés - GMI Store");
+
+    this.subs.add(this.authService.isAdmin.subscribe(
+      (response) => {
+        this.isAdmin = response;
+      }, (error) => {
+        this.spinnerService.stop(this.spinner);
+        console.log(error);
+      }
+    ));
 
     this.orderShippingAddressForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -115,12 +132,14 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSubmitAddress(id: string) {
+    if(this.isAdmin) {
     const data = this.orderShippingAddressForm.value;
     if (data.shippingAddress) {
       console.log(data.shippingAddress)
       this.updateDeliveryAddress(id, data.shippingAddress)
     } else if (data.billingAddress) {
       this.updateInvoiceAddress(id, data.billingAddress)
+    }
     }
   }
 
@@ -141,10 +160,10 @@ export class OrdersProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   changeStatus($event: MatSelectChange) {
-    if ($event.value) {
+    if ($event.value && this.isAdmin) {
       this.subs.add(this.orderService.updateOrderStatus(this.id, $event.value).subscribe(
         () => console.log("message has been sent"),
-        error => this.popupSnackbar.popUp("Hiba tőrtént")
+        error => this.popupSnackbar.popUp("Hiba tőrtént " + error)
         ,
         // () => this.fetchOrderDetailsData(this.id)
         () => {

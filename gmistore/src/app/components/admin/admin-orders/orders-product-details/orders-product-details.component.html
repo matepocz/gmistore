@@ -44,7 +44,7 @@
             [userShipping]="orderDetailsInput.deliveryAddress"
           ></app-shipping-address>
         </div>
-        <mat-action-row>
+        <mat-action-row *ngIf="isAdmin">
           <button (click)="onSubmitAddress(orderDetailsInput.generatedUniqueId)" mat-button>Mentés</button>
         </mat-action-row>
       </mat-expansion-panel>
@@ -63,7 +63,7 @@
             [userBilling]="orderDetailsInput.invoiceAddress"
           ></app-billing-address>
         </div>
-        <mat-action-row>
+        <mat-action-row *ngIf="isAdmin">
           <button (click)="onSubmitAddress(orderDetailsInput.generatedUniqueId)" mat-button>Mentés</button>
         </mat-action-row>
       </mat-expansion-panel>
@@ -103,7 +103,7 @@
   <!--  </mat-radio-button>-->
   <!--</mat-radio-group>-->
 
-  <form [formGroup]="statusForm" [ngStyle]="{'margin':'15px'}">
+  <form [formGroup]="statusForm" [ngStyle]="{'margin':'15px'}" *ngIf="isAdmin">
     <div >
       <mat-form-field appearance="outline" fxFlex>
 

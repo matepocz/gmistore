@@ -2,10 +2,10 @@ import {ProductModel} from "../product-model";
 
 export interface OrderModel {
   id: number;
-  generatedUniqueId: number;
+  generatedUniqueId: string;
   status: string;
   quantity: string;
-  date: any;
+  orderedAt: Date;
   deliveryDate: any;
   productList: Array<ProductModel>;
   user: object;

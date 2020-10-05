@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.response;
+package hu.progmasters.gmistore.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -49,14 +49,17 @@
       <div fxFlex="33" fxLayout="column" fxLayout.lt-md="column" fxLayoutAlign.lt-md="space-between center"
            fxLayoutAlign="start center">
         <h1 mat-display-3 class="footer-form-header" fxFlexAlign="start" fxFlexAlign.lt-md="center">Üzenj nekünk</h1>
-        <form [formGroup]="contactForm" (ngSubmit)="submitContactForm()" fxFlex="100" class="mat-card" fxLayout="column"
+        <form id="email-form" [formGroup]="contactForm" (ngSubmit)="submitContactForm()" fxFlex="100" class="mat-card" fxLayout="column"
               fxLayout.lt-md="column" fxFlexAlign="stretch"
               fxLayoutAlign.lt-md="space-between center" fxLayoutAlign="space-evenly center">
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Email cím:</mat-label>
-            <input matInput fxFlexAlign="start" formControlName="email" name="email" required>
-            <mat-error *ngIf="contactForm.get('email').invalid &&
+            <input id="email-input-field" matInput fxFlexAlign="start" formControlName="email" name="email" required>
+            <mat-error
+              *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}
+            </mat-error>
+            <mat-error id="wrong-email-input" *ngIf="contactForm.get('email').invalid &&
             !contactForm.get('email').hasError('required') &&
             !contactForm.get('email').errors?.serverError">Érvénytelen
               email cím!
@@ -65,19 +68,19 @@
             !contactForm.get('email').errors?.serverError">Az
               email mező kötelező!
             </mat-error>
-            <mat-error
-              *ngIf="contactForm.get('email').errors?.serverError">{{contactForm.get('email').errors?.serverError}}
-            </mat-error>
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
             <mat-label>Tárgy:</mat-label>
-            <input matInput fxFlexAlign="start" formControlName="subject" name="subject" required>
-
-            <mat-error *ngIf="contactForm.get('subject').invalid && contactForm.get('subject').value?.length < 30 && !contactForm.get('subject').errors?.serverError">Az tárgy mező kötelező(min. 3 karakter)!</mat-error>
-            <mat-error *ngIf="contactForm.get('subject').invalid && contactForm.get('subject').value?.length > 30 && !contactForm.get('subject').errors?.serverError">Max 30 karakter!</mat-error>
-            <mat-error *ngIf="contactForm.get('subject').errors?.serverError">{{contactForm.get('subject').errors?.serverError}}</mat-error>
-
+            <input id="subject-input-field" matInput fxFlexAlign="start" formControlName="subject" name="subject" required>
+            <mat-error id="subject-server-error" *ngIf="contactForm.get('subject').errors?.serverError">
+              {{contactForm.get('subject').errors?.serverError}}</mat-error>
+            <mat-error id="too-short-or-empty-subject-error" *ngIf="contactForm.get('subject').invalid &&
+            contactForm.get('subject').value?.length < 30 &&
+            !contactForm.get('subject').errors?.serverError">Az tárgy mező kötelező(min. 3 karakter)!</mat-error>
+            <mat-error id="too-long-subject-error" *ngIf="contactForm.get('subject').invalid &&
+            contactForm.get('subject').value?.length > 30 &&
+            !contactForm.get('subject').errors?.serverError">Max 30 karakter!</mat-error>
           </mat-form-field>
 
           <mat-form-field class="footer-form" [style.fontSize]="'0.875rem'" appearance="outline">
@@ -90,24 +93,30 @@
                       formControlName="message"
                       name="message"
                       type="text"
+                      id="message-input-field"
                       required
 
             ></textarea>
             <mat-hint align="end">{{ contactForm.get('message').value?.length }} / 1000</mat-hint>
 
-            <mat-error *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length < 1000 && !contactForm.get('message').errors?.serverError">
+            <mat-error id="message-server-error"
+                       *ngIf="contactForm.get('message').errors?.serverError">
+              {{contactForm.get('message').errors?.serverError}}
+            </mat-error>
+
+            <mat-error id="too-short-message" *ngIf="contactForm.get('message').invalid &&
+            contactForm.get('message').value?.length < 1000 &&
+            !contactForm.get('message').errors?.serverError">
               A mező kitöltése kötelező (min. 3 karakter)!
             </mat-error>
 
-            <mat-error *ngIf="contactForm.get('message').invalid && contactForm.get('message').value?.length > 1000 && !contactForm.get('message').errors?.serverError">
+            <mat-error id="too-long-message" *ngIf="contactForm.get('message').invalid &&
+            contactForm.get('message').value?.length > 1000 &&
+            !contactForm.get('message').errors?.serverError">
               Max 1000 karakter!
             </mat-error>
-
-            <mat-error
-              *ngIf="contactForm.get('message').errors?.serverError">{{contactForm.get('message').errors?.serverError}}
-            </mat-error>
           </mat-form-field>
-          <button class="footer-form-btn" mat-raised-button type="submit" color="primary"
+          <button id="email-send-btn" class="footer-form-btn" mat-raised-button type="submit" color="primary"
                   [disabled]="contactForm.invalid">Üzenet küldése
           </button>
         </form>

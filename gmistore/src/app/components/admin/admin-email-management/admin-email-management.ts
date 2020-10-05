@@ -84,7 +84,7 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
     this.emailsSub.add(
       this.emailService.getAllActiveIncomeEmails(this.pageSize,this.pageIndex).subscribe(
         response=> {
-          console.log(response)
+          // console.log(response)
           this.emailTableData = response.emails;
           this.dataSource = new MatTableDataSource<EmailTableModel>(this.emailTableData);
           this.numberOfEmails = response.totalElements;
@@ -111,13 +111,13 @@ export class AdminEmailManagement implements OnInit, OnDestroy {
     this.emailsSub.add(
       this.emailService.sendReplyEmailToUser(this.replyEmail).subscribe((response: boolean) => {
           if (response) {
+            this.messageForm.resetForm();
             this.snackbar.popUp('Az üzenet sikeresen elküldve');
           }
         }, error => {
           errorHandler(error, this.contactForm);
           console.warn(error);
         }, () => {
-          this.messageForm.resetForm();
         }
       )
     );

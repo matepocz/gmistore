@@ -75,7 +75,7 @@ export class UserProfileComponent implements OnInit, OnDestroy, AfterViewChecked
       data => {
         console.log(data);
         this.user = data;
-        // this.sharingService.nextMessage(data);
+        console.log(data);
       },
       error => console.log(error),
       () => this.loaded = true

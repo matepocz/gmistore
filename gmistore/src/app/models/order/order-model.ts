@@ -5,7 +5,7 @@ export interface OrderModel {
   generatedUniqueId: number;
   status: string;
   quantity: string;
-  date: any;
+  orderedAt: Date;
   deliveryDate: any;
   productList: Array<ProductModel>;
   user: object;

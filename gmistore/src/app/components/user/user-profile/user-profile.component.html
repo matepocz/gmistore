@@ -11,8 +11,8 @@
       </mat-card-header>
 
     </mat-toolbar>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <mat-card class="basic-container">
+    <div fxLayout="row" fxLayoutAlign="center" >
+      <mat-card class="containerX" fxFlex.gt-md="55" fxFlex.gt-sm="75" fxFlex.lt-md="98">
         <mat-tab-group>
           <mat-tab label="Felhasználó adatai">
             <app-profile *ngIf="loaded"
@@ -49,7 +49,7 @@
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <div>
-                    <app-orders-product-list
+                    <app-orders-product-list fxHide.lt-md
                       [id]="order.generatedUniqueId"
                       [orderDetailsInput]="order"
                     ></app-orders-product-list>

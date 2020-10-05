@@ -1,29 +1,29 @@
 <mat-progress-bar mode="indeterminate" *ngIf="!orderDetailsData"></mat-progress-bar>
 <div *ngIf="orderDetailsData">
-<mat-toolbar [ngStyle]="{'height' : 'auto'}">
+  <mat-toolbar [ngStyle]="{'height' : 'auto'}">
 
-  <mat-card-header [ngStyle]="{'margin': '15px'}">
-    <mat-card-title>Megrendelés: {{id}}</mat-card-title>
-    <mat-card-subtitle>
-      {{orderDetailsData.user.lastName}} {{orderDetailsData.user.firstName}} rendelési adatai
-    </mat-card-subtitle>
-  </mat-card-header>
+    <mat-card-header [ngStyle]="{'margin': '15px'}">
+      <mat-card-title>Megrendelés: {{id}}</mat-card-title>
+      <mat-card-subtitle>
+        {{orderDetailsData.user.lastName}} {{orderDetailsData.user.firstName}} rendelési adatai
+      </mat-card-subtitle>
+    </mat-card-header>
 
-</mat-toolbar>
-<div fxLayout="row" fxLayoutAlign="center">
-  <mat-card class="basic-container">
-    <mat-tab-group>
-      <mat-tab label="Rendelési adatok">
-        <app-orders-product-details *ngIf="orderDetailsData"
-                                    [id]=id
-                                    [orderDetailsInput]="orderDetailsData"></app-orders-product-details>
-      </mat-tab>
-      <mat-tab label="Termékek">
-        <app-orders-product-list *ngIf="orderDetailsData"
-                                 [id]=id
-                                 [orderDetailsInput]="orderDetailsData"></app-orders-product-list>
-      </mat-tab>
-    </mat-tab-group>
-  </mat-card>
-</div>
+  </mat-toolbar>
+  <div fxLayout="row" fxLayoutAlign="center">
+    <mat-card class="containerX" fxFlex.gt-md="65" fxFlex.gt-sm="85" fxFlex.lt-md="100">
+      <mat-tab-group>
+        <mat-tab label="Rendelési adatok">
+          <app-orders-product-details *ngIf="orderDetailsData"
+                                      [id]=id
+                                      [orderDetailsInput]="orderDetailsData"></app-orders-product-details>
+        </mat-tab>
+        <mat-tab label="Termékek">
+          <app-orders-product-list *ngIf="orderDetailsData"
+                                   [id]=id
+                                   [orderDetailsInput]="orderDetailsData"></app-orders-product-list>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
 </div>

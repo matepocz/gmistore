@@ -17,7 +17,6 @@ import java.util.Objects;
 public class OrderListDto {
     private String generatedUniqueId;
     private String username;
-    @JsonFormat(pattern = "YYYY.MMM dd - HH:mm")
     private LocalDateTime date;
     private String status;
     private Double totalPrice;

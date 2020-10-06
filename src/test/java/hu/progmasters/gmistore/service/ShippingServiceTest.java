@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ShippingServiceTest {
@@ -62,6 +62,7 @@ public class ShippingServiceTest {
         List<ShippingMethodItem> shippingData = shippingService.getShippingData();
 
         assertEquals(2, shippingData.size());
+        verify(shippingMethodRepositoryMock, times(1)).findAll();
     }
 
     @Test
@@ -71,6 +72,7 @@ public class ShippingServiceTest {
         List<ShippingMethodItem> shippingData = shippingService.getShippingData();
 
         assertEquals(0, shippingData.size());
+        verify(shippingMethodRepositoryMock, times(1)).findAll();
     }
 
     @Test
@@ -79,6 +81,7 @@ public class ShippingServiceTest {
 
         ShippingMethod initialShippingMethod = shippingService.getInitialShippingMethod();
         assertNull(initialShippingMethod);
+        verify(shippingMethodRepositoryMock, times(1)).findAll();
     }
 
     @Test
@@ -88,6 +91,7 @@ public class ShippingServiceTest {
 
         ShippingMethod initialShippingMethod = shippingService.getInitialShippingMethod();
         assertNotNull(initialShippingMethod);
+        verify(shippingMethodRepositoryMock, times(1)).findAll();
     }
 
     @Test
@@ -101,6 +105,7 @@ public class ShippingServiceTest {
         assertNotNull(foundShippingMethod);
         assertEquals("Test 1", foundShippingMethod.getMethod());
         assertEquals(2, foundShippingMethod.getDays());
+        verify(shippingMethodRepositoryMock, times(1)).findByMethod("Test 1");
     }
 
     @Test
@@ -110,6 +115,7 @@ public class ShippingServiceTest {
         ShippingMethod shippingMethod = shippingService.fetchShippingMethod("Test 1");
 
         assertNull(shippingMethod);
+        verify(shippingMethodRepositoryMock, times(1)).findByMethod("Test 1");
     }
 
     @Test

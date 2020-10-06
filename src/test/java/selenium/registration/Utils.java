@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 public class Utils {
     final static String BASE_URL = "http://localhost:4200/register";

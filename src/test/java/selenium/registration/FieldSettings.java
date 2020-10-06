@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 public interface FieldSettings {
     public void firstNameInputField(String firstName);

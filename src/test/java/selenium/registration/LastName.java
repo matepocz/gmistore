@@ -1,25 +1,25 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 import org.openqa.selenium.WebDriver;
 
-public class Email extends PageObject implements FieldSettings, ErrorMessagesSettings {
-    public Email(WebDriver driver) {
+public class LastName extends PageObject implements FieldSettings, ErrorMessagesSettings {
+    public LastName(WebDriver driver) {
         super(driver);
     }
 
     @Override
     public String frontendValidationError() {
-        return getEmailFrontendValidationError().getText();
+        return getLastNameFrontendValidationError().getText();
     }
 
     @Override
     public String serverError() {
-        return getEmailServerError().getText();
+        return getLastNameServerError().getText();
     }
 
     @Override
     public String usingError() {
-        return getEmailUsingError().getText();
+        return "";
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Email extends PageObject implements FieldSettings, ErrorMessagesSet
 
     @Override
     public void lastNameInputField(String lastName) {
-       getLastNameInputField().sendKeys(lastName);
+        getLastNameInputField().sendKeys(lastName);
     }
 
     @Override
@@ -51,10 +51,4 @@ public class Email extends PageObject implements FieldSettings, ErrorMessagesSet
     public void confirmPasswordInputField(String confirmPassword) {
         getConfirmPasswordInputField().sendKeys(confirmPassword);
     }
-
-    public void registrationSendButton() {
-        this.getRegistrationSendButton().click();
-    }
-
-
 }

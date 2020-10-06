@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.emailsending;
+package selenium.emailsending;
 
 public interface FieldSettings {
 

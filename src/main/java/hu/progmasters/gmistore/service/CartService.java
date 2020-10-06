@@ -309,6 +309,9 @@ public class CartService {
             if (product.getInventory().getQuantityAvailable() < cartItem.getCount()) {
                 return false;
             }
+            if (!product.isActive()) {
+                return false;
+            }
         }
         return true;
     }

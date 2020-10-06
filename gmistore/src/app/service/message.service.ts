@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {MessagesResponseModel} from "../models/messages/messages-response.model";
+import {NewMessageRequestModel} from "../models/messages/new-message-request.model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ export class MessageService {
   private messagesApi = environment.apiUrl + 'api/messages';
 
   constructor(private httpClient: HttpClient) {
+  }
+
+  createMessage(message: NewMessageRequestModel): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.messagesApi, message);
   }
 
   getCountOfUnreadMails(): Observable<number> {

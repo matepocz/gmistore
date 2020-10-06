@@ -25,4 +25,8 @@ export class MessageService {
   markMessageRead(id: number): Observable<boolean> {
     return this.httpClient.put<boolean>(this.messagesApi + '/mark-read/' + id, {});
   }
+
+  deleteMessage(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(this.messagesApi + '/' + id);
+  }
 }

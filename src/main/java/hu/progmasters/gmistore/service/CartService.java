@@ -7,6 +7,7 @@ import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.CartRepository;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.UserRepository;
+import hu.progmasters.gmistore.util.CartItemComparator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -306,6 +307,9 @@ public class CartService {
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
             if (product.getInventory().getQuantityAvailable() < cartItem.getCount()) {
+                return false;
+            }
+            if (!product.isActive()) {
                 return false;
             }
         }

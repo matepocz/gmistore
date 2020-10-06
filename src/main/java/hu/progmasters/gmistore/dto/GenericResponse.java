@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.response;
+package hu.progmasters.gmistore.dto;
 
 public class GenericResponse {
     private String message;

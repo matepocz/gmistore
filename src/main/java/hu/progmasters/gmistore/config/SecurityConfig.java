@@ -63,11 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/products/inactive").hasAnyRole(ROLE_ADMIN)
-//                .antMatchers(HttpMethod.GET, "/api/orders/**").hasAnyRole(ROLE_ADMIN)
+                .antMatchers( "/api/orders/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/api/products/").hasAnyRole(ROLE_SELLER, ROLE_ADMIN)
-                .antMatchers("/api/contact-messages/**").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/api/admin/**").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.POST, "/api/ratings**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/ratings**").hasAnyRole(ROLE_ADMIN)

@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.service;
+package hu.progmasters.gmistore.util;
 
 import hu.progmasters.gmistore.dto.CartItemDto;
 

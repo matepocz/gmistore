@@ -6,7 +6,6 @@ import {RatingModel} from "../../../models/rating-model";
 import {CartService} from "../../../service/cart-service";
 import {AuthService} from "../../../service/auth-service";
 import {LocalStorageService} from "ngx-webstorage";
-import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs";
 import {RatingService} from "../../../service/rating.service";
@@ -17,6 +16,9 @@ import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.com
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {ConfirmDialog} from "../../confirm-delete-dialog/confirm-dialog";
 import {UserService} from "../../../service/user.service";
+import {MessageDialogComponent} from "../../message-dialog/message-dialog.component";
+import {MessageService} from "../../../service/message.service";
+import {PopupSnackbar} from "../../../utils/popup-snackbar";
 
 @Component({
   selector: 'app-product-details',
@@ -40,9 +42,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   isSeller: boolean = false;
 
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-
   fiveStars = 0;
   fourStars = 0;
   threeStars = 0;
@@ -59,10 +58,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute, private router: Router, private productService: ProductService,
               private cartService: CartService, private authService: AuthService,
-              private localStorageService: LocalStorageService, private snackBar: MatSnackBar,
+              private localStorageService: LocalStorageService, private snackBar: PopupSnackbar,
               private titleService: Title, private ratingService: RatingService,
               private sideNavComponent: SideNavComponent, private spinnerService: SpinnerService,
-              private dialog: MatDialog, private userService: UserService) {
+              private dialog: MatDialog, private userService: UserService,
+              private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -140,26 +140,18 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.cartService.addProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("A termék a kosárba került!");
+          this.snackBar.popUp("A termék a kosárba került!");
           this.sideNavComponent.updateItemsInCart(0);
         } else {
-          this.openSnackBar("A kért mennyiség nincs készleten!");
+          this.snackBar.popUp("A kért mennyiség nincs készleten!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
       }
     ));
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message, 'OK', {
-      duration: 2000,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-    });
   }
 
   isReviewedByUserAlready() {
@@ -209,9 +201,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.ratingService.removeRating(id).subscribe(
       (response) => {
         if (response === true) {
-          this.openSnackBar("Értékelés törölve!");
+          this.snackBar.popUp("Értékelés törölve!");
         } else {
-          this.openSnackBar("Nincs jogosultságod a művelethez!");
+          this.snackBar.popUp("Nincs jogosultságod a művelethez!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
@@ -277,13 +269,13 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.ratingService.reportRating(id).subscribe(
       (response) => {
         if (response) {
-          this.openSnackBar("Jelentés sikeres!");
+          this.snackBar.popUp("Jelentés sikeres!");
         }
         this.spinnerService.stop(this.spinner);
       }, (error) => {
         console.log(error);
         this.spinnerService.stop(this.spinner);
-        this.openSnackBar("Valami hiba történt!");
+        this.snackBar.popUp("Valami hiba történt!");
       }
     ));
   }
@@ -308,12 +300,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.productService.deleteProduct(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék törölve!");
+          this.snackBar.popUp("Termék törölve!");
         } else {
-          this.openSnackBar("Nincs jogosultságod!");
+          this.snackBar.popUp("Nincs jogosultságod!");
         }
       }, (error) => {
-        this.openSnackBar("Valami hiba történt");
+        this.snackBar.popUp("Valami hiba történt");
         console.log(error);
       }
     ));
@@ -324,17 +316,47 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.addProductToFavorites(id).subscribe(
       (response: boolean) => {
         if (response) {
-          this.openSnackBar("Termék hozzáadva a kedvencekhez.");
+          this.snackBar.popUp("Termék hozzáadva a kedvencekhez.");
         } else {
-          this.openSnackBar("Valami hiba történt!");
+          this.snackBar.popUp("Valami hiba történt!");
         }
         this.sideNavComponent.updateFavoriteItems(0);
         this.spinnerService.stop(this.spinner);
-      }, (error) => {
-        this.openSnackBar("Valami hiba történt!");
+      }, () => {
+        this.snackBar.popUp("Valami hiba történt!");
         this.spinnerService.stop(this.spinner);
       }
     ));
+  }
+
+  openNewMessageDialog(receiver: string) {
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      width: '90%',
+      data: {
+        receiver: receiver,
+      }
+    });
+
+    this.subscriptions.add(
+      dialogRef.afterClosed().subscribe(message => {
+        if (message) {
+          this.spinner = this.spinnerService.start();
+          this.subscriptions.add(
+            this.messageService.createMessage(message).subscribe(
+              (response) => {
+                if (response) {
+                  this.snackBar.popUp("Üzenet sikeresen elküldve!");
+                }
+                this.spinnerService.stop(this.spinner);
+              }, (error) => {
+                console.log(error);
+                this.spinnerService.stop(this.spinner);
+              }
+            )
+          );
+        }
+      })
+    );
   }
 
   ngOnDestroy() {

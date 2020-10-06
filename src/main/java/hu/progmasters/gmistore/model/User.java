@@ -77,4 +77,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Order> orderList;
+
+    @OneToMany(mappedBy = "sender")
+    private List<Message> outgoingMessages;
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Message> incomingMessages;
 }

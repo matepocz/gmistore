@@ -41,6 +41,10 @@
           </span>
           <p fxFlex="100">{{product.warrantyMonths}} hónap garancia</p>
           <p fxFlex="100">{{product.quantitySold}} eladott darab</p>
+          <p fxFlex="100">Üzenet az eladónak: </p>
+          <span class="message-to-seller" (click)="openNewMessageDialog(product.addedBy)">
+            {{ product.addedBy }}
+          </span>
         </mat-card-content>
       </div>
 

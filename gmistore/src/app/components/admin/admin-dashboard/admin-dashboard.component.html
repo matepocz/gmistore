@@ -76,8 +76,8 @@
       </div>
     </div>
 
-    <div id="row-2" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="65">
+    <div id="row-2" fxLayout="row wrap" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+      <div fxFlex.gt-sm="65" fxFlex.lt-lg="100">
         <mat-card class="mat-elevation-z8" fxLayout="row wrap">
           <mat-card-header fxFlex="100">
             <mat-card-title>
@@ -91,7 +91,7 @@
           ></app-income-per-order-graph>
         </mat-card>
       </div>
-      <div fxFlex.gt-sm="34">
+      <div fxFlex.gt-sm="34" fxFlex.lt-lg="100">
         <mat-card class="mat-elevation-z8" fxLayout="row wrap">
           <mat-card-header fxFlex="100">
             <mat-card-title>
@@ -108,8 +108,8 @@
       </div>
     </div>
 
-    <div id="row-3" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="32">
+    <div id="row-3" fxLayout="row wrap" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+      <div fxFlex.gt-sm="32" fxFlex.lt-lg="100">
         <app-mini-card-data
           [backgroundColor]="'rgba(132, 54, 194, 0.8)'"
           [title]="'Bevétel'"
@@ -118,7 +118,7 @@
           [data]="pieChartData.income"
         ></app-mini-card-data>
       </div>
-      <div fxFlex.gt-sm="32">
+      <div fxFlex.gt-sm="32" fxFlex.lt-lg="100">
         <app-mini-card-data
           [backgroundColor]="'rgba(80, 114, 203, 0.8)'"
           [title]="'Kiadások'"
@@ -127,7 +127,7 @@
           [data]="pieChartData.spent"
         ></app-mini-card-data>
       </div>
-      <div fxFlex.gt-sm="32">
+      <div fxFlex.gt-sm="32" fxFlex.lt-lg="100">
         <app-mini-card-data
           [backgroundColor]="'rgba(80, 84, 203, 0.8)'"
           [title]="'Kedvezmények'"
@@ -138,8 +138,24 @@
       </div>
     </div>
 
-    <div id="row-4" fxLayout="row" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
-      <div fxFlex.gt-sm="34">
+    <div id="row-4" fxLayout="row wrap" fxFlex.gt-sm="100" fxLayoutAlign="space-between">
+      <div fxFlex.gt-sm="65" fxFlex.lt-lg="100">
+        <mat-card class="mat-elevation-z8" fxLayout="row wrap" [ngStyle]="{'overflow-x':'auto'}">
+          <mat-card-header fxFlex="100">
+            <mat-card-title>
+              Regisztrációk száma / nap
+            </mat-card-title>
+            <mat-icon mat-card-avatar>account_box</mat-icon>
+          </mat-card-header>
+          <app-user-registrations-graph
+            *ngIf="chartData" fxFlex
+            [chartData]="chartData"
+          >
+          </app-user-registrations-graph>
+        </mat-card>
+      </div>
+
+      <div fxFlex.gt-sm="34" fxFlex.lt-lg="100">
         <mat-card class="user-list mat-elevation-z8">
 
           <mat-card-header>
@@ -157,21 +173,6 @@
               </mat-list-item>
             </mat-nav-list>
           </mat-card-content>
-        </mat-card>
-      </div>
-      <div fxFlex.gt-sm="65">
-        <mat-card class="mat-elevation-z8" fxLayout="row wrap" [ngStyle]="{'overflow-x':'auto'}">
-          <mat-card-header fxFlex="100">
-            <mat-card-title>
-              Regisztrációk száma / nap
-            </mat-card-title>
-            <mat-icon mat-card-avatar>account_box</mat-icon>
-          </mat-card-header>
-          <app-user-registrations-graph
-            *ngIf="chartData" fxFlex
-            [chartData]="chartData"
-          >
-          </app-user-registrations-graph>
         </mat-card>
       </div>
     </div>

@@ -62,3 +62,9 @@
   width: 100px;
   height: 100px;
 }
+
+.message-to-seller {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #551A8B;
+}

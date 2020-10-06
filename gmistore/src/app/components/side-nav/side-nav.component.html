@@ -123,6 +123,13 @@
 
           </mat-menu>
 
+          <button mat-button aria-label="Button to my messages" matTooltip="Üzenetek"
+                  *ngIf="authenticatedUser" [routerLink]="['/messages']">
+            <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="countOfUnreadMails.toString()"
+                      matBadgeSize="medium" matBadgeOverlap="false">mail
+            </mat-icon>
+          </button>
+
           <button mat-button aria-label="Button to favorite products" matTooltip="Kedvencek"
                   *ngIf="authenticatedUser" [routerLink]="['/favorite-products']">
             <mat-icon aria-hidden="false" aria-label="Favorites" [matBadge]="favoriteItems.toString()"
@@ -130,6 +137,7 @@
                       matBadgeOverlap="false">favorite
             </mat-icon>
           </button>
+
           <button mat-icon-button [routerLink]="['/cart']" aria-label="Button for cart details" id="cart-icon"
                   matTooltip="Kosár">
             <mat-icon [matBadge]="itemsInCart.toString()" matBadgeSize="medium" matBadgeOverlap="false">shopping_cart

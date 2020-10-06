@@ -9,12 +9,11 @@ import hu.progmasters.gmistore.validator.ReplyEmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/contact-messages")
@@ -35,6 +34,7 @@ public class EmailController {
     public void init(WebDataBinder binder) {
         binder.addValidators(emailValidator);
     }
+
     @InitBinder(value = "replyEmailDto")
     public void initReplyEmail(WebDataBinder binder) {
         binder.addValidators(replyEmailValidator);
@@ -46,15 +46,17 @@ public class EmailController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/income-emails")
     public ResponseEntity<PagedActiveEmailList> getAllActiveIncomeEmails(
             @RequestParam(value = "size", defaultValue = "20") String size,
             @RequestParam(value = "page", defaultValue = "0") String page
-            ) {
-        PagedActiveEmailList emails = emailFromUserService.getAllActiveIncomeEmails(Integer.parseInt(size),Integer.parseInt(page));
+    ) {
+        PagedActiveEmailList emails = emailFromUserService.getAllActiveIncomeEmails(Integer.parseInt(size), Integer.parseInt(page));
         return new ResponseEntity<>(emails, HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PostMapping("/reply")
     public ResponseEntity<Boolean> getCurrentEmail(@RequestBody ReplyEmailDto replyEmailDto) {
         boolean result = emailFromUserService.sendReplyEmail(replyEmailDto);
@@ -63,6 +65,7 @@ public class EmailController {
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteEmail(@PathVariable Long id) {
         boolean result = emailFromUserService.deleteEmail(id);

@@ -15,13 +15,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 @Transactional
 public class AdminService {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
     private final SessionRegistry sessionRegistry;
     private final UserRepository userRepository;
     private final UserService userService;

@@ -11,7 +11,7 @@
       </mat-card-header>
 
     </mat-toolbar>
-    <div fxLayout="row" fxLayoutAlign="center" >
+    <div fxLayout="row" fxLayoutAlign="center">
       <mat-card class="containerX" fxFlex.gt-md="55" fxFlex.gt-sm="75" fxFlex.lt-md="98">
         <mat-tab-group>
           <mat-tab label="Felhasználó adatai">
@@ -50,16 +50,20 @@
                   </mat-expansion-panel-header>
                   <div>
                     <app-orders-product-list fxHide.lt-md
-                      [id]="order.generatedUniqueId"
-                      [orderDetailsInput]="order"
+                                             [id]="order.generatedUniqueId"
+                                             [orderDetailsInput]="order"
                     ></app-orders-product-list>
                   </div>
-                  <mat-action-row>
+                  <mat-action-row *ngIf="user.orderList.length != 0">
                     <button (click)="editOrder(order.generatedUniqueId)" mat-button>Részletes adatok</button>
                   </mat-action-row>
                 </mat-expansion-panel>
               </mat-accordion>
+              <div *ngIf="user.orderList.length == 0">
+                <h2>Nincsenek rendelései</h2>
+              </div>
             </div>
+
 
           </mat-tab>
         </mat-tab-group>

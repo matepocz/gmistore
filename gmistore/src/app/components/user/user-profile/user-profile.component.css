@@ -1,27 +1,7 @@
-.desktop-btn {
-  bottom: 0;
-  position: absolute;
-  width: 100%;
-  margin: -16px -16px;
-}
-
 .sm-btn {
   width: 100%;
 }
 
-.order-btn {
-  z-index: 1;
-  bottom: 100px;
-  left: 50px;
-  margin: 20px;
-  position: fixed;
-}
-
-.basic-container {
-  width: 65%;
-  margin-bottom: 5px;
-}
-
-mat-tab-group {
-  text-align: -webkit-center;
+mat-card {
+  z-index: 0;
 }

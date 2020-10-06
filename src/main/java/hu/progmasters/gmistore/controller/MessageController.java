@@ -41,7 +41,6 @@ public class MessageController {
     @GetMapping("/unread-mail-count")
     public ResponseEntity<Integer> getCountOfUnreadMailsForCurrentUser(Principal principal) {
         int countOfUnreadMails = messageService.getCountOfUnreadMailsForCurrentUser(principal);
-        System.out.println(countOfUnreadMails);
         return new ResponseEntity<>(countOfUnreadMails, HttpStatus.OK);
     }
 

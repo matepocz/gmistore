@@ -105,6 +105,7 @@ import {IncomeSpentGraphComponent} from './components/admin/admin-dashboard/inco
 import {UserRegistrationsGraphComponent} from './components/admin/admin-dashboard/user-registrations-graph/user-registrations-graph.component';
 import {MiniCardDataComponent} from './components/admin/admin-dashboard/mini-card-data/mini-card-data.component';
 import {MessagesComponent} from './components/messages/messages.component';
+import {MessageDialogComponent} from './components/message-dialog/message-dialog.component';
 
 @NgModule({
   declarations: [
@@ -166,6 +167,7 @@ import {MessagesComponent} from './components/messages/messages.component';
     UserRegistrationsGraphComponent,
     MiniCardDataComponent,
     MessagesComponent,
+    MessageDialogComponent,
   ],
 
     imports: [

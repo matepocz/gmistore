@@ -1,54 +1,57 @@
 <form [formGroup]="userDataForm">
-  <mat-card-header>
-  <mat-card-title>Profil</mat-card-title>
-  <mat-card-subtitle>Adatok</mat-card-subtitle>
-</mat-card-header>
-<div fxLayout="column" fxLayoutGap="10px">
 
-  <div fxLayout="row wrap" fxLayoutGap="2px">
-    <mat-form-field fxFlex appearance="outline">
-      <mat-label>Keresztnév*</mat-label>
-      <input matInput formControlName="firstName">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Profil</mat-card-title>
+      <mat-card-subtitle>Adatok</mat-card-subtitle>
+    </mat-card-header>
+    <div fxLayout="column" fxLayoutGap="10px">
 
-      <mat-error *ngIf="userDataForm.get('firstName').errors?.serverError">
-        {{userDataForm.get('firstName').errors.serverError}}
-      </mat-error>
+      <div fxLayout="row wrap" fxLayoutGap="10px">
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Keresztnév*</mat-label>
+          <input matInput formControlName="firstName">
 
-    </mat-form-field>
+          <mat-error *ngIf="userDataForm.get('firstName').errors?.serverError">
+            {{userDataForm.get('firstName').errors.serverError}}
+          </mat-error>
 
-    <mat-form-field fxFlex appearance="outline">
-      <mat-label>Vezetéknév*</mat-label>
-      <input matInput formControlName="lastName">
+        </mat-form-field>
 
-      <mat-error *ngIf="userDataForm.get('lastName').errors?.serverError">
-        {{userDataForm.get('lastName').errors.serverError}}
-      </mat-error>
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Vezetéknév*</mat-label>
+          <input matInput formControlName="lastName">
 
-    </mat-form-field>
-  </div>
+          <mat-error *ngIf="userDataForm.get('lastName').errors?.serverError">
+            {{userDataForm.get('lastName').errors.serverError}}
+          </mat-error>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Felhasználónév</mat-label>
-    <input class="readonly-input" matInput formControlName="username" readonly>
-  </mat-form-field>
+        </mat-form-field>
+      </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>E-mail</mat-label>
-    <input class="readonly-input" matInput [value]="data?.email" readonly>
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Felhasználónév</mat-label>
+        <input class="readonly-input" matInput formControlName="username" readonly>
+      </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Telefon*</mat-label>
-    <input matInput formControlName="phoneNumber">
-    <mat-error *ngIf="userDataForm.get('phoneNumber').errors?.serverError">
-      {{userDataForm.get('phoneNumber').errors.serverError}}
-    </mat-error>
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input class="readonly-input" matInput [value]="data?.email" readonly>
+      </mat-form-field>
 
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Telefon*</mat-label>
+        <input matInput formControlName="phoneNumber">
+        <mat-error *ngIf="userDataForm.get('phoneNumber').errors?.serverError">
+          {{userDataForm.get('phoneNumber').errors.serverError}}
+        </mat-error>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Regisztrált</mat-label>
-    <input class="readonly-input" matInput [value]="data?.registered | date" readonly>
-  </mat-form-field>
-</div>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Regisztrált</mat-label>
+        <input class="readonly-input" matInput [value]="data?.registered | date" readonly>
+      </mat-form-field>
+    </div>
+  </mat-card>
 </form>

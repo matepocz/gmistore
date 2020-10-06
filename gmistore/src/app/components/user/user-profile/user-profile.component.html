@@ -1,45 +1,118 @@
-<form [formGroup]="userForm">
-  <div fxLayoutAlign="center" [style.margin]="'2%'">
-    <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">
+<form [formGroup]="userForm" *ngIf="!showOrderDetails">
+  <mat-progress-bar mode="indeterminate" *ngIf="!user"></mat-progress-bar>
+  <div *ngIf="user">
+    <mat-toolbar [ngStyle]="{'height' : 'auto'}">
 
-      <div fxFlex.gt-sm="40" fxFlex.lt-lg="100">
-        <mat-card class="box">
+      <mat-card-header [ngStyle]="{'margin': '15px'}">
+        <mat-card-title>{{user.lastName}} {{user.firstName}} </mat-card-title>
+        <mat-card-subtitle>
+          {{user.shippingAddress.city}}
+        </mat-card-subtitle>
+      </mat-card-header>
 
-          <app-profile *ngIf="loaded"
-                       [userDataForm]="userForm"
-                       [data]="user">
-          </app-profile>
+    </mat-toolbar>
+    <div fxLayout="row" fxLayoutAlign="center" >
+      <mat-card class="containerX" fxFlex.gt-md="55" fxFlex.gt-sm="75" fxFlex.lt-md="98">
+        <mat-tab-group>
+          <mat-tab label="Felhasználó adatai">
+            <app-profile *ngIf="loaded"
+                         [userDataForm]="userForm"
+                         [data]="user">
+            </app-profile>
+          </mat-tab>
+          <mat-tab label="Szállítási/Számlázási cím">
+            <div fxLayout="row wrap" fxLayoutGap="10px">
+              <app-shipping-address fxFlex fxFlex.lt-lg="100"
+                                    *ngIf="loaded"
+                                    [ngStyle]="{'margin':'5px'}"
+                                    [userDataForm]="userForm"
+                                    [userShipping]="user.shippingAddress">
+              </app-shipping-address>
 
-          <button class="desktop-btn" mat-flat-button fxHide.lt-lg="true" color="primary" (click)="onSubmit()">
-            Submit
-          </button>
-        </mat-card>
-      </div>
+              <app-billing-address fxFlex fxFlex.lt-lg="100"
+                                   *ngIf="loaded"
+                                   [ngStyle]="{'margin':'5px'}"
+                                   [userDataForm]="userForm"
+                                   [userBilling]="user.billingAddress">
+              </app-billing-address>
+            </div>
+          </mat-tab>
+          <mat-tab label="Rendeléseim">
 
-      <div fxFlex.gt-sm="50" fxFlex.lt-lg="100" fxLayout="row wrap" fxLayoutGap="10px">
-        <app-shipping-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"
-                              [userShipping]="user.shippingAddress"></app-shipping-address>
+            <div class="container-address">
+              <mat-accordion>
+                <mat-expansion-panel *ngFor="let order of user.orderList">
+                  <mat-expansion-panel-header class="dropdown-button">
+                    <mat-panel-title class="cart-header-text">{{order.generatedUniqueId}}</mat-panel-title>
+                    <mat-panel-description>
+                      {{order.orderedAt | date}}
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div>
+                    <app-orders-product-list fxHide.lt-md
+                      [id]="order.generatedUniqueId"
+                      [orderDetailsInput]="order"
+                    ></app-orders-product-list>
+                  </div>
+                  <mat-action-row>
+                    <button (click)="editOrder(order.generatedUniqueId)" mat-button>Részletes adatok</button>
+                  </mat-action-row>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
 
-        <app-billing-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"
-                             [userBilling]="user.billingAddress"></app-billing-address>
-      </div>
-      <button class="sm-btn" mat-flat-button fxHide.gt-md="true" color="primary" (click)="onSubmit()">Submit</button>
-
-
-      <div #orders fxFlex.gt-sm="100">
-
-        <button class="order-btn" color="primary" mat-fab (click)="openClose()" >
-          <mat-icon>filter_list</mat-icon>
-        </button>
-<!--        <div [ngStyle]="{'margin': '15px'}"-->
-<!--             *ngIf="show">-->
-<!--          <app-product-card-->
-<!--            [products]="orderedProducts"></app-product-card>-->
-<!--        </div>-->
-      </div>
+          </mat-tab>
+        </mat-tab-group>
+        <button class="sm-btn" mat-flat-button color="primary" (click)="onSubmit()">Submit</button>
+      </mat-card>
     </div>
-
   </div>
 </form>
+<app-orders-form *ngIf="showOrderDetails">
+  <button (click)="editOrder('')"></button>
+</app-orders-form>
+<!--<form [formGroup]="userForm">-->
+<!--  <div fxLayoutAlign="center" [style.margin]="'2%'">-->
+<!--    <div fxLayout="row wrap" fxFlex.lt-md="100" fxFlex.gt-md="80" fxLayoutAlign="center" fxLayoutGap="10px">-->
+
+<!--      <div fxFlex.gt-sm="40" fxFlex.lt-lg="100">-->
+<!--        <mat-card class="box">-->
+
+<!--          <app-profile *ngIf="loaded"-->
+<!--                       [userDataForm]="userForm"-->
+<!--                       [data]="user">-->
+<!--          </app-profile>-->
+
+<!--          <button class="desktop-btn" mat-flat-button fxHide.lt-lg="true" color="primary" (click)="onSubmit()">-->
+<!--            Submit-->
+<!--          </button>-->
+<!--        </mat-card>-->
+<!--      </div>-->
+
+<!--      <div fxFlex.gt-sm="50" fxFlex.lt-lg="100" fxLayout="row wrap" fxLayoutGap="10px">-->
+<!--        <app-shipping-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"-->
+<!--                              [userShipping]="user.shippingAddress"></app-shipping-address>-->
+
+<!--        <app-billing-address fxFlex.lt-lg="100" *ngIf="loaded" [userDataForm]="userForm"-->
+<!--                             [userBilling]="user.billingAddress"></app-billing-address>-->
+<!--      </div>-->
+<!--      <button class="sm-btn" mat-flat-button fxHide.gt-md="true" color="primary" (click)="onSubmit()">Submit</button>-->
+
+
+<!--      <div #orders fxFlex.gt-sm="100">-->
+
+<!--        <button class="order-btn" color="primary" mat-fab (click)="openClose()" >-->
+<!--          <mat-icon>filter_list</mat-icon>-->
+<!--        </button>-->
+<!--&lt;!&ndash;        <div [ngStyle]="{'margin': '15px'}"&ndash;&gt;-->
+<!--&lt;!&ndash;             *ngIf="show">&ndash;&gt;-->
+<!--&lt;!&ndash;          <app-product-card&ndash;&gt;-->
+<!--&lt;!&ndash;            [products]="orderedProducts"></app-product-card>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</form>-->
 
 

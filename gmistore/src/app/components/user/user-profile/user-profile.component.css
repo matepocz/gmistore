@@ -16,3 +16,12 @@
   margin: 20px;
   position: fixed;
 }
+
+.basic-container {
+  width: 65%;
+  margin-bottom: 5px;
+}
+
+mat-tab-group {
+  text-align: -webkit-center;
+}

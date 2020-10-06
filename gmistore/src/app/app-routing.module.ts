@@ -52,6 +52,12 @@ const routes: Routes = [
     data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
   },
   {
+    path: 'user/my-account/order/:id',
+    component: OrdersFormComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
+  },
+  {
     path: 'user/edit',
     component: UserEditComponent,
     canActivate: [AuthGuard],

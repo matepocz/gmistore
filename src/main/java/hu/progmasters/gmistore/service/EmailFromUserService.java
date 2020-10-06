@@ -32,18 +32,19 @@ public class EmailFromUserService {
     }
 
 
-    public void saveEmailFromUser(EmailCreatingDto emailCreatingDto) {
+    public EmailFromUser saveEmailFromUser(EmailCreatingDto emailCreatingDto) {
         EmailFromUser email = new EmailFromUser();
         email.setEmail(emailCreatingDto.getEmail());
         email.setSubject(emailCreatingDto.getSubject());
         email.setMessage(emailCreatingDto.getMessage());
         email.setMessageCreateTime(LocalDateTime.now());
         email.setActive(true);
-        emailRepository.save(email);
+        EmailFromUser savedEmail = emailRepository.save(email);
         LOGGER.debug("Email has been saved.");
+        return savedEmail;
     }
 
-    public PagedActiveEmailList getAllActiveIncomeEmails(Integer size,Integer page) {
+    public PagedActiveEmailList getAllActiveIncomeEmails(Integer size, Integer page) {
         Pageable pageable = PageRequest.of(page, size);
         Page<EmailFromUser> getAllIncomeEmail = emailRepository.findAllActiveEmail(pageable);
 
@@ -53,12 +54,10 @@ public class EmailFromUserService {
                         .collect(Collectors.toList()));
         activeEmailList.setTotalElements(getAllIncomeEmail.getTotalElements());
         return activeEmailList;
-
     }
 
     private EmailTableDto mapEmailToEmailTableDto(EmailFromUser emailFromUser) {
-        EmailTableDto emailTableDto = new EmailTableDto(emailFromUser);
-        return emailTableDto;
+        return new EmailTableDto(emailFromUser);
     }
 
 

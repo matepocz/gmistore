@@ -121,15 +121,17 @@ export class SideNavComponent implements OnInit {
   }
 
   updateCountOfUnreadMails(timeout: number) {
-    setTimeout(() => {
-      this.subscriptions.add(
-        this.messageService.getCountOfUnreadMails().subscribe(
-          (response) => {
-            this.countOfUnreadMails = response;
-          }, error => console.log(error)
-        )
-      );
-    }, timeout * 1000)
+    if (this.authenticatedUser) {
+      setTimeout(() => {
+        this.subscriptions.add(
+          this.messageService.getCountOfUnreadMails().subscribe(
+            (response) => {
+              this.countOfUnreadMails = response;
+            }, error => console.log(error)
+          )
+        );
+      }, timeout * 1000)
+    }
   }
 
   fetchSearchOptions(): Observable<string[]> {

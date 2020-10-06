@@ -33,22 +33,22 @@ public class AddressValidator implements Validator {
 
         if (addressDetails.getDoor() != null) {
             if (addressDetails.getDoor() < 1
-                    || addressDetails.getNumber() > 99999999
+                    || addressDetails.getDoor() > 99999999
             ) {
                 errors.rejectValue("shippingAddress.number", "address.number.invalid");
             }
         }
 
         if (addressDetails.getFloor() != null) {
-            if (addressDetails.getFloor() < 1
-                    || addressDetails.getNumber() > 99999999
+            if (addressDetails.getFloor() < 0
+                    || addressDetails.getFloor() > 99999999
             ) {
-                errors.rejectValue("shippingAddress.number", "address.number.invalid");
+                errors.rejectValue("shippingAddress.floor", "address.number.invalid");
             }
         }
 
         if (addressDetails.getCity() != null) {
-            if (addressDetails.getCity().matches("[0-9]+")
+            if (!addressDetails.getCity().matches("^([A-Z]([a-záéúőóüö.]+\\s?)){2,}$")
             ) {
                 errors.rejectValue("shippingAddress.city", "address.city.invalid");
             }

@@ -56,17 +56,17 @@ public class UserEditValidator implements Validator {
 
         if (userDetails.getShippingAddress().getDoor() != null) {
             if (userDetails.getShippingAddress().getDoor() < 1
-                    || userDetails.getShippingAddress().getNumber() > 99999999
+                    || userDetails.getShippingAddress().getDoor() > 99999999
             ) {
                 errors.rejectValue("shippingAddress.number", "address.number.invalid");
             }
         }
 
         if (userDetails.getShippingAddress().getFloor() != null) {
-            if (userDetails.getShippingAddress().getFloor() < 1
-                    || userDetails.getShippingAddress().getNumber() > 99999999
+            if (userDetails.getShippingAddress().getFloor() < 0
+                    || userDetails.getShippingAddress().getFloor() > 99999999
             ) {
-                errors.rejectValue("shippingAddress.number", "address.number.invalid");
+                errors.rejectValue("shippingAddress.floor", "address.number.invalid");
             }
         }
 
@@ -95,17 +95,17 @@ public class UserEditValidator implements Validator {
 
         if (userDetails.getBillingAddress().getDoor() != null) {
             if (userDetails.getBillingAddress().getDoor() < 1
-                    || userDetails.getBillingAddress().getNumber() > 99999999
+                    || userDetails.getBillingAddress().getDoor() > 99999999
             ) {
                 errors.rejectValue("billingAddress.number", "address.number.invalid");
             }
         }
 
         if (userDetails.getBillingAddress().getFloor() != null) {
-            if (userDetails.getBillingAddress().getFloor() < 1
-                    || userDetails.getBillingAddress().getNumber() > 99999999
+            if (userDetails.getBillingAddress().getFloor() < 0
+                    || userDetails.getBillingAddress().getFloor() > 99999999
             ) {
-                errors.rejectValue("billingAddress.number", "address.number.invalid");
+                errors.rejectValue("billingAddress.floor", "address.number.invalid");
             }
         }
 

@@ -59,17 +59,6 @@ public class LookupService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Fetch an order status by it's key
-     *
-     * @param key The given key
-     * @return A LookupEntity
-     */
-    public LookupEntity getOrderStatusByKey(String key) {
-        return lookupRepository.findByDomainTypeAndLookupKey(DomainType.ORDER_STATUS, key)
-                .orElseThrow(() -> new EntityNotFoundException("Order status not found!"));
-    }
-
     public List<LookupEntity> getAllStatusOptions() {
         return lookupRepository.findByDomainType(DomainType.ORDER_STATUS);
     }

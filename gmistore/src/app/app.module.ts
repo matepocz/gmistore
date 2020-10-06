@@ -8,7 +8,6 @@ import {FooterComponent} from './components/footer/footer.component';
 import {HomeComponent} from './components/home/home.component';
 import {LoginComponent} from './components/user/login/login.component';
 import {RegisterComponent} from './components/user/register/register.component';
-import {UserEditComponent} from './components/user/user-edit/user-edit.component';
 import {ForbiddenComponent} from './components/forbidden/forbidden.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {Ng2Webstorage} from 'ngx-webstorage';
@@ -114,7 +113,6 @@ import {MessageDialogComponent} from './components/message-dialog/message-dialog
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    UserEditComponent,
     ForbiddenComponent,
     ProductListComponent,
     ProductCardComponent,

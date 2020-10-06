@@ -20,11 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,17 +100,6 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         return mapProductToProductDto(product);
-    }
-
-    /**
-     * Get all active products from the database
-     *
-     * @return A List of ProductDto
-     */
-    public List<ProductDto> getAllActiveProducts() {
-        List<Product> allProduct = productRepository.findAll();
-        return allProduct.stream().map(this::mapProductToProductDto)
-                .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
     public List<ProductDto> getProductInOffer() {

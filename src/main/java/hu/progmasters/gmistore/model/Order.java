@@ -30,10 +30,6 @@ public class Order implements Serializable {
     @Column(name = "unique_id", unique = true)
     private String uniqueId;
 
-    @ManyToOne
-    @JoinColumn(name = "order_status", referencedColumnName = "id")
-    private LookupEntity statusLookup;
-
     @Enumerated
     private OrderStatus status;
 

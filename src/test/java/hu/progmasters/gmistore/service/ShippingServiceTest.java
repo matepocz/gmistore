@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -122,14 +123,21 @@ public class ShippingServiceTest {
     public void testCalculateExpectedShippingDate() {
         ShippingMethod shippingMethod = shippingMethodSupplier.get();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime expectedDate = LocalDateTime.now();
         ZoneId zoneId = ZoneId.of("Europe/Budapest");
-        if (ZonedDateTime.of(currentDateTime, zoneId).getHour() >= 14) {
-            currentDateTime = currentDateTime.plusDays(1);
+        if (ZonedDateTime.of(expectedDate, zoneId).getHour() >= 14) {
+            expectedDate = expectedDate.plusDays(1);
         }
-        LocalDateTime localDateTime = shippingService.calculateExpectedShippingDate(shippingMethod);
+        expectedDate = expectedDate.plusDays(shippingMethod.getDays());
+        if (expectedDate.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+            expectedDate = expectedDate.plusDays(2);
+        }
+        if (expectedDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            expectedDate = expectedDate.plusDays(1);
+        }
+        LocalDateTime actualResult = shippingService.calculateExpectedShippingDate(shippingMethod);
 
-        assertNotNull(localDateTime);
-        assertEquals(currentDateTime.plusDays(2).getDayOfWeek(), localDateTime.getDayOfWeek());
+        assertNotNull(actualResult);
+        assertEquals(expectedDate.getDayOfWeek(), actualResult.getDayOfWeek());
     }
 }

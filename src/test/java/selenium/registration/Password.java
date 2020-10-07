@@ -1,20 +1,20 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 import org.openqa.selenium.WebDriver;
 
-public class LastName extends PageObject implements FieldSettings, ErrorMessagesSettings {
-    public LastName(WebDriver driver) {
+public class Password extends PageObject implements FieldSettings, ErrorMessagesSettings {
+    public Password(WebDriver driver) {
         super(driver);
     }
 
     @Override
     public String frontendValidationError() {
-        return getLastNameFrontendValidationError().getText();
+        return getPasswordFrontendValidationError().getText();
     }
 
     @Override
     public String serverError() {
-        return getLastNameServerError().getText();
+        return getPasswordServerError().getText();
     }
 
     @Override

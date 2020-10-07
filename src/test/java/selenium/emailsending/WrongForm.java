@@ -1,11 +1,9 @@
-package hu.progmasters.gmistore.emailsending;
+package selenium.emailsending;
 
 import org.openqa.selenium.WebDriver;
 
-public class WrongMessageField extends PageObject implements FieldSettings,ErrorMessegesSettings{
-
-
-    public WrongMessageField(WebDriver driver) {
+public class WrongForm extends PageObject implements FieldSettings, ErrorMessegesSettings {
+    public WrongForm(WebDriver driver) {
         super(driver);
     }
 
@@ -16,7 +14,7 @@ public class WrongMessageField extends PageObject implements FieldSettings,Error
 
     @Override
     public String tooShortOrEmptyErrorMessage() {
-        return getTooShortMessageFieldErrorMessage().getText();
+        return getTooShortOrEmptySubjectErrorMessage().getText();
     }
 
     @Override
@@ -48,4 +46,5 @@ public class WrongMessageField extends PageObject implements FieldSettings,Error
     public void pressGdprButton() {
         getGdprSubmit().click();
     }
+
 }

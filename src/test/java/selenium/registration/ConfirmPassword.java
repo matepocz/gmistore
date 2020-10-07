@@ -1,54 +1,56 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 import org.openqa.selenium.WebDriver;
 
-public class UserName extends PageObject implements FieldSettings, ErrorMessagesSettings {
-    public UserName(WebDriver driver) {
+public class ConfirmPassword extends PageObject implements FieldSettings, ErrorMessagesSettings {
+    public ConfirmPassword(WebDriver driver) {
         super(driver);
     }
 
     @Override
     public String frontendValidationError() {
-        return getUserNameFrontendValidationError().getText();
+        return getConfirmPasswordMatchingError().getText();
     }
 
     @Override
     public String serverError() {
-        return getUserNameServerError().getText();
+        return "";
     }
 
     @Override
     public String usingError() {
-        return getUserNameServerError().getText();
+        return "";
     }
 
     @Override
     public void firstNameInputField(String firstName) {
-        this.firstNameInputField(firstName);
+        getFirstNameInputField().sendKeys(firstName);
     }
 
     @Override
     public void lastNameInputField(String lastName) {
-        this.lastNameInputField(lastName);
+        getLastNameInputField().sendKeys(lastName);
     }
 
     @Override
     public void userNameInputField(String username) {
-        this.userNameInputField(username);
+        getUserNameInputField().sendKeys(username);
     }
 
     @Override
     public void emailInputField(String email) {
-        this.emailInputField(email);
+        getEmailInputField().sendKeys(email);
     }
 
     @Override
     public void passwordInputField(String password) {
-        this.passwordInputField(password);
+        getPasswordInputField().sendKeys(password);
     }
 
     @Override
     public void confirmPasswordInputField(String confirmPassword) {
-        this.confirmPasswordInputField(confirmPassword);
+        getConfirmPasswordInputField().sendKeys(confirmPassword);
     }
+
+
 }

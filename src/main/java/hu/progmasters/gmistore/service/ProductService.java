@@ -6,25 +6,21 @@ import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.LookupEntity;
 import hu.progmasters.gmistore.model.Product;
+import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ProductRepository;
+import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Random;
+import java.security.Principal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,13 +32,15 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
     private final LookupService lookupService;
+    private final UserRepository userRepository;
 
     @Autowired
     public ProductService(ProductRepository productRepository, InventoryService inventoryService,
-                          LookupService lookupService) {
+                          LookupService lookupService, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.inventoryService = inventoryService;
         this.lookupService = lookupService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -81,7 +79,7 @@ public class ProductService {
     }
 
     private double getPriceGross(ProductDto productDto) {
-        return productDto.getPrice()* 0.5 + new Random().nextFloat() * (0.80 - 0.5);
+        return productDto.getPrice() * 0.5 + new Random().nextFloat() * (0.80 - 0.5);
     }
 
     LookupEntity getCategoryByKey(String key) {
@@ -104,17 +102,6 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         return mapProductToProductDto(product);
-    }
-
-    /**
-     * Get all active products from the database
-     *
-     * @return A List of ProductDto
-     */
-    public List<ProductDto> getAllActiveProducts() {
-        List<Product> allProduct = productRepository.findAll();
-        return allProduct.stream().map(this::mapProductToProductDto)
-                .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
     public List<ProductDto> getProductInOffer() {
@@ -401,7 +388,8 @@ public class ProductService {
         productDto.setAddedBy(product.getAddedBy());
         return productDto;
     }
-    private ProductTableDto mapProductToProductTableDto(Product product){
+
+    private ProductTableDto mapProductToProductTableDto(Product product) {
         ProductTableDto productTableDto = new ProductTableDto();
         productTableDto.setId(product.getId());
         productTableDto.setName(product.getName());
@@ -422,11 +410,16 @@ public class ProductService {
      * @param productDto A ProductDto containing the values to update
      * @return A boolean, true if updated, false otherwise
      */
-    public boolean updateProduct(String slug, ProductDto productDto) {
+    public boolean updateProduct(String slug, ProductDto productDto, Principal principal) {
+        if (principal == null) {
+            LOGGER.warn(
+                    "Unauthorized product update request, user is not authenticated, slug: {}", slug);
+            return false;
+        }
         Optional<Product> optionalProduct = productRepository.findProductBySlug(slug);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            if (isAuthorized(product.getAddedBy())) {
+            if (isAuthorized(product.getAddedBy(), principal)) {
                 updateProductValues(productDto, product);
                 product.getInventory().setQuantityAvailable(productDto.getQuantityAvailable());
                 productRepository.save(product);
@@ -459,17 +452,22 @@ public class ProductService {
      * @param id The product's unique id
      * @return True if successful, false otherwise.
      */
-    public boolean deleteProduct(Long id) {
+    public boolean deleteProduct(Long id, Principal principal) {
+        if (principal == null) {
+            LOGGER.warn("Unauthorized product delete request, user is not authenticated, id: {}", id);
+            return false;
+        }
+
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            if (isAuthorized(product.getAddedBy())) {
+            if (isAuthorized(product.getAddedBy(), principal)) {
                 product.setActive(false);
                 LOGGER.debug("Product has been set to inactive Id : {}", id);
                 return true;
             } else {
                 LOGGER.warn("Unauthorized product delete request, id: {}, username: {}",
-                        id, SecurityContextHolder.getContext().getAuthentication().getName());
+                        id, principal.getName());
                 return false;
             }
         }
@@ -477,19 +475,16 @@ public class ProductService {
         return false;
     }
 
-    private boolean isAuthorized(String productAddedBy) {
-        boolean isAdmin = false;
-        String authenticatedUsername = "unknown";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            for (GrantedAuthority authority : authentication.getAuthorities()) {
-                if (authority.getAuthority().equals(Role.ROLE_ADMIN.toString())) {
-                    isAdmin = true;
-                }
-            }
-            authenticatedUsername = authentication.getName();
+    private boolean isAuthorized(String productAddedBy, Principal principal) {
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        if (principal.getName().equals(productAddedBy)) {
+            return true;
         }
-        return isAdmin || productAddedBy.equalsIgnoreCase(authenticatedUsername);
+        return userByUsername.map(user -> user
+                .getRoles()
+                .stream()
+                .anyMatch(role -> role.equals(Role.ROLE_ADMIN)))
+                .orElse(false);
     }
 
     public List<ProductTableDto> getAllProductsToTable() {

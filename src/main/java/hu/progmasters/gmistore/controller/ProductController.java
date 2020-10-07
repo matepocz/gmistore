@@ -9,10 +9,8 @@ import hu.progmasters.gmistore.service.InventoryService;
 import hu.progmasters.gmistore.service.ProductService;
 import hu.progmasters.gmistore.validator.ProductDtoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,7 @@ public class ProductController {
     private final ProductDtoValidator productDtoValidator;
 
     @Autowired
-    public ProductController(ProductService productService,InventoryService inventoryService,
+    public ProductController(ProductService productService, InventoryService inventoryService,
                              ProductDtoValidator productDtoValidator) {
         this.productService = productService;
         this.productDtoValidator = productDtoValidator;
@@ -58,7 +56,7 @@ public class ProductController {
             @RequestBody(required = false) ProductFilterOptions filterOptions
     ) {
         PagedProductList products;
-        if (filter){
+        if (filter) {
             products = productService.getFilteredProductsByQuery(query, page, size, filterOptions);
         } else {
             products = productService.getProductsByQuery(query, page, size);
@@ -114,27 +112,18 @@ public class ProductController {
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-//    @GetMapping("/added-by-user/{username}")
-//    public ResponseEntity<List<ProductDto>> getProductsAddedByUser(@PathVariable String username) {
-//        String authenticatedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-//        if (authenticatedUsername.equalsIgnoreCase(username)) {
-//            List<ProductDto> products = productService.getAllProductsAddedByUser(username);
-//            return new ResponseEntity<>(products, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id) {
-        boolean result = productService.deleteProduct(id);
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id, Principal principal) {
+        boolean result = productService.deleteProduct(id, principal);
         return result ?
                 new ResponseEntity<>(true, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{slug}")
-    public ResponseEntity<Void> updateProduct(@PathVariable String slug, @Valid @RequestBody ProductDto productDto) {
-        boolean result = productService.updateProduct(slug, productDto);
+    public ResponseEntity<Void> updateProduct(
+            @PathVariable String slug, @Valid @RequestBody ProductDto productDto, Principal principal) {
+        boolean result = productService.updateProduct(slug, productDto, principal);
         return result ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -156,9 +145,9 @@ public class ProductController {
     public ResponseEntity<PagedSellerProductList> getUserOwnProducts(
             @RequestParam(value = "size", defaultValue = "10") String size,
             @RequestParam(value = "page", defaultValue = "0") String page,
-            Principal principal){
-        PagedSellerProductList products = productService.getAllProductsAddedByUser(principal.getName(),Integer.parseInt(page), Integer.parseInt(size));
-        return new ResponseEntity<>(products,HttpStatus.OK);
+            Principal principal) {
+        PagedSellerProductList products = productService.getAllProductsAddedByUser(principal.getName(), Integer.parseInt(page), Integer.parseInt(size));
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/income-spent")

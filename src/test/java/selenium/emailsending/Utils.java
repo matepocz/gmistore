@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.emailsending;
+package selenium.emailsending;
 
 public class Utils {
     final static String BASE_URL = "http://localhost:4200/";

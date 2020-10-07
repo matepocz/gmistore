@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.emailsending;
+package selenium.emailsending;
 
 import org.openqa.selenium.WebDriver;
 

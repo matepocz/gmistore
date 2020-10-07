@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

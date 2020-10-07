@@ -1,4 +1,4 @@
-package hu.progmasters.gmistore.registration;
+package selenium.registration;
 
 public interface ErrorMessagesSettings {
     public String frontendValidationError();

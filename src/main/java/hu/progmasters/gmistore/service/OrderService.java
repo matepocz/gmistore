@@ -11,7 +11,6 @@ import hu.progmasters.gmistore.repository.OrderRepository;
 import hu.progmasters.gmistore.repository.OrderStatusHistoryRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -62,14 +62,18 @@ public class OrderService {
      *
      * @return A CustomerDetails DTO
      */
-    public CustomerDetails getCustomerDetails() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByUsername(authentication.getName());
+    public CustomerDetails getCustomerDetails(Principal principal) {
+        if (principal == null) {
+            LOGGER.debug("Unauthorized user request");
+            return null;
+        }
+        String username = principal.getName();
+        User user = userService.getUserByUsername(username);
         if (user != null) {
-            LOGGER.debug("Customer details found! username: {}", authentication.getName());
+            LOGGER.debug("Customer details found! username: {}", username);
             return setValuesForCustomerDetails(user);
         }
-        LOGGER.info("Customer details not found! username: {}", authentication.getName());
+        LOGGER.info("Customer details not found! username: {}", username);
         return null;
     }
 
@@ -404,6 +408,6 @@ public class OrderService {
         Set<String> strings = orderDates.keySet();
         Collection<Double> values = orderDates.values();
 
-        return new IncomeByDaysDto(values,strings);
+        return new IncomeByDaysDto(values, strings);
     }
 }

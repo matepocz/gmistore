@@ -2,7 +2,6 @@ package hu.progmasters.gmistore.controller;
 
 import hu.progmasters.gmistore.dto.AddressDetails;
 import hu.progmasters.gmistore.dto.CustomerDetails;
-import hu.progmasters.gmistore.dto.order.IncomePerOrderDto;
 import hu.progmasters.gmistore.dto.order.OrderDto;
 import hu.progmasters.gmistore.dto.order.OrderRequest;
 import hu.progmasters.gmistore.dto.order.OrderStatusOptionsDto;
@@ -10,7 +9,6 @@ import hu.progmasters.gmistore.dto.product.ProductListDetailDto;
 import hu.progmasters.gmistore.service.OrderService;
 import hu.progmasters.gmistore.validator.AddressValidator;
 import hu.progmasters.gmistore.validator.OrderRequestValidator;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
+import java.security.Principal;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -51,9 +48,9 @@ public class OrderController {
     }
 
     @GetMapping("/customer-details")
-    public ResponseEntity<CustomerDetails> getCustomerDetails() {
+    public ResponseEntity<CustomerDetails> getCustomerDetails(Principal principal) {
         LOGGER.debug("Customer details requested!");
-        CustomerDetails customerDetails = orderService.getCustomerDetails();
+        CustomerDetails customerDetails = orderService.getCustomerDetails(principal);
         return customerDetails != null ?
                 new ResponseEntity<>(customerDetails, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

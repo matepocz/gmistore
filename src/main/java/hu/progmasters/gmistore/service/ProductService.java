@@ -19,6 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Random;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,7 +86,9 @@ public class ProductService {
     }
 
     private double getPriceGross(ProductDto productDto) {
-        return productDto.getPrice() * 0.5 + new Random().nextFloat() * (0.80 - 0.5);
+        double price = productDto.getPrice() * (new Random().nextInt(30) + 50) / 100.0;
+        BigDecimal priceToRound = new BigDecimal(Double.toString(price));
+        return priceToRound.setScale(0, RoundingMode.HALF_UP).doubleValue();
     }
 
     LookupEntity getCategoryByKey(String key) {
@@ -102,6 +111,17 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         return mapProductToProductDto(product);
+    }
+
+    /**
+     * Get all active products from the database
+     *
+     * @return A List of ProductDto
+     */
+    public List<ProductDto> getAllActiveProducts() {
+        List<Product> allProduct = productRepository.findAll();
+        return allProduct.stream().map(this::mapProductToProductDto)
+                .filter(ProductDto::isActive).collect(Collectors.toList());
     }
 
     public List<ProductDto> getProductInOffer() {

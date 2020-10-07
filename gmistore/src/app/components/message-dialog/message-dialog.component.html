@@ -34,5 +34,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()" cdkfocusinitial>Vissza</button>
-  <button mat-button [mat-dialog-close]="onSubmit()">Küldés</button>
+  <button mat-button [mat-dialog-close]="onSubmit()" [disabled]="messageForm.invalid">Küldés</button>
 </div>

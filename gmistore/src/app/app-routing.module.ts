@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/user/login/login.component";
 import {RegisterComponent} from "./components/user/register/register.component";
-import {UserEditComponent} from "./components/user/user-edit/user-edit.component";
 import {ProductListComponent} from "./components/product/product-list/product-list.component";
 import {ForbiddenComponent} from "./components/forbidden/forbidden.component";
 import {ProductDetailsComponent} from "./components/product/product-details/product-details.component";
@@ -56,12 +55,6 @@ const routes: Routes = [
     component: OrdersFormComponent,
     canActivate: [AuthGuard],
     data: {roles: [RoleModel.ROLE_USER, RoleModel.ROLE_SELLER, RoleModel.ROLE_ADMIN]}
-  },
-  {
-    path: 'user/edit',
-    component: UserEditComponent,
-    canActivate: [AuthGuard],
-    data: {roles: [RoleModel.ROLE_ADMIN, RoleModel.ROLE_SELLER, RoleModel.ROLE_USER]}
   },
   {
     path: 'add-product',
@@ -153,7 +146,6 @@ export class AppRoutingModule {
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    UserEditComponent,
     ProductListComponent,
     ForbiddenComponent
   ];

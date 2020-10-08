@@ -98,8 +98,10 @@
           <button mat-icon-button fxHide.gt-xs="true" (click)="toggleMobileSearch()">
             <mat-icon aria-label="Toggle search input">search</mat-icon>
           </button>
-          <a mat-button fxHide.lt-md="true" [routerLink]="'/register'" *ngIf="!authenticatedUser">Regisztráció</a>
-          <a mat-button fxHide.lt-md="true" [routerLink]="'/login'" *ngIf="!authenticatedUser">Bejelentkezés</a>
+          <a mat-button fxHide.lt-md="true" matTooltip="Regisztráció" matTooltipPosition="below"
+             [routerLink]="'/register'" *ngIf="!authenticatedUser">Regisztráció</a>
+          <a mat-button fxHide.lt-md="true"  matTooltip="Bejelentkezés" matTooltipPosition="below"
+             [routerLink]="'/login'" *ngIf="!authenticatedUser">Bejelentkezés</a>
 
           <button fxHide.lt-md="true" mat-icon-button *ngIf="authenticatedUser" [matMenuTriggerFor]="menu"
                   aria-label="Icon button for user options" matTooltip="Felhasználó opciók"

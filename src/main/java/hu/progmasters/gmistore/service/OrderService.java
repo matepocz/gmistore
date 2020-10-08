@@ -112,13 +112,12 @@ public class OrderService {
      * @param session      The actual session object
      * @return A boolean, true if successful, false otherwise
      */
-    public boolean createOrder(OrderRequest orderRequest, HttpSession session) {
+    public boolean createOrder(OrderRequest orderRequest, HttpSession session, Principal principal) {
         Cart actualCart = cartService.getActualCart(session);
         if (actualCart.getItems().isEmpty()) {
             return false;
         }
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User userByUsername = userService.getUserByUsername(username);
+        User userByUsername = userService.getUserByUsername(principal.getName());
 
         userByUsername.setPhoneNumber(orderRequest.getPhoneNumber());
         updateCustomerAddresses(orderRequest, userByUsername);

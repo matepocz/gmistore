@@ -57,8 +57,9 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderRequest orderRequest, HttpSession session) {
-        orderService.createOrder(orderRequest, session);
+    public ResponseEntity<Void> createOrder(
+            @Valid @RequestBody OrderRequest orderRequest, HttpSession session, Principal principal) {
+        orderService.createOrder(orderRequest, session, principal);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -114,14 +114,14 @@ public class CartService {
         return cartItem;
     }
 
-    private void setItemsTotalPrice(Cart cart) {
+    void setItemsTotalPrice(Cart cart) {
         cart.setItemsTotalPrice(cart.getItems().stream().mapToDouble(item -> (
                 (item.getProduct().getPrice() / 100) * (100 - item.getProduct().getDiscount()))
                 * item.getCount())
                 .sum());
     }
 
-    private void setCartsTotalPrice(Cart cart) {
+    void setCartsTotalPrice(Cart cart) {
         cart.setTotalPrice(cart.getItemsTotalPrice() + cart.getShippingMethod().getCost());
     }
 
@@ -154,6 +154,16 @@ public class CartService {
                 return createCart(user);
             }
         }
+        Cart cart = getCartForUnauthenticatedUser(session);
+        if (cart != null) {
+            return cart;
+        }
+        Cart actualCart = createCart(null);
+        session.setAttribute("cart", actualCart.getId());
+        return actualCart;
+    }
+
+    private Cart getCartForUnauthenticatedUser(HttpSession session) {
         if (session.getAttribute("cart") != null) {
             long cartId = (Long) session.getAttribute("cart");
             Optional<Cart> cartById = cartRepository.findById(cartId);
@@ -164,9 +174,7 @@ public class CartService {
                 return cart;
             }
         }
-        Cart actualCart = createCart(null);
-        session.setAttribute("cart", actualCart.getId());
-        return actualCart;
+        return null;
     }
 
 
@@ -205,7 +213,7 @@ public class CartService {
         return cart;
     }
 
-    private void setInitialShippingMethod(Cart actualCart) {
+    void setInitialShippingMethod(Cart actualCart) {
         ShippingMethod shippingMethod = shippingService.getInitialShippingMethod();
         actualCart.setShippingMethod(shippingMethod);
     }

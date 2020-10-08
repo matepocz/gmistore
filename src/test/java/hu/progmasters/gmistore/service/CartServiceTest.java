@@ -10,11 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpSession;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CartServiceTest {
@@ -34,14 +39,21 @@ public class CartServiceTest {
     private ShippingService shippingServiceMock;
 
     @Mock
-    private MockHttpSession session;
+    private HttpSession sessionMock;
 
     @BeforeEach
     public void setup() {
         cartService = new CartService(
                 cartRepositoryMock, productRepositoryMock, userRepositoryMock, shippingServiceMock);
-        session = new MockHttpSession();
     }
+
+    private final Supplier<ShippingMethod> shippingMethodSupplier = () -> {
+        ShippingMethod shippingMethod = new ShippingMethod();
+        shippingMethod.setId(1);
+        shippingMethod.setMethod("Next day");
+        shippingMethod.setCost(1000.0);
+        return shippingMethod;
+    };
 
     private final Supplier<User> userSupplier = () -> {
         User user = new User();
@@ -52,6 +64,7 @@ public class CartServiceTest {
     private final Supplier<Cart> cartSupplier = () -> {
         Cart cart = new Cart();
         cart.setId(1L);
+        cart.setItems(new HashSet<>());
         cart.setUser(userSupplier.get());
         return cart;
     };
@@ -95,12 +108,117 @@ public class CartServiceTest {
         return product;
     };
 
+    private final Supplier<CartItem> cartItemSupplier = () -> {
+        CartItem cartItem = new CartItem();
+        cartItem.setId(1L);
+        cartItem.setCount(2);
+        cartItem.setProduct(productSupplier.get());
+        return cartItem;
+    };
+
     @Test
     public void testCreateCartItem() {
         CartItem newCartItem = cartService.createNewCartItem(2, productSupplier.get());
         assertEquals(2, newCartItem.getCount());
         assertEquals(1L, newCartItem.getProduct().getId());
         assertEquals("GMI123", newCartItem.getProduct().getProductCode());
+    }
+
+    @Test
+    public void testSetItemsTotalPrice() {
+        Cart cart = cartSupplier.get();
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        cartService.setItemsTotalPrice(cart);
+        assertEquals(400.0, cart.getItemsTotalPrice());
+    }
+
+    @Test
+    public void testSetCartsTotalPrice() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+
+        cartService.setCartsTotalPrice(cart);
+
+        assertEquals(1300.0, cart.getTotalPrice());
+    }
+
+    @Test
+    public void testGetNumberOfItemsInCart() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        cartService.setItemsTotalPrice(cart);
+        cartService.setCartsTotalPrice(cart);
+
+        int numberOfItemsInCart = cartService.getNumberOfItemsInCart(sessionMock);
+        assertEquals(4, numberOfItemsInCart);
+        verify(sessionMock,times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testSetInitialShippingMethod() {
+        Cart cart = cartSupplier.get();
+        ShippingMethod shippingMethod = shippingMethodSupplier.get();
+
+        when(shippingServiceMock.getInitialShippingMethod()).thenReturn(shippingMethod);
+
+        cartService.setInitialShippingMethod(cart);
+        assertNotNull(cart.getShippingMethod());
+        assertEquals(shippingMethod, cart.getShippingMethod());
+        verify(shippingServiceMock, times(1)).getInitialShippingMethod();
+    }
+
+    @Test
+    public void testUpdateShippingMethod() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+
+        ShippingMethod shippingMethod2 = shippingMethodSupplier.get();
+        shippingMethod2.setId(2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+        when(shippingServiceMock.fetchShippingMethod("Test")).thenReturn(shippingMethod2);
+
+        cartService.updateShippingMethod("Test", sessionMock);
+
+        assertNotNull(cart.getShippingMethod());
+        assertEquals(2, cart.getShippingMethod().getId());
+        assertEquals(shippingMethod2, cart.getShippingMethod());
+        verify(sessionMock,times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+        verify(shippingServiceMock, times(1)).fetchShippingMethod("Test");
     }
 
 }

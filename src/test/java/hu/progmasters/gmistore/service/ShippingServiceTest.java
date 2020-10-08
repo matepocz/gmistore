@@ -128,16 +128,17 @@ public class ShippingServiceTest {
         if (ZonedDateTime.of(expectedDate, zoneId).getHour() >= 14) {
             expectedDate = expectedDate.plusDays(1);
         }
-        expectedDate = expectedDate.plusDays(shippingMethod.getDays());
-        if (expectedDate.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-            expectedDate = expectedDate.plusDays(2);
-        }
-        if (expectedDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+        int addedDays = 0;
+        while (addedDays < shippingMethod.getDays()) {
             expectedDate = expectedDate.plusDays(1);
+            DayOfWeek dayOfWeek = expectedDate.getDayOfWeek();
+            if (!(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY)) {
+                addedDays++;
+            }
         }
         LocalDateTime actualResult = shippingService.calculateExpectedShippingDate(shippingMethod);
 
         assertNotNull(actualResult);
-        //assertEquals(expectedDate.getDayOfWeek(), actualResult.getDayOfWeek());
+        assertEquals(expectedDate.getDayOfWeek(), actualResult.getDayOfWeek());
     }
 }

@@ -7,12 +7,12 @@ import hu.progmasters.gmistore.enums.Role;
 import hu.progmasters.gmistore.exception.ProductNotFoundException;
 import hu.progmasters.gmistore.model.Product;
 import hu.progmasters.gmistore.model.Rating;
+import hu.progmasters.gmistore.model.User;
 import hu.progmasters.gmistore.repository.ProductRepository;
 import hu.progmasters.gmistore.repository.RatingRepository;
+import hu.progmasters.gmistore.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,11 +30,13 @@ public class RatingService {
 
     private final RatingRepository ratingRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository, ProductRepository productRepository) {
+    public RatingService(RatingRepository ratingRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.ratingRepository = ratingRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -115,20 +117,19 @@ public class RatingService {
      * @param id The given Rating's ID
      * @return A boolean, true if successful, false otherwise
      */
-    public boolean removeRating(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public boolean removeRating(Long id, Principal principal) {
         Optional<Rating> ratingById = ratingRepository.findById(id);
-        if (ratingById.isPresent()) {
-            if (authentication.getAuthorities().stream()
-                    .noneMatch(authority -> Role.valueOf(authority.getAuthority()).equals(Role.ROLE_ADMIN))) {
-                LOGGER.info("Unauthorized delete request, rating id: {}, username: {}", id, authentication.getName());
-                return false;
+        Optional<User> userByUsername = userRepository.findUserByUsername(principal.getName());
+        if (ratingById.isPresent() && userByUsername.isPresent()) {
+            if (userByUsername.get().getRoles().stream().anyMatch(role -> role.equals(Role.ROLE_ADMIN))) {
+                ratingById.get().setActive(false);
+                LOGGER.info("Product rating set to inactive, id: {}", id);
+                return true;
             }
-            ratingById.get().setActive(false);
-            LOGGER.info("Product rating set to inactive, id: {}", id);
-            return true;
+            LOGGER.info("Unauthorized delete request, rating id: {}, username: {}", id, principal.getName());
+            return false;
         }
-        LOGGER.info("Product rating not found, id: {}", id);
+        LOGGER.info("Product rating or user not found, id: {}", id);
         return false;
     }
 

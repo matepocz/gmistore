@@ -67,8 +67,8 @@ public class RatingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id) {
-        boolean result = ratingService.removeRating(id);
+    public ResponseEntity<Boolean> removeRating(@PathVariable("id") Long id, Principal principal) {
+        boolean result = ratingService.removeRating(id, principal);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

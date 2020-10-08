@@ -8,7 +8,6 @@ import hu.progmasters.gmistore.repository.InventoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +30,9 @@ public class InventoryService {
      * @param product           The actual Product object
      * @param quantityAvailable The given product count
      */
-    public void saveInventory(Product product, int quantityAvailable) {
+    public Inventory saveInventory(Product product, int quantityAvailable) {
         Inventory inventory = new Inventory(product, quantityAvailable);
-        inventoryRepository.save(inventory);
+        return inventoryRepository.save(inventory);
     }
 
     /**

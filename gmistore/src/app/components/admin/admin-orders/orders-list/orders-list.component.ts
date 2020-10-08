@@ -69,9 +69,9 @@ export class OrdersListComponent implements OnInit {
   }
 
   setupTable = () => {
-    if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') { // only display internalId on larger screens
+    if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 's') {
       let displayedColumns = this.displayedColumns;
-      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(date|status|totalPrice)$/)); // remove 'internalId'
+      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(date|status|totalPrice)$/));
       console.log(this.displayedColumns)
     } else if (!this.displayedColumns.includes("date" || "totalPrice" || "status")) {
       this.displayedColumns.push("date", "status","totalPrice");

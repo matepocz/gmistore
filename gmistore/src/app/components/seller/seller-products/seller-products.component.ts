@@ -4,13 +4,13 @@ import {SellerService} from "../../../service/seller/seller.service";
 import {ProductTableModel} from "../../../models/product/productTableModel";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialogRef} from "@angular/material/dialog";
 import {LoadingSpinnerComponent} from "../../loading-spinner/loading-spinner.component";
 import {PopupSnackbar} from "../../../utils/popup-snackbar";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {SpinnerService} from "../../../service/spinner-service.service";
 import {MatSort} from "@angular/material/sort";
-import {PagedSellerProductListModel} from "../../../models/product/PagedSellerProductListModel";
+import {MediaChange, MediaObserver} from "@angular/flex-layout";
 
 @Component({
   selector: 'app-seller-products',
@@ -24,6 +24,8 @@ export class SellerProductsComponent implements OnInit, OnDestroy {
   private productSub: Subscription = new Subscription();
   productTableData: Array<ProductTableModel>;
   dataSource: MatTableDataSource<ProductTableModel>;
+  currentScreenWidth: string = '';
+  flexMediaWatcher: Subscription;
   displayedColumns: string[] = ['picture', 'name', 'category', 'price', 'active', 'modify'];
 
   numberOfProducts = 0;
@@ -34,11 +36,12 @@ export class SellerProductsComponent implements OnInit, OnDestroy {
   spinner: MatDialogRef<LoadingSpinnerComponent> = this.spinnerService.start();
 
   constructor(private sellerService: SellerService,
-              private router:Router,
+              private router: Router,
               private snackBar: PopupSnackbar,
               private activatedRoute: ActivatedRoute,
               private spinnerService: SpinnerService,
-              private cdRef: ChangeDetectorRef) {
+              private cdRef: ChangeDetectorRef,
+              private mediaObserver: MediaObserver) {
   }
 
   ngOnInit(): void {
@@ -53,14 +56,29 @@ export class SellerProductsComponent implements OnInit, OnDestroy {
       )
     );
 
-
+    this.flexMediaWatcher = this.mediaObserver.media$.subscribe((change: MediaChange) => {
+      if (change.mqAlias !== this.currentScreenWidth) {
+        this.currentScreenWidth = change.mqAlias;
+        this.setupTable();
+      }
+    });
   }
+
+  setupTable = () => {
+    if (this.currentScreenWidth === 'xs' || this.currentScreenWidth === 'sm') {
+      let displayedColumns = this.displayedColumns;
+      this.displayedColumns = displayedColumns.filter(str => !str.match(/^(category|price)$/)); // remove
+      console.log(this.displayedColumns)
+    } else if (!this.displayedColumns.includes("category" || "price")) {
+      this.displayedColumns = ['picture', 'name', 'category', 'price', 'active', 'modify'];
+    }
+  };
 
 
   private getSellerProducts() {
     this.spinner = this.spinnerService.start();
     this.productSub.add(
-      this.sellerService.getOwnProducts(this.pageSize,this.pageIndex).subscribe(
+      this.sellerService.getOwnProducts(this.pageSize, this.pageIndex).subscribe(
         response => {
           console.log(response.products);
           this.productTableData = response.products;

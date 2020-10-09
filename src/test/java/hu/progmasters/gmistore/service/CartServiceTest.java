@@ -1,5 +1,6 @@
 package hu.progmasters.gmistore.service;
 
+import hu.progmasters.gmistore.dto.CartDto;
 import hu.progmasters.gmistore.enums.DomainType;
 import hu.progmasters.gmistore.model.*;
 import hu.progmasters.gmistore.repository.CartRepository;
@@ -17,8 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,7 +88,7 @@ public class CartServiceTest {
         Product product = new Product();
 
         Inventory inventory = new Inventory();
-        inventory.setQuantityAvailable(1);
+        inventory.setQuantityAvailable(15);
         inventory.setId(1L);
         inventory.setProduct(product);
 
@@ -181,7 +181,7 @@ public class CartServiceTest {
 
         int numberOfItemsInCart = cartService.getNumberOfItemsInCart(sessionMock);
         assertEquals(4, numberOfItemsInCart);
-        verify(sessionMock,times(2)).getAttribute("cart");
+        verify(sessionMock, times(2)).getAttribute("cart");
         verify(cartRepositoryMock, times(1)).findById(1L);
     }
 
@@ -216,9 +216,240 @@ public class CartServiceTest {
         assertNotNull(cart.getShippingMethod());
         assertEquals(2, cart.getShippingMethod().getId());
         assertEquals(shippingMethod2, cart.getShippingMethod());
-        verify(sessionMock,times(2)).getAttribute("cart");
+        verify(sessionMock, times(2)).getAttribute("cart");
         verify(cartRepositoryMock, times(1)).findById(1L);
         verify(shippingServiceMock, times(1)).fetchShippingMethod("Test");
+    }
+
+    @Test
+    public void testUpdateProductCountWhereCountEqualsZero() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.updateProductCount(1L, 0, sessionMock);
+
+        assertFalse(result);
+        assertFalse(cart.getItems().contains(cartItem1));
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateProductCountWhereCountEqualsTwentyShouldReturnFalse() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        cartService.updateProductCount(1L, 20, sessionMock);
+
+        assertTrue(cart.getItems().contains(cartItem1));
+        assertEquals(2, cartItem1.getCount());
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateProductCountWhereCountEqualsTenShouldReturnTrue() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.updateProductCount(1L, 10, sessionMock);
+
+        assertTrue(result);
+        assertTrue(cart.getItems().contains(cartItem1));
+        assertEquals(10, cartItem1.getCount());
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testRemoveCartItem() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.removeCartItem(1L, sessionMock);
+
+        assertTrue(result);
+        assertFalse(cart.getItems().contains(cartItem1));
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testCanCheckoutShouldReturnFalse() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.canCheckout(sessionMock);
+
+        assertFalse(result);
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testCanCheckoutProductInactiveShouldReturnFalse() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+        product2.setActive(false);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.canCheckout(sessionMock);
+
+        assertFalse(result);
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testCanCheckoutShouldReturnTrue() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.canCheckout(sessionMock);
+
+        assertTrue(result);
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testCanCheckoutProductQuantityEqualsZeroShouldReturnFalse() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        Product product2 = productSupplier.get();
+        product2.setId(2L);
+        product2.getInventory().setQuantityAvailable(0);
+
+        CartItem cartItem2 = cartItemSupplier.get();
+        cartItem2.setId(2L);
+        cartItem2.setProduct(product2);
+        items.add(cartItem2);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        boolean result = cartService.canCheckout(sessionMock);
+
+        assertFalse(result);
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testGetCartDto() {
+        Cart cart = cartSupplier.get();
+        cart.setItemsTotalPrice(300.0);
+        cart.setShippingMethod(shippingMethodSupplier.get());
+        Set<CartItem> items = cart.getItems();
+
+        CartItem cartItem1 = cartItemSupplier.get();
+        items.add(cartItem1);
+
+        when(sessionMock.getAttribute("cart")).thenReturn(1L);
+        when(cartRepositoryMock.findById(1L)).thenReturn(Optional.of(cart));
+
+        CartDto cartDto = cartService.getCart(sessionMock);
+
+        assertNotNull(cartDto);
+        verify(sessionMock, times(2)).getAttribute("cart");
+        verify(cartRepositoryMock, times(1)).findById(1L);
     }
 
 }

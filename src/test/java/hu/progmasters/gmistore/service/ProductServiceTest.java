@@ -139,6 +139,16 @@ public class ProductServiceTest {
     }
 
     @Test
+    public void testUpdateProductUserUnauthorized() {
+        ProductDto productDto = productDtoSupplier.get();
+
+        boolean actualResult = productService.updateProduct("test-product-gmi123", productDto, null);
+
+        assertFalse(actualResult);
+        verify(productRepositoryMock, times(0)).save(any(Product.class));
+    }
+
+    @Test
     public void testUpdateProduct() {
         Product product = productSupplier.get();
         ProductDto productDto = productDtoSupplier.get();

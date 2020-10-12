@@ -186,13 +186,17 @@ public class CartService {
             Set<CartItem> items = usersCart.getItems();
             itemsFromTempCart.forEach(cartItem -> {
                 Product product = cartItem.getProduct();
-                items.forEach(item -> {
-                    if (item.getProduct().equals(product)) {
-                        item.setCount(item.getCount() + cartItem.getCount());
-                    } else {
-                        itemsToMerge.add(cartItem);
-                    }
-                });
+                if (!usersCart.getItems().isEmpty()) {
+                    items.forEach(item -> {
+                        if (item.getProduct().equals(product)) {
+                            item.setCount(item.getCount() + cartItem.getCount());
+                        } else {
+                            itemsToMerge.add(cartItem);
+                        }
+                    });
+                } else {
+                    itemsToMerge.add(cartItem);
+                }
             });
             items.addAll(itemsToMerge);
             cartRepository.deleteById(cartIdFromSession);
